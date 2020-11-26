@@ -1,0 +1,11 @@
+{
+  "ignore": [
+    "node_modules"
+  ],
+  "watch": [
+    "src/",
+    "../appglue.common"
+  ],
+  "exec": "ts-node src/index.ts",
+  "ext": "ts"
+}
