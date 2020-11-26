@@ -25,7 +25,7 @@ import fakeBackend from './helpers/AuthType/fakeBackend';
 // Activating fake backend
 fakeBackend();
 
-const firebaseConfig = {		
+const firebaseConfig = {
   apiKey: process.env.REACT_APP_APIKEY,
   authDomain: process.env.REACT_APP_AUTHDOMAIN,
   databaseURL: process.env.REACT_APP_DATABASEURL,
@@ -97,7 +97,7 @@ const App = (props) => {
 					</Switch>
 				</Router>
 			</React.Fragment>
-		
+
 		  );
 		}
 

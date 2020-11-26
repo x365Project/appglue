@@ -1,18 +1,21 @@
 {
-    "name": "appglue.ui",
+    "name": "@appglue/ui",
     "version": "1.0.0",
+    "main": "src/index.ts",
     "scripts": {
-        "start:dev": "webpack-dev-server --mode development --devtool inline-source-map --hot",
+        "start": "webpack-dev-server --mode development --devtool inline-source-map --hot",
         "build": "webpack --mode production"
     },
     "dependencies": {
-        "@types/react": "^16.8.16",
+        "@appglue/common": "^1.0.0",
+        "@types/react": "^16.14.2",
         "@types/react-dom": "^16.8.4",
         "@types/react-redux": "^7.1.10",
         "babel-polyfill": "^6.26.0",
-        "react": "^16.5.2",
+        "react": "^16.13.0",
         "react-dom": "^16.5.2",
-        "react-redux": "^7.2.2"
+        "react-redux": "^7.2.2",
+        "react-router-dom": "^5.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",

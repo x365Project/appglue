@@ -4,6 +4,8 @@
   "private": false,
   "main": "src/App.js",
   "dependencies": {
+    "@appglue/common": "^1.0.0",
+    "@appglue/ui": "^1.0.0",
     "@fullcalendar/bootstrap": "^4.3.0",
     "@fullcalendar/daygrid": "^4.3.0",
     "@fullcalendar/interaction": "^4.3.0",

@@ -1,0 +1,17 @@
+{
+    "packages": [
+        "appglue.common",
+        "appglue.node",
+        "appglue.ui",
+        "appglue.clientexample",
+        "appglue.serverexample"
+    ],
+    "command": {
+        "bootstrap": {
+            "npmClientArgs": [
+                "--no-package-lock"
+            ]
+        }
+    },
+    "version": "independent"
+}
