@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {capitalize} from '@appglue/common';
-import {withRouter} from 'react-router-dom';
 
 interface Props {
     location: {
@@ -8,14 +7,14 @@ interface Props {
     }
 }
 
-class NonAuthLayout extends React.Component<Props, {}> {
-    constructor(props) {
+export default class NonAuthLayout extends React.Component<Props, {}> {
+    constructor(props: Props) {
         super(props);
         this.state = {};
         this.capitalizeFirstLetter.bind(this);
     }
 
-    capitalizeFirstLetter = string => {
+    capitalizeFirstLetter = (string: string)=> {
         return capitalize(string);
     };
 
@@ -34,5 +33,3 @@ class NonAuthLayout extends React.Component<Props, {}> {
         );
     }
 }
-
-export default withRouter(NonAuthLayout);

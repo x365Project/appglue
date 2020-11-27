@@ -6,12 +6,12 @@ const outputDirectory = 'dist';
 
 module.exports = {
     entry: [
-        'babel-polyfill',
-        './src/index.tsx'
+        './src/index.ts'
     ],
     output: {
         path: path.join(__dirname, outputDirectory),
-        filename: './js/[name].bundle.js'
+        libraryTarget: 'umd',
+        filename: './index.js'
     },
     devtool: 'source-map',
     module: {
@@ -31,62 +31,13 @@ module.exports = {
                     },
                 ],
                 exclude: /node_modules/
-            },
-            {
-                enforce: 'pre',
-                test: /\.js$/,
-                loader: 'source-map-loader'
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    {loader: 'style-loader'},
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            publicPath: './Less',
-                            hmr: process.env.NODE_ENV === 'development',
-                        },
-                    },
-                    {loader: 'css-loader'},
-                    {
-                        loader: 'less-loader',
-                        options: {
-                            strictMath: true,
-                            noIeCompat: true,
-                        }
-                    },
-                ]
-            },
-            {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-                loader: 'url-loader?limit=100000'
-            },
+            }
         ]
     },
     resolve: {
-        extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json', '.less']
-    },
-    devServer: {
-        port: 3000,
-        open: true,
-        hot: true,
-        proxy: {
-            '/api/**': {
-                target: 'http://localhost:4000',
-                secure: false,
-                changeOrigin: true
-            }
-        }
+        extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json']
     },
     plugins: [
-        new CleanWebpackPlugin([outputDirectory]),
-        new HtmlWebpackPlugin({
-            template: './public/index.html'
-        }),
-        new MiniCssExtractPlugin({
-            filename: './css/[name].css',
-            chunkFilename: './css/[id].css',
-        })
+        new CleanWebpackPlugin([outputDirectory])
     ],
 };

@@ -4,6 +4,11 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "target": "es5",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "jsx": "react",
         "module": "commonjs",
         "sourceMap": true,
@@ -11,7 +16,6 @@
         "skipLibCheck": true
     },
     "include": [
-        "src/",
-        "src/**/*.d.ts"
+        "src/"
     ]
 }
