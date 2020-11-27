@@ -2,9 +2,10 @@
     "name": "@appglue/node",
     "version": "1.0.0",
     "main": "src/index.ts",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.json && node dist/",
         "start:dev": "nodemon",
+        "build": "tsc -p tsconfig.build.json",
         "test": "npm run ts-test -- src/**/*.test.ts test/**/*.test.ts",
         "ts-test": "mocha -r ts-node/register"
     },

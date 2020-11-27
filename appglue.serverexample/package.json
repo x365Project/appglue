@@ -3,8 +3,7 @@
     "version": "1.0.0",
     "main": "src/index.ts",
     "scripts": {
-        "start": "nodemon",
-        "build": "tsc -p tsconfig.json && node dist/"
+        "start": "nodemon"
     },
     "dependencies": {
         "@appglue/common": "^1.0.0",
