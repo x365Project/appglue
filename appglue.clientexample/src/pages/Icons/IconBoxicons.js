@@ -49,7 +49,7 @@ useEffect(() => {
                                 <Card>
                                     <CardBody>
                                         <CardTitle>Examples</CardTitle>
-                                        <p className="card-subtitle mb-4">Use class <code>&lt;i class="bx bx-**">&lt;/i></code></p>
+                                        <p className="card-subtitle mb-4">Use class <code>&lt;i class="bx bx-**"&gt;&lt;/i&gt;</code></p>
 
                                         <h5>Regular</h5>
                                         <Row className="icon-demo-content" id="regularIcon">
@@ -58,12 +58,12 @@ useEffect(() => {
 
                                         <h5 className="mt-5">Solid Icons</h5>
                                         <Row className="icon-demo-content" id="solid">
-                                       
+
                                         </Row>
 
                                         <h4 className="mt-5">Logos</h4>
                                         <Row className="icon-demo-content" id="logos">
-                                       
+
                                         </Row>
                                     </CardBody>
                                 </Card>
