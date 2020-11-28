@@ -1,0 +1,7 @@
+.config-form-content > * {
+  width: 100%;
+}
+
+.config-form-content {
+  flex-wrap: wrap;
+}

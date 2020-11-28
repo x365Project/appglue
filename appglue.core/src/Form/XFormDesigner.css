@@ -1,0 +1,9 @@
+
+.SidebarTabs .SidebarTab-indicator {
+	display: none;
+}
+
+.SidebarTabs .SidebarScroller {
+	border-right: solid 1px #E6E9ED;
+	border-left: solid 1px #E6E9ED;
+}
