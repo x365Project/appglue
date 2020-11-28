@@ -2,7 +2,7 @@
     "packages": [
         "appglue.common",
         "appglue.node",
-        "appglue.ui",
+        "appglue.core",
         "appglue.site",
         "appglue.server"
     ],
