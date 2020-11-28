@@ -1,107 +1,76 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react"
 import {
   Dropdown,
-  DropdownToggle,
+  DropdownItem,
   DropdownMenu,
-  DropdownItem
-} from "reactstrap";
+  DropdownToggle,
+} from "reactstrap"
+import { get, map } from "lodash"
+import { withTranslation } from "react-i18next"
 
 //i18n
-import i18n from '../../../i18n';
-import { withNamespaces } from 'react-i18next';
+import i18n from "../../../i18n"
+import languages from "common/languages"
 
-// falgs
-import usFlag from "../../../assets/images/flags/us.jpg";
-import spain from "../../../assets/images/flags/spain.jpg";
-import germany from "../../../assets/images/flags/germany.jpg";
-import italy from "../../../assets/images/flags/italy.jpg";
-import russia from "../../../assets/images/flags/russia.jpg";
-
-const LanguageDropdown = (props) => {
+const LanguageDropdown = () => {
   // Declare a new state variable, which we'll call "menu"
-  const [menu, setMenu] = useState(false);
-  const [flag, setFlag] = useState(usFlag);
-  const [lng, setLng] = useState("English");
+  const [selectedLang, setSelectedLang] = useState("")
+  const [menu, setMenu] = useState(false)
 
+  useEffect(() => {
+    const currentLanguage = localStorage.getItem("I18N_LANGUAGE")
+    setSelectedLang(currentLanguage)
+  }, [])
 
-   function changeLanguageAction(lng) {
-
-     //set language as i18n
-     i18n.changeLanguage(lng);
-
-    if(lng === "sp")
-    {
-       setFlag(spain); 
-      setLng('Spanish');
-    }  
-    else if(lng === "gr")
-    {
-         setFlag(germany); 
-         setLng('German');
-    }    
-    else if(lng === "rs")
-    {
-         setFlag(russia); 
-         setLng('Russian');
-    }    
-    else if(lng === "it")
-    {
-       setFlag(italy); 
-       setLng('Italian');
-    }   
-    else if(lng === "eng")
-    {
-        setFlag(usFlag); 
-        setLng('English');
-    }  
+  const changeLanguageAction = lang => {
+    //set language as i18n
+    i18n.changeLanguage(lang)
+    localStorage.setItem("I18N_LANGUAGE", lang)
+    setSelectedLang(lang)
   }
 
-  
+  const toggle = () => {
+    setMenu(!menu)
+  }
+
   return (
-     <React.Fragment>
-        <Dropdown
-          isOpen={menu}
-          toggle={() => setMenu(!menu)}
-          className="d-inline-block"
-        >
-          <DropdownToggle
-            className="btn header-item waves-effect"
-            tag="button"
-          >
-            <img
-              src={flag}
-              alt="Skote"
-              height="16"
-              className="mr-1"
-            />
-               <span className="align-middle">{lng}</span>
-          </DropdownToggle>
-          <DropdownMenu className="language-switch" right>
-            <DropdownItem tag="a" href="#" onClick={() => changeLanguageAction('eng')} className="notify-item">
-              <img src={usFlag} alt="Skote" className="mr-1" height="12" />
-              <span className="align-middle">English</span>
+    <>
+      <Dropdown isOpen={menu} toggle={toggle} className="d-inline-block">
+        <DropdownToggle className="btn header-item waves-effect" tag="button">
+          <img
+            src={get(languages, `${selectedLang}.flag`)}
+            alt="Skote"
+            height="16"
+            className="mr-1"
+          />
+          <span className="align-middle">
+            {get(languages, `${selectedLang}.label`)}
+          </span>
+        </DropdownToggle>
+        <DropdownMenu className="language-switch" right>
+          {map(Object.keys(languages), key => (
+            <DropdownItem
+              key={key}
+              onClick={() => changeLanguageAction(key)}
+              className={`notify-item ${
+                selectedLang === key ? "active" : "none"
+              }`}
+            >
+              <img
+                src={get(languages, `${key}.flag`)}
+                alt="Skote"
+                className="mr-1"
+                height="12"
+              />
+              <span className="align-middle">
+                {get(languages, `${key}.label`)}
+              </span>
             </DropdownItem>
-              <DropdownItem tag="a" href="#" onClick={() => changeLanguageAction('sp')} className="notify-item">
-              <img src={spain} alt="Skote" className="mr-1" height="12" />
-              <span className="align-middle">Spanish</span>
-            </DropdownItem>
-            <DropdownItem tag="a" href="#" onClick={() => changeLanguageAction('gr')} className="notify-item">
-              <img src={germany} alt="Skote" className="mr-1" height="12" />
-              <span className="align-middle">German</span>
-            </DropdownItem>
-            <DropdownItem tag="a" href="#" onClick={() => changeLanguageAction('it')} className="notify-item">
-              <img src={italy} alt="Skote" className="mr-1" height="12" />
-              <span className="align-middle">Italian</span>
-            </DropdownItem>
-            <DropdownItem tag="a" href="#" onClick={() => changeLanguageAction('rs')} className="notify-item">
-              <img src={russia} alt="Skote" className="mr-1" height="12" />
-              <span className="align-middle">Russian</span>
-            </DropdownItem>
-          
-          </DropdownMenu>
-        </Dropdown>
-      </React.Fragment>
-  );
+          ))}
+        </DropdownMenu>
+      </Dropdown>
+    </>
+  )
 }
 
-export default withNamespaces()(LanguageDropdown);
+export default withTranslation()(LanguageDropdown)

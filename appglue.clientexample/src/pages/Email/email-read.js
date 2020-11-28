@@ -1,93 +1,123 @@
-import React from 'react';
-import { Link } from "react-router-dom";
-import { Container, Row, Col, Card, CardBody, Media } from "reactstrap";
+import React from "react"
+import { Link } from "react-router-dom"
+import { Container, Row, Col, Card, CardBody, Media } from "reactstrap"
 
 //Import Image
-import avatar2 from "../../assets/images/users/avatar-2.jpg";
-import img3 from "../../assets/images/small/img-3.jpg";
-import img4 from "../../assets/images/small/img-4.jpg";
+import avatar2 from "../../assets/images/users/avatar-2.jpg"
+import img3 from "../../assets/images/small/img-3.jpg"
+import img4 from "../../assets/images/small/img-4.jpg"
 
 //Import Breadcrumb
-import Breadcrumbs from '../../components/Common/Breadcrumb';
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Email Sidebar
-import EmailSideBar from './email-sidebar';
+import EmailSideBar from "./email-sidebar"
 
 //Import Email Topbar
-import EmailToolbar from './email-toolbar';
+import EmailToolbar from "./email-toolbar"
 
-const EmailRead = (props) => {
+const EmailRead = () => {
+  return (
+    <React.Fragment>
+      <div className="page-content">
+        <Container fluid>
+          {/* Render Breadcrumbs */}
+          <Breadcrumbs title="Email" breadcrumbItem="Read Email" />
 
-    return (
-           <React.Fragment>
-                <div className="page-content">
-                    <Container fluid>
+          <Row>
+            <Col xs="12">
+              {/* Render Email SideBar */}
+              <EmailSideBar />
 
-                        {/* Render Breadcrumbs */}
-                        <Breadcrumbs title="Email" breadcrumbItem="Read Email" />
+              <div className="email-rightbar mb-3">
+                <Card>
+                  {/* Render Email Top Tool Bar */}
+                  <EmailToolbar />
 
-                        <Row>
-                            <Col xs="12">
-                                {/* Render Email SideBar */}
-                                <EmailSideBar />
+                  <CardBody>
+                    <Media className="mb-4">
+                      <img
+                        className="d-flex mr-3 rounded-circle avatar-sm"
+                        src={avatar2}
+                        alt="skote"
+                      />
+                      <Media body>
+                        <h5 className="font-size-14 mt-1">
+                          Humberto D. Champion
+                        </h5>
+                        <small className="text-muted">support@domain.com</small>
+                      </Media>
+                    </Media>
 
-                                <div className="email-rightbar mb-3">
+                    <h4 className="mt-0 font-size-16">
+                      This Week's Top Stories
+                    </h4>
 
-                                    <Card>
-                                        {/* Render Email Top Tool Bar */}
-                                        <EmailToolbar />
+                    <p>Dear Lorem Ipsum,</p>
+                    <p>
+                      Praesent dui ex, dapibus eget mauris ut, finibus
+                      vestibulum enim. Quisque arcu leo, facilisis in fringilla
+                      id, luctus in tortor. Nunc vestibulum est quis orci varius
+                      viverra. Curabitur dictum volutpat massa vulputate
+                      molestie. In at felis ac velit maximus convallis.
+                    </p>
+                    <p>
+                      Sed elementum turpis eu lorem interdum, sed porttitor eros
+                      commodo. Nam eu venenatis tortor, id lacinia diam. Sed
+                      aliquam in dui et porta. Sed bibendum orci non tincidunt
+                      ultrices. Vivamus fringilla, mi lacinia dapibus
+                      condimentum, ipsum urna lacinia lacus, vel tincidunt mi
+                      nibh sit amet lorem.
+                    </p>
+                    <p>Sincerly,</p>
+                    <hr />
 
-                                        <CardBody>
-                                            <Media className="mb-4">
-                                                <img className="d-flex mr-3 rounded-circle avatar-sm" src={avatar2} alt="skote" />
-                                                <Media body>
-                                                    <h5 className="font-size-14 mt-1">Humberto D. Champion</h5>
-                                                    <small className="text-muted">support@domain.com</small>
-                                                </Media>
-                                            </Media>
+                    <Row>
+                      <Col xl="2" xs="6">
+                        <Card>
+                          <img
+                            className="card-img-top img-fluid"
+                            src={img3}
+                            alt="skote"
+                          />
+                          <div className="py-2 text-center">
+                            <Link to="" className="font-weight-medium">
+                              Download
+                            </Link>
+                          </div>
+                        </Card>
+                      </Col>
+                      <Col xl="2" xs="6">
+                        <Card>
+                          <img
+                            className="card-img-top img-fluid"
+                            src={img4}
+                            alt="skote"
+                          />
+                          <div className="py-2 text-center">
+                            <Link to="" className="font-weight-medium">
+                              Download
+                            </Link>
+                          </div>
+                        </Card>
+                      </Col>
+                    </Row>
 
-                                            <h4 className="mt-0 font-size-16">This Week's Top Stories</h4>
+                    <Link
+                      to="#"
+                      className="btn btn-secondary waves-effect mt-4"
+                    >
+                      <i className="mdi mdi-reply"></i> Reply
+                    </Link>
+                  </CardBody>
+                </Card>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </React.Fragment>
+  )
+}
 
-                                            <p>Dear Lorem Ipsum,</p>
-                                            <p>Praesent dui ex, dapibus eget mauris ut, finibus vestibulum enim. Quisque arcu leo, facilisis in fringilla id, luctus in tortor. Nunc vestibulum est quis orci varius viverra. Curabitur dictum volutpat massa vulputate molestie. In at felis ac velit maximus convallis.
-                                            </p>
-                                            <p>Sed elementum turpis eu lorem interdum, sed porttitor eros commodo. Nam eu venenatis tortor, id lacinia diam. Sed aliquam in dui et porta. Sed bibendum orci non tincidunt ultrices. Vivamus fringilla, mi lacinia dapibus condimentum, ipsum urna lacinia lacus, vel tincidunt mi nibh sit amet lorem.</p>
-                                            <p>Sincerly,</p>
-                                            <hr />
-
-                                            <Row>
-                                                <Col xl="2" xs="6">
-                                                    <Card>
-                                                        <img className="card-img-top img-fluid" src={img3} alt="skote" />
-                                                        <div className="py-2 text-center">
-                                                            <Link to="" className="font-weight-medium">Download</Link>
-                                                        </div>
-                                                    </Card>
-                                                </Col>
-                                                <Col xl="2" xs="6">
-                                                    <Card>
-                                                        <img className="card-img-top img-fluid" src={img4} alt="skote" />
-                                                        <div className="py-2 text-center">
-                                                            <Link to="" className="font-weight-medium">Download</Link>
-                                                        </div>
-                                                    </Card>
-                                                </Col>
-                                            </Row>
-
-                                            <Link to="#" className="btn btn-secondary waves-effect mt-4"><i className="mdi mdi-reply"></i> Reply</Link>
-                                        </CardBody>
-
-                                    </Card>
-                                </div>
-
-                            </Col>
-
-                        </Row>
-
-                    </Container>
-                </div>
-            </React.Fragment>
-          );
-    }
-        
-export default EmailRead;
+export default EmailRead

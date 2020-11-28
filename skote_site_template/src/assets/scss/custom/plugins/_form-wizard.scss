@@ -4,13 +4,12 @@
 
 // twitter-bs-wizard
 
-.twitter-bs-wizard{
-
-  .twitter-bs-wizard-nav{
+.twitter-bs-wizard {
+  .twitter-bs-wizard-nav {
     padding: 4px;
     background-color: rgba($primary, 0.1);
 
-    .step-number{
+    .step-number {
       display: inline-block;
       width: 38px;
       height: 38px;
@@ -26,51 +25,51 @@
       }
     }
 
-    .nav-link{
+    .nav-link {
       @media (min-width: 992px) {
         text-align: left;
       }
-      &.active{
+      &.active {
         background-color: transparent;
         color: $gray-700;
 
-        .step-number{
+        .step-number {
           background-color: $primary;
           color: $white;
         }
       }
     }
   }
-  
-  .twitter-bs-wizard-pager-link{
-    padding-top: 24px;
-      padding-left: 0;
-      list-style: none;
-      margin-bottom: 0;
-      li{
-        display: inline-block;
-        a{
-          display: inline-block;
-          padding: .47rem .75rem;
-          background-color: $primary;
-          color: $white;
-          border-radius: .25rem;
-        }
-        &.disabled{
-          a{
-            cursor: not-allowed;
-            background-color: lighten($primary, 8%);
-          }
-        }
 
-        &.next{
-          float: right;
+  .twitter-bs-wizard-pager-link {
+    padding-top: 24px;
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 0;
+    li {
+      display: inline-block;
+      a {
+        display: inline-block;
+        padding: 0.47rem 0.75rem;
+        background-color: $primary;
+        color: $white;
+        border-radius: 0.25rem;
+      }
+      &.disabled {
+        a {
+          cursor: not-allowed;
+          background-color: lighten($primary, 8%);
         }
       }
+
+      &.next {
+        float: right;
+      }
     }
+  }
 }
 
-.twitter-bs-wizard-tab-content{
+.twitter-bs-wizard-tab-content {
   padding-top: 24px;
   min-height: 262px;
 }

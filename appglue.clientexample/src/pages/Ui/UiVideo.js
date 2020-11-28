@@ -1,81 +1,100 @@
-import React from 'react';
+import React from "react"
 
-import { Card, Row, Col, CardBody, CardTitle, CardSubtitle,Container } from "reactstrap";
+import { Card, CardBody, CardSubtitle, CardTitle, Col, Container, Row } from "reactstrap"
 
 //Import Breadcrumb
-import Breadcrumbs from '../../components/Common/Breadcrumb';
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
+const UiVideo = () => {
+  return (
+    <React.Fragment>
+      <div className="page-content">
+        <Container fluid={true}>
+          <Breadcrumbs title="UI Elements" breadcrumbItem="Video" />
 
-const UiVideo = (props) => {
+          <Row>
+            <Col lg={6}>
+              <Card>
+                <CardBody>
+                  <CardTitle>Responsive embed video 16:9</CardTitle>
+                  <CardSubtitle className="mb-3">
+                    Aspect ratios can be customized with modifier classNamees.
+                  </CardSubtitle>
 
-    return (
-             <React.Fragment>
-                <div className="page-content">
-                    <Container fluid={true}>
+                  <div className="embed-responsive embed-responsive-16by9">
+                    <iframe
+                      title="test"
+                      className="embed-responsive-item"
+                      src="https://www.youtube.com/embed/1y_kfWUCFDQ"
+                    />
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
 
-                        <Breadcrumbs title="UI Elements" breadcrumbItem="Video" />
+            <Col lg={6}>
+              <Card>
+                <CardBody>
+                  <CardTitle>Responsive embed video 21:9</CardTitle>
+                  <CardSubtitle className="mb-3">
+                    Aspect ratios can be customized with modifier classNamees.
+                  </CardSubtitle>
 
-                        <Row>
-                            <Col lg={6}>
-                                <Card>
-                                    <CardBody>
-                                        <CardTitle>Responsive embed video 16:9</CardTitle>
-                                        <CardSubtitle className="mb-3">Aspect ratios can be customized with modifier classNamees.</CardSubtitle>
+                  <div className="embed-responsive embed-responsive-21by9">
+                    <iframe
+                      title="test1"
+                      className="embed-responsive-item"
+                      src="https://www.youtube.com/embed/1y_kfWUCFDQ"
+                    />
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
 
-                                        <div className="embed-responsive embed-responsive-16by9">
-                                            <iframe title="test" className="embed-responsive-item" src="https://www.youtube.com/embed/1y_kfWUCFDQ"></iframe>
-                                        </div>
-                                    </CardBody>
-                                </Card>
-                            </Col>
+          <Row>
+            <Col lg={6}>
+              <Card>
+                <CardBody>
+                  <CardTitle>Responsive embed video 4:3</CardTitle>
+                  <CardSubtitle className="mb-3">
+                    Aspect ratios can be customized with modifier classNamees.
+                  </CardSubtitle>
 
-                            <Col lg={6}>
-                                <Card>
-                                    <CardBody>
-                                        <CardTitle>Responsive embed video 21:9</CardTitle>
-                                        <CardSubtitle className="mb-3">Aspect ratios can be customized with modifier classNamees.</CardSubtitle>
+                  <div className="embed-responsive embed-responsive-4by3">
+                    <iframe
+                      title="tes2"
+                      className="embed-responsive-item"
+                      src="https://www.youtube.com/embed/1y_kfWUCFDQ"
+                    />
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
 
-                                        <div className="embed-responsive embed-responsive-21by9">
-                                            <iframe title="test1" className="embed-responsive-item" src="https://www.youtube.com/embed/1y_kfWUCFDQ"></iframe>
-                                        </div>
+            <Col lg={6}>
+              <Card>
+                <CardBody>
+                  <CardTitle>Responsive embed video 1:1</CardTitle>
+                  <CardSubtitle className="mb-3">
+                    Aspect ratios can be customized with modifier classNamees.
+                  </CardSubtitle>
 
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
+                  <div className="embed-responsive embed-responsive-1by1">
+                    <iframe
+                      title="test3"
+                      className="embed-responsive-item"
+                      src="https://www.youtube.com/embed/1y_kfWUCFDQ"
+                    />
+                  </div>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </React.Fragment>
+  )
+}
 
-                        <Row>
-
-                            <Col lg={6}>
-                                <Card>
-                                    <CardBody>
-                                        <CardTitle>Responsive embed video 4:3</CardTitle>
-                                        <CardSubtitle className="mb-3">Aspect ratios can be customized with modifier classNamees.</CardSubtitle>
-
-                                        <div className="embed-responsive embed-responsive-4by3">
-                                            <iframe title="tes2" className="embed-responsive-item" src="https://www.youtube.com/embed/1y_kfWUCFDQ"></iframe>
-                                        </div>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-
-                            <Col lg={6}>
-                                <Card>
-                                    <CardBody>
-                                        <CardTitle>Responsive embed video 1:1</CardTitle>
-                                        <CardSubtitle className="mb-3">Aspect ratios can be customized with modifier classNamees.</CardSubtitle>
-
-                                        <div className="embed-responsive embed-responsive-1by1">
-                                            <iframe title="test3" className="embed-responsive-item" src="https://www.youtube.com/embed/1y_kfWUCFDQ"></iframe>
-                                        </div>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
-            </React.Fragment>
-          );
-    }
-
-export default UiVideo;
+export default UiVideo

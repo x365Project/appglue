@@ -1,111 +1,58 @@
-import React from 'react';
-
-import { Container } from "reactstrap";
+import React, { useEffect } from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { Container } from "reactstrap"
+import { withRouter } from "react-router-dom"
+import { isEmpty, map } from "lodash"
 
 //Import Breadcrumb
-import Breadcrumbs from '../../components/Common/Breadcrumb';
+import Breadcrumbs from "components/Common/Breadcrumb"
 
 //Import Task Cards
-import UncontrolledBoard from "./UncontrolledBoard";
+import UncontrolledBoard from "./UncontrolledBoard"
 
-//Import Images
-import avatar4 from "../../assets/images/users/avatar-4.jpg";
-import avatar5 from "../../assets/images/users/avatar-5.jpg";
+import "assets/scss/tasks.scss"
+import { getTasks } from "store/tasks/actions"
 
-import "./tasks.scss";
+const TasksKanban = props => {
+  const { tasks, onGetTasks } = props
 
-const TasksKanban = (props) => {
+  useEffect(() => {
+    onGetTasks()
+  }, [onGetTasks])
 
-	const columns = [
-				{
-					id: 1,
-					title: 'Upcoming',
-					cards: [
-						{
-							id: 11,
-							content: {
-								title: "Multipurpose  -  layout design", date: "14 Oct, 2019", img: avatar4, text: "3 +", budget: 145, status: "Waiting", class: "secondary"
-							}
-						},
-						{
-							id: 12,
-							content: {
-								title: "Multipurpose  - d a New Landing UI", date: "15 Oct, 2019", img: avatar5, text: "3 +", budget: 112, status: "Approved", class: "primary"
-							}
-						},
-						{
-							id: 13,
-							content: {
-								title: "Variously  - d a Skote Logo", date: "16 Oct, 2019", img: avatar4, text: "F", budget: 86, status: "Waiting", class: "secondary"
-							}
-						},
-					]
-				},
-				{
-					id: 2,
-					title: 'In Progress',
-					cards: [
-						{
-							id: 21,
-							content: {
-								title: "Branded  -  logo design", date: "12 Oct, 2019", img: avatar4, text: "S", budget: 132, status: "Complete", class: "success"
-							}
-						},
-						{
-							id: 22,
-							content: {
-								title: "Create  - d a Blog Template UI", date: "18 Oct, 2019", img: avatar5, text: "K", budget: 103, status: "Pending", class: "pending"
-							}
-						},
-						{
-							id: 23,
-							content: {
-								title: "Multipurpose Dashboard UI", date: "14 Oct, 2019", img: avatar4, text: "F", budget: 94, status: "Complete", class: "success"
-							}
-						},
+  const data = map(tasks, task => ({ ...task, cards: task.tasks }))
+  data.length = Math.min(data.length, 3)
 
-					]
-				},
-				{
-					id: 3,
-					title: 'Completed',
-					cards: [
-						{
-							id: 31,
-							content: {
-								title: "Redesign - Landing page", date: "10 Oct, 2019", img: avatar4, text: "S", budget: 145, status: "Complete", class: "success"
-							}
-						},
-						{
-							id: 32,
-							content: {
-								title: "Multipurpose Landing", date: "9 Oct, 2019", img: avatar5, text: "K", budget: 92, status: "Complete", class: "success"
-							}
-						},
-						{
-							id: 33,
-							content: {
-								title: "Multipurpose Landing", date: "15 Oct, 2019", img: avatar4, text: "F", budget: 86, status: "Waiting", class: "secondary"
-							}
-						},
+  return (
+    <React.Fragment>
+      <div className="page-content">
+        <Container fluid>
+          {/* Render Breadcrumbs */}
+          <Breadcrumbs title="Tasks" breadcrumbItem="Kanban Board" />
+          {!isEmpty(data) && (
+            <UncontrolledBoard board={{ columns: data }} content={tasks} />
+          )}
+        </Container>
+      </div>
+    </React.Fragment>
+  )
+}
 
-					]
-				}
-			];
+TasksKanban.propTypes = {
+  tasks: PropTypes.array,
+  onGetTasks: PropTypes.func,
+}
 
-		const data ={columns};
+const mapStateToProps = ({ tasks }) => ({
+  tasks: tasks.tasks,
+})
 
-    return (
-		   <React.Fragment>
-				<div className="page-content">
-					<Container fluid>
-						{/* Render Breadcrumbs */}
-						<Breadcrumbs title="Tasks" breadcrumbItem="Kanban Board" />
-						<UncontrolledBoard board={data} content={data.columns} />
-					</Container>
-				</div>
-			</React.Fragment>
-		  );
-    }
-		
-export default TasksKanban;
+const mapDispatchToProps = dispatch => ({
+  onGetTasks: () => dispatch(getTasks()),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(TasksKanban))

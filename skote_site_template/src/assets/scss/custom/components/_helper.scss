@@ -65,19 +65,18 @@
 .social-list-item {
   height: 2rem;
   width: 2rem;
-  line-height: calc(2rem - 2px);
+  line-height: calc(2rem - 4px);
   display: block;
-  border: 1px solid $gray-500;
+  border: 2px solid $gray-500;
   border-radius: 50%;
   color: $gray-500;
   text-align: center;
   transition: all 0.4s;
-  &:hover{
+  &:hover {
     color: $gray-600;
     background-color: $gray-200;
   }
 }
-
 
 .w-xs {
   min-width: 80px;
