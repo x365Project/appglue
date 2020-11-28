@@ -3,8 +3,8 @@
         "appglue.common",
         "appglue.node",
         "appglue.ui",
-        "appglue.clientexample",
-        "appglue.serverexample"
+        "appglue.site",
+        "appglue.server"
     ],
     "command": {
         "bootstrap": {
