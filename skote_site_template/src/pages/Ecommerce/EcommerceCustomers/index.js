@@ -11,8 +11,8 @@ import paginationFactory, {
 } from "react-bootstrap-table2-paginator"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
-import { getCustomers } from "store/e-commerce/actions"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
+import { getCustomers } from "../../../store/e-commerce/actions"
 import EcommerceCustomerColumns from "./EcommerceCustomerColumns"
 
 const EcommerceCustomers = props => {

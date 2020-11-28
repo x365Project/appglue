@@ -6,13 +6,13 @@ import { isEmpty } from "lodash"
 import { Col, Container, Row } from "reactstrap"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 
-import { getProjectDetail } from "store/projects/actions"
+import { getProjectDetail } from "../../../store/projects/actions"
 import ProjectDetail from "./projectDetail"
 import TeamMembers from "./teamMembers"
 import OverviewChart from "./overviewChart"
-import { options, series } from "common/data/projects"
+import { options, series } from "../../../common/data/projects"
 import AttachedFiles from "./attachedFiles"
 import Comments from "./comments"
 

@@ -6,13 +6,13 @@ import { withRouter } from "react-router-dom"
 import { isEmpty, map } from "lodash"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Task Cards
 import UncontrolledBoard from "./UncontrolledBoard"
 
-import "assets/scss/tasks.scss"
-import { getTasks } from "store/tasks/actions"
+import "../../assets/scss/tasks.scss"
+import { getTasks } from "../../store/tasks/actions"
 
 const TasksKanban = props => {
   const { tasks, onGetTasks } = props

@@ -6,11 +6,11 @@ import { Link, withRouter } from "react-router-dom"
 import { map } from "lodash"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Card invoice
 import CardInvoice from "./card-invoice"
-import { getInvoices } from "store/actions"
+import { getInvoices } from "../../store/actions"
 
 const InvoicesList = props => {
   const { invoices, onGetInvoices } = props

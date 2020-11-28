@@ -13,12 +13,12 @@ import { withRouter } from "react-router-dom"
 import { map } from "lodash"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Cards
 import CardProject from "./card-project"
 
-import { getProjects } from "store/actions"
+import { getProjects } from "../../store/actions"
 
 const ProjectsGrid = props => {
   const { projects, onGetProjects } = props

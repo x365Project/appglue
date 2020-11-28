@@ -1,7 +1,7 @@
 import React from "react"
 import { UncontrolledTooltip } from "reactstrap"
 import { Link } from "react-router-dom"
-import images from "assets/images"
+import images from "../../../assets/images"
 
 const contactListColumns = () => [
   {

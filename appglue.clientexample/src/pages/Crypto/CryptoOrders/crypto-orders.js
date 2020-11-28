@@ -25,12 +25,12 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
 import { MDBDataTable } from "mdbreact"
-import "assets/scss/datatables.scss"
+import "../../../assets/scss/datatables.scss"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 import cryptoOrderColumn from "./cryptoOrderColumn"
-import { getCryptoOrders } from "store/crypto/actions"
+import { getCryptoOrders } from "../../../store/crypto/actions"
 
 const CryptoOrders = props => {
   const { orders, onGetOrders } = props

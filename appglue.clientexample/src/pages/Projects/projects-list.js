@@ -17,13 +17,13 @@ import {
 } from "reactstrap"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 //Import Image
-import images from "assets/images"
-import companies from "assets/images/companies"
+import images from "../../assets/images"
+import companies from "../../assets/images/companies"
 
-import { getProjects } from "store/actions"
+import { getProjects } from "../../store/actions"
 
 const ProjectsList = props => {
   const { projects, onGetProjects } = props

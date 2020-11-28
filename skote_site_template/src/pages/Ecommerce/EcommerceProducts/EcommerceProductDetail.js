@@ -23,13 +23,13 @@ import { isEmpty } from "lodash"
 import StarRatings from "react-star-ratings"
 
 //Import Product Images
-import { productImages } from "assets/images/product"
+import { productImages } from "../../../assets/images/product"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 
 //Import actions
-import { getProductDetail } from "store/actions"
+import { getProductDetail } from "../../../store/actions"
 import RecentProducts from "./RecentProducts"
 import Reviews from "./Reviews"
 

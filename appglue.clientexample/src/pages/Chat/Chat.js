@@ -35,15 +35,15 @@ import PerfectScrollbar from "react-perfect-scrollbar"
 import "react-perfect-scrollbar/dist/css/styles.css"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
-import images from "assets/images"
+import Breadcrumbs from "../../components/Common/Breadcrumb"
+import images from "../../assets/images"
 import {
   addMessage,
   getChats,
   getContacts,
   getGroups,
   getMessages,
-} from "store/actions"
+} from "../../store/actions"
 
 const Chat = props => {
   const { chats, groups, contacts, messages } = props

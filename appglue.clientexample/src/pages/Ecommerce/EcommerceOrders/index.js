@@ -13,8 +13,8 @@ import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit"
 import { Button, Card, CardBody, Col, Container, Row } from "reactstrap"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
-import { getOrders } from "store/actions"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
+import { getOrders } from "../../../store/actions"
 import EcommerceOrderColumns from "./EcommerceOrderColumns"
 import EcommerceOrdersModal from "./EcommerceOrdersModal"
 

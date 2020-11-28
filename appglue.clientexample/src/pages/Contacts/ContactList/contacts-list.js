@@ -11,9 +11,9 @@ import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit"
 import BootstrapTable from "react-bootstrap-table-next"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 
-import { getUsers } from "store/contacts/actions"
+import { getUsers } from "../../../store/contacts/actions"
 import contactListColumns from "./contactListColumns"
 import { isEmpty } from "lodash"
 

@@ -15,18 +15,18 @@ import {
 } from "reactstrap"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 
 //Import mini card widgets
 import MiniCards from "./mini-card"
 
 //Import Images
-import profile1 from "assets/images/profile-img.png"
+import profile1 from "../../../assets/images/profile-img.png"
 
 // import charts
 import ApexRevenue from "../ApexRevenue"
-import { getUserProfile } from "store/actions"
-import images from "assets/images"
+import { getUserProfile } from "../../../store/actions"
+import images from "../../../assets/images"
 import ToolkitProvider from "react-bootstrap-table2-toolkit"
 import BootstrapTable from "react-bootstrap-table-next"
 import projectColumns from "./projectColumns"

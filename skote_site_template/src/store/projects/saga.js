@@ -10,7 +10,7 @@ import {
 } from "./actions"
 
 //Include Both Helper File with needed methods
-import { getProjects, getProjectsDetails } from "helpers/fakebackend_helper"
+import { getProjects, getProjectsDetails } from "../../helpers/fakebackend_helper"
 
 function* fetchProjects() {
   try {

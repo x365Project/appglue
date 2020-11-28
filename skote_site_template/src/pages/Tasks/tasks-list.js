@@ -14,7 +14,7 @@ import ReactApexChart from "react-apexcharts"
 import images from "../../assets/images"
 
 import { getTasks } from "../../store/tasks/actions"
-import { options, series, statusClasses } from "common/data/tasks"
+import { options, series, statusClasses } from "../../common/data/tasks"
 
 const TasksList = props => {
   const { tasks, onGetTasks } = props

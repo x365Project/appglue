@@ -30,16 +30,16 @@ import Nouislider from "nouislider-react"
 import "nouislider/distribute/nouislider.css"
 
 //Import Product Images
-import { productImages } from "assets/images/product"
+import { productImages } from "../../../assets/images/product"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 
 //Import data
-import { discountData, productsData } from "common/data"
+import { discountData, productsData } from "../../../common/data"
 
 //Import actions
-import { getProducts } from "store/e-commerce/actions"
+import { getProducts } from "../../../store/e-commerce/actions"
 
 const EcommerceProducts = props => {
   const { products, history, onGetProducts } = props

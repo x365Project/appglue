@@ -10,8 +10,8 @@ import {
   Media,
   UncontrolledTooltip,
 } from "reactstrap"
-import images from "assets/images"
-import companies from "assets/images/companies"
+import images from "../../assets/images"
+import companies from "../../assets/images/companies"
 
 const CardProject = ({ projects }) => {
   return (

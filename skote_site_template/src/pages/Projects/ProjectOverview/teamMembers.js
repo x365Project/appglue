@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { Card, CardBody, CardTitle, Table } from "reactstrap"
 import { Link } from "react-router-dom"
 import { map } from "lodash"
-import images from "assets/images"
+import images from "../../../assets/images"
 
 const TeamMembers = ({ team }) => {
   return (

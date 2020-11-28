@@ -16,11 +16,11 @@ import { GoogleLogin } from "react-google-login"
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props"
 
 // actions
-import { loginUser, apiError, socialLogin } from "store/actions"
+import { loginUser, apiError, socialLogin } from "../../store/actions"
 
 // import images
-import profile from "assets/images/profile-img.png"
-import logo from "assets/images/logo.svg"
+import profile from "../../assets/images/profile-img.png"
+import logo from "../../assets/images/logo.svg"
 
 //Import config
 import { facebook, google } from "../../config"

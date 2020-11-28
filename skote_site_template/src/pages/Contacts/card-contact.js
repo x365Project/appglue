@@ -8,7 +8,7 @@ import {
   Col,
   UncontrolledTooltip,
 } from "reactstrap"
-import images from "assets/images"
+import images from "../../assets/images"
 
 const CardContact = props => {
   const { user } = props

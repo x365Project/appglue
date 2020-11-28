@@ -6,11 +6,11 @@ import { Col, Container, Row } from "reactstrap"
 import { map } from "lodash"
 
 //Import Breadcrumb
-import Breadcrumbs from "components/Common/Breadcrumb"
+import Breadcrumbs from "../../../components/Common/Breadcrumb"
 
 //Import Card
 import CardShop from "./CardShop"
-import { getShops } from "store/e-commerce/actions"
+import { getShops } from "../../../store/e-commerce/actions"
 
 const EcommerceShops = props => {
   const { shops, onGetShops } = props
