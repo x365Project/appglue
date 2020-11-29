@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
-import {TextField, TextareaAutosize} from '@material-ui/core';
+import {TextField, TextareaAutosize, InputLabel} from '@material-ui/core';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -15,6 +15,7 @@ export class XTextArea extends BaseTextEntryControl {
 	render() {
 		return (
 			<>
+				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
 				<TextareaAutosize
 					data-testid={this.valueName}
 					style={{width: '100%'}}
@@ -66,6 +67,15 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
     }
 }
 
+// https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
+const StyledInputLabel = styled(InputLabel)`
+    font-family: Mulish !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    margin-bottom: 12px !important;
+`;
+
 const StyledFormHelperText = styled(FormHelperText) `
 	font-family: Mulish !important;
 	font-weight: 600 !important;
@@ -73,4 +83,4 @@ const StyledFormHelperText = styled(FormHelperText) `
 	line-height: 15px !important;
 	margin-top: 6px !important;
 	color: #677C95 !important;
-`
+`;
