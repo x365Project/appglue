@@ -30,10 +30,9 @@ export class XTextField extends BaseTextEntryControl {
                 return (
                     <>
                         {
-                            this.label && <>
-                                <InputLabel>{this.label}</InputLabel>
-                                <br/>
-                            </>
+                            this.label && (
+                                <StyledInputLabel>{this.label}</StyledInputLabel>
+                            )
                         }
                         
                         <TextField
@@ -128,6 +127,15 @@ class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
     }
 }
 
+// https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
+const StyledInputLabel = styled(InputLabel)`
+    font-family: Mulish !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    margin-bottom: 12px !important;
+`;
+
 const StyledFormHelperText = styled(FormHelperText)`
     font-family: Mulish !important;
     font-weight: 600 !important;
@@ -135,4 +143,4 @@ const StyledFormHelperText = styled(FormHelperText)`
     line-height: 15px !important;
     color: #677C95 !important;
     margin-top: 6px !important;
-`
+`;
