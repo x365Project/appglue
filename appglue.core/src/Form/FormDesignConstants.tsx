@@ -36,7 +36,7 @@ export enum TextControlStyle {
 }
 
 export enum TextControlSize {
-    STANDARD = 'standard',
+    STANDARD = 'medium',
     SMALL = 'small'
 }
 

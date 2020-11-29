@@ -141,6 +141,48 @@ export class FormEditContext extends FormRuntimeContext {
         return breaks;
     }
 
+    getDesignValidationIssuesForControls() : ControlValidationMapping {
+        let validations = new ControlValidationMapping();
+
+        validations.allIssues = this.getDesignValidationIssues();
+        
+        let controls = this.form.getAllControls();
+
+        for (let issue of validations.allIssues) {
+            if (issue.elementId) {
+                if (!validations[issue.elementId])
+                    validations[issue.elementId] = [];
+                
+                validations[issue.elementId].push(issue);
+                
+                continue;
+            }
+            
+            // do data name checking
+            if (issue.dataName) {
+                let controlId : string | null = null;
+
+                for (let control of controls) {
+                    let dataName = Reflect.get(control, 'valueName');
+
+                    if (dataName && dataName === issue.dataName) {
+                        controlId = control.id;
+                        break;
+                    }
+                }
+
+                if (controlId) {
+                    if (!validations[controlId])
+                        validations[controlId] = [];
+                
+                    validations[controlId].push(issue);
+                }
+            }
+        }
+
+        return validations;
+    }
+
     // todo: change this.  its not optimized.
     getDesignValidationIssuesForControl(control: XBaseControl):  ValidationIssue[] {
         let allIssues = this.getDesignValidationIssues().filter((issue: ValidationIssue) => {
@@ -186,4 +228,10 @@ export class FormEditContext extends FormRuntimeContext {
         // todo: refresh user form
     }
 
+}
+
+export class ControlValidationMapping {
+    [controlid:string] : ValidationIssue[]
+
+    allIssues: ValidationIssue[] = [];
 }

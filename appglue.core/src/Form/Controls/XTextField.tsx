@@ -13,13 +13,18 @@ export class XTextField extends BaseTextEntryControl {
 
 
     render() {
-        let v = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
+        let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
 
         if (this.overrideStyle && this.style)
-            v = this.style;
+            style = this.style;
 
-        switch (v) {
-            case TextControlStyle.LABELED:
+        let size : 'medium' | 'small' = (this.getFormRuntimeContext()?.form)?.defaultTextSize ?? 'medium';
+
+        if (this.overrideStyle && this.size)
+            size = this.size;
+
+        switch(style) {
+            case TextControlStyle.LABELED :
                 return (
                     <>
                         {
@@ -30,60 +35,63 @@ export class XTextField extends BaseTextEntryControl {
                         }
                         
                         <TextField
+                            size={size}
                             data-testid={this.valueName}
                             variant={"outlined"}
                             fullWidth={true}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
                         >
-
+    
                         </TextField>
                     </>
                 );
-
-            case TextControlStyle.OUTLINE:
+            case TextControlStyle.SHADED :
                 return (
                     <TextField
+                        size={size}
+                        variant={'filled'}
                         data-testid={this.valueName}
-                        variant={"outlined"}
                         fullWidth={true}
                         value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                         label={this.label}
                         onChange={this.handleChange}
                     >
-
+    
                     </TextField>
                 );
-
-            case TextControlStyle.SHADED:
+            case TextControlStyle.UNDERLINED :
                 return (
                     <TextField
+                        size={size}
+                        variant={'standard'}
                         data-testid={this.valueName}
-                        variant={"filled"}
                         fullWidth={true}
                         value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                         label={this.label}
                         onChange={this.handleChange}
                     >
-
+    
                     </TextField>
                 );
-
-            case TextControlStyle.UNDERLINED:
+            case TextControlStyle.OUTLINE :
                 return (
                     <TextField
+                        size={size}
+                        variant={'outlined'}
                         data-testid={this.valueName}
-                        variant={"standard"}
                         fullWidth={true}
                         value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                         label={this.label}
                         onChange={this.handleChange}
                     >
-
+    
                     </TextField>
                 );
-        }
+            }
+    
     }
+
 
     private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (this.valueName) {

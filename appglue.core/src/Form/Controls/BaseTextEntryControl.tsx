@@ -38,9 +38,9 @@ export abstract class BaseTextEntryControl extends BaseDataControl {
                 </Collapse>
 
             </>
-        );
+        ); 
 
-    }
+    } 
 
     renderTextControlBasePropertyEditor() {
         return (
