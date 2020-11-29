@@ -1,9 +1,10 @@
 import React from 'react';
-import styled from "styled-components";
+import styled from 'styled-components';
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {TextField, TextareaAutosize, InputLabel} from '@material-ui/core';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -24,6 +25,9 @@ export class XTextArea extends BaseTextEntryControl {
 					onChange={this.handleChange}
 					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
 				/>
+				{this.hintText && (
+					<StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+				)}
 			</>
 		)
 	}
@@ -70,4 +74,13 @@ const StyledInputLabel = styled(InputLabel)`
     font-size: 14px !important;
     line-height: 18px !important;
     margin-bottom: 12px !important;
+`;
+
+const StyledFormHelperText = styled(FormHelperText) `
+	font-family: Mulish !important;
+	font-weight: 600 !important;
+	font-size: 12px !important;
+	line-height: 15px !important;
+	margin-top: 6px !important;
+	color: #677C95 !important;
 `;
