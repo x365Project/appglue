@@ -397,7 +397,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 						</TopbarItemDiv>
 					}
 					<TopbarItemDiv>
-						<ThemeProvider theme={theme}>	
+						<ThemeProvider theme={theme}>
 							<Topbarlabel>
 								Show Data
 							</Topbarlabel>
@@ -422,7 +422,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 					<TopbarItemDiv>
 						<ThemeProvider theme={theme}>
 							<Topbarlabel>
-								Display With
+								Display Format
 							</Topbarlabel>
 							<TopbarToggleButtonGroup
 								size="small"
@@ -448,7 +448,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 							</TopbarToggleButtonGroup>
 						</ThemeProvider>
 					</TopbarItemDiv>
-					<TopbarItemDiv>
+					<TopbarItemDiv style={{marginRight: this.props.editContext.mode === FormMode.Runtime ? 'auto' : 0}}>
 						<ThemeProvider theme={theme}>	
 							<Topbarlabel>
 								Background
@@ -465,9 +465,6 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								<TopbarToggleButton value={FormDesignConstants.FORM_BACKGROUND_MODE_PAPER}>
 									<PaperIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_PAPER} />
 								</TopbarToggleButton>
-								<TopbarToggleButton value={FormDesignConstants.FORM_BACKGROUND_MODE_WEBPAGE}>
-									<WebpageIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_WEBPAGE} />
-								</TopbarToggleButton>
 								<TopbarToggleButton value={FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE}>
 									<OutlineIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE} />
 								</TopbarToggleButton>
@@ -475,51 +472,51 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								>
 									<NoneIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_NONE} />
 								</TopbarToggleButton>
-								<TopbarToggleButton value={FormDesignConstants.FORM_BACKGROUND_MODE_DEVICE}>
-									<DeviceIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_DEVICE} />
-								</TopbarToggleButton>
 							</TopbarToggleButtonGroup>
 						</ThemeProvider>
 					</TopbarItemDiv>
-					<TopbarItemDiv style={{marginRight: 'auto'}}>
-						<ThemeProvider theme={theme}>	
-							<ButtonGroup
-								variant="outlined"
-								size="small"
-								classes={{
-									root: 'TopbarButtonGroup-root'
-								}}
-							>
-								<TopbarIconButton
+					{
+						this.props.editContext.mode !== FormMode.Runtime && 
+						<TopbarItemDiv style={{marginRight: 'auto'}}>
+							<ThemeProvider theme={theme}>	
+								<ButtonGroup
+									variant="outlined"
+									size="small"
 									classes={{
-										root: 'TopbarIconButton-root'
+										root: 'TopbarButtonGroup-root'
 									}}
-									onClick={this.props.editContext.onCopy}
-									disabled={this.props.editContext.mode === FormMode.Runtime || this.props.editContext.mode === FormMode.JSON }
 								>
-									<CopyIcon />
-								</TopbarIconButton>
-								<TopbarIconButton
-									classes={{
-										root: 'TopbarIconButton-root'
-									}}
-									onClick={this.props.editContext.onCut}
-									disabled={this.props.editContext.mode === FormMode.Runtime || this.props.editContext.mode === FormMode.JSON }
-								>
-									<CutIcon />
-								</TopbarIconButton>
-								<TopbarIconButton
-									classes={{
-										root: 'TopbarIconButton-root'
-									}}
-									onClick={this.props.editContext.onDelete}
-									disabled={this.props.editContext.mode === FormMode.Runtime || this.props.editContext.mode === FormMode.JSON }
-								>
-									<DeleteIcon />
-								</TopbarIconButton>
-							</ButtonGroup>
-						</ThemeProvider>
-					</TopbarItemDiv>
+									<TopbarIconButton
+										classes={{
+											root: 'TopbarIconButton-root'
+										}}
+										onClick={this.props.editContext.onCopy}
+										disabled={this.props.editContext.mode === FormMode.Runtime || this.props.editContext.mode === FormMode.JSON }
+									>
+										<CopyIcon />
+									</TopbarIconButton>
+									<TopbarIconButton
+										classes={{
+											root: 'TopbarIconButton-root'
+										}}
+										onClick={this.props.editContext.onCut}
+										disabled={this.props.editContext.mode === FormMode.Runtime || this.props.editContext.mode === FormMode.JSON }
+									>
+										<CutIcon />
+									</TopbarIconButton>
+									<TopbarIconButton
+										classes={{
+											root: 'TopbarIconButton-root'
+										}}
+										onClick={this.props.editContext.onDelete}
+										disabled={this.props.editContext.mode === FormMode.Runtime || this.props.editContext.mode === FormMode.JSON }
+									>
+										<DeleteIcon />
+									</TopbarIconButton>
+								</ButtonGroup>
+							</ThemeProvider>
+						</TopbarItemDiv>
+					}
 					{
 						this.props.editContext.onFormSave && <TopbarItemDiv>
 							<TopbarSaveButton
