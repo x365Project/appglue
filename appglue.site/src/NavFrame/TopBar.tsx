@@ -1,3 +1,4 @@
+import React from "react";
 import {FrameOptions} from "./FrameOptions";
 
 export function TopBar(props: {layoutOptions: FrameOptions}) {
@@ -12,6 +13,6 @@ export function TopBar(props: {layoutOptions: FrameOptions}) {
     //   - edit look and feel
     //   - logout
     return (
-        <div>portal</div>
+        <div>portal a</div>  
     );
-}
+}  

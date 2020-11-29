@@ -1,3 +1,4 @@
+import React from "react";
 import {FrameOptions} from "./FrameOptions";
 
 export function NavFrame(props: {layoutOptions: FrameOptions}) {
@@ -7,4 +8,4 @@ export function NavFrame(props: {layoutOptions: FrameOptions}) {
     return (
        <div>portal</div>
     );
-}
+}  

@@ -2,12 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {NavFrame} from "./NavFrame/NavFrame";
-import {FrameOptions} from "./NavFrame/FrameOptions";
+import {FrameOptions, getFrameOptions} from "./NavFrame/FrameOptions";
 
 function App() {
   return (
     <div className="App">
-      <NavFrame layoutOptions={new FrameOptions()}/>
+      <NavFrame layoutOptions={getFrameOptions()}/>
     </div>
   );
 }

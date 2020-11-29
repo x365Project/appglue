@@ -1,7 +1,6 @@
-import { XBaseControl } from '../Form/Controls/XBaseControl';
 
 export interface IDesignValidationProvider {
-    getDesignValidationIssues(control?: XBaseControl) : ValidationIssue[];
+    getDesignValidationIssues() : ValidationIssue[];
 }
 
 export interface IRuntimeValidationProvider {

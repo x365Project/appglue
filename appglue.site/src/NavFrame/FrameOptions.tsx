@@ -1,3 +1,9 @@
+import React from "react";
+
+export function getFrameOptions() : FrameOptions {
+    return new FrameOptions();
+}
+
 // these will be fetched from tenant then from user settings
 export class FrameOptions {
     icon: JSX.Element | undefined;

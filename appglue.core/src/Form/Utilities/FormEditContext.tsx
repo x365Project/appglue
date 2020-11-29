@@ -131,7 +131,7 @@ export class FormEditContext extends FormRuntimeContext {
                 breaks.push(...results);
             }
             // call validation provider if it exists for additional validation
-            let valBreaks = this.designValidationProvider?.getDesignValidationIssues(c);
+            let valBreaks = this.designValidationProvider?.getDesignValidationIssues();
             if (valBreaks){
                 breaks.push(...valBreaks);
             }
@@ -141,20 +141,21 @@ export class FormEditContext extends FormRuntimeContext {
         return breaks;
     }
 
+    // todo: change this.  its not optimized.
     getDesignValidationIssuesForControl(control: XBaseControl):  ValidationIssue[] {
-        let results = control.getDesignValidationIssues();
-        let breaks : ValidationIssue[] = [];
+        let allIssues = this.getDesignValidationIssues().filter((issue: ValidationIssue) => {
+            if (issue.elementId === control.id)
+                return true;
 
-        if (results) {
-            breaks.push(...results);
-        }
+            let valueName = Reflect.get(control, 'valueName');
 
-        let valBreaks = this.designValidationProvider?.getDesignValidationIssues(control);
-        if (valBreaks){
-            breaks.push(...valBreaks);
-        }
+            if (valueName && issue.dataName === valueName)
+                return true;
 
-        return breaks;
+            return false;
+        });
+
+        return allIssues;
     }
 
 

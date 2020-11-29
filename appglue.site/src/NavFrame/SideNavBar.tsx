@@ -1,3 +1,4 @@
+import React from "react";
 import {FrameOptions} from "./FrameOptions";
 
 
@@ -8,5 +9,5 @@ export function SideBarNav(props: {layoutOptions: FrameOptions}) {
     //    - page name
     return (
         <div>portal</div>
-    );
+    ); 
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import {FrameOptions} from "./FrameOptions";
 
 export function TopBarNav(props: {layoutOptions: FrameOptions}) {
@@ -7,5 +8,5 @@ export function TopBarNav(props: {layoutOptions: FrameOptions}) {
     //    - page name
     return (
         <div>portal</div>
-    );
-}
+    ); 
+}   
