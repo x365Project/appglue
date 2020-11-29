@@ -3,7 +3,7 @@ import {Auth} from '@appglue/node';
 
 const router: Router = express.Router();
 
-router.get('/login', (req, res) => {
+router.get('/login', (req: express.Request, res: express.Response) => {
     (new Auth).login();
     res.send('logged in');
 });

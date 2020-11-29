@@ -1,6 +1,7 @@
 import React from "react";
 import Slider from "@material-ui/core/Slider";
-import { TextField } from '@material-ui/core';
+import { TextField, InputLabel } from '@material-ui/core';
+import styled from "styled-components";
 import { RegisterUIControl, ControlType } from "../Utilities/RegisterUIControl";
 import {BaseDataControl} from "./BaseDataControl";
 import {SliderIcon} from "../../CommonUI/Icon/SliderIcon";
@@ -14,18 +15,23 @@ export class XSlider extends BaseDataControl {
 
   render() {
     return (
-      <Slider
-        id={this.id}
-        defaultValue={30}
-        aria-labelledby="discrete-slider"
-        valueLabelDisplay="auto"
-        step={this.step}
-        marks
-        min={this.min}
-        max={this.max}
-		onChange={this.handleChange}
-		data-testid={this.valueName}
-      ></Slider>
+      <>
+        {this.label && (
+          <StyledInputLabel>{this.label}</StyledInputLabel>
+        )}
+        <Slider
+          id={this.id}
+          defaultValue={30}
+          aria-labelledby="discrete-slider"
+          valueLabelDisplay="auto"
+          step={this.step}
+          marks
+          min={this.min}
+          max={this.max}
+          onChange={this.handleChange}
+          data-testid={this.valueName}
+        ></Slider>
+      </>
     );
   }
 
@@ -68,3 +74,12 @@ class XSliderEditUI extends React.Component<{ editMe: XSlider }> {
     );
   }
 }
+
+// https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
+const StyledInputLabel = styled(InputLabel)`
+    font-family: Mulish !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    margin-bottom: 12px !important;
+`;

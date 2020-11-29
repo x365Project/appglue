@@ -4,8 +4,13 @@ import React from "react";
 import { INavigationPage } from "./INavigationPage";
 
 export class PageRoutes {
+    static pages : INavigationPage[] = [];
+    static addRootPage(page: INavigationPage) : void {
+        this.pages.push(page);
+    }
+
     static getRootPages() : INavigationPage[] {
-        let pages : INavigationPage[] = [];
+        let pages : INavigationPage[] = [...this.pages];
 
         pages.push(new SettingsPage());
         pages.push(new TeamPage());
