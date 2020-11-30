@@ -1,8 +1,7 @@
 import React from "react";
 import {Paper} from "@material-ui/core";
 import styled from "styled-components";
-import {XFormConfiguration} from "../XFormConfiguration";
-import { IDesignPanelConfig, FormDesignConstants, FormMode } from "../FormDesignConstants";
+import { FormDesignConstants, FormMode } from "../FormDesignConstants";
 import {FormEditContext} from "./FormEditContext";
 
 
@@ -34,8 +33,10 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
         const formStyles: {[key: string]: any} = {marginBottom: 30};
         const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED && (
             this.props.editContext.mode === FormMode.Runtime ||
-            this.props.editContext.mode !== FormMode.Runtime && !(
-                this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+            (
+                this.props.editContext.mode !== FormMode.Runtime && !(
+                    this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+                )
             )
         );
 
@@ -46,11 +47,11 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
             if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
                 formStyles.height = 1024;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
-                formStyles.height = 600;
+                formStyles.height = 768;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-                formStyles.height = 896;
+                formStyles.height = 667;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-                formStyles.height = 414;
+                formStyles.height = 375;
             } else if (this.props.editContext.form.doNotScrollFirstContainerOnForm || this.props.editContext.form.doNotScrollLastContainerOnForm) {
                 formStyles.height = this.props.height ? this.props.height : 'calc(100% - 30px)';
             }

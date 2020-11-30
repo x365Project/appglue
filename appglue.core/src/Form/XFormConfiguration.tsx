@@ -230,11 +230,11 @@ export class XFormConfiguration
 		if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
 			formStyles.width = 1024;
 		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
-			formStyles.width = 600;
+			formStyles.width = 768;
 		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-			formStyles.width = 896;
+			formStyles.width = 667;
 		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-			formStyles.width = 414;
+			formStyles.width = 375;
 		}
 
 
@@ -268,7 +268,7 @@ export class XFormConfiguration
 									style={{position: 'relative', minHeight: 75}}
 									{...provided.droppableProps}
 								>
-									<RowDiv colGap={gap} hasOverflow={!(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
+									<RowDiv colGap={gap} hasOverflow={!(this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 										{
 											firstContainer &&
 											<ContainerSectionDiv pinned={true}>
@@ -433,7 +433,7 @@ export class XFormConfiguration
 		} else {
 			return (
 				<div key='form' className="App" style={formStyles}>
-					<RowDiv colGap={gap}  hasOverflow={mode !== FormMode.Runtime && !(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
+					<RowDiv colGap={gap}  hasOverflow={mode !== FormMode.Runtime && !(this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 
 						{
 							firstContainer &&
