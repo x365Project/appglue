@@ -368,7 +368,7 @@ export class XFormConfiguration
 								/>
 							</ContainerDiv>
 						}
-						<div style={{flex: 1, overflowY: 'auto', overflowX: 'hidden'}}>
+						<div style={{flex: 1, overflowY: 'auto', overflowX: 'hidden'}} data-testid="no-pinned-section">
 							{
 								scrollableContrainers.map((c, i) => {
 									return (
