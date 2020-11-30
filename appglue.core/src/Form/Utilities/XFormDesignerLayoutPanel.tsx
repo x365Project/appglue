@@ -32,7 +32,12 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
 
     render() {
         const formStyles: {[key: string]: any} = {marginBottom: 30};
-        const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED;
+        const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED && (
+            this.props.editContext.mode === FormMode.Runtime ||
+            this.props.editContext.mode !== FormMode.Runtime && !(
+                this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+            )
+        );
 
         if (hasScroll) {
             formStyles.overflowY = 'auto';

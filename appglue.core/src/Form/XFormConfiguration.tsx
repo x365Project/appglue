@@ -25,13 +25,6 @@ import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 
 
-// export const OverlayDiv = styled.div`
-// 	background: white;
-// 	width: 100%;
-// 	height: 100%;
-// 	opacity: 0;
-// `;
-
 export const PinnedNotifyDiv = styled("div")<{
 	color?: string;
 	moveRightPX?: number;
@@ -60,9 +53,10 @@ export const ContainerDiv = styled("div")<{
 
 export const RowDiv = styled("div")<{
 	colGap: number;
+	hasOverflow?: boolean;
 }>`
 	margin: ${props => -1 * (props.colGap || 0)}px 0;
-	overflow: auto;
+	overflow: ${props => props.hasOverflow ? 'auto': 'initial'};
 `
 
 const ContainerDivider = styled("div")<{
@@ -274,7 +268,7 @@ export class XFormConfiguration
 									style={{position: 'relative', minHeight: 75}}
 									{...provided.droppableProps}
 								>
-									<RowDiv colGap={gap}>
+									<RowDiv colGap={gap} hasOverflow={!(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 										{
 											firstContainer &&
 											<ContainerSectionDiv pinned={true}>
@@ -439,7 +433,7 @@ export class XFormConfiguration
 		} else {
 			return (
 				<div key='form' className="App" style={formStyles}>
-					<RowDiv colGap={gap}>
+					<RowDiv colGap={gap}  hasOverflow={mode !== FormMode.Runtime && !(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 
 						{
 							firstContainer &&
