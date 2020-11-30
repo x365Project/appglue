@@ -338,7 +338,7 @@ describe("XFormDesigner", () => {
     });
 
 
-    it("Check the sizes and scroll in Test with unpinned ", () => {
+    it("Check the sizes and scroll in Test with unpinned", () => {
         let form = getFormConfig();
 
         const {getByTestId, queryByTestId} = render(<XFormDesigner form={form} initialMode={FormMode.Runtime} />);
