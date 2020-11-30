@@ -118,6 +118,10 @@ const MissingTextDiv = styled.div`
 
 
 export class ExpressionValueRenderer extends React.Component<{ el: ExpressionValue }> {
+
+    readonly CLICK_TEXT = 'Click To Edit';
+
+
     @AutoBind
     handleClick() {
         this.props.el.editContext?.setSelection(this.props.el._id);
@@ -203,8 +207,6 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
 
 
     }
-
-    readonly CLICK_TEXT = 'Click To Edit';
 
     renderMissingElement() {
         let text = this.CLICK_TEXT;
