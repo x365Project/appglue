@@ -120,7 +120,8 @@ export class XFormDesigner extends React.Component<{
         topDesignerExtensions?: IAction[],
         bottomDesignerExtensions?: IAction[],
         designConfig?: IDesignPanelConfig,
-        designValidationProvider? : IDesignValidationProvider
+        designValidationProvider? : IDesignValidationProvider,
+        initialMode?: FormMode
     },
     {
         mode: FormMode | string,
@@ -187,8 +188,9 @@ export class XFormDesigner extends React.Component<{
         topDesignerExtensions?: IAction[],
         bottomDesignerExtensions?: IAction[],
         designConfig?: IDesignPanelConfig,
-        designValidationProvider? : IDesignValidationProvider
-        })
+        designValidationProvider? : IDesignValidationProvider,
+        initialMode?: FormMode
+    })
     {
 
         super(props);
@@ -213,6 +215,10 @@ export class XFormDesigner extends React.Component<{
         eContext.topDesignerExtensions = props.topDesignerExtensions;
         eContext.bottomDesignerExtensions = props.bottomDesignerExtensions;
         eContext.designConfig = props.designConfig || this.designConfig;
+
+        if (props.initialMode) {
+            eContext.mode = props.initialMode;
+        }
 
         this.props.form.setFormEditContext(eContext) ;
 
