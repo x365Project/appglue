@@ -1,7 +1,6 @@
 import React from "react";
 import {XBaseControl} from "../Controls/XBaseControl";
 import styled from "styled-components";
-import {UserFormData} from "../UserFormData";
 import {IFormDataAccessor} from "../Utilities/IFormDataAccessor";
 import {BorderStyle, FormDesignConstants} from "../FormDesignConstants";
 import { PropertyEditorInteger } from "../../CommonUI/PropertyEditing/PropertyEditorInteger";
@@ -53,6 +52,9 @@ export abstract class XBaseContainer
         return [];
     }
 
+    getRuntimeValidationIssues(): ValidationIssue[] {
+        return [];
+    }
 
     renderEmptyControlDiv(colGap?: number, message?: string) {
         return <EmptyContainer colGap={colGap}>

@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { 
-	IconButton,
 	Button,
 	ButtonGroup,
 	InputLabel,
@@ -12,7 +11,7 @@ import {
 import {ThemeProvider} from "@material-ui/styles";
 
 import { AutoBind } from "../../Common/AutoBind";
-import { FormDesignConstants, IDesignPanelConfig, FormMode } from "../FormDesignConstants";
+import { FormDesignConstants,  FormMode } from "../FormDesignConstants";
 
 import "./Topbar.css"
 import {FormEditContext} from "../Utilities/FormEditContext";

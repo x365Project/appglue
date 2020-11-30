@@ -30,6 +30,10 @@ export class XButton extends XBaseControl {
         return [];
     }
 
+    getRuntimeValidationIssues(): ValidationIssue[] {
+        return [];
+    }
+
 }
 
 class XButtonEditUI extends React.Component<{editMe: XButton}> {

@@ -30,6 +30,17 @@ export abstract class BaseDataControl extends XBaseControl {
         return issues;
     }
 
+    getRuntimeValidationIssues() : ValidationIssue[] {
+        let issues: ValidationIssue[] = [];
+
+        if (this.valueName && !this.getFormEditContext()?.getFormDataValue(this.valueName)) {
+            issues.push(new ValidationIssue(this.requiredMessage, this.valueName, this.id));
+        }
+
+        return issues;
+    }
+
+
     // produces part of the editor for label and name
     renderBaseDataControlEditor() {
         return(

@@ -34,9 +34,13 @@ export class FormRuntimeContext {
     getRuntimeValidationIssues(): ValidationIssue[] {
         let breaks : ValidationIssue[];
         breaks = [];
-        // check required
-        // call rules
-        // call plugged in providers
+
+        for (let c of this.form.getAllControls()) {
+            let results = c.getRuntimeValidationIssues();
+            if (results) {
+                breaks.push(...results);
+            }
+        }
 
         // call validation provider if it exists for additional validation
         let valBreaks = this.runtimeValidationProvider?.getRuntimeValidationIssues();
@@ -44,7 +48,68 @@ export class FormRuntimeContext {
             breaks.push(...valBreaks);
         }
 
-        return [];
+        // todo: call built in rules
+
+        return breaks;
+    }
+
+    getRuntimeValidationIssuesForControls() : ControlValidationMapping {
+        let validations = new ControlValidationMapping();
+
+        validations.allIssues = this.getRuntimeValidationIssues();
+
+        let controls = this.form.getAllControls();
+
+        for (let issue of validations.allIssues) {
+            if (issue.elementId) {
+                if (!validations[issue.elementId])
+                    validations[issue.elementId] = [];
+
+                validations[issue.elementId].push(issue);
+
+                continue;
+            }
+
+            // do data name checking
+            if (issue.dataName) {
+                let controlId : string | null = null;
+
+                for (let control of controls) {
+                    let dataName = Reflect.get(control, 'valueName');
+
+                    if (dataName && dataName === issue.dataName) {
+                        controlId = control.id;
+                        break;
+                    }
+                }
+
+                if (controlId) {
+                    if (!validations[controlId])
+                        validations[controlId] = [];
+
+                    validations[controlId].push(issue);
+                }
+            }
+        }
+
+        return validations;
+    }
+
+    // todo: change this.  its not optimized.
+    getRuntimeValidationIssuesForControl(control: XBaseControl):  ValidationIssue[] {
+        let allIssues = this.getRuntimeValidationIssues().filter((issue: ValidationIssue) => {
+            if (issue.elementId === control.id)
+                return true;
+
+            let valueName = Reflect.get(control, 'valueName');
+
+            if (valueName && issue.dataName === valueName)
+                return true;
+
+            return false;
+        });
+
+        return allIssues;
     }
 
     setFormDataValue(fieldName: string, value: any): void {
@@ -130,14 +195,15 @@ export class FormEditContext extends FormRuntimeContext {
             if (results) {
                 breaks.push(...results);
             }
-            // call validation provider if it exists for additional validation
-            let valBreaks = this.designValidationProvider?.getDesignValidationIssues();
-            if (valBreaks){
-                breaks.push(...valBreaks);
-            }
         }
 
+        // call validation provider if it exists for additional validation
+        let valBreaks = this.designValidationProvider?.getDesignValidationIssues();
+        if (valBreaks){
+            breaks.push(...valBreaks);
+        }
 
+        
         return breaks;
     }
 

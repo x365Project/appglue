@@ -5,7 +5,11 @@ import {IEditable} from "../../CommonUI/IEditable";
 import {UserFormData} from "../UserFormData";
 import {IFormDataAccessor} from "../Utilities/IFormDataAccessor";
 import {AutoBind} from "../../Common/AutoBind";
-import {IDesignValidationProvider, ValidationIssue} from "../../Common/IDesignValidationProvider";
+import {
+    IDesignValidationProvider,
+    IRuntimeValidationProvider,
+    ValidationIssue
+} from "../../Common/IDesignValidationProvider";
 import {FormRuntimeContext, FormEditContext} from "../Utilities/FormEditContext";
 
 export abstract class XBaseControl
@@ -14,7 +18,8 @@ export abstract class XBaseControl
         IConfigStorage,
         IEditable,
         IFormDataAccessor,
-        IDesignValidationProvider {
+        IDesignValidationProvider,
+        IRuntimeValidationProvider {
 
     id: string ;
 
@@ -24,6 +29,8 @@ export abstract class XBaseControl
 
     // to implement
     abstract getDesignValidationIssues() : ValidationIssue[];
+    abstract getRuntimeValidationIssues() : ValidationIssue[];
+
     abstract renderEditUI(): JSX.Element | null ;
 
     constructor() {
