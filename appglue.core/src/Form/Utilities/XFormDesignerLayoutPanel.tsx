@@ -1,8 +1,7 @@
 import React from "react";
 import {Paper} from "@material-ui/core";
 import styled from "styled-components";
-import {XFormConfiguration} from "../XFormConfiguration";
-import { IDesignPanelConfig, FormDesignConstants, FormMode } from "../FormDesignConstants";
+import { FormDesignConstants, FormMode } from "../FormDesignConstants";
 import {FormEditContext} from "./FormEditContext";
 
 
@@ -34,8 +33,10 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
         const formStyles: {[key: string]: any} = {marginBottom: 30};
         const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED && (
             this.props.editContext.mode === FormMode.Runtime ||
-            this.props.editContext.mode !== FormMode.Runtime && !(
-                this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+            (
+                this.props.editContext.mode !== FormMode.Runtime && !(
+                    this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+                )
             )
         );
 

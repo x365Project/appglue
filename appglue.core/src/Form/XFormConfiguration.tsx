@@ -268,7 +268,7 @@ export class XFormConfiguration
 									style={{position: 'relative', minHeight: 75}}
 									{...provided.droppableProps}
 								>
-									<RowDiv colGap={gap} hasOverflow={!(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
+									<RowDiv colGap={gap} hasOverflow={!(this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 										{
 											firstContainer &&
 											<ContainerSectionDiv pinned={true}>
@@ -433,7 +433,7 @@ export class XFormConfiguration
 		} else {
 			return (
 				<div key='form' className="App" style={formStyles}>
-					<RowDiv colGap={gap}  hasOverflow={mode !== FormMode.Runtime && !(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
+					<RowDiv colGap={gap}  hasOverflow={mode !== FormMode.Runtime && !(this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 
 						{
 							firstContainer &&
