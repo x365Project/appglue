@@ -5,6 +5,7 @@ import {TextField, TextareaAutosize, InputLabel} from '@material-ui/core';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import FormHelperText from '@material-ui/core/FormHelperText';
+import "./XControls.css"
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -18,7 +19,14 @@ export class XTextArea extends BaseTextEntryControl {
 				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
 				<TextareaAutosize
 					data-testid={this.valueName}
-					style={{width: '100%'}}
+					style={{ 
+						width: '100%',
+						minWidth: '246px',
+						height: '59px',
+						border: '1px solid #E6E9ED',
+						boxSizing: 'border-box',
+						borderRadius: '5px',
+					}}
 					rowsMax={this.rowMax}
 					rowsMin={this.rowMin}
 					placeholder={this.placeholderText}

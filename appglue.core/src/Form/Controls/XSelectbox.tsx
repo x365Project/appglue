@@ -1,13 +1,17 @@
 import React from "react";
+import styled from "styled-components";
 import {
     Select
 } from '@material-ui/core';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import {InputLabel} from "@material-ui/core";
 
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import { PropertyEditorList } from '../../CommonUI/PropertyEditing/PropertyEditorList';
 import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEditorText";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
+import "./XControls.css"
 
 
 interface XSelectboxItem {
@@ -18,22 +22,36 @@ interface XSelectboxItem {
 @RegisterUIControl('Data (Pick)', 'Selectbox', ControlType.Control, <SelectBoxIcon />)
 export class XSelectbox extends BaseTextEntryControl {
     items: XSelectboxItem[] = [];
-
     render() {
-        return (            
-            <Select     
-                style={{width: '100%'}}    
-                value={this.valueName}
-                native
-                onChange={this.handleChange}
-                data-testid={this.valueName}
-            >
-                {this.items.map((item, index) => {
-                    return (
-                        <option value={item.value} key={index}>{item.label}</option>   
-                    );
-                })}
-            </Select>
+        return (
+            <>
+                {
+                    this.label && (
+                        <StyledInputLabel>{this.label}</StyledInputLabel>
+                    )
+                }            
+                <Select     
+                    style={{width: '100%'}}    
+                    value={''}
+                    native
+                    onChange={this.handleChange}
+                    data-testid={this.valueName}
+                    classes={{
+                        root: 'SelectInput-root'
+                    }}
+                >
+                    {this.items.map((item, index) => {
+                        return (
+                            <option value={item.value} key={index} >{item.label}</option>   
+                        );
+                    })}
+                </Select>
+                {
+                    this.hintText && (
+                        <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+                    )
+                }
+            </>
         );
     }
 
@@ -95,3 +113,21 @@ export class XSelectbox extends BaseTextEntryControl {
     }
 
 }
+
+
+const StyledInputLabel = styled(InputLabel)`
+    font-family: Mulish !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    margin-bottom: 12px !important;
+`;
+
+const StyledFormHelperText = styled(FormHelperText)`
+    font-family: Mulish !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    line-height: 15px !important;
+    color: #677C95 !important;
+    margin-top: 6px !important;
+`;

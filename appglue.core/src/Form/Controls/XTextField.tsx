@@ -42,6 +42,15 @@ export class XTextField extends BaseTextEntryControl {
                             fullWidth={true}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
+                            inputProps={{
+                                style: {
+                                    minWidth: 246,
+                                    height: '59px',
+                                    border: '1.35302px solid #E6E9ED',
+                                    boxSizing: 'border-box',
+                                    borderRadius: '5.65107px',
+                                },
+                            }}
                         >
     
                         </TextField>

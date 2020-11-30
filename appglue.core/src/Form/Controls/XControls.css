@@ -1,0 +1,36 @@
+.MuiOutlinedInput-notchedOutline {
+    border-color: #E6E9ED !important;
+}
+
+.MuiSelect-select.MuiSelect-select:focus {
+    background-color: #FFF;
+    border: 2px solid rgb(63, 81, 181) !important;
+    box-sizing: border-box;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.MuiInputBase-root .SelectInput-root {
+    min-width: 246px;
+    height: 59px;
+    border: 1px solid #E6E9ED;
+    box-sizing: border-box;
+    border-radius: 5px;    
+    padding-left: 20px;
+    padding-right: 25px;
+    color: #01244E;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: none !important;
+    height: 59px;
+}
+
+.MuiInputBase-root.MuiInput-underline:before {
+    border-bottom: none;
+}
+
+.MuiInputBase-root.MuiInput-underline:after {
+    border-bottom: none;    
+}
