@@ -226,17 +226,6 @@ export class XFormConfiguration
 			position: 'relative',
 			minHeight: 2 * this.gapBetweenContainers + 75
 		}
-		formStyles.width = this.designFormWidth;
-		if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
-			formStyles.width = 1024;
-		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
-			formStyles.width = 768;
-		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-			formStyles.width = 667;
-		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-			formStyles.width = 375;
-		}
-
 
 		let firstContainer: XBaseControl | null = null;
 		let lastContainer: XBaseControl | null = null;

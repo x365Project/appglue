@@ -3,7 +3,6 @@ import { render, fireEvent } from "@testing-library/react";
 import styled from "styled-components";
 import { XFormConfiguration } from './XFormConfiguration';
 import { getFormConfig } from "./Testing/FormTestData";
-import { FormEditContext } from './Utilities/FormEditContext';
 import { XFormDesigner } from './XFormDesigner'
 import { IAction } from '../CommonUI/IAction';
 import { InfoIcon } from '../CommonUI/Icon/InfoIcon';
@@ -220,6 +219,67 @@ describe("XFormDesigner", () => {
         expect(getByTestId('btn-topbar-cut')).toBeInTheDocument();
         expect(getByTestId('btn-topbar-copy')).toBeInTheDocument();
         expect(getByTestId('btn-topbar-paste')).toBeInTheDocument();
+
+        expect(errorList).toHaveLength(0);
+    });
+
+    it("Check the background and sizes in FormDesign ", () => {
+        let form = getFormConfig();
+
+        const {getByTestId} = render(<XFormDesigner form={form} />);
+
+        let formWrapper = getByTestId('form-wrapper');
+
+        expect(formWrapper).toBeInTheDocument();
+
+        const sizeDefined = getByTestId('btn-topbar-size-defined');
+        expect(sizeDefined).toBeInTheDocument();
+
+        const sizeTabletHorizontal = getByTestId('btn-topbar-size-tablet-horizontal');
+        expect(sizeTabletHorizontal).toBeInTheDocument();
+        fireEvent.click(sizeTabletHorizontal);
+        expect(formWrapper.children[0]).toHaveStyle('width: 1024px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 768px');
+
+        const sizeTabletVertical = getByTestId('btn-topbar-size-tablet-vertical');
+        expect(sizeTabletVertical).toBeInTheDocument();
+        fireEvent.click(sizeTabletVertical);
+        expect(formWrapper.children[0]).toHaveStyle('width: 768px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 1024px');
+
+        const sizePhoneHorizontal = getByTestId('btn-topbar-size-phone-horizontal');
+        expect(sizePhoneHorizontal).toBeInTheDocument();
+        fireEvent.click(sizePhoneHorizontal);
+        expect(formWrapper.children[0]).toHaveStyle('width: 667px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 375px');
+
+        const sizePhoneVertical = getByTestId('btn-topbar-size-phone-vertical');
+        expect(sizePhoneVertical).toBeInTheDocument();
+        fireEvent.click(sizePhoneVertical);
+        expect(formWrapper.children[0]).toHaveStyle('width: 375px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 667px');
+
+
+        const backgroundPaper = getByTestId('btn-topbar-background-paper');
+        expect(backgroundPaper).toBeInTheDocument();
+        expect(getByTestId('background-paper')).toBeInTheDocument();
+
+        const backgroundGray = getByTestId('btn-topbar-background-gray');
+        expect(backgroundGray).toBeInTheDocument();
+        fireEvent.click(backgroundGray);
+        expect(getByTestId('background-gray')).toBeInTheDocument();
+
+        const backgrondOutline = getByTestId('btn-topbar-background-outline');
+        expect(backgrondOutline).toBeInTheDocument();
+        fireEvent.click(backgrondOutline);
+        expect(getByTestId('background-outline')).toBeInTheDocument();
+
+
+        const backgroundWhite = getByTestId('btn-topbar-background-white');
+        expect(backgroundWhite).toBeInTheDocument();
+        fireEvent.click(backgroundWhite);
+        expect(getByTestId('background-white')).toBeInTheDocument();
+
 
         expect(errorList).toHaveLength(0);
     });

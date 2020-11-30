@@ -30,7 +30,7 @@ const FormContent = styled("div")<{
 export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormEditContext, height?: number }> {
 
     render() {
-        const formStyles: {[key: string]: any} = {marginBottom: 30};
+        const formStyles: {[key: string]: any} = {marginBottom: 30, width: this.props.editContext.form.designFormWidth};
         const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED && (
             this.props.editContext.mode === FormMode.Runtime ||
             (
@@ -40,60 +40,76 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
             )
         );
 
+        if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
+            formStyles.height = 1024;
+            formStyles.width = 768;
+        } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
+            formStyles.height = 768;
+            formStyles.width = 1024;
+        } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
+            formStyles.height = 667;
+            formStyles.width = 375;
+        } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
+            formStyles.height = 375;
+            formStyles.width = 667;
+        }
+
+        const hasPinned = this.props.editContext.mode !== FormMode.Runtime && (
+            this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+        );
+        
+        if (hasPinned) {
+            formStyles.height = undefined;
+        }
+
+        if (
+            this.props.editContext.mode === FormMode.Runtime && (
+                this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+            ) && this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_DEFINED
+        ) {
+            formStyles.height = this.props.height ? this.props.height : 'calc(100% - 30px)';
+        }
+
         if (hasScroll) {
             formStyles.overflowY = 'auto';
             formStyles.overflowX = 'visible';
             formStyles.position = 'relative';
-            if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
-                formStyles.height = 1024;
-            } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
-                formStyles.height = 768;
-            } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-                formStyles.height = 667;
-            } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-                formStyles.height = 375;
-            } else if (this.props.editContext.form.doNotScrollFirstContainerOnForm || this.props.editContext.form.doNotScrollLastContainerOnForm) {
-                formStyles.height = this.props.height ? this.props.height : 'calc(100% - 30px)';
-            }
         }
-        
+
         return (
             <FormWrapper
                 background={this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? FormDesignConstants.DESIGN_AREA_BACKGROUND_COLOR : undefined}
             >
                 <FormContent
                     scroll={hasScroll}
-                    marginLeft={
-                        (this.props.editContext.form.doNotScrollLastContainerOnForm ||
-                            this.props.editContext.form.doNotScrollFirstContainerOnForm) &&
-                        (this.props.editContext.mode === FormMode.FormDesign || this.props.editContext.mode === FormMode.LayoutDesign) ? 83 : undefined
-                    }
+                    marginLeft={hasPinned ? 83 : undefined}
+                    data-testid="form-wrapper"
                 >
                     {
                         (!this.props.editContext.designConfig ||
                             this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_PAPER) && (
-                            <Paper elevation={8} style={formStyles}>
+                            <Paper elevation={8} style={formStyles} data-testid="background-paper">
                                 {this.props.editContext.form.render()}
                             </Paper>
                         )
                     }
                     {
                         this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE && (
-                            <Paper variant="outlined" style={formStyles}>
+                            <Paper variant="outlined" style={formStyles} data-testid="background-outline">
                                 {this.props.editContext.form.render()}
                             </Paper>
                         )
                     }
                     {
                         this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY && (
-                            <div style={formStyles}>
+                            <div style={formStyles}  data-testid="background-gray">
                                 {this.props.editContext.form.render()}
                             </div>
                         )
                     }
                     {
                         this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_NONE && (
-                            <div style={formStyles}>
+                            <div style={formStyles} data-testid="background-white">
                                 {this.props.editContext.form.render()}
                             </div>
                         )
