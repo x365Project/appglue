@@ -65,8 +65,8 @@ export class XSelectbox extends BaseTextEntryControl {
                                 this.designerUpdate();
                             },
                             onCancel: () => {
-                                delete item.content;
-                                this.designerUpdate();
+                                // delete item.content;
+                                // this.designerUpdate();
                             },
                             ui: (
                                 <div>

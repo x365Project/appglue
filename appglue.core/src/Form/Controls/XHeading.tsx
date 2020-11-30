@@ -42,6 +42,11 @@ export class XHeading extends XBaseControl {
         return [];
     }
 
+    getRuntimeValidationIssues(): ValidationIssue[] {
+        return [];
+    }
+
+
 }
 
 class XHeadingEditUI extends React.Component<{ editMe: XHeading }> {

@@ -31,6 +31,11 @@ export class XLabel extends XBaseControl {
         return [];
     }
 
+    getRuntimeValidationIssues(): ValidationIssue[] {
+        return [];
+    }
+
+
 }
 
 class XLabelEditUI extends React.Component<{editMe: XLabel}> {

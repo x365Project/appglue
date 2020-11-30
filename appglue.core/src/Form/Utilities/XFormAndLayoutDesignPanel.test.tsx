@@ -131,7 +131,7 @@ describe("InternalUserFormDesignPanel", () => {
 
         const { getByTestId, container, getByText } = render(<XFormAndLayoutDesignPanel editContext={ui} ref={ref} />);
 
-        let overlayDiv = getByTestId('firstName').parentElement.querySelector('div[data-testid="control-click-div"]');
+        let overlayDiv = getByTestId('firstName').parentElement!.querySelector('div[data-testid="control-click-div"]')!;
         
         expect(overlayDiv).toBeInTheDocument();
 
@@ -142,8 +142,6 @@ describe("InternalUserFormDesignPanel", () => {
         expect(errorList).toHaveLength(0);
         
     });
-
-
 
     it("Check the selection layouts", () => {
         let form = getFormConfig();
@@ -159,7 +157,7 @@ describe("InternalUserFormDesignPanel", () => {
         }
 
         const {container, getByTestId, getByText} = render(<XFormAndLayoutDesignPanel editContext={ui} ref={ref} />);
-        let overlayDiv = getByTestId(form.getContainers()[0].id).querySelector('div[data-test="container-click-div"]')
+        let overlayDiv = getByTestId(form.getContainers()[0].id).querySelector('div[data-test="container-click-div"]')!;
         expect(overlayDiv).toBeInTheDocument();
         fireEvent.click(overlayDiv);
         expect(container.querySelector('.config-form-header')).toBeInTheDocument();
