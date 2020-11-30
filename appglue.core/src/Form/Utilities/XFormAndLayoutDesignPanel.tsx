@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import ReactDraggable from 'react-draggable';
-import {Accordion} from '@material-ui/core';
 import {UIControlRegistration} from "./RegisterUIControl";
 import {
     DragDropContext,

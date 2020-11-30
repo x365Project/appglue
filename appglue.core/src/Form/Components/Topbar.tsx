@@ -383,6 +383,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 							>
 								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_DEFINED}>
 									<TopbarIconButton
+										data-testid="btn-topbar-size-defined"
 										classes={{
 											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_DEFINED ? 'TopbarIconButton-disabled': undefined
 										}}
@@ -393,6 +394,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL}>
 									<TopbarIconButton
+										data-testid="btn-topbar-size-tablet-horizontal"
 										classes={{
 											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL ? 'TopbarIconButton-disabled': undefined
 										}}
@@ -403,6 +405,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL}>
 									<TopbarIconButton
+										data-testid="btn-topbar-size-tablet-vertical"
 										classes={{
 											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL ? 'TopbarIconButton-disabled': undefined
 										}}
@@ -413,6 +416,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL}>
 									<TopbarIconButton
+										data-testid="btn-topbar-size-phone-horizontal"
 										classes={{
 											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL ? 'TopbarIconButton-disabled': undefined
 										}}
@@ -421,8 +425,9 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 										<CellphoneHorizontalIcon alt={FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL} />
 									</TopbarIconButton>
 								</Tooltip>
-								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL}>
+								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL}>
 									<TopbarIconButton
+										data-testid="btn-topbar-size-phone-vertical"
 										classes={{
 											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL ? 'TopbarIconButton-disabled': undefined
 										}}
@@ -448,6 +453,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 							>
 								<Tooltip title="Gray">
 									<TopbarIconButton
+										data-testid="btn-topbar-background-gray"
 										classes={{
 											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? 'TopbarIconButton-disabled' : undefined
 										}}
@@ -458,6 +464,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								</Tooltip>
 								<Tooltip title="Paper">
 									<TopbarIconButton
+										data-testid="btn-topbar-background-paper"
 										classes={{
 											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_PAPER ? 'TopbarIconButton-disabled' : undefined 
 										}}
@@ -469,6 +476,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 
 								<Tooltip title="Outline">
 									<TopbarIconButton
+										data-testid="btn-topbar-background-outline"
 										classes={{
 											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE ? 'TopbarIconButton-disabled' : undefined 
 										}}
@@ -479,6 +487,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 								</Tooltip>
 								<Tooltip title="White">
 									<TopbarIconButton
+										data-testid="btn-topbar-background-white"
 										classes={{
 											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_NONE ? 'TopbarIconButton-disabled' : undefined 
 										}}
