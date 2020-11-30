@@ -1,12 +1,13 @@
 import styled from "styled-components";
-import {AccordionDetails, AccordionSummary, Typography} from "@material-ui/core";
+import {AccordionDetails, AccordionSummary, Typography, Accordion} from "@material-ui/core";
 import MovementIcon from "../assets/images/icons/movement.svg";
 
 export const EditLayerConfigArea = styled.div`
   position: absolute;
   border: 2px solid lightgrey;
   border-radius: 4px;
-  overflow: auto;
+  overflow: hidden;
+  display: flex;
   background: #fff;
   max-height: calc(100% - 10px);
   right: 0;
@@ -25,6 +26,22 @@ export const EditLayerStyledTypography = styled(Typography)`
     }
 `;
 
+
+export const EditLayerStyledAccordion = styled(Accordion)`
+    && {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: auto;
+
+        .MuiCollapse-container.MuiCollapse-entered {
+            flex: 1;
+            overflow: auto;
+        }
+    }
+`;
+
+
 export const EditLayerStyledAccordionSummary = styled(AccordionSummary)`
     && {
         &.Mui-expanded {
@@ -42,7 +59,6 @@ export const EditLayerStyledAccordionDetails = styled(AccordionDetails)`
     && {
         padding-top: 20px;
         overflow: auto;
-        max-height: 500px;
 
         > * {
             margin-bottom: 18px;
