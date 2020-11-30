@@ -6,7 +6,7 @@ import {XExpressionDefinition} from "../XExpressionDefinition";
 import {AutoBind} from "../../Common/AutoBind";
 
 export class ExpressionEditContext {
-    private ownership: {[id: string] :  IBaseExpressionElement}  = {};
+    private ownership: {[id: string] :  {owned: IBaseExpressionElement, owner : IBaseExpressionElement} }  = {};
     private selected? : string;
 
     expressionEditor? : XExpressionEditor;
@@ -26,12 +26,20 @@ export class ExpressionEditContext {
         return this.selected;
     }
 
-    register(id: string, owner : IBaseExpressionElement) : void {
-        this.ownership[id] = owner;
+    register(owned: IBaseExpressionElement, owner : IBaseExpressionElement) : void {
+        // console.log('owned')
+        // console.log(owned)
+        // console.log('owner')
+        // console.log(owned)
+
+        if (owned._id === owner._id)
+            throw 'cannot set owner as owned';
+
+        this.ownership[owned._id] = {owned: owned, owner: owner};
     }
 
     getParent(id: string) : IBaseExpressionElement | null {
-        return this.ownership[id];
+        return this.ownership[id]?.owner;
     }
 
 
@@ -67,32 +75,23 @@ export class ExpressionEditContext {
     }
 
     getParentExpressionValue(id: string) : ExpressionValue | null {
-        let thisId = id;
-
-        console.log('owners');
-        console.log(this.ownership);
-
-        console.log(thisId);
-        let parentEv = this.ownership[thisId] as ExpressionValue;
-        let parent = this.ownership[thisId];
-
-        console.log('parent');
-        console.log(parent);
-        console.log('parent as expression value');
-        console.log(parentEv);
+        // console.log('owners');
+        // console.log(this.ownership);
+        //
+        // console.log(thisId);
+        let parent = this.ownership[id];
 
         if (!parent) {
             // no parent
-            console.log('could not find parent')
             return null;
         }
 
-        if (parent instanceof ExpressionValue)
-            return parent;
+        if (ExpressionValue.isExpressionValue(parent.owner)){
+            console.log(parent.owner);
+            return parent.owner;
+        }
 
-        return this.getParentExpressionValue(parent._id);
-
-
+        return this.getParentExpressionValue(parent.owner._id);
     }
 
 }

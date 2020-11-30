@@ -27,7 +27,7 @@ class SettingsPage implements INavigationPage {
     }
     renderPage(): JSX.Element | null | undefined {
         return (
-            <div>settings page</div>
+                <div>settings page</div>
         );
     }
     getSubPages(): INavigationPage[] {

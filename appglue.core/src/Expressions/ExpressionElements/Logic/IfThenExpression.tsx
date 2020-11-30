@@ -91,6 +91,8 @@ class IfThenPair implements IBaseExpressionElement{
     setEditContext(editContext: ExpressionEditContext, owner: IBaseExpressionElement): void {
         this.editContext = editContext;
 
+        editContext.register(this, owner);
+
         if (editContext) {
             this.ifExpression.setEditContext(editContext, this);
             this.thenExpression.setEditContext(editContext, this);

@@ -33,7 +33,7 @@ export class ExpressionValue
 
     setEditContext(context: ExpressionEditContext, owner: IBaseExpressionElement): void {
         this.editContext = context;
-        this.editContext.register(this._id, owner);
+        this.editContext.register(this, owner);
 
         if (this.subExpression) {
             this.subExpression.setEditContext(context, this);
@@ -95,6 +95,10 @@ export class ExpressionValue
 
     set expectedType(value: ExpressionExpectedType) {
         this.expectedTypeValue = value;
+    }
+
+    static isExpressionValue(item: any): item is ExpressionValue {
+        return item instanceof ExpressionValue;
     }
 
 }

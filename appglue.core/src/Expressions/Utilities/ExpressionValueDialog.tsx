@@ -215,6 +215,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                             let parent = this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id)
                             if (parent) {
                                 console.log('setting parent');
+                                console.log(parent);
                                 this.props.expressionValue.editContext?.setSelection(parent._id);
                                 this.props.expressionValue.editContext?.refresh();
                             }

@@ -21,6 +21,8 @@ export abstract class BaseExpression
     setEditContext(editContext: ExpressionEditContext, owner: IBaseExpressionElement): void {
         this.editContext = editContext;
 
+        editContext.register(this, owner);
+
         for (let v of this.values) {
             v.setEditContext(editContext, this);
         }
@@ -57,7 +59,7 @@ export abstract class BaseExpression
     registerExpressionValue(expressionValue : ExpressionValue): void {
         this.values.push(expressionValue);
         if (this.editContext) {
-            this.editContext.register(expressionValue._id, this);
+            this.editContext.register(expressionValue, this);
             expressionValue.setEditContext(this.editContext, this);
         }
     }
