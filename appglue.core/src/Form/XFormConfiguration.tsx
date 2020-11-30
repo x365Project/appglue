@@ -230,11 +230,11 @@ export class XFormConfiguration
 		if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
 			formStyles.width = 1024;
 		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
-			formStyles.width = 600;
+			formStyles.width = 768;
 		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-			formStyles.width = 896;
+			formStyles.width = 667;
 		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-			formStyles.width = 414;
+			formStyles.width = 375;
 		}
 
 

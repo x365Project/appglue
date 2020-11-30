@@ -47,11 +47,11 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
             if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
                 formStyles.height = 1024;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
-                formStyles.height = 600;
+                formStyles.height = 768;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-                formStyles.height = 896;
+                formStyles.height = 667;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-                formStyles.height = 414;
+                formStyles.height = 375;
             } else if (this.props.editContext.form.doNotScrollFirstContainerOnForm || this.props.editContext.form.doNotScrollLastContainerOnForm) {
                 formStyles.height = this.props.height ? this.props.height : 'calc(100% - 30px)';
             }
