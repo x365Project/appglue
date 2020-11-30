@@ -29,7 +29,6 @@ describe("XTextArea", () => {
         userEvent.type(textarea, "blah blah blah");
         waitFor(() => expect(textarea.nodeValue).toEqual("blah blah blah"));
         waitFor(() => expect(form.getFormRuntimeContext()?.getFormDataValue("test")).toEqual("blah blah blah"));
-        // TODO: ensure that hint text is rendered correctly
         waitFor(() => expect(queryByText(/test hint/i)).toBeInTheDocument());
     });
 
