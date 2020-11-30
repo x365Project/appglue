@@ -296,29 +296,73 @@ describe("XFormDesigner", () => {
         expect(queryByTestId('pin-first-container')).not.toBeInTheDocument();
         expect(queryByTestId('pin-last-container')).not.toBeInTheDocument();
         
+        
+        let formWrapper = getByTestId('form-wrapper');
+        expect(formWrapper).toBeInTheDocument();
+        
         const sizeTabletHorizontal = getByTestId('btn-topbar-size-tablet-horizontal');
         expect(sizeTabletHorizontal).toBeInTheDocument();
         fireEvent.click(sizeTabletHorizontal);
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 1024px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 768px');
         expect(getByTestId('no-pinned-section')).toBeInTheDocument();
 
         const sizeTabletVertical = getByTestId('btn-topbar-size-tablet-vertical');
         expect(sizeTabletVertical).toBeInTheDocument();
         fireEvent.click(sizeTabletVertical);
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 768px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 1024px');
         expect(getByTestId('no-pinned-section')).toBeInTheDocument();
 
         const sizePhoneHorizontal = getByTestId('btn-topbar-size-phone-horizontal');
         expect(sizePhoneHorizontal).toBeInTheDocument();
         fireEvent.click(sizePhoneHorizontal);
+        expect(formWrapper.children[0]).toHaveStyle('width: 667px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 375px');
         expect(getByTestId('no-pinned-section')).toBeInTheDocument();
 
         const sizePhoneVertical = getByTestId('btn-topbar-size-phone-vertical');
         expect(sizePhoneVertical).toBeInTheDocument();
         fireEvent.click(sizePhoneVertical);
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 375px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 667px');
         expect(getByTestId('no-pinned-section')).toBeInTheDocument();
 
         const sizeDefined = getByTestId('btn-topbar-size-defined');
         expect(sizeDefined).toBeInTheDocument();
         fireEvent.click(sizeDefined);
         expect(getByTestId('no-pinned-section')).toBeInTheDocument();
+    });
+
+
+    it("Check the sizes and scroll in Test with unpinned ", () => {
+        let form = getFormConfig();
+
+        const {getByTestId, queryByTestId} = render(<XFormDesigner form={form} initialMode={FormMode.Runtime} />);
+
+        expect(queryByTestId('pin-first-container')).not.toBeInTheDocument();
+        expect(queryByTestId('pin-last-container')).not.toBeInTheDocument();
+
+        let formWrapper = getByTestId('form-wrapper');
+        expect(formWrapper).toBeInTheDocument();
+        
+        const sizeTabletHorizontal = getByTestId('btn-topbar-size-tablet-horizontal');
+        expect(sizeTabletHorizontal).toBeInTheDocument();
+        fireEvent.click(sizeTabletHorizontal);
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 1024px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 768px');
+        expect(queryByTestId('no-pinned-section')).not.toBeInTheDocument();
+
+        const sizeDefined = getByTestId('btn-topbar-size-defined');
+        expect(sizeDefined).toBeInTheDocument();
+        fireEvent.click(sizeDefined);
+        expect(queryByTestId('no-pinned-section')).not.toBeInTheDocument();
+
+        // height should be unset.
+        expect(formWrapper.children[0].style.height).toEqual("");
     });
 });
