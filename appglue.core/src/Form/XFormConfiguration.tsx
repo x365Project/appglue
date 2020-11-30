@@ -25,13 +25,6 @@ import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 
 
-// export const OverlayDiv = styled.div`
-// 	background: white;
-// 	width: 100%;
-// 	height: 100%;
-// 	opacity: 0;
-// `;
-
 export const PinnedNotifyDiv = styled("div")<{
 	color?: string;
 	moveRightPX?: number;
@@ -60,8 +53,10 @@ export const ContainerDiv = styled("div")<{
 
 export const RowDiv = styled("div")<{
 	colGap: number;
+	hasOverflow?: boolean;
 }>`
-margin: ${props => -1 * (props.colGap || 0)}px 0;
+	margin: ${props => -1 * (props.colGap || 0)}px 0;
+	overflow: ${props => props.hasOverflow ? 'auto': 'initial'};
 `
 
 const ContainerDivider = styled("div")<{
@@ -232,19 +227,16 @@ export class XFormConfiguration
 			minHeight: 2 * this.gapBetweenContainers + 75
 		}
 		formStyles.width = this.designFormWidth;
-		if (mode === FormMode.Runtime) {
-			if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
-				formStyles.width = 1024;
-			} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
-				formStyles.width = 600;
-			} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
-				formStyles.width = 896;
-			} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
-				formStyles.width = 414;
-			} else {
-				formStyles.width = this.runtimeWidth || this.designFormWidth;
-			}
+		if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL) {
+			formStyles.width = 1024;
+		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
+			formStyles.width = 600;
+		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
+			formStyles.width = 896;
+		} else if (this._formEditContext?.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL) {
+			formStyles.width = 414;
 		}
+
 
 		let firstContainer: XBaseControl | null = null;
 		let lastContainer: XBaseControl | null = null;
@@ -276,7 +268,7 @@ export class XFormConfiguration
 									style={{position: 'relative', minHeight: 75}}
 									{...provided.droppableProps}
 								>
-									<RowDiv colGap={gap}>
+									<RowDiv colGap={gap} hasOverflow={!(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 										{
 											firstContainer &&
 											<ContainerSectionDiv pinned={true}>
@@ -372,14 +364,11 @@ export class XFormConfiguration
 			&& ( this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm )
 			&& this.containers.length > 0
 		) {
-			formStyles.flexFlow = 'column';
-			formStyles.maxHeight = 'calc(100% - 30px)';
-			formStyles.overflow ='hidden';
-			formStyles.display ='flex';
+			formStyles.height = '100%';
 
 			return (
 				<div key='form' className="App" style={formStyles}>
-					<RowDiv colGap={gap}>
+					<RowDiv colGap={gap} style={{flexFlow: 'column', maxHeight: '100%', overflow: 'hidden', display: 'flex'}}>
 						{
 							firstContainer && <ContainerDiv colGap={gap}>
 								<XContainerDesignWrapper
@@ -444,7 +433,7 @@ export class XFormConfiguration
 		} else {
 			return (
 				<div key='form' className="App" style={formStyles}>
-					<RowDiv colGap={gap}>
+					<RowDiv colGap={gap}  hasOverflow={mode !== FormMode.Runtime && !(this.doNotScrollFirstContainerOnForm || this.doNotScrollFirstContainerOnForm)}>
 
 						{
 							firstContainer &&

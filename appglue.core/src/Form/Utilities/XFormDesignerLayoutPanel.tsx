@@ -32,12 +32,16 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
 
     render() {
         const formStyles: {[key: string]: any} = {marginBottom: 30};
-        const hasScroll = this.props.editContext.mode === FormMode.Runtime;
-
+        const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED && (
+            this.props.editContext.mode === FormMode.Runtime ||
+            this.props.editContext.mode !== FormMode.Runtime && !(
+                this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
+            )
+        );
 
         if (hasScroll) {
             formStyles.overflowY = 'auto';
-            formStyles.overflowX = 'hidden';
+            formStyles.overflowX = 'visible';
             formStyles.position = 'relative';
             if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL) {
                 formStyles.height = 1024;
@@ -47,7 +51,7 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
                 formStyles.height = 896;
             } else if (this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL) {
                 formStyles.height = 414;
-            } else {
+            } else if (this.props.editContext.form.doNotScrollFirstContainerOnForm || this.props.editContext.form.doNotScrollLastContainerOnForm) {
                 formStyles.height = this.props.height ? this.props.height : 'calc(100% - 30px)';
             }
         }

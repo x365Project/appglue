@@ -210,4 +210,18 @@ describe("XFormDesigner", () => {
 
     });
 
+
+    it("Check the FormDesign/LayoutDesign actions in topbar ", () => {
+        let form = getFormConfig();
+
+        const {getByTestId} = render(<XFormDesigner form={form} />);
+
+        expect(getByTestId('btn-topbar-delete')).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-cut')).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-copy')).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-paste')).toBeInTheDocument();
+
+        expect(errorList).toHaveLength(0);
+    });
+
 });

@@ -182,20 +182,23 @@ describe("InternalUserFormDesignPanel", () => {
 
         form.add(stack)
         let ui = new FormEditContext(form);
+        form.setFormEditContext(ui);
+
         ui.designValidationProvider = {
-            getDesignValidationIssues: (control?: XBaseControl): ValidationIssue[] => {
-                const valueName = Reflect.get(control!, 'valueName');
-        
-                if (valueName && valueName.length < 6) {
-                    return [
-                        new ValidationIssue('valueName must have at least 6 characters', valueName, control?.id, ValidationLevel.WARNING)
-                    ]
+            getDesignValidationIssues: (): ValidationIssue[] => {
+                let breaks: ValidationIssue[] = [];
+                for (let c of form.getAllControls()) {
+                    const valueName = Reflect.get(c, 'valueName');
+                    if (valueName && valueName.length < 6) {
+                        breaks.push(
+                            new ValidationIssue('valueName must have at least 6 characters', valueName, c.id, ValidationLevel.WARNING)
+                        )
+                    }
                 }
-                return [];
+                return breaks;
             }
         }
         
-        form.setFormEditContext(ui);
 
         const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
         const errorNotification = getByTestId('error-notification');

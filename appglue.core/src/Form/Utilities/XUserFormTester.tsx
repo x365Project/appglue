@@ -87,16 +87,6 @@ export class XUserFormTester extends React.Component<{
         return (
             <TestDiv>
                 <TestToolbox>
-                    {
-                        (this.props.editContext.form.doNotScrollFirstContainerOnForm || this.props.editContext.form.doNotScrollLastContainerOnForm) && <>
-                            <PropertyEditorInteger
-                                editObject={this.state}
-                                label="Height"
-                                propertyName="height"
-                                updateCallback={this.updateUI}
-                            />
-                        </>
-                    }
                     <TextareaAutosize
                         data-testid="runtime-json-textarea"
                         value={this.state.resultValue}

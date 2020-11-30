@@ -49,7 +49,7 @@ ui.mode = FormMode.LayoutDesign;
 export const DesignPanelOnlyControlMode = Template.bind({}, {editContext: ui})
 
 
-form = new XFormConfiguration();
+let form1 = new XFormConfiguration();
 
 let stack = new XStackContainer();
 let errorField = new XTextField();
@@ -61,23 +61,27 @@ textField.valueName = 'ttt';
 textField.label = 'Text';
 stack.add(textField);
 
-form.add(stack);
+form1.add(stack);
 
-ui = new FormEditContext(form);
+ui = new FormEditContext(form1);
+form1.setFormEditContext(ui);
+
 ui.designValidationProvider = {
-    getDesignValidationIssues: (control?: XBaseControl): ValidationIssue[] => {
-        const valueName = Reflect.get(control!, 'valueName');
+    getDesignValidationIssues: (): ValidationIssue[] => {
+        let breaks: ValidationIssue[] = [];
+        for (let c of form1.getAllControls()) {
+            const valueName = Reflect.get(c, 'valueName');
+            if (valueName && valueName.length < 6) {
+                breaks.push(
+                    new ValidationIssue('valueName must have at least 6 characters', valueName, c.id, ValidationLevel.WARNING)
+                )
+            }
 
-        if (valueName && valueName.length < 6) {
-            return [
-                new ValidationIssue('valueName must have at least 6 characters', valueName, control?.id, ValidationLevel.WARNING)
-            ]
         }
-        return []
+        return breaks;
     }
 }
 
-form.setFormEditContext(ui);
 
 export const DesignPanelWithDesignTimeValidationIssue = Template.bind({}, {editContext: ui});
 
