@@ -30,7 +30,6 @@ describe("XTextField", () => {
         userEvent.type(textbox, "blah blah blah");
         waitFor(() => expect(textbox.nodeValue).toEqual("blah blah blah"));
         expect(form.getFormRuntimeContext()?.getFormDataValue("test")).toEqual("blah blah blah");
-        // TODO: ensure that hint text is rendered correctly
         expect(queryByText(/test hint/i)).toBeInTheDocument();
     });
 
