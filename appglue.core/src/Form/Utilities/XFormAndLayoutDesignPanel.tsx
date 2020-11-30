@@ -18,7 +18,8 @@ import {
     EditLayerStyledAccordionDetails,
     EditLayerStyledAccordionSummary,
     EditLayerStyledTypography,
-    EditLayerConfigArea 
+    EditLayerConfigArea, 
+    EditLayerStyledAccordion
 } from "../../CommonUI/CommonStyles";
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
 import {FormEditContext} from "./FormEditContext";
@@ -124,7 +125,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                 nodeRef={this.configFormNode}
                             >
                                 <EditLayerConfigArea ref={this.configFormNode}>
-                                    <Accordion
+                                    <EditLayerStyledAccordion
                                         expanded={this.props.editContext?.expandedConfigPanel}
                                         onChange={this.onToggleExpandedConfigPanel}
                                         defaultExpanded
@@ -137,7 +138,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                         <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
                                             {editUIComponent}
                                         </EditLayerStyledAccordionDetails>
-                                    </Accordion>
+                                    </EditLayerStyledAccordion>
                                 </EditLayerConfigArea>
                             </ReactDraggable>
                         )
