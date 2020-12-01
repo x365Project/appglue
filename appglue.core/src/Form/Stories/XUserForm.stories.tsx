@@ -8,15 +8,12 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { XFormConfiguration } from "../XFormConfiguration";
 import { getFormConfig } from "../Testing/FormTestData";
 import {XUserForm} from "../XUserForm";
-import { IDesignPanelConfig, FormDesignConstants, FormMode } from "../FormDesignConstants";
 import {XColumnContainer, XColumnContainerColumn} from "../Containers/XColumnContainer";
 import {XHStackContainer, HStackVerticalAlignment} from "../Containers/XHStackContainer";
 import {XTextField} from "../Controls/XTextField";
 import {XButton} from "../Controls/XButton";
 import { DefaultOnOff } from "../Utilities/DefaultOnOff";
 import { XStackContainer } from "../Containers/XStackContainer";
-import { XUserFormTester } from "../Utilities/XUserFormTester";
-import { FormEditContext } from "../Utilities/FormEditContext";
 import { XTextArea } from "../Controls/XTextArea";
 import { XSelectbox } from "../Controls/XSelectbox";
 import { XCheckboxField } from "../Controls/XCheckboxField";
@@ -41,6 +38,7 @@ interface StoryHostXUserFormStyleProps {
     width?: number;
     height?: number;
     background?: string;
+    border?: string;
 }
 
 
@@ -52,6 +50,9 @@ interface StoryHostXUserFormStyleProps {
 const StoryHostWrapper = styled.div`
     display: flex;
     flex-direction: row;
+    > div {
+        margin: 5px;
+    }
 `;
 
 
@@ -60,6 +61,7 @@ const XUserFormWrapper = styled("div")<StoryHostXUserFormStyleProps>`
     width: ${props => props.width ? `${props.width}px` : '100%'};
     background: ${props => props.background || 'lightgray'};
     overflow: auto;
+    border: ${props => props.border || 'solid 1px gray'};
 `;
 
 const InfoWrapper = styled.div`
@@ -71,13 +73,6 @@ interface StoryHostXUserFormProps extends XFormDesignerProps, StoryHostXUserForm
     formName? : string;
     showCancel? : boolean;
 }
-
-// TODO: hook button event
-// TODO: hook cancel event
-// TODO: hook data change event
-// TODO: hook close event
-// TODO: add width and height to div if exists
-// TODO: add background color.  IF NO background, set to light gray.
 
 const initialState: string[] = [];
 
@@ -131,7 +126,12 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
 
     return (
         <StoryHostWrapper>
-            <XUserFormWrapper height={props.storyHostProps.height} width={props.storyHostProps.width} background={props.storyHostProps.background}>
+            <XUserFormWrapper
+                height={props.storyHostProps.height}
+                width={props.storyHostProps.width}
+                background={props.storyHostProps.background}
+                border={props.storyHostProps.border}
+            >
                 <XUserForm
                     form={props.storyHostProps.form}
                     onFormDataChange={onFormDataChange}
@@ -154,11 +154,7 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
     );
 }
 
-const FormControlTemplate: Story<{storyHostProps: StoryHostXUserFormProps}> = (args) => <StoryHostXUserForm {...args} />;
-
-form.formBackgroundColor = 'transparent';
-
-export const FormControls = FormControlTemplate.bind({}, {storyHostProps: {form, height: 800, width: 800, background: 'blue'}});
+const Template: Story<{storyHostProps: StoryHostXUserFormProps}> = (args) => <StoryHostXUserForm {...args} />;
 
 
 // --------------------------------
@@ -170,11 +166,11 @@ export default {
     title: "Form Designer/Runtime",
 } as Meta;
 
-const Template: Story<XFormDesignerProps> = (args) => <XUserForm {...args} />;
-
-export const AllControls = Template.bind({}, {form: form});
+form.formBackgroundColor = 'transparent';
+export const AllControls = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
 form = new XFormConfiguration();
+form.formBackgroundColor = 'transparent';
 let cContainer = new XColumnContainer();
 let hContainer = new XHStackContainer();
 let sContainer = new XStackContainer();
@@ -183,12 +179,11 @@ form.add(cContainer);
 form.add(hContainer);
 form.add(sContainer);
 
-export const NoControls = Template.bind({}, {form: form});
+export const NoControls = Template.bind({}, {storyHostProps: {form}});
 
-
-const TemplateWithEditContext: Story<{editContext: FormEditContext}> = (args) => <XUserFormTester {...args} />;
 
 form = new XFormConfiguration();
+form.formBackgroundColor = 'transparent';
 let columnContainer = new XColumnContainer();
 let actualCol = new XColumnContainerColumn();
 let actualCol2 = new XColumnContainerColumn();
@@ -235,52 +230,26 @@ hstackContainer.add(button2);
 form.add(columnContainer);
 form.add(hstackContainer);
 
-const config: IDesignPanelConfig = {
-    size: FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL,
-    background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
-    data: FormDesignConstants.FORM_DATA_MODE_NONE
-}
-
-let ui = new FormEditContext(form);
-ui.mode = FormMode.Runtime;
-form.setFormEditContext(ui);
-ui.designConfig = config
-
-export const ResponsiveThinForm = TemplateWithEditContext.bind({}, {editContext: ui});
+export const ResponsiveThinForm = Template.bind({}, {storyHostProps: {form, width: 375, height: 667}});
 
 form = getFormConfig();
+form.formBackgroundColor = 'transparent';
 form.doNotScrollLastContainerOnForm = true;
 form.doNotScrollFirstContainerOnForm = true;
 
-ui = new FormEditContext(form);
-ui.mode = FormMode.Runtime;
-ui.designConfig = {
-    size: FormDesignConstants.FORM_SIZE_MODE_DEFINED,
-    background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
-    data: FormDesignConstants.FORM_DATA_MODE_NONE
-}
-form.setFormEditContext(ui);
-
-export const PinnedSections = TemplateWithEditContext.bind({}, {editContext: ui});
+export const PinnedSections = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
 
 form = new XFormConfiguration();
 form.doNotScrollFirstContainerOnForm = true;
 form.doNotScrollLastContainerOnForm = true;
 
-ui = new FormEditContext(form);
-ui.designConfig = {
-    size: FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL,
-    background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
-    data: FormDesignConstants.FORM_DATA_MODE_NONE
-}
-form.setFormEditContext(ui);
-ui.mode = FormMode.Runtime;
 
-export const PinnedSectionsForEmptyForm = TemplateWithEditContext.bind({}, {editContext: ui});
+export const PinnedSectionsForEmptyForm = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
 
 form = new XFormConfiguration();
+form.formBackgroundColor = 'transparent';
 let stackContainer = new XStackContainer();
 let textField = new XTextField();
 
@@ -314,18 +283,7 @@ stackContainer.add(checkboxField);
 
 form.add(stackContainer);
 
-ui = new FormEditContext(form);
-ui.mode = FormMode.Runtime;
-form.setFormEditContext(ui);
-
-ui.setFormData({
-    textfield: 'Text Field',
-    textarea: 'Text Area',
-    checkbox: true,
-    selectbox: '2'
-});
-
-export const DataChangingExternally = TemplateWithEditContext.bind({}, {editContext: ui});
+export const DataChangingExternally = MissingTemplate.bind({}, {});
 
 
 export const ValidationBreaks = MissingTemplate.bind({}, {});
@@ -333,6 +291,7 @@ export const ButtonEvents = MissingTemplate.bind({}, {});
 export const CloseAction = MissingTemplate.bind({}, {});
 
 form = new XFormConfiguration();
+form.formBackgroundColor = 'transparent';
 let stack = new XStackContainer();
 form.add(stack);
 let control = new XTextField();
@@ -340,4 +299,4 @@ control.valueName = 'test';
 control.label = 'test label';
 stack.add(control);
 
-export const SimpleFormOneTextBox = Template.bind({}, {form: form});
+export const SimpleFormOneTextBox = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
