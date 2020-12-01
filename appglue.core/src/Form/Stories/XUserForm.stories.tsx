@@ -74,7 +74,14 @@ const Template: Story<XFormDesignerProps> = (args) => <XUserForm {...args} />;
 
 export const AllControls = Template.bind({}, {form: form});
 
-form = new XFormConfiguration()
+form = new XFormConfiguration();
+let cContainer = new XColumnContainer();
+let hContainer = new XHStackContainer();
+let sContainer = new XStackContainer();
+
+form.add(cContainer);
+form.add(hContainer);
+form.add(sContainer);
 
 export const NoControls = Template.bind({}, {form: form});
 

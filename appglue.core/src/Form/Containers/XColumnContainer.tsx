@@ -427,7 +427,7 @@ export class XColumnContainer
                                                 );
                                             })}
                                         </StackContainerDiv>
-                                        {col.getControls().length === 0 && this.renderEmptyControlDiv(this.gapBetweenColumns, 'Add controls in the form design tab')}
+                                        {col.getControls().length === 0 && mode !== FormMode.Runtime && this.renderEmptyControlDiv(this.gapBetweenColumns, 'Add controls in the form design tab')}
                                     </ColumnDiv>
                                 </React.Fragment>
                             );
