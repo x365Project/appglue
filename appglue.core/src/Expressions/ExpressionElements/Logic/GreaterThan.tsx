@@ -26,7 +26,7 @@ export class GreaterThanExpression extends BaseExpression {
                 <ExpressionPiece>
                     <ExpressionValueRenderer el={this.value1!}/>
                 </ExpressionPiece>
-                <ExpressionPiece> > </ExpressionPiece>
+                <ExpressionPiece> {'>'} </ExpressionPiece>
                 <ExpressionPiece>
                     <ExpressionValueRenderer el={this.value2 !}/>
                 </ExpressionPiece>
