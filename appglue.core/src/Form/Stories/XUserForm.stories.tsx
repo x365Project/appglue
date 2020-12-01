@@ -111,7 +111,7 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
 
     const onFormDataChange = useCallback((data: UserFormData) => {
         setFormData(data);
-        addEventLog('Form Data is changes');
+        addEventLog('Form Data is changed');
     }, [setFormData, addEventLog]);
 
     const onFormButtonClick = useCallback((buttonName: string, data: UserFormData) => {
