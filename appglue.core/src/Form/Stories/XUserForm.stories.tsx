@@ -42,6 +42,7 @@ interface StoryHostXUserFormProps extends XFormDesignerProps {
     height? : number;
     formName? : string;
     showCancel? : boolean;
+    background?: string ;
 }
 
 // TODO: hook button event
@@ -49,6 +50,7 @@ interface StoryHostXUserFormProps extends XFormDesignerProps {
 // TODO: hook data change event
 // TODO: hook close event
 // TODO: add width and height to div if exists
+// TODO: add background color.  IF NO background, set to light gray.
 function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
     return (
         <div>
