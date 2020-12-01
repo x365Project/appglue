@@ -27,6 +27,9 @@ const Template: Story<{
     form: XFormConfiguration;
     topDesignerExtensions?: IAction[],
     bottomDesignerExtensions?: IAction[],
+    formName?: string,
+    onFormSave?: (data: any) => void,
+    onFormClose?: () => void,
 }> = (args) => <XFormDesigner {...args} />;
 
 const MissingTemplate: Story<{}> = () => (
@@ -56,7 +59,7 @@ ui.doNotScrollFirstContainerOnForm = true;
 export const PinnedSections = Template.bind({}, {form: ui});
 
 ui = new XFormConfiguration();
-export const CloseXAction = Template.bind({}, {form: ui, onFormClose: (data: any) => {}});
+export const CloseXAction = Template.bind({}, {form: ui, onFormClose: () => {}});
 
 export const BringUpInDialogByButton = MissingTemplate.bind({}, {form: ui});
 

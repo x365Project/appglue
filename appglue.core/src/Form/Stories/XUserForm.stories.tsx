@@ -4,16 +4,21 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 import { XFormConfiguration } from "../XFormConfiguration";
 import { getFormConfig } from "../Testing/FormTestData";
 import {XUserForm} from "../XUserForm";
-import { IDesignPanelConfig, FormDesignConstants } from "../FormDesignConstants";
+import { IDesignPanelConfig, FormDesignConstants, FormMode } from "../FormDesignConstants";
 import {XColumnContainer, XColumnContainerColumn} from "../Containers/XColumnContainer";
 import {XHStackContainer, HStackVerticalAlignment} from "../Containers/XHStackContainer";
 import {XTextField} from "../Controls/XTextField";
 import {XButton} from "../Controls/XButton";
 import { DefaultOnOff } from "../Utilities/DefaultOnOff";
 import { XStackContainer } from "../Containers/XStackContainer";
+import { XUserFormTester } from "../Utilities/XUserFormTester";
+import { FormEditContext } from "../Utilities/FormEditContext";
+import { XTextArea } from "../Controls/XTextArea";
+import { XSelectbox } from "../Controls/XSelectbox";
+import { XCheckboxField } from "../Controls/XCheckboxField";
 
 
-let ui = getFormConfig();
+let form = getFormConfig();
 
 const MissingTemplate: Story<{}> = () => (
     <div>
@@ -29,19 +34,20 @@ export interface XFormDesignerProps {
 
 export default {
     title: "Form Designer/Runtime",
-    component: XUserForm,
 } as Meta;
 
 const Template: Story<XFormDesignerProps> = (args) => <XUserForm {...args} />;
 
-export const AllControls = Template.bind({}, {form: ui});
+export const AllControls = Template.bind({}, {form: form});
 
-ui = new XFormConfiguration()
+form = new XFormConfiguration()
 
-export const NoControls = Template.bind({}, {form: ui});
+export const NoControls = Template.bind({}, {form: form});
 
 
-ui = new XFormConfiguration()
+const TemplateWithEditContext: Story<{editContext: FormEditContext}> = (args) => <XUserFormTester {...args} />;
+
+form = new XFormConfiguration();
 let columnContainer = new XColumnContainer();
 let actualCol = new XColumnContainerColumn();
 let actualCol2 = new XColumnContainerColumn();
@@ -85,24 +91,107 @@ hstackContainer.add(new XTextField());
 hstackContainer.add(button);
 hstackContainer.add(button2);
 
-ui.add(columnContainer);
-ui.add(hstackContainer);
+form.add(columnContainer);
+form.add(hstackContainer);
 
 const config: IDesignPanelConfig = {
     size: FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL,
     background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
     data: FormDesignConstants.FORM_DATA_MODE_NONE
 }
-export const ResponsiveThinForm = Template.bind({}, {form: ui, config});
+
+let ui = new FormEditContext(form);
+ui.mode = FormMode.Runtime;
+form.setFormEditContext(ui);
+ui.designConfig = config
+
+export const ResponsiveThinForm = TemplateWithEditContext.bind({}, {editContext: ui});
+
+form = getFormConfig();
+form.doNotScrollLastContainerOnForm = true;
+form.doNotScrollFirstContainerOnForm = true;
+
+ui = new FormEditContext(form);
+ui.mode = FormMode.Runtime;
+ui.designConfig = {
+    size: FormDesignConstants.FORM_SIZE_MODE_DEFINED,
+    background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+    data: FormDesignConstants.FORM_DATA_MODE_NONE
+}
+form.setFormEditContext(ui);
+
+export const PinnedSections = TemplateWithEditContext.bind({}, {editContext: ui});
 
 
-export const PinnedSections = MissingTemplate.bind({}, {});
-export const DataChangingExternally = MissingTemplate.bind({}, {});
+form = new XFormConfiguration();
+form.doNotScrollFirstContainerOnForm = true;
+form.doNotScrollLastContainerOnForm = true;
+
+ui = new FormEditContext(form);
+ui.designConfig = {
+    size: FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL,
+    background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+    data: FormDesignConstants.FORM_DATA_MODE_NONE
+}
+form.setFormEditContext(ui);
+ui.mode = FormMode.Runtime;
+
+export const PinnedSectionsForEmptyForm = TemplateWithEditContext.bind({}, {editContext: ui});
+
+
+form = new XFormConfiguration();
+let stackContainer = new XStackContainer();
+let textField = new XTextField();
+
+textField.valueName = 'textfield';
+textField.label = 'Text Field';
+
+let textareaField = new XTextArea();
+textareaField.valueName = 'textarea';
+textareaField.label = 'Textarea Field';
+
+let selectField = new XSelectbox();
+selectField.valueName = 'selectbox';
+selectField.items = [
+    {
+        label: 'Option 1',
+        value: '1',
+    },
+    {
+        label: 'Option 2',
+        value: '2',
+    },
+];
+
+let checkboxField = new XCheckboxField();
+checkboxField.valueName = 'checkbox';
+
+stackContainer.add(textField);
+stackContainer.add(textareaField);
+stackContainer.add(selectField);
+stackContainer.add(checkboxField);
+
+form.add(stackContainer);
+
+ui = new FormEditContext(form);
+ui.mode = FormMode.Runtime;
+form.setFormEditContext(ui);
+
+ui.setFormData({
+    textfield: 'Text Field',
+    textarea: 'Text Area',
+    checkbox: true,
+    selectbox: '2'
+});
+
+export const DataChangingExternally = TemplateWithEditContext.bind({}, {editContext: ui});
+
+
 export const ValidationBreaks = MissingTemplate.bind({}, {});
 export const ButtonEvents = MissingTemplate.bind({}, {});
 export const CloseAction = MissingTemplate.bind({}, {});
 
-let form = new XFormConfiguration();
+form = new XFormConfiguration();
 let stack = new XStackContainer();
 form.add(stack);
 let control = new XTextField();

@@ -4,6 +4,7 @@ import { XFormConfiguration } from '../XFormConfiguration';
 import { getFormConfig } from "../Testing/FormTestData";
 import { FormEditContext } from './FormEditContext';
 import { XUserFormTester } from './XUserFormTester';
+import { FormMode, FormDesignConstants } from '../FormDesignConstants';
 
 describe("XUserFormTester", () => {
 
@@ -51,8 +52,6 @@ describe("XUserFormTester", () => {
 
         const resultjsontext = getByTestId('runtime-json-textarea');
         expect(resultjsontext).toBeInTheDocument();
-
-
 
         const firstName = getByTestId('firstName').querySelector('input');
         expect(firstName).toBeInTheDocument();
@@ -126,5 +125,118 @@ describe("XUserFormTester", () => {
         expect(getByTestId('otherdata3_3')).toBeInTheDocument();
     });
 
+    it("TabletHorizontal Format: check the sizes and scroll in Runtime with Pinned Section", () => {
+        let form = getFormConfig();
+        form.doNotScrollLastContainerOnForm = true;
+        form.doNotScrollFirstContainerOnForm = true;
+
+        let ui = new FormEditContext(form);
+        ui.mode = FormMode.Runtime;
+        ui.form.setFormRuntimeContext(ui);
+        ui.designConfig = {
+            size: FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL,
+            background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+            data: FormDesignConstants.FORM_DATA_MODE_NONE
+        }
+
+        const {getByTestId, queryByTestId} = render(<XUserFormTester editContext={ui} />);
+
+        expect(queryByTestId('pin-first-container')).not.toBeInTheDocument();
+        expect(queryByTestId('pin-last-container')).not.toBeInTheDocument();
+
+        
+        let formWrapper = getByTestId('form-wrapper');
+        expect(formWrapper).toBeInTheDocument();
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 1024px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 768px');
+        expect(getByTestId('no-pinned-section')).toBeInTheDocument();
+    });
+
+    it("TabletVertical Format: check the sizes and scroll in Runtime with Pinned Section", () => {
+        let form = getFormConfig();
+        form.doNotScrollLastContainerOnForm = true;
+        form.doNotScrollFirstContainerOnForm = true;
+
+        let ui = new FormEditContext(form);
+        ui.mode = FormMode.Runtime;
+        ui.form.setFormRuntimeContext(ui);
+        ui.designConfig = {
+            size: FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL,
+            background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+            data: FormDesignConstants.FORM_DATA_MODE_NONE
+        }
+
+        const {getByTestId, queryByTestId} = render(<XUserFormTester editContext={ui} />);
+
+        expect(queryByTestId('pin-first-container')).not.toBeInTheDocument();
+        expect(queryByTestId('pin-last-container')).not.toBeInTheDocument();
+
+        
+        let formWrapper = getByTestId('form-wrapper');
+        expect(formWrapper).toBeInTheDocument();
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 768px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 1024px');
+        expect(getByTestId('no-pinned-section')).toBeInTheDocument();
+    });
+
+
+    it("PhoneHorizontal Format: check the sizes and scroll in Runtime with Pinned Section", () => {
+        let form = getFormConfig();
+        form.doNotScrollLastContainerOnForm = true;
+        form.doNotScrollFirstContainerOnForm = true;
+
+        let ui = new FormEditContext(form);
+        ui.mode = FormMode.Runtime;
+        ui.form.setFormRuntimeContext(ui);
+        ui.designConfig = {
+            size: FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL,
+            background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+            data: FormDesignConstants.FORM_DATA_MODE_NONE
+        }
+
+        const {getByTestId, queryByTestId} = render(<XUserFormTester editContext={ui} />);
+
+        expect(queryByTestId('pin-first-container')).not.toBeInTheDocument();
+        expect(queryByTestId('pin-last-container')).not.toBeInTheDocument();
+
+        
+        let formWrapper = getByTestId('form-wrapper');
+        expect(formWrapper).toBeInTheDocument();
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 667px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 375px');
+        expect(getByTestId('no-pinned-section')).toBeInTheDocument();
+    });
+
+
+    it("PhoneVertical Format: check the sizes and scroll in Runtime with Pinned Section", () => {
+        let form = getFormConfig();
+        form.doNotScrollLastContainerOnForm = true;
+        form.doNotScrollFirstContainerOnForm = true;
+
+        let ui = new FormEditContext(form);
+        ui.mode = FormMode.Runtime;
+        ui.form.setFormRuntimeContext(ui);
+        ui.designConfig = {
+            size: FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL,
+            background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+            data: FormDesignConstants.FORM_DATA_MODE_NONE
+        }
+
+        const {getByTestId, queryByTestId} = render(<XUserFormTester editContext={ui} />);
+
+        expect(queryByTestId('pin-first-container')).not.toBeInTheDocument();
+        expect(queryByTestId('pin-last-container')).not.toBeInTheDocument();
+
+        
+        let formWrapper = getByTestId('form-wrapper');
+        expect(formWrapper).toBeInTheDocument();
+
+        expect(formWrapper.children[0]).toHaveStyle('width: 375px');
+        expect(formWrapper.children[0]).toHaveStyle('height: 667px');
+        expect(getByTestId('no-pinned-section')).toBeInTheDocument();
+    });
 
 });
