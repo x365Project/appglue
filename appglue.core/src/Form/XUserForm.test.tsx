@@ -61,15 +61,11 @@ describe("XUserForm", () => {
         let sourceStorageStr = JSON.stringify(sourceStorage, null, 2);
         let sourceStorageObj = JSON.parse(sourceStorageStr);
 
-        // console.log('sourceStorageStr:', sourceStorageStr);
-
         let form: XFormConfiguration = new XFormConfiguration();
         form.setStorageData(sourceStorageObj);       
 
         let storage = form.getStorageData();
         let storageStr = JSON.stringify(storage, null, 2);
-
-        // console.log('storageStr:', storageStr);
 
         expect(storageStr).toEqual(sourceStorageStr);
     });
