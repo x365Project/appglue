@@ -1,6 +1,10 @@
-import React from "react";
+import React, {useState, useCallback, useReducer} from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from "@storybook/react/types-6-0";
+import styled from "styled-components";
+
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
 import { XFormConfiguration } from "../XFormConfiguration";
 import { getFormConfig } from "../Testing/FormTestData";
 import {XUserForm} from "../XUserForm";
@@ -16,6 +20,8 @@ import { FormEditContext } from "../Utilities/FormEditContext";
 import { XTextArea } from "../Controls/XTextArea";
 import { XSelectbox } from "../Controls/XSelectbox";
 import { XCheckboxField } from "../Controls/XCheckboxField";
+import { UserFormData } from "../UserFormData";
+import { InputLabel } from "@material-ui/core";
 
 
 let form = getFormConfig();
@@ -28,8 +34,13 @@ const MissingTemplate: Story<{}> = () => (
 
 export interface XFormDesignerProps {
     form: XFormConfiguration;
-    // TODO: remove. these are runtime tests.  should have nothing about design here.
-    config?: IDesignPanelConfig;
+}
+
+
+interface StoryHostXUserFormStyleProps {
+    width?: number;
+    height?: number;
+    background?: string;
 }
 
 
@@ -37,12 +48,28 @@ export interface XFormDesignerProps {
 // control for testing
 // --------------------------------
 
-interface StoryHostXUserFormProps extends XFormDesignerProps {
-    width? : number;
-    height? : number;
+
+const StoryHostWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
+
+const XUserFormWrapper = styled("div")<StoryHostXUserFormStyleProps>`
+    height: ${props => props.height ? `${props.height}px` : 'auto'};
+    width: ${props => props.width ? `${props.width}px` : '100%'};
+    background: ${props => props.background || 'lightgray'};
+    overflow: auto;
+`;
+
+const InfoWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+interface StoryHostXUserFormProps extends XFormDesignerProps, StoryHostXUserFormStyleProps {
     formName? : string;
     showCancel? : boolean;
-    background?: string ;
 }
 
 // TODO: hook button event
@@ -51,15 +78,88 @@ interface StoryHostXUserFormProps extends XFormDesignerProps {
 // TODO: hook close event
 // TODO: add width and height to div if exists
 // TODO: add background color.  IF NO background, set to light gray.
+
+const initialState: string[] = [];
+
+enum EventLogType {
+    ADD_EVENT = 'ADD_EVENT',
+    REMOVE_EVENT = 'REMOVE_EVENT'
+}
+
+const eventLogsReducer = (state: string[], action: {type: EventLogType, logMessage?: string, index?: number}) => {
+    switch(action.type) {
+        case EventLogType.ADD_EVENT:
+            return [
+                ...state,
+                action.logMessage || ''
+            ]
+        case EventLogType.REMOVE_EVENT:
+            return state.splice(action.index || 0, 1);
+    }
+}
+
 function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
+    const [formData, setFormData] = useState<UserFormData | null>(null); 
+    const [eventLogs, dispatch] = useReducer(eventLogsReducer, initialState);
+
+    const addEventLog = useCallback((logMessage: string) => {
+        dispatch({
+            type: EventLogType.ADD_EVENT,
+            logMessage
+        })
+    }, [dispatch])
+
+    const onFormDataChange = useCallback((data: UserFormData) => {
+        setFormData(data);
+        addEventLog('Form Data is changes');
+    }, [setFormData, addEventLog]);
+
+    const onFormButtonClick = useCallback((buttonName: string, data: UserFormData) => {
+        addEventLog(`Button ${buttonName}: clicked`);
+    }, [addEventLog]);
+
+    const onFormCancelButton = useCallback(() => {
+        addEventLog(`Cancel Form is triggered`)
+    }, [addEventLog])
+
+    const onFormClose = useCallback((data: UserFormData) => {
+        setFormData(data);
+        addEventLog('Close Form event is triggered')
+    }, [addEventLog, setFormData])
+
+    console.log('eventLogs:', eventLogs);
+
     return (
-        <div>
-            <XUserForm form={props.storyHostProps.form}/>
-            to right: text area showing data
-            to right: text area for logging of events
-        </div>
+        <StoryHostWrapper>
+            <XUserFormWrapper height={props.storyHostProps.height} width={props.storyHostProps.width}>
+                <XUserForm
+                    form={props.storyHostProps.form}
+                    onFormDataChange={onFormDataChange}
+                    onFormButtonClick={onFormButtonClick}
+                    onFormCancelButton={onFormCancelButton}
+                    onFormClose={onFormClose}
+                />
+            </XUserFormWrapper>
+            <InfoWrapper>
+                <div>
+                    <InputLabel>Form Data</InputLabel>
+                    <TextareaAutosize rowsMin={3} value={formData ? JSON.stringify(formData, null, 2) : ''} />
+                </div>
+                <div>
+                    <InputLabel>Event Logs</InputLabel>
+                    <TextareaAutosize rowsMin={3} value={eventLogs.join('\n')} />
+                </div>
+            </InfoWrapper>
+        </StoryHostWrapper>
     );
 }
+
+const FormControlTemplate: Story<{storyHostProps: StoryHostXUserFormProps}> = (args) => <StoryHostXUserForm {...args} />;
+
+form.formBackgroundColor = 'transparent';
+
+export const FormControls = FormControlTemplate.bind({}, {storyHostProps: {form, height: 800, width: 800, background: 'blue'}});
+
 
 // --------------------------------
 // END control for testing
