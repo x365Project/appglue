@@ -36,26 +36,25 @@ export class XDatePicker extends BaseTextEntryControl {
                     )
                 }
 
-                <TextField
+                <StyledTextField
                     label=""
                     type="date"
-                    variant="outlined"
                     value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
                     onChange={this.handleChange}
                     InputLabelProps={{
                         shrink: false,
                     }}
                     data-testid={this.valueName}
-                    inputProps={{
-                        style: {
-                            width: '274.29px',
-                            height: '59px',
-                            border: '1.35302px solid #E6E9ED',
-                            boxSizing: 'border-box',
-                            borderRadius: '5.65107px',
-                            color: '#677C95',
-                        },
-                    }}
+                    // inputProps={{
+                    //     style: {
+                    //         width: '274.29px',
+                    //         height: '59px',
+                    //         border: '1.35302px solid #E6E9ED',
+                    //         boxSizing: 'border-box',
+                    //         borderRadius: '5.65107px',
+                    //         color: '#677C95',
+                    //     },
+                    // }}
                 />
                 {
                     this.hintText && (
@@ -92,6 +91,23 @@ class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
         )
     }
 }
+
+const StyledTextField = styled(TextField)`
+    display: flex !important;
+    justify-content: space-around !important;
+    padding: 14px 20px !important;
+    width: 274.29px !important;
+    height: 59px !important;
+    border: 1px solid #E6E9ED !important;
+    box-sizing: border-box !important;
+    border-radius: 5.65107px !important;
+    & .MuiInputBase-input {
+        color: #677C95 !important;    
+    }
+    &:focus {
+        color: #01244E !important;    
+    }
+`
 
 const StyledInputLabel = styled(InputLabel)`
     font-family: Mulish !important;

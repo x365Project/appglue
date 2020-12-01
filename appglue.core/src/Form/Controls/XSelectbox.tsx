@@ -30,22 +30,19 @@ export class XSelectbox extends BaseTextEntryControl {
                         <StyledInputLabel>{this.label}</StyledInputLabel>
                     )
                 }            
-                <Select     
+                <StyledSelect     
                     style={{width: '100%'}}    
                     value={''}
                     native
                     onChange={this.handleChange}
                     data-testid={this.valueName}
-                    classes={{
-                        root: 'SelectInput-root'
-                    }}
                 >
                     {this.items.map((item, index) => {
                         return (
                             <option value={item.value} key={index} >{item.label}</option>   
                         );
                     })}
-                </Select>
+                </StyledSelect>
                 {
                     this.hintText && (
                         <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
@@ -114,7 +111,24 @@ export class XSelectbox extends BaseTextEntryControl {
 
 }
 
-
+const StyledSelect = styled(Select)`
+    min-width: 246px;
+    height: 59px;
+    border: 1px solid #E6E9ED;
+    box-sizing: border-box;
+    border-radius: 5px;    
+    padding-left: 20px;
+    padding-right: 25px;
+    color: #01244E;
+    font-weight: 400;
+    line-height: 20px;
+    &:focus {
+        background-color: #FFF;
+        border: 2px solid rgb(63, 81, 181) !important;
+        box-sizing: border-box;
+        border-radius: 5px 5px 0px 0px;
+    }
+`
 const StyledInputLabel = styled(InputLabel)`
     font-family: Mulish !important;
     font-weight: 400 !important;

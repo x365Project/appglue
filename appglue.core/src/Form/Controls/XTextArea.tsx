@@ -17,16 +17,8 @@ export class XTextArea extends BaseTextEntryControl {
 		return (
 			<>
 				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
-				<TextareaAutosize
+				<StyledTextareaAutosize
 					data-testid={this.valueName}
-					style={{ 
-						width: '100%',
-						minWidth: '246px',
-						height: '59px',
-						border: '1px solid #E6E9ED',
-						boxSizing: 'border-box',
-						borderRadius: '5px',
-					}}
 					rowsMax={this.rowMax}
 					rowsMin={this.rowMin}
 					placeholder={this.placeholderText}
@@ -76,6 +68,24 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 }
 
 // https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
+const StyledTextareaAutosize = styled(TextareaAutosize)`
+	width: 100% !important;
+	min-width: 246px !important;
+	height: 59px !important;
+	border: 1px solid #E6E9ED !important;
+	box-sizing: border-box !important;
+	border-radius: 5px !important;
+	padding: 14px 20px 14px 20px;
+	font-family: Mulish !important;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+	color: #01244E;
+	&:focus {
+        border: 2px solid rgb(63, 81, 181) !important;
+    }
+`
+
 const StyledInputLabel = styled(InputLabel)`
     font-family: Mulish !important;
     font-weight: 400 !important;

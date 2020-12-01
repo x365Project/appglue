@@ -20,22 +20,13 @@ export class XNumberBox extends BaseTextEntryControl {
                         <StyledInputLabel>{this.label}</StyledInputLabel>
                     )
                 }
-                <TextField
+                <StyledTextField
                     type="number"
                     variant={"outlined"}
                     value={this.getValue()}
                     onChange={this.handleChange}
                     data-testid={this.valueName}
                     fullWidth
-                    inputProps={{
-                        style: {
-                            minWidth: 246,
-                            height: '59px',
-                            border: '1.35302px solid #E6E9ED',
-                            boxSizing: 'border-box',
-                            borderRadius: '5.65107px',
-                        },
-                    }}
                 />
                 {
                     this.hintText && (
@@ -74,6 +65,21 @@ class XNumberBoxEditUI extends React.Component<{ editMe: XNumberBox }> {
         );
     }
 }
+
+const StyledTextField = styled(TextField)`
+    min-width: 246px,
+    height: 59px,
+    border: 1.35302px solid #E6E9ED,
+    box-sizing: border-box,
+    border-radius: 5.65107px,
+    & .MuiInputBase-input {
+        color: #677C95 !important;    
+    }
+    &:focus {
+        color: #01244E !important;    
+        border: 2px solid rgb(63, 81, 181) !important;
+    }
+`
 
 const StyledInputLabel = styled(InputLabel)`
     font-family: Mulish !important;
