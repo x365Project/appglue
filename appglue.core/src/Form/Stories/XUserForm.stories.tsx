@@ -131,7 +131,7 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
 
     return (
         <StoryHostWrapper>
-            <XUserFormWrapper height={props.storyHostProps.height} width={props.storyHostProps.width}>
+            <XUserFormWrapper height={props.storyHostProps.height} width={props.storyHostProps.width} background={props.storyHostProps.background}>
                 <XUserForm
                     form={props.storyHostProps.form}
                     onFormDataChange={onFormDataChange}
