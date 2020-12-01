@@ -1,9 +1,6 @@
 import React from "react";
 import {FormEditContext} from "./FormEditContext";
-import {XFormConfiguration} from "../XFormConfiguration";
-import {IDesignPanelConfig} from "../FormDesignConstants";
 import {AutoBind} from "../../Common/AutoBind";
-import {PropertyEditorInteger} from "../../CommonUI/PropertyEditing/PropertyEditorInteger";
 import {Button, TextareaAutosize} from "@material-ui/core";
 import {XFormDesignerLayoutPanel} from "./XFormDesignerLayoutPanel";
 import styled from "styled-components";
@@ -96,7 +93,7 @@ export class XUserFormTester extends React.Component<{
                     />
                     <TestSaveButton variant="contained" color="primary">Save as Sample</TestSaveButton>
                 </TestToolbox>
-                <XFormDesignerLayoutPanel editContext={this.props.editContext} height={this.state.height}/>
+                <XFormDesignerLayoutPanel editContext={this.props.editContext}/>
             </TestDiv>
         );
     }

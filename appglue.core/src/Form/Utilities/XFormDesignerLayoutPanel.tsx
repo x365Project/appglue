@@ -13,6 +13,7 @@ const FormWrapper = styled("div")<{
     overflow: auto;
     background: ${props => (props.background || '#fff') };
     position: relative;
+    max-height: 100vh;
 `;
 
 const FormContent = styled("div")<{
