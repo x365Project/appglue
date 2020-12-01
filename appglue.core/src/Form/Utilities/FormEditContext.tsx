@@ -140,6 +140,17 @@ export class FormRuntimeContext {
         return this.data;
     }
 
+    @AutoBind
+    outcomeTriggered(name: string) {
+        if (this.onFormButtonClick)
+            this.onFormButtonClick(name, this.data);
+    }
+
+    @AutoBind
+    cancelOutcomeTriggered(name: string) {
+        if (this.onFormCancelButton)
+            this.onFormCancelButton();
+    }
 }
 
 export class FormEditContext extends FormRuntimeContext {
