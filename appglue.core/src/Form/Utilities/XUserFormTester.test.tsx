@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, getByTestId } from "@testing-library/react";
 import { XFormConfiguration } from '../XFormConfiguration';
 import { getFormConfig } from "../Testing/FormTestData";
 import { FormEditContext } from './FormEditContext';
@@ -27,16 +27,16 @@ describe("XUserFormTester", () => {
         console.error = renderError
         console.warn = renderWarn
         // console.log = renderLog
-    })
+    });
 
 
     afterEach(() => {
         console.error = originalError;
         console.warn = originalWarn;
         console.log = originalLog;
-    })
+    });
 
-    it("Renders XUserFormTester", () => {
+    it("Check outputting json.", () => {
         let ui: FormEditContext;
 
         let form: XFormConfiguration = getFormConfig();
@@ -50,17 +50,17 @@ describe("XUserFormTester", () => {
 
         expect(getByText(/SAVE AS SAMPLE/i)).toBeInTheDocument();
 
-        const resultjsontext = getByTestId('runtime-json-textarea');
+        const resultjsontext = getByTestId('runtime-json-textarea') as HTMLTextAreaElement;
         expect(resultjsontext).toBeInTheDocument();
 
-        const firstName = getByTestId('firstName').querySelector('input');
+        const firstName = getByTestId('firstName').querySelector('input') as HTMLInputElement;
         expect(firstName).toBeInTheDocument();
         fireEvent.change(firstName, { target: { value: 'Sama' } });
         let resultjson = JSON.parse(resultjsontext.value)
         expect(firstName.value).toEqual(resultjson.firstName)
         expect(firstName.value).toEqual('Sama')
 
-        const lastName = getByTestId('lastName').querySelector('input');
+        const lastName = getByTestId('lastName').querySelector('input') as HTMLInputElement;
         expect(firstName).toBeInTheDocument();
         fireEvent.change(lastName, { target: { value: 'Sama' } });
         resultjson = JSON.parse(resultjsontext.value)
@@ -68,13 +68,14 @@ describe("XUserFormTester", () => {
         expect(lastName.value).toEqual('Sama')
 
         const originIsAlive = resultjson.isAlive || false;
-        const isAlive = getByTestId('isAlive').querySelector('input');
+        const isAlive = getByTestId('isAlive').querySelector('input') as HTMLInputElement;
         fireEvent.click(isAlive);
         resultjson = JSON.parse(resultjsontext.value);
         expect(resultjson.isAlive).toEqual(!originIsAlive);
+        expect(resultjson.isAlive).toEqual(isAlive.checked);
         expect(isAlive).toBeInTheDocument();
 
-        const age = getByTestId('age').querySelector('input');
+        const age = getByTestId('age').querySelector('input') as HTMLInputElement;
         fireEvent.change(age, { target: { value: 20 } });
         resultjson = JSON.parse(resultjsontext.value);
         expect(age.value).toEqual("20");
@@ -82,9 +83,10 @@ describe("XUserFormTester", () => {
         expect(age).toBeInTheDocument();
 
         const originIsMale = resultjson.isMale || false;
-        const isMale = getByTestId('isMale').querySelector('input');
+        const isMale = getByTestId('isMale').querySelector('input') as HTMLInputElement;
         fireEvent.click(isMale);
         resultjson = JSON.parse(resultjsontext.value);
+        expect(resultjson.isMale).toEqual(isMale.checked);
         expect(resultjson.isMale).toEqual(!originIsMale);
         expect(isMale).toBeInTheDocument();
 
@@ -97,14 +99,14 @@ describe("XUserFormTester", () => {
 
         expect(getByTestId('tester')).toBeInTheDocument();
 
-        const birthday = getByTestId('birthday').querySelector('input');
+        const birthday = getByTestId('birthday').querySelector('input') as HTMLInputElement;
         fireEvent.change(birthday, { target: { value: '2020-11-25' } });
         resultjson = JSON.parse(resultjsontext.value);
         expect(resultjson.birthday).toEqual(birthday.value);
         expect(resultjson.birthday).toEqual('2020-11-25');
         expect(birthday).toBeInTheDocument();
 
-        const favoriteTime = getByTestId('favoriteTime').querySelector('input');
+        const favoriteTime = getByTestId('favoriteTime').querySelector('input') as HTMLInputElement;
         fireEvent.change(favoriteTime, { target: { value: '23:11' } });
         resultjson = JSON.parse(resultjsontext.value);
         expect(resultjson.favoriteTime).toEqual(favoriteTime.value);
