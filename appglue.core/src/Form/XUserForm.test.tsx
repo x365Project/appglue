@@ -5,6 +5,7 @@ import { XFormConfiguration } from './XFormConfiguration';
 import { XStackContainer } from './Containers/XStackContainer';
 import { XColumnContainer } from './Containers/XColumnContainer';
 import { XHStackContainer } from './Containers/XHStackContainer';
+import { getFormConfig } from "./Testing/FormTestData";
 
 describe("XUserForm", () => {
 
@@ -52,6 +53,25 @@ describe("XUserForm", () => {
 
         expect(errorList).toHaveLength(0);
 
+    });
+
+    it("Creating Form from json", () => {
+        let sourceForm: XFormConfiguration = getFormConfig();
+        let sourceStorage = sourceForm.getStorageData();
+        let sourceStorageStr = JSON.stringify(sourceStorage, null, 2);
+        let sourceStorageObj = JSON.parse(sourceStorageStr);
+
+        // console.log('sourceStorageStr:', sourceStorageStr);
+
+        let form: XFormConfiguration = new XFormConfiguration();
+        form.setStorageData(sourceStorageObj);       
+
+        let storage = form.getStorageData();
+        let storageStr = JSON.stringify(storage, null, 2);
+
+        // console.log('storageStr:', storageStr);
+
+        expect(storageStr).toEqual(sourceStorageStr);
     });
 
 });
