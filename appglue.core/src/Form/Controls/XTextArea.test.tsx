@@ -32,7 +32,7 @@ describe("XTextArea", () => {
         waitFor(() => expect(queryByText(/test hint/i)).toBeInTheDocument());
     });
 
-    it("properties should be able to be written to and read from JSON", async () => {
+    it("control reads/writes form data properly", async () => {
         const form = new XFormConfiguration();
         const initialFormValues = {
             test: "blah blah blah",
