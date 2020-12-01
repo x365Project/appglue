@@ -28,8 +28,40 @@ const MissingTemplate: Story<{}> = () => (
 
 export interface XFormDesignerProps {
     form: XFormConfiguration;
+    // TODO: remove. these are runtime tests.  should have nothing about design here.
     config?: IDesignPanelConfig;
 }
+
+
+// --------------------------------
+// control for testing
+// --------------------------------
+
+interface StoryHostXUserFormProps extends XFormDesignerProps {
+    width? : number;
+    height? : number;
+    formName? : string;
+    showCancel? : boolean;
+}
+
+// TODO: hook button event
+// TODO: hook cancel event
+// TODO: hook data change event
+// TODO: hook close event
+// TODO: add width and height to div if exists
+function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
+    return (
+        <div>
+            <XUserForm form={props.storyHostProps.form}/>
+            to right: text area showing data
+            to right: text area for logging of events
+        </div>
+    );
+}
+
+// --------------------------------
+// END control for testing
+// --------------------------------
 
 
 export default {
