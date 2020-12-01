@@ -35,7 +35,7 @@ describe("XUserForm", () => {
         console.log = originalLog;
     })
 
-    it("Check if no drags hint text in runtime containers", () => {
+    it("Check if no placeholder in runtime containers", () => {
         let form: XFormConfiguration = new XFormConfiguration();
         let stackContainer = new XStackContainer();
         let columnContainer = new XColumnContainer();
@@ -48,6 +48,7 @@ describe("XUserForm", () => {
         const {queryByText} = render(<XUserForm form={form} />);
 
         expect(queryByText(/Drag controls from toolbox./i)).not.toBeInTheDocument();
+        expect(queryByText(/Add controls in the form design tab/i)).not.toBeInTheDocument();
 
         expect(errorList).toHaveLength(0);
 
