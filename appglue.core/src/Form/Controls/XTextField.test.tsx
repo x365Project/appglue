@@ -26,9 +26,9 @@ describe("XTextField", () => {
         const textField = getByTestId("test");
         const textbox = within(textField).getByRole("textbox");
         expect(textbox).toBeInTheDocument();
-        expect(textbox.nodeValue).toBeNull();
+        expect(textbox).toBeEmptyDOMElement();
         userEvent.type(textbox, "blah blah blah");
-        waitFor(() => expect(textbox.nodeValue).toEqual("blah blah blah"));
+        waitFor(() => expect(textbox).toHaveValue("blah blah blah"));
         expect(form.getFormRuntimeContext()?.getFormDataValue("test")).toEqual("blah blah blah");
         expect(queryByText(/test hint/i)).toBeInTheDocument();
     });
@@ -43,7 +43,7 @@ describe("XTextField", () => {
         const { getByTestId } = factory(form);
         const textField = getByTestId("test");
         const textbox = within(textField).getByRole("textbox");
-        waitFor(() => expect(textbox.nodeValue).toEqual("blah blah blah"));
+        waitFor(() => expect(textbox).toHaveValue("blah blah blah"));
         userEvent.type(textbox, "new content");
         const changedFromValues = {
             test: "new content",

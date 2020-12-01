@@ -25,9 +25,9 @@ describe("XTextArea", () => {
         expect(queryByText(/test label/i)).toBeInTheDocument();
         const textarea = getByTestId("test");
         expect(textarea).toBeInTheDocument();
-        expect(textarea.nodeValue).toBeNull();
+        expect(textarea).toBeEmptyDOMElement();
         userEvent.type(textarea, "blah blah blah");
-        waitFor(() => expect(textarea.nodeValue).toEqual("blah blah blah"));
+        waitFor(() => expect(textarea).toHaveValue("blah blah blah"));
         waitFor(() => expect(form.getFormRuntimeContext()?.getFormDataValue("test")).toEqual("blah blah blah"));
         waitFor(() => expect(queryByText(/test hint/i)).toBeInTheDocument());
     });
@@ -41,7 +41,7 @@ describe("XTextArea", () => {
         formContext?.setFormData(initialFormValues);
         const { getByTestId } = factory(form);
         const textarea = getByTestId("test");
-        waitFor(() => expect(textarea.nodeValue).toEqual("blah blah blah"));
+        waitFor(() => expect(textarea).toHaveValue("blah blah blah"));
         userEvent.type(textarea, "new content");
         const changedFromValues = {
             test: "new content",
