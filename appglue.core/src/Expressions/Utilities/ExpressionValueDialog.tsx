@@ -474,7 +474,7 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
             }
 
             props.expressionValue.subExpression = selectedExpression;
-            props.expressionValue.editContext?.setSelection(selectedExpression._id);
+            props.expressionValue.editContext?.setSelection(props.expressionValue._id);
 
             props.onComplete();
         }
