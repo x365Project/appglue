@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import {ExpressionValue} from "../ExpressionValue";
 import {Button, ClickAwayListener, DialogActions, List, ListItem, ListItemText, TextField} from "@material-ui/core";
 import {ExpressionValueType} from "../ExpressionValueType";
@@ -449,15 +449,13 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
     const [selectedExpression, setSelectedExpression] = useState<BaseExpression | undefined>(undefined);
     const [step2, setStep2] = useState(false);
 
-    function handleSelection (selected: string) {
-        console.log('handling selection')
+    const handleSelection = useCallback((selected: string) => {
+        console.log('handling selection');
 
         console.log(selectedExpression);
         console.log(step2);
 
         if (selectedExpression) {
-            console.log('handling selection2')
-
             let ev = selectedExpression.editContext?.getElement(selected) as ExpressionValue;
 
             if (!ev)
@@ -481,18 +479,23 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
             props.onComplete();
         }
 
-    }
+    }, [step2, selectedExpression, props])
 
     function handleButtonClick(registration: RegistrationData) {
         let exp = new registration.prototype.constructor() as BaseExpression;
 
         let context = new ExpressionEditContext();
         context.emptyExpressionText = 'Select';
-        context.onSelection=handleSelection;
         exp.setEditContextWithoutRegister(context) ;
         setSelectedExpression(exp);
         setStep2(true);
     }
+
+    useEffect(() => {
+        if (selectedExpression && selectedExpression.editContext) {
+            selectedExpression.editContext.onSelection = handleSelection;
+        }
+    }, [selectedExpression, handleSelection])
 
 
     if (!step2) {
