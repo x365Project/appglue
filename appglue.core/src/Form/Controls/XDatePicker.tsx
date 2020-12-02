@@ -1,10 +1,12 @@
 import React from "react";
+import styled from "styled-components";
 import TextField from '@material-ui/core/TextField';
 
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {DatePickerIcon} from "../../CommonUI/Icon/DatePickerIcon";
-
+import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import "./XControls.css"
 
 @RegisterUIControl('Data (Entry)', 'Date Picker', ControlType.Control, <DatePickerIcon />)
 export class XDatePicker extends BaseTextEntryControl {
@@ -24,18 +26,30 @@ export class XDatePicker extends BaseTextEntryControl {
     }
 
     render () {
+        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         return (
             <form noValidate>
-                <TextField
-                    label={this.label}
+                {
+                    this.label && (
+                        <StyledInputLabel>{this.label}</StyledInputLabel>
+                    )
+                }
+                <StyledTextField
+                    label=""
                     type="date"
                     value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
                     onChange={this.handleChange}
                     InputLabelProps={{
-                        shrink: true,
+                        shrink: false,
                     }}
                     data-testid={this.valueName}
+                    width={customWidth}
                 />
+                {
+                    this.hintText && (
+                        <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+                    )
+                }
             </form>
         );
     }
@@ -66,3 +80,21 @@ class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
         )
     }
 }
+
+const StyledTextField = styled(TextField)`
+    width: ${props => props.width} !important;
+    input {
+        display: flex !important;
+        justify-content: space-around !important;
+        height: 59px !important;
+        padding: 14px 20px !important;
+        border: 1px solid #E6E9ED !important;
+        box-sizing: border-box !important;
+        border-radius: 5.65107px !important;
+        color: #677C95 !important;    
+        &:focus {
+            color: #01244E !important; 
+            border: 1.35302px solid #1873B9 !important;
+        }
+    }
+`
