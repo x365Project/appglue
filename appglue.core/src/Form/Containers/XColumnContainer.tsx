@@ -461,20 +461,14 @@ export class XColumnContainer
         let containerArray = Reflect.get(data, '__columns');
         if (containerArray && containerArray instanceof Array && containerArray.length !== 0) {
             for (let container of containerArray) {
-                let typeName = Reflect.get(container, '__type');
+                let val = new XColumnContainerColumn();
+                let control = val as XColumnContainerColumn;
 
-                if (typeName) {
-                    let registeredControl = UIControlRegistration[typeName];
-                    let val = new registeredControl.prototype.constructor();
-                    // @ts-ignore
-                    let control = val as XStackContainer;
+                control.setFormRuntimeContext(this.getFormRuntimeContext(false)) ;
+                control.setFormEditContext(this.getFormEditContext()) ;
 
-                    control.setFormRuntimeContext(this.getFormRuntimeContext()) ;
-                    control.getFormEditContext(this.getFormEditContext()) ;
-
-                    control.setStorageData(container);
-                    this.columns.push(control);
-                }
+                control.setStorageData(container);
+                this.columns.push(control);
 
             }
         }

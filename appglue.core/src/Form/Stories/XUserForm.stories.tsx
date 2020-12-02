@@ -122,8 +122,6 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
         addEventLog('Close Form event is triggered')
     }, [addEventLog, setFormData])
 
-    console.log('eventLogs:', eventLogs);
-
     return (
         <StoryHostWrapper>
             <XUserFormWrapper
@@ -283,7 +281,14 @@ stackContainer.add(checkboxField);
 
 form.add(stackContainer);
 
-export const DataChangingExternally = MissingTemplate.bind({}, {});
+let formStorageData = form.getStorageData();
+let s = JSON.stringify(formStorageData, null, 2);
+
+let sasobj = JSON.parse(s);
+let newForm = new XFormConfiguration();
+newForm.setStorageData(sasobj);
+
+export const DataChangingExternally = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800}});
 
 
 export const ValidationBreaks = MissingTemplate.bind({}, {});

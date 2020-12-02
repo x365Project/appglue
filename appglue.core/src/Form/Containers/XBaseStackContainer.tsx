@@ -114,7 +114,7 @@ export abstract class XBaseStackContainer
                     if (this.getFormEditContext())
                         cc.setFormEditContext(this.getFormEditContext()) ;
 
-                    else if (this.getFormRuntimeContext())
+                    else if (this.getFormRuntimeContext(false))
                         cc.setFormRuntimeContext(this.getFormRuntimeContext());
 
                     cc.setStorageData(controlData);

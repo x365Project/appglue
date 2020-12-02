@@ -560,6 +560,10 @@ export class XFormConfiguration
 
 		this.containers = [];
 		let containerArray = Reflect.get(data, '__containers');
+
+		let runtimeContext: FormRuntimeContext | null = this.getFormRuntimeContext()
+		let editContext: FormEditContext | null = this.getFormEditContext();
+
 		if (containerArray && containerArray instanceof Array && containerArray.length !== 0) {
 			for (let container of containerArray) {
 				let typeName = Reflect.get(container, '__type');
@@ -570,11 +574,12 @@ export class XFormConfiguration
 					// @ts-ignore
 					let control = val as XBaseContainer;
 
-					if (this.getFormRuntimeContext())
-						control.setFormRuntimeContext(this.getFormRuntimeContext()!) ;
+					if (runtimeContext) {
+						control.setFormRuntimeContext(runtimeContext);
+					}
 
-					if (this.getFormEditContext())
-						control.setFormEditContext(this.getFormEditContext()!);
+					if (editContext)
+						control.setFormEditContext(editContext);
 
 					control.setStorageData(container);
 					this.containers.push(control);
