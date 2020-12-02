@@ -1,10 +1,11 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { XFormConfiguration } from "../XFormConfiguration";
 import { XTextArea } from "./XTextArea";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
+import { TextControlStyle } from "../FormDesignConstants";
 
 describe("XTextArea", () => {
     const factory = (form: XFormConfiguration) => {
@@ -18,7 +19,7 @@ describe("XTextArea", () => {
         return render(<XUserForm form={form} />);
     };
 
-    it("renders correctly by default props and available to type", async () => {
+    it("renders as it should", async () => {
         const form = new XFormConfiguration();
         const { getByTestId, queryByText } = factory(form);
 
@@ -35,17 +36,44 @@ describe("XTextArea", () => {
     it("control reads/writes form data properly", async () => {
         const form = new XFormConfiguration();
         const initialFormValues = {
-            test: "blah blah blah",
+            test: "init form value",
         }
+        const newForm = factory(form);
         const formContext = form.getFormRuntimeContext();
         formContext?.setFormData(initialFormValues);
-        const { getByTestId } = factory(form);
-        const textarea = getByTestId("test");
-        waitFor(() => expect(textarea).toHaveValue("blah blah blah"));
-        userEvent.type(textarea, "new content");
-        const changedFromValues = {
-            test: "new content",
+        const textarea = newForm.getByTestId('test');
+        
+        let compareValues = {
+            test: "init form value",
         }
-        waitFor(() => expect(formContext?.getFormData()).toEqual(changedFromValues));
+        expect(textarea).toBeInTheDocument();
+        expect(textarea).toBeEmptyDOMElement();
+        expect(formContext?.getFormData()).toEqual(compareValues);
+
+        fireEvent.change(textarea, { target: {value: "text area init"}})
+        compareValues = {
+            test: "text area init",
+        }
+        expect(formContext?.getFormData()).toEqual(compareValues);
+        expect(textarea).toHaveValue("text area init");
+    });
+
+    it("configure form and text area", async () => {
+        const form = new XFormConfiguration();
+        const firstForm = factory(form);
+        const textarea = firstForm.getByTestId('test');
+        fireEvent.change(textarea, { target: {value: "text area init"}})
+        expect(textarea).toBeInTheDocument();
+        expect(textarea).toBeEmptyDOMElement();
+        expect(textarea).toHaveValue("text area init");
+        
+        let newForm = new XFormConfiguration();
+        const secondForm = render(<XUserForm form={newForm} />);
+        let newTextArea = secondForm.getByTestId('test');
+        expect(newTextArea).toBeInTheDocument();
+        expect(newTextArea).toBeEmptyDOMElement();
+        expect(newTextArea).toHaveValue("text area init");
+        expect(secondForm.queryByText(/test label/i)).toBeInTheDocument();
+        expect(secondForm.queryByText(/test hint/i)).toBeInTheDocument();
     });
 });

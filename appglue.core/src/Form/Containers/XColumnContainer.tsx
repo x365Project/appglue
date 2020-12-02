@@ -66,9 +66,10 @@ const ColumnDiv = styled("div")<{
     widthUnit?: WidthUnitInterface;
     minWidth?: number;
     maxWidth?: number;
+    minHeight?: number;
     lineBetweenColumns: boolean;
 }>`
-    min-height: ${props => (props.padding || 0) + 75}px;
+    min-height: ${props => (props.padding || 0) + (props.minHeight || 75)}px;
     padding: ${props => props.padding || 0}px;
     margin: ${props => (props.colGap || (props.lineBetweenColumns ? 1 : 0))}px;
     flex: ${props => props.width}${props => props.widthUnit === WidthUnitInterface.PIXEL ? 'px' : ''};
@@ -314,6 +315,7 @@ export class XColumnContainer
                                         minWidth={col.minSizePx}
                                         maxWidth={col.maxSizePx}
                                         colGap={this.gapBetweenColumns / 2}
+                                        minHeight={col.getControls().length > 0 ? 1 : 75}
                                         padding={col.getInnerMargin() || this.defaultInnerColumnMargin || this.getFormRuntimeContext()?.form?.defaultInnerColumnMargin}
                                         hasBorder={
                                             col.hasOwnBorder()
@@ -404,6 +406,7 @@ export class XColumnContainer
                                         minWidth={col.minSizePx}
                                         maxWidth={col.maxSizePx}
                                         colGap={this.gapBetweenColumns / 2}
+                                        minHeight={col.getControls().length > 0 ? 1 : 75}
                                         padding={col.getInnerMargin() || this.defaultInnerColumnMargin || this.getFormRuntimeContext()?.form?.defaultInnerColumnMargin}
                                         backgroundColor={col.backgroundColor() || this.defaultColumnBackgroundColor || this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor}
                                         hasBorder={

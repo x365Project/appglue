@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
-import {TextField, TextareaAutosize, InputLabel} from '@material-ui/core';
+import {TextField, TextareaAutosize} from '@material-ui/core';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
-import FormHelperText from '@material-ui/core/FormHelperText';
+import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import "./XControls.css"
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -13,14 +14,15 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMin: number = 5;
 
 	render() {
+		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 		return (
 			<>
 				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
-				<TextareaAutosize
+				<StyledTextareaAutosize
 					data-testid={this.valueName}
-					style={{width: '100%'}}
 					rowsMax={this.rowMax}
 					rowsMin={this.rowMin}
+					width={customWidth}
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
 					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
@@ -68,19 +70,26 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 }
 
 // https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
-const StyledInputLabel = styled(InputLabel)`
-    font-family: Mulish !important;
-    font-weight: 400 !important;
-    font-size: 14px !important;
-    line-height: 18px !important;
-    margin-bottom: 12px !important;
-`;
-
-const StyledFormHelperText = styled(FormHelperText) `
+const StyledTextareaAutosize = styled(TextareaAutosize)`
+	width: ${props => props.width} !important;
+	min-width: 246px !important;
+	height: 59px !important;
+	border: 1px solid #E6E9ED !important;
+	box-sizing: border-box !important;
+	border-radius: 5px !important;
+	padding: 14px 20px 14px 20px !important;
 	font-family: Mulish !important;
 	font-weight: 600 !important;
-	font-size: 12px !important;
-	line-height: 15px !important;
-	margin-top: 6px !important;
-	color: #677C95 !important;
-`;
+	font-size: 16px !important;
+	line-height: 24px !important;
+    color: #01244E !important;
+    outline: unset !important;
+	&:focus {
+        border: 1.35302px solid #1873B9 !important;
+    }
+    &::-webkit-input-placeholder {
+        font: 16px;
+        line-height: 20px;
+        color: #677C95;
+    }
+`
