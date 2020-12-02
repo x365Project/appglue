@@ -119,7 +119,6 @@ const MissingTextDiv = styled.div`
 
 export class ExpressionValueRenderer extends React.Component<{ el: ExpressionValue }> {
 
-    readonly CLICK_TEXT = 'Click To Edit';
 
 
     @AutoBind
@@ -209,7 +208,7 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
     }
 
     renderMissingElement() {
-        let text = this.CLICK_TEXT;
+        let text = this.props.el.editContext?.emptyExpressionText ?? 'Click To Edit';
         switch (this.props.el.valueType) {
             case ExpressionValueType.SUBEXPRESSION:
                 text = 'Pick Expression'

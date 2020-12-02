@@ -32,7 +32,7 @@ export class XSelectbox extends BaseTextEntryControl {
                 }            
                 <StyledSelect     
                     style={{width: '100%'}}    
-                    value={''}
+                    value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                     native
                     onChange={this.handleChange}
                     data-testid={this.valueName}
@@ -53,7 +53,7 @@ export class XSelectbox extends BaseTextEntryControl {
     }
 
     private handleChange = (event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
-        if(this.valueName) {
+        if (this.valueName) {
             this.setFormDataValue(this.valueName, event.target.value);
         }
     }

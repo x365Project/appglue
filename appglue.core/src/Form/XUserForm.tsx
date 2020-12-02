@@ -5,6 +5,7 @@ import {FormRuntimeContext} from "./Utilities/FormEditContext";
 
 export interface IUserFormParameters {
     form: XFormConfiguration;
+    formTitle?: string;
     formData?: UserFormData;
     onFormDataChange? : (data: UserFormData) => void ;
     onFormButtonClick? : (buttonName: string, data: UserFormData) => void ;
@@ -38,6 +39,9 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
         if (this.props.onFormClose)
             fContext.onFormClose = this.props.onFormClose;
 
+        if (this.props.formTitle)
+            fContext.formTitle = this.props.formTitle;
+        
         this.formRuntimeContext = fContext;
 
         this.props.form.setFormRuntimeContext(fContext);

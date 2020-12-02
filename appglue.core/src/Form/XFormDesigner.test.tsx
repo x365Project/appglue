@@ -286,7 +286,7 @@ describe("XFormDesigner", () => {
         expect(errorList).toHaveLength(0);
     });
 
-    it("Check the sizes and scroll in Test with Pinned Section ", () => {
+    it("Check the sizes and scroll in Runtime with Pinned Section", () => {
         let form = getFormConfig();
         form.doNotScrollLastContainerOnForm = true;
         form.doNotScrollFirstContainerOnForm = true;
@@ -338,7 +338,7 @@ describe("XFormDesigner", () => {
     });
 
 
-    it("Check the sizes and scroll in Test with unpinned ", () => {
+    it("Check the sizes and scroll in Test with unpinned", () => {
         let form = getFormConfig();
 
         const {getByTestId, queryByTestId} = render(<XFormDesigner form={form} initialMode={FormMode.Runtime} />);

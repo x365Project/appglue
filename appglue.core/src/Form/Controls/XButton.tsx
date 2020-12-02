@@ -15,7 +15,16 @@ export class XButton extends XBaseControl {
 
     render() {
         return (
-            <Button variant="contained">
+            <Button
+                variant="contained"
+                onClick={() => {
+                    if (this.isCancelButton) {
+                        this.getFormRuntimeContext()?.cancelOutcomeTriggered(this.label)
+                    } else {
+                        this.getFormRuntimeContext()?.outcomeTriggered(this.label)
+                    }
+                }}
+            >
                 {this.label}
             </Button>
         );

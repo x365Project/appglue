@@ -121,7 +121,7 @@ export class XStackContainer
                         })
                     }
                     {
-                        this.controls.length === 0 && this.renderEmptyControlDiv(this.getInnerMargin(), 'Add controls in the form design tab')
+                        this.controls.length === 0 && mode !== FormMode.Runtime && this.renderEmptyControlDiv(this.getInnerMargin(), 'Add controls in the form design tab')
                     }
                 </StackContainerDiv>
             )

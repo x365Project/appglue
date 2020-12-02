@@ -427,7 +427,7 @@ export class XColumnContainer
                                                 );
                                             })}
                                         </StackContainerDiv>
-                                        {col.getControls().length === 0 && this.renderEmptyControlDiv(this.gapBetweenColumns, 'Add controls in the form design tab')}
+                                        {col.getControls().length === 0 && mode !== FormMode.Runtime && this.renderEmptyControlDiv(this.gapBetweenColumns, 'Add controls in the form design tab')}
                                     </ColumnDiv>
                                 </React.Fragment>
                             );
@@ -610,7 +610,7 @@ export class XColumnContainer
                     label="Columns"
                     list={this.columns.map((col, idx) => ({name: `Columns ${idx + 1}`, item: col}))}
                     showDialogCancel={false}
-                    itemUI={(item: {index: number, content: XColumnContainerColumn}) => ({
+                    itemUI={(item: {index: number, content: XColumnContainerColumn | null}) => ({
                       onComplete : (item: {index: number, content: XColumnContainerColumn | null}) => {
                         if (item.content) {
                             Reflect.set(this.columns, item.index, item.content);
@@ -620,8 +620,8 @@ export class XColumnContainer
                         this.designerUpdate();
                       },
                       onCancel: () => {
-                        delete item.content;
-                        this.designerUpdate();
+                        // delete item.content;
+                        // this.designerUpdate();
                       },
                       ui: (
                           <ChildFullWidthDiv>

@@ -8,9 +8,11 @@ import {AutoBind} from "../../Common/AutoBind";
 export class ExpressionEditContext {
     private ownership: {[id: string] :  {owned: IBaseExpressionElement, owner : IBaseExpressionElement} }  = {};
     private selected? : string;
+    emptyExpressionText : string = 'Click To Edit';
 
     expressionEditor? : XExpressionEditor;
     definition? : XExpressionDefinition;
+    onSelection? : (selectedId: string) => void;
 
     clearSelection() : void {
         this.selected = undefined;
@@ -20,6 +22,9 @@ export class ExpressionEditContext {
     setSelection(id: string): void {
         this.selected = id;
         this.refresh();
+        if (this.onSelection) {
+            this.onSelection(this.selected);
+        }
     }
 
     getSelection() : string | null | undefined{
@@ -42,6 +47,10 @@ export class ExpressionEditContext {
         return this.ownership[id]?.owner;
     }
 
+    getElement(id: string) : IBaseExpressionElement | null {
+        console.log(this.ownership);
+        return this.ownership[id]?.owned;
+    }
 
     canSelectParent(id: string) : boolean {
         let parent = this.getParent(id);
@@ -75,10 +84,6 @@ export class ExpressionEditContext {
     }
 
     getParentExpressionValue(id: string) : ExpressionValue | null {
-        // console.log('owners');
-        // console.log(this.ownership);
-        //
-        // console.log(thisId);
         let parent = this.ownership[id];
 
         if (!parent) {
@@ -87,7 +92,6 @@ export class ExpressionEditContext {
         }
 
         if (ExpressionValue.isExpressionValue(parent.owner)){
-            console.log(parent.owner);
             return parent.owner;
         }
 

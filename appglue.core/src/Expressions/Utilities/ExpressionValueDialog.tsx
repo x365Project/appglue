@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import {ExpressionValue} from "../ExpressionValue";
 import {Button, ClickAwayListener, DialogActions, List, ListItem, ListItemText, TextField} from "@material-ui/core";
 import {ExpressionValueType} from "../ExpressionValueType";
@@ -12,6 +12,7 @@ import ReactDraggable from "react-draggable";
 import {CloseSharp, SearchOutlined} from "@material-ui/icons";
 import {FloatRight} from "../ExpressionElements/Logic/IfThenExpression";
 import {ExpressionLineDiv, ExpressionPiece} from "../ExpressionStyles";
+import {ExpressionEditContext} from "./ExpressionEditContext";
 
 const ExpressionValueSlotEditor = styled.div`
   font-family: Mulish;
@@ -177,7 +178,17 @@ const ToolboxItemText = styled.div`
    font-size: 14px;
 `;
 
-export class ExpressionValueDialog extends React.Component<{ expressionValue: ExpressionValue }> {
+export class ExpressionValueDialog extends React.Component<{ expressionValue: ExpressionValue }, {inserting : boolean}> {
+
+
+    constructor(props: Readonly<{ expressionValue: ExpressionValue }> | { expressionValue: ExpressionValue }) {
+        super(props);
+
+        this.state = {
+            inserting: false
+        }
+    }
+
     render() {
         return (
              (
@@ -190,7 +201,13 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
 
                             <ExpressionValueSlotEditor >
                                 {this.renderHeader()}
-                                {this.renderPage()}
+                                {!this.state.inserting && this.renderPage()}
+                                {this.state.inserting && <InsertExpressionPage
+                                    expressionValue={this.props.expressionValue}
+                                    onComplete={() => {
+                                        this.setState({inserting: false});
+                                    }}
+                                />}
                                 <DialogActions>
                                     <Button onClick={this.handleClose} color="primary">
                                         Complete
@@ -210,19 +227,29 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
             <Header className="config-form-header">
                 Edit Expression Value
                 <HeaderFloatRight>
-                    {(this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id) || true) &&
-                        <Button variant={"outlined"} onClick={() => {
-                            let parent = this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id)
-                            if (parent) {
-                                console.log('setting parent');
-                                console.log(parent);
-                                this.props.expressionValue.editContext?.setSelection(parent._id);
-                                this.props.expressionValue.editContext?.refresh();
-                            }
-                        }}>
-                            Select Parent
-                        </Button>}
-                    <Button variant={"outlined"}>Insert Expression</Button>
+                    {
+                        (this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id) && !this.state.inserting) &&
+                            <Button variant={"outlined"} onClick={() => {
+                                let parent = this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id)
+                                if (parent) {
+                                    this.props.expressionValue.editContext?.setSelection(parent._id);
+                                    this.props.expressionValue.editContext?.refresh();
+                                }
+                            }}>
+                                Select Parent
+                            </Button>
+                    }
+                    {
+                        (!this.state.inserting && this.props.expressionValue.valueType !== ExpressionValueType.UNSET) &&
+                            <Button
+                                variant={"outlined"}
+                                onClick={() => {
+                                    this.setState({inserting: true})
+                                }}
+                            >
+                                Insert Expression
+                            </Button>
+                    }
                     <CloseSharp onClick={() => {
                         this.props.expressionValue.editContext?.clearSelection();
                         this.props.expressionValue.editContext?.refresh();
@@ -242,7 +269,15 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                         {
                             // no expression, render the toolbox
                             !this.props.expressionValue.subExpression && (
-                                this.renderToolbox(true)
+                                <ToolboxPanel
+                                    large={false}
+                                    expressionValue={this.props.expressionValue}
+                                    onExpressionSelected={(registration: RegistrationData) => {
+                                        let exp = new registration.prototype.constructor() as BaseExpression;
+                                        this.props.expressionValue.subExpression = exp;
+                                        this.props.expressionValue.editContext?.refresh();
+                                    }}
+                                />
                             )
                         }
                         {
@@ -305,16 +340,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
         }
     }
 
-    renderToolbox(large: boolean) {
-        return (
-            <ToolboxPage >
-                {Object.values(ExpressionRegistration).map((value: RegistrationData, index: number) => {
-                    return <AddExpressionButton expression={this.props.expressionValue} registration={value}
-                                                key={"regitem" + index}/>
-                })}
-            </ToolboxPage>
-        );
-    }
 
     renderValueControl() {
         switch (this.props.expressionValue.expectedType) {
@@ -394,19 +419,121 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
             </ExpressionViewPanel>
         );
     }
+
 }
 
 
-
-const AddExpressionButton = function (props: {registration: RegistrationData, expression: ExpressionValue}) {
-    function addExpression() {
-        let exp = new props.registration.prototype.constructor() as BaseExpression;
-        props.expression.subExpression = exp;
-        props.expression.editContext?.refresh();
-    }
+const ToolboxPanel = function (props : {
+        large: boolean,
+        expressionValue: ExpressionValue,
+        onExpressionSelected : (registration: RegistrationData) => void}) {
 
     return (
-        <ToolboxItem onClick={addExpression}>
+        <ToolboxPage >
+            {Object.values(ExpressionRegistration).map((value: RegistrationData, index: number) => {
+                return <AddExpressionButton
+                    expression={props.expressionValue}
+                    registration={value}
+                    key={"regitem" + index}
+                    onClick={(registration: RegistrationData) => {
+                        props.onExpressionSelected(registration);
+                    }
+                    }/>
+            })}
+        </ToolboxPage>
+    );
+}
+
+
+const InsertExpressionPage = function (props: {expressionValue: ExpressionValue, onComplete : () => void}) {
+    const [selectedExpression, setSelectedExpression] = useState<BaseExpression | undefined>(undefined);
+    const [step2, setStep2] = useState(false);
+
+    const handleSelection = useCallback((selected: string) => {
+        console.log('handling selection');
+
+        console.log(selectedExpression);
+        console.log(step2);
+
+        if (selectedExpression) {
+            let ev = selectedExpression.editContext?.getElement(selected) as ExpressionValue;
+
+            if (!ev)
+                throw 'could not find expression value';
+
+            switch(props.expressionValue.valueType) {
+                case ExpressionValueType.SUBEXPRESSION:
+                    ev.subExpression = props.expressionValue.subExpression;
+                    break;
+                case ExpressionValueType.VALUE:
+                    ev.value = props.expressionValue.value;
+                    break;
+                case ExpressionValueType.VARIABLE:
+                    ev.variableName = props.expressionValue.variableName;
+                    break;
+            }
+
+            props.expressionValue.subExpression = selectedExpression;
+            props.expressionValue.editContext?.setSelection(props.expressionValue._id);
+
+            props.onComplete();
+        }
+
+    }, [step2, selectedExpression, props])
+
+    function handleButtonClick(registration: RegistrationData) {
+        let exp = new registration.prototype.constructor() as BaseExpression;
+
+        let context = new ExpressionEditContext();
+        context.emptyExpressionText = 'Select';
+        exp.setEditContextWithoutRegister(context) ;
+        setSelectedExpression(exp);
+        setStep2(true);
+    }
+
+    useEffect(() => {
+        if (selectedExpression && selectedExpression.editContext) {
+            selectedExpression.editContext.onSelection = handleSelection;
+        }
+    }, [selectedExpression, handleSelection])
+
+
+    if (!step2) {
+        return (
+            <>
+                Insert Expression - step 1, select expression
+                {
+                    <ToolboxPanel
+                        large={false}
+                        expressionValue={props.expressionValue}
+                        onExpressionSelected={handleButtonClick}
+                    />
+                }
+            </>
+        );
+    } else {
+
+        return (
+            <div>
+                <div>
+                    Insert Expression - step 2, pick slot
+                </div>
+
+                <div>
+                    {selectedExpression!.render()}
+                </div>
+
+            </div>
+        );
+    }
+}
+
+const AddExpressionButton = function (props: {registration: RegistrationData, expression: ExpressionValue, onClick : (registration: RegistrationData) => void}) {
+
+    return (
+        <ToolboxItem onClick={() => {
+            props.onClick(props.registration)
+        }}>
             {props.registration.icon}
             <ToolboxItemText>
                 {props.registration.name}

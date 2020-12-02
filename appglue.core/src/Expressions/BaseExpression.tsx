@@ -28,6 +28,15 @@ export abstract class BaseExpression
         }
     }
 
+    setEditContextWithoutRegister(editContext: ExpressionEditContext): void {
+        this.editContext = editContext;
+
+        for (let v of this.values) {
+            v.setEditContext(editContext, this);
+        }
+    }
+
+
     getExpressionValues() : ExpressionValue[] {
         return this.values;
     }

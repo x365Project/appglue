@@ -20,6 +20,9 @@ export class FormRuntimeContext {
     public onFormDataChange?: (data: UserFormData) => void;
     public onFormButtonClick? : (buttonName: string, data: UserFormData) => void ;
     public onFormCancelButton? : () => void ;
+
+
+    formTitle? : string;
     public onFormClose? : (data: UserFormData) => void ;
 
 
@@ -140,6 +143,17 @@ export class FormRuntimeContext {
         return this.data;
     }
 
+    @AutoBind
+    outcomeTriggered(name: string) {
+        if (this.onFormButtonClick)
+            this.onFormButtonClick(name, this.data);
+    }
+
+    @AutoBind
+    cancelOutcomeTriggered(name: string) {
+        if (this.onFormCancelButton)
+            this.onFormCancelButton();
+    }
 }
 
 export class FormEditContext extends FormRuntimeContext {
