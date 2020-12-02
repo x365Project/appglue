@@ -22,6 +22,7 @@ interface XSelectboxItem {
 export class XSelectbox extends BaseTextEntryControl {
     items: XSelectboxItem[] = [];
     render() {
+        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         return (
             <>
                 {
@@ -30,11 +31,11 @@ export class XSelectbox extends BaseTextEntryControl {
                     )
                 }            
                 <StyledSelect     
-                    style={{width: '100%'}}    
                     value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                     native
                     onChange={this.handleChange}
                     data-testid={this.valueName}
+                    width={customWidth}
                 >
                     {this.items.map((item, index) => {
                         return (
@@ -111,8 +112,8 @@ export class XSelectbox extends BaseTextEntryControl {
 }
 
 const StyledSelect = styled(Select)`
+    width: ${props => props.width} !important;
     select {
-        min-width: 246px !important;
         height: 59px !important;
         border: 1px solid #E6E9ED !important;
         box-sizing: border-box !important;

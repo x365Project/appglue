@@ -12,6 +12,7 @@ import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 export class XTimePicker extends BaseTextEntryControl {
 
     render () {
+        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         return (
             <form noValidate>
                 <>
@@ -25,6 +26,7 @@ export class XTimePicker extends BaseTextEntryControl {
                         value={this.valueName?this.getFormDataValue(this.valueName): String}
                         onChange={this.handleChange}
                         data-testid={this.valueName}
+                        width={customWidth}
                     />
                     {
                         this.hintText && (
@@ -62,19 +64,19 @@ class XTimePickerEditUI extends React.Component<{editMe: XTimePicker}> {
 }
 
 const StyledTextField = styled(TextField)`
-    width: '274.29px',
-    height: '59px',
-    border: '1.35302px solid #E6E9ED',
-    boxSizing: 'border-box',
-    borderRadius: '5.65107px',
-    color: '#677C95',
-    paddingLeft: 20,
-    paddingRight: 15,
-    &:focus {
-        background-color: #FFF;
-        border: 2px solid rgb(63, 81, 181) !important;
-        box-sizing: border-box;
-        border-radius: 5px 5px 0px 0px;
-        outline: unset !important;
+    width: ${props => props.width} !important;
+    input {
+        display: flex !important;
+        justify-content: space-around !important;
+        height: 59px !important;
+        padding: 14px 20px !important;
+        border: 1px solid #E6E9ED !important;
+        box-sizing: border-box !important;
+        border-radius: 5.65107px !important;
+        color: #677C95 !important;    
+        &:focus {
+            color: #01244E !important; 
+            border: 1.35302px solid #1873B9 !important;
+        }
     }
 `

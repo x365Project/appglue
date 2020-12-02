@@ -14,6 +14,7 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMin: number = 5;
 
 	render() {
+		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 		return (
 			<>
 				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
@@ -21,6 +22,7 @@ export class XTextArea extends BaseTextEntryControl {
 					data-testid={this.valueName}
 					rowsMax={this.rowMax}
 					rowsMin={this.rowMin}
+					width={customWidth}
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
 					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
@@ -69,7 +71,7 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 
 // https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
 const StyledTextareaAutosize = styled(TextareaAutosize)`
-	width: 100% !important;
+	width: ${props => props.width} !important;
 	min-width: 246px !important;
 	height: 59px !important;
 	border: 1px solid #E6E9ED !important;

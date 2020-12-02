@@ -23,7 +23,8 @@ export class XTextField extends BaseTextEntryControl {
 
         if (this.overrideStyle && this.size)
             size = this.size;
-
+        
+        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         switch(style) {
             case TextControlStyle.LABELED :
                 return (
@@ -38,7 +39,8 @@ export class XTextField extends BaseTextEntryControl {
                             size={size}
                             data-testid={this.valueName}
                             variant={"outlined"}
-                            fullWidth={true}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
                         >
@@ -53,45 +55,48 @@ export class XTextField extends BaseTextEntryControl {
                 );
             case TextControlStyle.SHADED :
                 return (
-                    <TextField
+                    <StyledTextField
                         size={size}
                         variant={'filled'}
                         data-testid={this.valueName}
                         fullWidth={true}
+                        width={customWidth}
                         value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                         label={this.label}
                         onChange={this.handleChange}
                     >
     
-                    </TextField>
+                    </StyledTextField>
                 );
             case TextControlStyle.UNDERLINED :
                 return (
-                    <TextField
+                    <StyledTextField
                         size={size}
                         variant={'standard'}
                         data-testid={this.valueName}
                         fullWidth={true}
+                        width={customWidth}
                         value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                         label={this.label}
                         onChange={this.handleChange}
                     >
     
-                    </TextField>
+                    </StyledTextField>
                 );
             case TextControlStyle.OUTLINE :
                 return (
-                    <TextField
+                    <StyledTextField
                         size={size}
                         variant={'outlined'}
                         data-testid={this.valueName}
                         fullWidth={true}
+                        width={customWidth}
                         value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                         label={this.label}
                         onChange={this.handleChange}
                     >
     
-                    </TextField>
+                    </StyledTextField>
                 );
             }
     
@@ -127,6 +132,7 @@ class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
 }
 
 const StyledTextField = styled(TextField)`
+    width: ${props => props.width} !important;
     height: 59px !important;
     box-sizing: border-box !important;
     fieldset {

@@ -12,6 +12,7 @@ import "./XControls.css"
 export class XNumberBox extends BaseTextEntryControl {
 
 	render() {
+        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 		return (
 			<>
 				{
@@ -26,6 +27,7 @@ export class XNumberBox extends BaseTextEntryControl {
                     onChange={this.handleChange}
                     data-testid={this.valueName}
                     fullWidth
+                    width={customWidth}
                 />
                 {
                     this.hintText && (
@@ -66,10 +68,10 @@ class XNumberBoxEditUI extends React.Component<{ editMe: XNumberBox }> {
 }
 
 const StyledTextField = styled(TextField)`
-    min-width: 246px,
-    height: 59px,
-    box-sizing: border-box,
-    border-radius: 5.65107px,
+    width: ${props => props.width} !important;
+    height: 59px;
+    box-sizing: border-box;
+    border-radius: 5.65107px;
     outline: unset !important;
     fieldset {
         border: unset !important;

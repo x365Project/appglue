@@ -26,6 +26,7 @@ export class XDatePicker extends BaseTextEntryControl {
     }
 
     render () {
+        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         return (
             <form noValidate>
                 {
@@ -42,6 +43,7 @@ export class XDatePicker extends BaseTextEntryControl {
                         shrink: false,
                     }}
                     data-testid={this.valueName}
+                    width={customWidth}
                 />
                 {
                     this.hintText && (
@@ -80,12 +82,12 @@ class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
 }
 
 const StyledTextField = styled(TextField)`
+    width: ${props => props.width} !important;
     input {
         display: flex !important;
         justify-content: space-around !important;
-        padding: 14px 20px !important;
-        width: 274.29px !important;
         height: 59px !important;
+        padding: 14px 20px !important;
         border: 1px solid #E6E9ED !important;
         box-sizing: border-box !important;
         border-radius: 5.65107px !important;
