@@ -9,10 +9,10 @@ import {UIControlRegistration} from "../Utilities/RegisterUIControl";
 export const OverlapDiv = styled("div")<{selected?: boolean, border?: string}>`
     background: transparent;
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     z-index: 100;
     filter: alpha(opacity = 0);
     border: ${props => props.selected && props.border ? props.border : 'none'};
