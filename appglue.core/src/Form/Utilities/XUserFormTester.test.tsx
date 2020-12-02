@@ -61,7 +61,7 @@ describe("XUserFormTester", () => {
         expect(firstName.value).toEqual('Sama')
 
         const lastName = getByTestId('lastName').querySelector('input') as HTMLInputElement;
-        expect(firstName).toBeInTheDocument();
+        expect(lastName).toBeInTheDocument();
         fireEvent.change(lastName, { target: { value: 'Sama' } });
         resultjson = JSON.parse(resultjsontext.value)
         expect(lastName.value).toEqual(resultjson.lastName)

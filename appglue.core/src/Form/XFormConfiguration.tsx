@@ -291,7 +291,7 @@ export class XFormConfiguration
 															{
 																this.showLinesBetweenContainers && (firstContainer || i !== 0) &&
 																<ContainerDivider
-																	
+																	data-testid="line-between-containers"
 																	lineColorBetweenContainers={this.defaultLineBetweenContainerColor}
 																	lineStyleBetweenContrainers={this.defaultLineBetweenContainerStyle}
 																	lineWidthBetweenContainers={this.defaultLineBetweenContainerWidth}
@@ -317,6 +317,7 @@ export class XFormConfiguration
 												{
 													this.showLinesBetweenContainers && 
 													<ContainerDivider
+														data-testid="line-between-containers"
 														lineColorBetweenContainers={this.defaultLineBetweenContainerColor}
 														lineStyleBetweenContrainers={this.defaultLineBetweenContainerStyle}
 														lineWidthBetweenContainers={this.defaultLineBetweenContainerWidth}
@@ -376,6 +377,7 @@ export class XFormConfiguration
 											{
 												this.showLinesBetweenContainers && (firstContainer || i !== 0) &&
 												<ContainerDivider
+													data-testid="line-between-containers"
 													lineColorBetweenContainers={this.defaultLineBetweenContainerColor}
 													lineStyleBetweenContrainers={this.defaultLineBetweenContainerStyle}
 													lineWidthBetweenContainers={this.defaultLineBetweenContainerWidth}
@@ -401,6 +403,7 @@ export class XFormConfiguration
 									{
 										this.showLinesBetweenContainers && 
 										<ContainerDivider
+											data-testid="line-between-containers"
 											lineColorBetweenContainers={this.defaultLineBetweenContainerColor}
 											lineStyleBetweenContrainers={this.defaultLineBetweenContainerStyle}
 											lineWidthBetweenContainers={this.defaultLineBetweenContainerWidth}
@@ -457,6 +460,7 @@ export class XFormConfiguration
 											{
 												this.showLinesBetweenContainers && (firstContainer || i !== 0) &&
 												<ContainerDivider
+													data-testid="line-between-containers"
 													lineColorBetweenContainers={this.defaultLineBetweenContainerColor}
 													lineStyleBetweenContrainers={this.defaultLineBetweenContainerStyle}
 													lineWidthBetweenContainers={this.defaultLineBetweenContainerWidth}
@@ -482,6 +486,7 @@ export class XFormConfiguration
 								{
 									this.showLinesBetweenContainers && 
 									<ContainerDivider
+										data-testid="line-between-containers"
 										lineColorBetweenContainers={this.defaultLineBetweenContainerColor}
 										lineStyleBetweenContrainers={this.defaultLineBetweenContainerStyle}
 										lineWidthBetweenContainers={this.defaultLineBetweenContainerWidth}

@@ -34,7 +34,7 @@ export const EditLayerStyledAccordion = styled(Accordion)`
         flex: 1;
         overflow: auto;
 
-        .MuiCollapse-container.MuiCollapse-entered {
+        > .MuiCollapse-container.MuiCollapse-entered {
             flex: 1;
             overflow: auto;
         }

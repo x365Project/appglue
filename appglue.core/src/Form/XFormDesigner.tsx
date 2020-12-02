@@ -330,7 +330,6 @@ export class XFormDesigner extends React.Component<{
     }
 
     render() {
-        //const validationIssues = this.editContext?.getDesignValidationIssues();
 
         return (
             <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>

@@ -9,7 +9,7 @@ import { XFormConfiguration } from "../XFormConfiguration";
 import { getFormConfig } from "../Testing/FormTestData";
 import {XUserForm} from "../XUserForm";
 import {XColumnContainer, XColumnContainerColumn} from "../Containers/XColumnContainer";
-import {XHStackContainer, HStackVerticalAlignment} from "../Containers/XHStackContainer";
+import {XHStackContainer, HStackVerticalAlignment, HStackAlignment} from "../Containers/XHStackContainer";
 import {XTextField} from "../Controls/XTextField";
 import {XButton} from "../Controls/XButton";
 import { DefaultOnOff } from "../Utilities/DefaultOnOff";
@@ -19,6 +19,7 @@ import { XSelectbox } from "../Controls/XSelectbox";
 import { XCheckboxField } from "../Controls/XCheckboxField";
 import { UserFormData } from "../UserFormData";
 import { InputLabel } from "@material-ui/core";
+import { BorderStyle, TextControlStyle, TextControlSize } from "../FormDesignConstants";
 
 
 let form = getFormConfig();
@@ -186,6 +187,9 @@ let columnContainer = new XColumnContainer();
 let actualCol = new XColumnContainerColumn();
 let actualCol2 = new XColumnContainerColumn();
 let actualCol3 = new XColumnContainerColumn();
+actualCol3.overrideFormBorderSettings = DefaultOnOff.On;
+actualCol3.columnBorderWidth = 3;
+actualCol3.columnBorderColor = '#f00';
 
 actualCol.targetWidth = 30;
 actualCol.minSizePx = 100;
@@ -289,6 +293,70 @@ let newForm = new XFormConfiguration();
 newForm.setStorageData(sasobj);
 
 export const DataChangingExternally = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800}});
+
+form = getFormConfig();
+
+form.designFormWidth = 500;
+
+form.runtimeWidth = 600;
+form.gapBetweenContainers = 10;
+form.formMargin = 5;
+form.defaultInnerContainerMargin = 8;
+form.defaultInnerColumnMargin = 2;
+form.defaultInterControlSpacing = 8;
+
+// // first container
+form.doNotScrollLastContainerOnForm = true;
+form.doNotScrollFirstContainerOnForm = false;
+
+form.defaultShowContainerBorder = true;
+form.defaultContainerBorderRadius = 10;
+form.defaultContainerBorderWidth = 3;
+form.defaultContainerBorderColor = '#0f0';
+form.defaultContainerBorderStyle = BorderStyle.Groove;
+
+form.defaultLineBetweenContainerWidth = 2;
+form.showLinesBetweenContainers = true;
+form.defaultLineBetweenContainerColor = '#000';
+form.defaultLineBetweenContainerStyle = BorderStyle.Dashed;
+
+form.formBackgroundColor = '#ccc';
+form.defaultContainerBackgroundColor = '#eee';
+
+form.defaultTextStyle = TextControlStyle.OUTLINE;
+form.defaultTextSize = TextControlSize.SMALL;
+
+let containers = form.getContainers();
+
+hstackContainer = containers[3] as XHStackContainer;
+hstackContainer.alignment = HStackAlignment.CENTER;
+hstackContainer.verticalAlignment = HStackVerticalAlignment.MIDDLE;
+
+stackContainer = containers[1] as XStackContainer;
+stackContainer.interControlSpacing = 20;
+
+let stackContainer1 = containers[0] as XStackContainer;
+stackContainer1.containerBackgroundColor = '#033';
+
+columnContainer = containers[2] as XColumnContainer;
+
+columnContainer.overrideFormBorderSettings = DefaultOnOff.On;
+columnContainer.defaultShowColumnBorder = true;
+columnContainer.defaultColumnBorderColor = '#a00'
+columnContainer.defaultInnerColumnMargin = 10;
+
+columnContainer.lineBetweenColumns = true;
+columnContainer.lineWidthBetweenColumns = 1;
+columnContainer.lineColorBetweenColumns = '#00f';
+
+formStorageData = form.getStorageData();
+s = JSON.stringify(formStorageData, null, 2);
+
+sasobj = JSON.parse(s);
+newForm = new XFormConfiguration();
+newForm.setStorageData(sasobj);
+
+export const  DataChangingExternallyWithFullTestData = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800}});
 
 
 export const ValidationBreaks = MissingTemplate.bind({}, {});
