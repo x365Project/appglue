@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from "styled-components";
 import TextField from '@material-ui/core/TextField';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import {InputLabel} from "@material-ui/core";
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
+import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
 
 
@@ -69,31 +68,18 @@ class XNumberBoxEditUI extends React.Component<{ editMe: XNumberBox }> {
 const StyledTextField = styled(TextField)`
     min-width: 246px,
     height: 59px,
-    border: 1.35302px solid #E6E9ED,
     box-sizing: border-box,
     border-radius: 5.65107px,
-    & .MuiInputBase-input {
-        color: #677C95 !important;    
+    outline: unset !important;
+    fieldset {
+        border: unset !important;
     }
-    &:focus {
-        color: #01244E !important;    
-        border: 2px solid rgb(63, 81, 181) !important;
+    input {
+        color: #01244E !important;
+        border-radius: 5.65107px !important;
+        &:focus {
+            border: 1.35302px solid #1873B9 !important;
+        }
+        border: 1px solid #E6E9ED !important;
     }
 `
-
-const StyledInputLabel = styled(InputLabel)`
-    font-family: Mulish !important;
-    font-weight: 400 !important;
-    font-size: 14px !important;
-    line-height: 18px !important;
-    margin-bottom: 12px !important;
-`;
-
-const StyledFormHelperText = styled(FormHelperText)`
-    font-family: Mulish !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    line-height: 15px !important;
-    color: #677C95 !important;
-    margin-top: 6px !important;
-`;

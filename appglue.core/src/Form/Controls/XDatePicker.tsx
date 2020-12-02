@@ -1,12 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import TextField from '@material-ui/core/TextField';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import {InputLabel} from "@material-ui/core";
 
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {DatePickerIcon} from "../../CommonUI/Icon/DatePickerIcon";
+import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
 
 @RegisterUIControl('Data (Entry)', 'Date Picker', ControlType.Control, <DatePickerIcon />)
@@ -29,13 +28,11 @@ export class XDatePicker extends BaseTextEntryControl {
     render () {
         return (
             <form noValidate>
-
                 {
                     this.label && (
                         <StyledInputLabel>{this.label}</StyledInputLabel>
                     )
                 }
-
                 <StyledTextField
                     label=""
                     type="date"
@@ -45,16 +42,6 @@ export class XDatePicker extends BaseTextEntryControl {
                         shrink: false,
                     }}
                     data-testid={this.valueName}
-                    // inputProps={{
-                    //     style: {
-                    //         width: '274.29px',
-                    //         height: '59px',
-                    //         border: '1.35302px solid #E6E9ED',
-                    //         boxSizing: 'border-box',
-                    //         borderRadius: '5.65107px',
-                    //         color: '#677C95',
-                    //     },
-                    // }}
                 />
                 {
                     this.hintText && (
@@ -93,35 +80,19 @@ class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
 }
 
 const StyledTextField = styled(TextField)`
-    display: flex !important;
-    justify-content: space-around !important;
-    padding: 14px 20px !important;
-    width: 274.29px !important;
-    height: 59px !important;
-    border: 1px solid #E6E9ED !important;
-    box-sizing: border-box !important;
-    border-radius: 5.65107px !important;
-    & .MuiInputBase-input {
+    input {
+        display: flex !important;
+        justify-content: space-around !important;
+        padding: 14px 20px !important;
+        width: 274.29px !important;
+        height: 59px !important;
+        border: 1px solid #E6E9ED !important;
+        box-sizing: border-box !important;
+        border-radius: 5.65107px !important;
         color: #677C95 !important;    
-    }
-    &:focus {
-        color: #01244E !important;    
+        &:focus {
+            color: #01244E !important; 
+            border: 1.35302px solid #1873B9 !important;
+        }
     }
 `
-
-const StyledInputLabel = styled(InputLabel)`
-    font-family: Mulish !important;
-    font-weight: 400 !important;
-    font-size: 14px !important;
-    line-height: 18px !important;
-    margin-bottom: 12px !important;
-`;
-
-const StyledFormHelperText = styled(FormHelperText)`
-    font-family: Mulish !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    line-height: 15px !important;
-    color: #677C95 !important;
-    margin-top: 6px !important;
-`;

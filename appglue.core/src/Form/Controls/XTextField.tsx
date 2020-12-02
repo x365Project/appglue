@@ -1,12 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
-import FormHelperText from '@material-ui/core/FormHelperText';
 import { RegisterUIControl, ControlType } from "../Utilities/RegisterUIControl";
 import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
-import {InputLabel} from "@material-ui/core";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
+import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 
 
 
@@ -35,25 +34,16 @@ export class XTextField extends BaseTextEntryControl {
                             )
                         }
                         
-                        <TextField
+                        <StyledTextField
                             size={size}
                             data-testid={this.valueName}
                             variant={"outlined"}
                             fullWidth={true}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            inputProps={{
-                                style: {
-                                    minWidth: 246,
-                                    height: '59px',
-                                    border: '1.35302px solid #E6E9ED',
-                                    boxSizing: 'border-box',
-                                    borderRadius: '5.65107px',
-                                },
-                            }}
                         >
     
-                        </TextField>
+                        </StyledTextField>
                         {
                             this.hintText && (
                                 <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
@@ -136,20 +126,18 @@ class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
     }
 }
 
-// https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
-const StyledInputLabel = styled(InputLabel)`
-    font-family: Mulish !important;
-    font-weight: 400 !important;
-    font-size: 14px !important;
-    line-height: 18px !important;
-    margin-bottom: 12px !important;
-`;
-
-const StyledFormHelperText = styled(FormHelperText)`
-    font-family: Mulish !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    line-height: 15px !important;
-    color: #677C95 !important;
-    margin-top: 6px !important;
-`;
+const StyledTextField = styled(TextField)`
+    height: 59px !important;
+    box-sizing: border-box !important;
+    fieldset {
+        border: unset !important;
+    }
+    input {
+        color: #01244E !important;
+        border-radius: 5.65107px !important;
+        &:focus {
+            border: 1.35302px solid #1873B9 !important;
+        }
+        border: 1.35302px solid #E6E9ED !important;
+    }
+`
