@@ -342,6 +342,10 @@ columnContainer.defaultShowColumnBorder = true;
 columnContainer.defaultColumnBorderColor = '#a00'
 columnContainer.defaultInnerColumnMargin = 10;
 
+columnContainer.lineBetweenColumns = true;
+columnContainer.lineWidthBetweenColumns = 1;
+columnContainer.lineColorBetweenColumns = '#00f';
+
 formStorageData = form.getStorageData();
 s = JSON.stringify(formStorageData, null, 2);
 

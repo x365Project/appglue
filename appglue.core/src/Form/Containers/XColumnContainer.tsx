@@ -225,7 +225,6 @@ export class XColumnContainer
         if (this.getFormEditContext())
             control.setFormEditContext(this.getFormEditContext()) ;
 
-
     }
 
     remove(control: XBaseControl): void {
@@ -301,6 +300,7 @@ export class XColumnContainer
                                     {
                                         this.lineBetweenColumns && index > 0 && (
                                             <ColumnDivider
+                                                data-testid="line-between-columns"
                                                 lineColorBetweenColumns={this.lineColorBetweenColumns}
                                                 lineWidthBetweenColumns={this.lineWidthBetweenColumns}
                                                 colGap={this.gapBetweenColumns / 2}
@@ -390,6 +390,7 @@ export class XColumnContainer
                                     {
                                         this.lineBetweenColumns && index > 0 && (
                                             <ColumnDivider
+                                                data-testid="line-between-columns"
                                                 lineColorBetweenColumns={this.lineColorBetweenColumns}
                                                 lineWidthBetweenColumns={this.lineWidthBetweenColumns}
                                                 colGap={this.gapBetweenColumns / 2}

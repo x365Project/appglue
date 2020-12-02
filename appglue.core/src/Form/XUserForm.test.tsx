@@ -1,9 +1,9 @@
 import React from 'react';
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, queryAllByTestId } from "@testing-library/react";
 import { XUserForm } from './XUserForm';
 import { XFormConfiguration } from './XFormConfiguration';
 import { XStackContainer } from './Containers/XStackContainer';
-import { XColumnContainer } from './Containers/XColumnContainer';
+import { XColumnContainer, XColumnContainerColumn } from './Containers/XColumnContainer';
 import { XHStackContainer, HStackAlignment, HStackVerticalAlignment } from './Containers/XHStackContainer';
 import { getFormConfig } from "./Testing/FormTestData";
 import { BorderStyle, TextControlStyle, TextControlSize } from './FormDesignConstants';
@@ -109,6 +109,10 @@ describe("XUserForm", () => {
         columnContainer.defaultColumnBorderColor = '#a00'
         columnContainer.defaultInnerColumnMargin = 10;
 
+        columnContainer.lineBetweenColumns = true;
+        columnContainer.lineWidthBetweenColumns = 1;
+        columnContainer.lineColorBetweenColumns = '#00f';
+
         let sourceStorage = sourceForm.getStorageData();
         let sourceStorageStr = JSON.stringify(sourceStorage, null, 2);
         let sourceStorageObj = JSON.parse(sourceStorageStr);
@@ -124,7 +128,7 @@ describe("XUserForm", () => {
         expect(form.runtimeWidth).toEqual(sourceForm.runtimeWidth);
         expect(form.designFormWidth).toEqual(sourceForm.designFormWidth);
 
-        const {getByTestId} = render(<XUserForm form={form} />);
+        const {getByTestId, queryAllByTestId} = render(<XUserForm form={form} />);
 
         const firstName = getByTestId('firstName').querySelector('input') as HTMLInputElement;
         expect(firstName).toBeInTheDocument();
@@ -164,6 +168,9 @@ describe("XUserForm", () => {
         expect(getByTestId('otherdata3_1')).toBeInTheDocument();
         expect(getByTestId('otherdata3_2')).toBeInTheDocument();
         expect(getByTestId('otherdata3_3')).toBeInTheDocument();
+
+        expect(queryAllByTestId('line-between-containers')).toHaveLength(3);
+        expect(queryAllByTestId('line-between-columns')).toHaveLength(2);
     });
 
     it("Check Form Actions", () => {
@@ -188,7 +195,14 @@ describe("XUserForm", () => {
             isFormCancel = true;
         }
 
-        const {getByText, getByTestId} = render(<XUserForm form={form} onFormButtonClick={onFormButtonClick} onFormClose={onFormClose} onFormDataChange={onFormDataChange} onFormCancelButton={onFormCancelButton} />);
+        const {getByText, getByTestId} = render(
+            <XUserForm form={form}
+                onFormButtonClick={onFormButtonClick}
+                onFormClose={onFormClose}
+                onFormDataChange={onFormDataChange}
+                onFormCancelButton={onFormCancelButton}
+            />
+        );
 
         const cancelBtn = getByText(/Cancel/i);
         expect(cancelBtn).toBeInTheDocument();
@@ -200,5 +214,26 @@ describe("XUserForm", () => {
         fireEvent.change(lastNameInput, {target: {value: 'test'}});
         expect(isFormChanged).toEqual(true);
     });
+
+    it("Check the line between columns", () => {
+        let colContainer = new XColumnContainer();
+        colContainer.lineBetweenColumns = true;
+
+        colContainer.add(new XColumnContainerColumn());
+        colContainer.add(new XColumnContainerColumn());
+        colContainer.add(new XColumnContainerColumn());
+        colContainer.add(new XColumnContainerColumn());
+
+        let form:XFormConfiguration = new XFormConfiguration([colContainer, new XHStackContainer(), new XHStackContainer(), new XStackContainer(), new XColumnContainer()]);
+        form.showLinesBetweenContainers = true;
+
+        const {queryAllByTestId} = render(
+            <XUserForm form={form} />
+        );
+
+        expect(queryAllByTestId('line-between-containers')).toHaveLength(4);
+        expect(queryAllByTestId('line-between-columns')).toHaveLength(3);
+
+    })
 
 });
