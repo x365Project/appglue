@@ -8,18 +8,15 @@ export function getFrameOptions() : FrameOptions {
 export class FrameOptions {
     icon: JSX.Element | undefined;
     tenantName: string = 'AppGlue';
-    color: string = 'darkblue';
-    colorGradientEnd?: string;
 
     layout: Layout = Layout.VERTICAL;
     sideBarType: SideBarType = SideBarType.DEFAULT;
     frameSize: FrameSize = FrameSize.STANDARD;
-    layoutWidth: LayoutWidth =LayoutWidth.FULL_WIDTH;
+    layoutWidth: LayoutWidth =LayoutWidth.FLUID;
     topBarTheme: TopBarTheme = TopBarTheme.DARK;
     navBarTheme: NavBarTheme = NavBarTheme.DARK;
     contentTheme: ContentTheme = ContentTheme.LIGHT;
     preloader: Preloader = Preloader.ON;
-    minWidth: number = 1500;
 
 }
 
@@ -35,8 +32,9 @@ export enum FrameSize {
 }
 
 export enum LayoutWidth {
-    FULL_WIDTH = 'fullwidth',
+    FLUID = 'fluid',
     BOXED = 'boxed',
+    SCROLLABLE = 'scrollable'
 }
 
 export enum TopBarTheme {

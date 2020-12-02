@@ -1,15 +1,60 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import {NavFrame} from "./NavFrame/NavFrame";
-import {FrameOptions, getFrameOptions} from "./NavFrame/FrameOptions";
+import React from "react"
 
-function App() {
+import { Switch, BrowserRouter as Router } from "react-router-dom"
+import { connect } from "react-redux"
+
+// Import Routes all
+import { userRoutes } from "./routes/allRoutes"
+
+// Import all middleware
+import Authmiddleware from "./routes/middleware/Authmiddleware"
+
+// layouts Format
+import VerticalLayout from "./components/VerticalLayout/"
+import HorizontalLayout from "./components/HorizontalLayout/"
+
+// Import scss
+import "./assets/scss/theme.scss"
+
+const App = (props: any) => {
+  function getLayout() {
+    let layoutCls:any
+
+    switch (props.layout.layoutType) {
+      case "horizontal":
+        layoutCls = HorizontalLayout
+        break
+      default:
+        layoutCls = VerticalLayout
+        break
+    }
+    return layoutCls
+  }
+
+  const Layout = getLayout()
   return (
-    <div className="App">
-      <NavFrame layoutOptions={getFrameOptions()}/>
-    </div>
-  );
+    <React.Fragment>
+      <Router>
+        <Switch>
+          {userRoutes.map((route, idx) => (
+            <Authmiddleware
+              path={route.path}
+              layout={Layout}
+              component={route.component}
+              key={idx}
+              exact
+            />
+          ))}
+        </Switch>
+      </Router>
+    </React.Fragment>
+  )
 }
 
-export default App;
+const mapStateToProps = (state: any) => {
+  return {
+    layout: state.Layout,
+  }
+}
+
+export default connect(mapStateToProps, null)(App)
