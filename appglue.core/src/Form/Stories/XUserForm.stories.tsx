@@ -187,6 +187,9 @@ let columnContainer = new XColumnContainer();
 let actualCol = new XColumnContainerColumn();
 let actualCol2 = new XColumnContainerColumn();
 let actualCol3 = new XColumnContainerColumn();
+actualCol3.overrideFormBorderSettings = DefaultOnOff.On;
+actualCol3.columnBorderWidth = 3;
+actualCol3.columnBorderColor = '#f00';
 
 actualCol.targetWidth = 30;
 actualCol.minSizePx = 100;
