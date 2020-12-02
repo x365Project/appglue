@@ -31,12 +31,13 @@ export class XTextField extends BaseTextEntryControl {
                     <>
                         {
                             this.label && (
-                                <StyledInputLabel>{this.label}</StyledInputLabel>
+                                <StyledInputLabel data-role={TextControlStyle.LABELED}>{this.label}</StyledInputLabel>
                             )
                         }
                         
                         <TextField
                             size={size}
+                            data-size={size}
                             data-testid={this.valueName}
                             variant={"outlined"}
                             fullWidth={true}
@@ -47,52 +48,73 @@ export class XTextField extends BaseTextEntryControl {
                         </TextField>
                         {
                             this.hintText && (
-                                <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
                             )
                         }
                     </>
                 );
             case TextControlStyle.SHADED :
                 return (
-                    <TextField
-                        size={size}
-                        variant={'filled'}
-                        data-testid={this.valueName}
-                        fullWidth={true}
-                        value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                        label={this.label}
-                        onChange={this.handleChange}
-                    >
-    
-                    </TextField>
+                    <>
+                        <TextField
+                            data-role={TextControlStyle.SHADED}
+                            data-size={size}
+                            size={size}
+                            variant={'filled'}
+                            data-testid={this.valueName}
+                            fullWidth={true}
+                            value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                            label={this.label}
+                            onChange={this.handleChange}
+                        />
+                        {
+                            this.hintText && (
+                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );
             case TextControlStyle.UNDERLINED :
                 return (
-                    <TextField
-                        size={size}
-                        variant={'standard'}
-                        data-testid={this.valueName}
-                        fullWidth={true}
-                        value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                        label={this.label}
-                        onChange={this.handleChange}
-                    >
-    
-                    </TextField>
+                    <>
+                        <TextField
+                            size={size}
+                            data-role={TextControlStyle.UNDERLINED}
+                            data-size={size}
+                            variant={'standard'}
+                            data-testid={this.valueName}
+                            fullWidth={true}
+                            value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                            label={this.label}
+                            onChange={this.handleChange}
+                        />
+                        {
+                            this.hintText && (
+                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );
             case TextControlStyle.OUTLINE :
                 return (
-                    <TextField
-                        size={size}
-                        variant={'outlined'}
-                        data-testid={this.valueName}
-                        fullWidth={true}
-                        value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                        label={this.label}
-                        onChange={this.handleChange}
-                    >
-    
-                    </TextField>
+                    <>
+                        <TextField
+                            size={size}
+                            data-role={TextControlStyle.OUTLINE}
+                            data-size={size}
+                            variant={'outlined'}
+                            data-testid={this.valueName}
+                            fullWidth={true}
+                            value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                            label={this.label}
+                            onChange={this.handleChange}
+                        />
+                        {
+                            this.hintText && (
+                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );
             }
     

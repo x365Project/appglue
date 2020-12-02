@@ -5,8 +5,41 @@ import { XFormConfiguration } from "../XFormConfiguration";
 import { XTextField } from "./XTextField";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
+import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
+import { FormEditContext } from "../Utilities/FormEditContext";
+import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel";
 
 describe("XTextField", () => {
+
+    let errorList: any[] = [];
+
+    const renderError = (output: string) => {
+        errorList.push(output);
+    };
+
+    const renderWarn = (output: any) => {
+        errorList.push(output);
+    }
+
+    const originalError = console.error
+    const originalWarn = console.error
+    const originalLog = console.log
+
+    beforeEach(() => {
+        console.error = renderError
+        console.warn = renderWarn
+        // console.log = renderLog
+    })
+
+
+    afterEach(() => {
+        console.error = originalError;
+        console.warn = originalWarn;
+        console.log = originalLog;
+    })
+
+
+
     const factory = (form: XFormConfiguration) => {
         const stack = new XStackContainer();
         form.add(stack);
@@ -49,5 +82,31 @@ describe("XTextField", () => {
             test: "new content",
         }
         waitFor(() => expect(formContext?.getFormData()).toEqual(changedFromValues));
+    });
+
+    it("Check override the size and style", () => {
+        const form = new XFormConfiguration();
+        form.defaultTextSize = TextControlSize.SMALL;
+        form.defaultTextStyle = TextControlStyle.OUTLINE;
+
+        let {container, getByTestId} = factory(form);
+        expect(container.querySelector(`[data-size="${TextControlSize.SMALL}"][data-role="${TextControlStyle.OUTLINE}"]`)).toBeInTheDocument();
+        expect(getByTestId('test-hinttext')).toHaveTextContent(/test hint/i);
+
+    });
+
+    it("Check design validation display", () => {
+        const form = new XFormConfiguration();
+        form.defaultTextSize = TextControlSize.SMALL;
+        form.defaultTextStyle = TextControlStyle.OUTLINE;
+        const stack = new XStackContainer();
+        form.add(stack);
+        const control = new XTextField();
+        control.label = "test label";
+        stack.add(control);
+        const ui = new FormEditContext(form);
+        form.setFormEditContext(ui);
+        const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
+        expect(getByTestId('control-error-validation')).toBeInTheDocument();
     });
 });
