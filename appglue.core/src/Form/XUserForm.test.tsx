@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, getByTestId } from "@testing-library/react";
 import { XUserForm } from './XUserForm';
 import { XFormConfiguration } from './XFormConfiguration';
 import { XStackContainer } from './Containers/XStackContainer';
 import { XColumnContainer } from './Containers/XColumnContainer';
 import { XHStackContainer } from './Containers/XHStackContainer';
+import { getFormConfig } from "./Testing/FormTestData";
 
 describe("XUserForm", () => {
 
@@ -52,6 +53,56 @@ describe("XUserForm", () => {
 
         expect(errorList).toHaveLength(0);
 
+    });
+
+    it("Creating Form from json", () => {
+        let sourceForm: XFormConfiguration = getFormConfig();
+        let sourceStorage = sourceForm.getStorageData();
+        let sourceStorageStr = JSON.stringify(sourceStorage, null, 2);
+        let sourceStorageObj = JSON.parse(sourceStorageStr);
+
+        let form: XFormConfiguration = new XFormConfiguration();
+        form.setStorageData(sourceStorageObj);
+
+        let storage = form.getStorageData();
+        let storageStr = JSON.stringify(storage, null, 2);
+
+        expect(storageStr).toEqual(sourceStorageStr);
+    });
+
+    it("Check Form Actions", () => {
+        let form: XFormConfiguration = getFormConfig();
+        let isFormChanged = false;
+        const onFormDataChange = (data: FormData) => {
+            isFormChanged = true;
+        }
+
+        let isFormButtonClick = false;
+        const onFormButtonClick = (buttonName: string, data: FormData) => {
+            isFormButtonClick = true;
+        }
+
+        let isFormClosed = false;
+        const onFormClose = (data: FormData) => {
+            isFormClosed = false;
+        }
+
+        let isFormCancel = false;
+        const onFormCancelButton = () => {
+            isFormCancel = true;
+        }
+
+        const {getByText, getByTestId} = render(<XUserForm form={form} onFormButtonClick={onFormButtonClick} onFormClose={onFormClose} onFormDataChange={onFormDataChange} onFormCancelButton={onFormCancelButton} />);
+
+        const cancelBtn = getByText(/Cancel/i);
+        expect(cancelBtn).toBeInTheDocument();
+        fireEvent.click(cancelBtn);
+        expect(isFormButtonClick).toEqual(true);
+
+        const lastNameInput = getByTestId("lastName").querySelector("input") as HTMLInputElement;
+        expect(lastNameInput).toBeInTheDocument();
+        fireEvent.change(lastNameInput, {target: {value: 'test'}});
+        expect(isFormChanged).toEqual(true);
     });
 
 });
