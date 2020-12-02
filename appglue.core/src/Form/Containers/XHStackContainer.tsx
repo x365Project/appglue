@@ -60,6 +60,7 @@ const HStackRowDiv = styled("div")<{
     display: flex;
     justify-content: ${(props) => props.align};
     align-items: ${props => props.verticalAlign};
+    width: 100%;
 `;
 
 const HStackColumn = styled("div")<{colGap?: number}>`
