@@ -88,7 +88,7 @@ export class FormRuntimeContext {
         this.data = data;
     }
 
-    getFormData(): UserFormData | undefined | null {
+    getFormData(): UserFormData {
         return this.data;
     }
 

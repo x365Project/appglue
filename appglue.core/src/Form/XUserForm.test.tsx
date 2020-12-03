@@ -237,11 +237,13 @@ describe("XUserForm", () => {
     });
 
     it("Check the form title and form close button action", () => {
-        let form:XFormConfiguration = new XFormConfiguration();
+        let form:XFormConfiguration = getFormConfig();
 
         let isOnFormClose = false;
+        let formData: UserFormData = new UserFormData();
         let onFormClose = (data: UserFormData) => {
             isOnFormClose = true;
+            formData = data;
         }
 
         let formTitle = 'Test Form Title';
@@ -250,10 +252,29 @@ describe("XUserForm", () => {
             <XUserForm form={form} onFormClose={onFormClose} formTitle={formTitle} /> 
         )
 
+        let testData: UserFormData = new UserFormData();
+
+        testData.firsName = 'First Name';
+        fireEvent.change(getByTestId('firstName').querySelector('input') as HTMLInputElement, { target: {value: testData.firstName}})
+
+        testData.lastName = 'Last Name';
+        fireEvent.change(getByTestId('lastName').querySelector('input') as HTMLInputElement, { target: {value: testData.lastName}})
+
+        testData.birthday = '2020-11-25';
+        fireEvent.change(getByTestId('birthday').querySelector('input') as HTMLInputElement, { target: {value: testData.birthday}})
+
+        testData.personDescription = 'Person Description';
+        fireEvent.change(getByTestId('personDescription') as HTMLTextAreaElement, { target: {value: testData.personDescription}});
+
         let btnFormClose = getByTestId('btn-form-close');
         expect(btnFormClose).toBeInTheDocument();
         fireEvent.click(btnFormClose);
         expect(isOnFormClose).toEqual(true);
+
+        expect(formData.firstName).toEqual(testData.firstName);
+        expect(formData.lastName).toEqual(testData.lastName);
+        expect(formData.birthday).toEqual(testData.birthday);
+        expect(formData.personDescription).toEqual(testData.personDescription);
 
         let formTitleInput = getByTestId('test-form-title').querySelector('input') as HTMLInputElement;
         expect(formTitleInput).toBeInTheDocument();
