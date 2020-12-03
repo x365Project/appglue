@@ -167,6 +167,7 @@ export default {
     title: "Form Designer/Runtime",
 } as Meta;
 
+form.remove(form.getContainers()[0]);
 form.formBackgroundColor = 'transparent';
 export const AllControls = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
@@ -205,6 +206,11 @@ columnContainer.overrideFormBorderSettings = DefaultOnOff.On;
 columnContainer.showContainerBorder = true;
 columnContainer.defaultShowColumnBorder = true;
 
+
+columnContainer.lineBetweenColumns = true;
+columnContainer.lineWidthBetweenColumns = 2;
+columnContainer.lineColorBetweenColumns = '#ff0';
+
 columnContainer.add(actualCol);
 columnContainer.add(actualCol2);
 columnContainer.add(actualCol3);
@@ -237,6 +243,7 @@ form.add(hstackContainer);
 export const ResponsiveThinForm = Template.bind({}, {storyHostProps: {form, width: 375, height: 667}});
 
 form = getFormConfig();
+form.remove(form.getContainers()[0]);
 form.formBackgroundColor = 'transparent';
 form.doNotScrollLastContainerOnForm = true;
 form.doNotScrollFirstContainerOnForm = true;
@@ -351,6 +358,8 @@ columnContainer.lineBetweenColumns = true;
 columnContainer.lineWidthBetweenColumns = 1;
 columnContainer.lineColorBetweenColumns = '#00f';
 
+form.remove(stackContainer1);
+
 formStorageData = form.getStorageData();
 s = JSON.stringify(formStorageData, null, 2);
 
@@ -358,15 +367,17 @@ sasobj = JSON.parse(s);
 newForm = new XFormConfiguration();
 newForm.setStorageData(sasobj);
 
-export const  DataChangingExternallyWithFullTestData = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800}});
+export const  DataChangingExternallyWithFullTestData = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800, formTitle: 'Data Changes Externally'}});
 
 
 export const ValidationBreaks = MissingTemplate.bind({}, {});
 
 form = getFormConfig();
+form.remove(form.getContainers()[0]);
+form.remove(form.getContainers()[0]);
+
 export const ButtonEvents = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
-form = new XFormConfiguration();
 export const CloseAction = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Form'}});
 
 form = new XFormConfiguration();
