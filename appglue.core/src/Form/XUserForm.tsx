@@ -66,16 +66,19 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
     render() {
         return (
             <>
-                <Header>
-                    {
-                        this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
-                    }
-                    {
-                        this.props.onFormClose && <Button onClick={this.props.onFormClose} data-testid="btn-form-close">
-                            <CloseIcon />
-                        </Button>
-                    }
-                </Header>
+                {
+                    this.props.formTitle &&  this.props.onFormClose && 
+                    <Header>
+                        {
+                            this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
+                        }
+                        {
+                            this.props.onFormClose && <Button onClick={this.props.onFormClose} data-testid="btn-form-close">
+                                <CloseIcon />
+                            </Button>
+                        }
+                    </Header>
+                }
                 {this.props.form.render()}
             </>
         );
