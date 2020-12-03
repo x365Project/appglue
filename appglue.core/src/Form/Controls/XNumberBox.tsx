@@ -12,6 +12,19 @@ import "./XControls.css"
 export class XNumberBox extends BaseTextEntryControl {
 
 	render() {
+        let isValid = false;
+        if (this.valueName) {
+            if (this.getFormDataValue(this.valueName)) {
+                isValid = true;
+            }
+        }
+
+        const runtimeError: ValidationError = {}
+        if (this.valueName) {
+            runtimeError.type = 'error'
+            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
+        }
+
         let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 		return (
 			<>
@@ -30,8 +43,8 @@ export class XNumberBox extends BaseTextEntryControl {
                     width={customWidth}
                 />
                 {
-                    this.hintText && (
-                        <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+                    (runtimeError.message || this.hintText) && (
+                        <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                     )
                 }
             </>
@@ -65,6 +78,11 @@ class XNumberBoxEditUI extends React.Component<{ editMe: XNumberBox }> {
 			</>
         );
     }
+}
+
+interface ValidationError {
+    type?: 'error' | 'warning';
+    message?: string;
 }
 
 const StyledTextField = styled(TextField)`
