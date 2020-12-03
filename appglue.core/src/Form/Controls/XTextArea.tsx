@@ -38,12 +38,12 @@ export class XTextArea extends BaseTextEntryControl {
 					width={customWidth}
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
-                    value={(this.valueName)?this.getFormDataValue(this.valueName):''}
-                    error={runtimeError.message}
+					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+					error={runtimeError.message}
 				/>
                 {
                     (runtimeError.message || this.hintText) && (
-                        <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textarea'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                        <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                     )
                 }
 			</>
@@ -90,8 +90,8 @@ interface ValidationError {
     message?: string;
 }
 
-const StyledTextareaAutosize = styled(TextareaAutosize)`
-	width: ${props => props.width} !important;
+const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: string}>`
+	width: ${({width}) => width} !important;
 	min-width: 246px !important;
 	height: 59px !important;
 	border: 1px solid #E6E9ED !important;
@@ -105,8 +105,8 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     color: #01244E !important;
     outline: unset !important;
 	&:focus {
-        border: 1.35302px solid #1873B9 !important;
-    }
+		border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
+	}
     &::-webkit-input-placeholder {
         font: 16px;
         line-height: 20px;

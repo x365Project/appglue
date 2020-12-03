@@ -43,7 +43,7 @@ export class XTimePicker extends BaseTextEntryControl {
                     />
                     {
                         (runtimeError.message || this.hintText) && (
-                            <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'datapicker'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                            <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'datapicker'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                         )
                     }
                 </>
@@ -81,8 +81,8 @@ interface ValidationError {
     message?: string;
 }
 
-const StyledTextField = styled(TextField)`
-    width: ${props => props.width} !important;
+const StyledTextField = styled(TextField)<{width?: string}>`
+    width: ${({width}) => width} !important;
     input {
         display: flex !important;
         justify-content: space-around !important;
