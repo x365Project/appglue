@@ -55,13 +55,14 @@ const StoryHostWrapper = styled("div")<{background?: string}>`
 `;
 
 
-const XUserFormWrapper = styled("div")<StoryHostXUserFormStyleProps>`
+const XUserFormWrapper = styled("div")<StoryHostXUserFormStyleProps & {hasHeader?: boolean}>`
     height: ${props => props.height ? `${props.height}px` : 'auto'};
     width: ${props => props.width ? `${props.width}px` : '100%'};
-    overflow: auto;
+    overflow: visible;
     border: ${props => props.border || 'solid 1px gray'};
     background: #fff;
-    margin: 33px;
+    margin: ${props => props.hasHeader ? '83px 33px 33px' : '33px'};
+    position: relative;
 `;
 
 const InfoWrapper = styled.div`
@@ -126,21 +127,25 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
         addEventLog('Close Form event is triggered')
     }, [addEventLog, setFormData])
 
+
     return (
         <StoryHostWrapper background={props.storyHostProps.background}>
             <XUserFormWrapper
                 height={props.storyHostProps.height}
                 width={props.storyHostProps.width}
                 border={props.storyHostProps.border}
+                hasHeader={!!props.storyHostProps.formTitle || !!props.storyHostProps.onFormClose}
             >
-                <XUserForm
-                    form={props.storyHostProps.form}
-                    formTitle={props.storyHostProps.formTitle}
-                    onFormDataChange={onFormDataChange}
-                    onFormButtonClick={onFormButtonClick}
-                    onFormCancelButton={onFormCancelButton}
-                    onFormClose={props.storyHostProps.onFormClose ? onFormClose: undefined}
-                />
+                <div style={{width: '100%', height: '100%', overflow: 'auto'}}>
+                    <XUserForm
+                        form={props.storyHostProps.form}
+                        formTitle={props.storyHostProps.formTitle}
+                        onFormDataChange={onFormDataChange}
+                        onFormButtonClick={onFormButtonClick}
+                        onFormCancelButton={onFormCancelButton}
+                        onFormClose={props.storyHostProps.onFormClose ? onFormClose: undefined}
+                    />
+                </div>
             </XUserFormWrapper>
             <InfoWrapper>
                 <div>
@@ -168,7 +173,6 @@ export default {
     title: "Form Designer/Runtime",
 } as Meta;
 
-form.remove(form.getContainers()[0]);
 export const AllControls = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
 form = new XFormConfiguration();
@@ -241,19 +245,14 @@ form.add(hstackContainer);
 export const ResponsiveThinForm = Template.bind({}, {storyHostProps: {form, width: 375, height: 667}});
 
 form = getFormConfig();
-form.remove(form.getContainers()[0]);
 form.doNotScrollLastContainerOnForm = true;
 form.doNotScrollFirstContainerOnForm = true;
 
 export const PinnedSections = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
+let onFormClose = (data: UserFormData) => {}
 
-form = new XFormConfiguration();
-form.doNotScrollFirstContainerOnForm = true;
-form.doNotScrollLastContainerOnForm = true;
-
-
-export const PinnedSectionsForEmptyForm = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
+export const PinnedSectionsWithHeader = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Title', onFormClose}});
 
 
 form = new XFormConfiguration();
@@ -297,7 +296,7 @@ let sasobj = JSON.parse(s);
 let newForm = new XFormConfiguration();
 newForm.setStorageData(sasobj);
 
-export const DataChangingExternally = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800}});
+export const DataChangingExternally = MissingTemplate.bind({}, {});
 
 form = getFormConfig();
 
@@ -354,7 +353,6 @@ columnContainer.lineBetweenColumns = true;
 columnContainer.lineWidthBetweenColumns = 1;
 columnContainer.lineColorBetweenColumns = '#00f';
 
-form.remove(stackContainer1);
 
 formStorageData = form.getStorageData();
 s = JSON.stringify(formStorageData, null, 2);
@@ -363,20 +361,16 @@ sasobj = JSON.parse(s);
 newForm = new XFormConfiguration();
 newForm.setStorageData(sasobj);
 
-export const  DataChangingExternallyWithFullTestData = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800, formTitle: 'Data Changes Externally'}});
+export const ReadInFormFromJSONDefinition = Template.bind({}, {storyHostProps: {form: newForm, width: 800, height: 800}});
 
 
 export const ValidationBreaks = MissingTemplate.bind({}, {});
 
 form = getFormConfig();
-form.remove(form.getContainers()[0]);
-form.remove(form.getContainers()[0]);
 
 export const ButtonEvents = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
-const onFormClose = (data: UserFormData) => {}
-
-export const CloseAction = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Form', onFormClose }} );
+export const FormTitleAndCloseButton = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Form', onFormClose }} );
 
 form = new XFormConfiguration();
 let stack = new XStackContainer();

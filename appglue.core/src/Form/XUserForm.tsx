@@ -12,10 +12,15 @@ const Header = styled.div`
     display: flex;
     align-items: center;
     padding: 10px 15px;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    position: absolute;
 
     .MuiButtonBase-root {
         margin-left: auto;
     }
+
 `;
 
 export interface IUserFormParameters {
@@ -63,11 +68,15 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
 
     }
 
+    hasHeader = () : boolean => {
+        return !!this.props.formTitle || !!this.props.onFormClose;
+    }
+
     render() {
         return (
             <>
                 {
-                    this.props.formTitle &&  this.props.onFormClose && 
+                    this.hasHeader() && 
                     <Header>
                         {
                             this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
@@ -76,7 +85,7 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
                             this.props.onFormClose && <Button onClick={this.props.onFormClose} data-testid="btn-form-close">
                                 <CloseIcon />
                             </Button>
-                        }
+                        }   
                     </Header>
                 }
                 {this.props.form.render()}
