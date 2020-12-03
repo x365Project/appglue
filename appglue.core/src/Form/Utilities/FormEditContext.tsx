@@ -16,6 +16,7 @@ export class FormRuntimeContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
     data: UserFormData = new UserFormData();
+    runtimeIssues: FormContextStore = new FormContextStore();
 
     public onFormDataChange?: (data: UserFormData) => void;
     public onFormButtonClick? : (buttonName: string, data: UserFormData) => void ;
@@ -34,7 +35,7 @@ export class FormRuntimeContext {
         // todo: refresh user form
     }
 
-    getRuntimeValidationIssues(): ValidationIssue[] {
+    computeRuntimeValidations(): ValidationIssue[] {
         let breaks : ValidationIssue[];
         breaks = [];
 
@@ -53,66 +54,14 @@ export class FormRuntimeContext {
 
         // todo: call built in rules
 
+        this.runtimeIssues.updateValidationIssues(breaks, this.form.getAllControls());
+
         return breaks;
     }
 
-    getRuntimeValidationIssuesForControls() : ControlValidationMapping {
-        let validations = new ControlValidationMapping();
 
-        validations.allIssues = this.getRuntimeValidationIssues();
-
-        let controls = this.form.getAllControls();
-
-        for (let issue of validations.allIssues) {
-            if (issue.elementId) {
-                if (!validations[issue.elementId])
-                    validations[issue.elementId] = [];
-
-                validations[issue.elementId].push(issue);
-
-                continue;
-            }
-
-            // do data name checking
-            if (issue.dataName) {
-                let controlId : string | null = null;
-
-                for (let control of controls) {
-                    let dataName = Reflect.get(control, 'valueName');
-
-                    if (dataName && dataName === issue.dataName) {
-                        controlId = control.id;
-                        break;
-                    }
-                }
-
-                if (controlId) {
-                    if (!validations[controlId])
-                        validations[controlId] = [];
-
-                    validations[controlId].push(issue);
-                }
-            }
-        }
-
-        return validations;
-    }
-
-    // todo: change this.  its not optimized.
-    getRuntimeValidationIssuesForControl(control: XBaseControl):  ValidationIssue[] {
-        let allIssues = this.getRuntimeValidationIssues().filter((issue: ValidationIssue) => {
-            if (issue.elementId === control.id)
-                return true;
-
-            let valueName = Reflect.get(control, 'valueName');
-
-            if (valueName && issue.dataName === valueName)
-                return true;
-
-            return false;
-        });
-
-        return allIssues;
+    getRuntimeControlContext(control: XBaseControl):  ControlRenderContext {
+        return this.runtimeIssues.getControlRenderContext(control);
     }
 
     setFormDataValue(fieldName: string, value: any): void {
@@ -159,6 +108,9 @@ export class FormRuntimeContext {
 export class FormEditContext extends FormRuntimeContext {
     designer? : XFormDesigner;
 
+    designIssues: FormContextStore = new FormContextStore();
+
+
     formName?: string;
 
     showControlBorders : boolean = true;
@@ -197,7 +149,7 @@ export class FormEditContext extends FormRuntimeContext {
         return this.eventLog;
     }
 
-    getDesignValidationIssues(): ValidationIssue[] {
+    computeDesignValidationIssues(): ValidationIssue[] {
         let breaks : ValidationIssue[];
         breaks = [];
         // value name is filled in (call data class)
@@ -217,67 +169,14 @@ export class FormEditContext extends FormRuntimeContext {
             breaks.push(...valBreaks);
         }
 
+        this.designIssues.updateValidationIssues(breaks, this.form.getAllControls());
         
         return breaks;
     }
 
-    getDesignValidationIssuesForControls() : ControlValidationMapping {
-        let validations = new ControlValidationMapping();
-
-        validations.allIssues = this.getDesignValidationIssues();
-        
-        let controls = this.form.getAllControls();
-
-        for (let issue of validations.allIssues) {
-            if (issue.elementId) {
-                if (!validations[issue.elementId])
-                    validations[issue.elementId] = [];
-                
-                validations[issue.elementId].push(issue);
-                
-                continue;
-            }
-            
-            // do data name checking
-            if (issue.dataName) {
-                let controlId : string | null = null;
-
-                for (let control of controls) {
-                    let dataName = Reflect.get(control, 'valueName');
-
-                    if (dataName && dataName === issue.dataName) {
-                        controlId = control.id;
-                        break;
-                    }
-                }
-
-                if (controlId) {
-                    if (!validations[controlId])
-                        validations[controlId] = [];
-                
-                    validations[controlId].push(issue);
-                }
-            }
-        }
-
-        return validations;
-    }
-
     // todo: change this.  its not optimized.
-    getDesignValidationIssuesForControl(control: XBaseControl):  ValidationIssue[] {
-        let allIssues = this.getDesignValidationIssues().filter((issue: ValidationIssue) => {
-            if (issue.elementId === control.id)
-                return true;
-
-            let valueName = Reflect.get(control, 'valueName');
-
-            if (valueName && issue.dataName === valueName)
-                return true;
-
-            return false;
-        });
-
-        return allIssues;
+    getDesignControlContext(control: XBaseControl):  ControlRenderContext {
+        return this.designIssues.getControlRenderContext(control);
     }
 
 
@@ -310,8 +209,115 @@ export class FormEditContext extends FormRuntimeContext {
 
 }
 
-export class ControlValidationMapping {
-    [controlid:string] : ValidationIssue[]
+// todo: make this a store
+// todo: add other stuff here like data? hidden? disabled?
+export class FormContextStore {
+    validationIssues : {[controlId: string] : ControlRenderContext }  = {}
+    otherIssues : ValidationIssue[] = [];
 
-    allIssues: ValidationIssue[] = [];
+    getAllIssues(): ValidationIssue[] {
+        // add up all issues from all controls
+        let issues : ValidationIssue[] = [];
+        issues.push(...this.otherIssues);
+
+        for (let issueList of Object.values(this.validationIssues)) {
+            issues.push(...issueList.issues)
+        }
+
+        return issues;
+    };
+
+    getControlRenderContext(control: XBaseControl) : ControlRenderContext {
+        let retVal = this.validationIssues[control.id];
+
+        if (!retVal) {
+            retVal = new ControlRenderContext(control);
+            this.validationIssues[control.id] = retVal;
+        }
+
+        return retVal;
+    }
+
+    updateValidationIssues(validations: ValidationIssue[], controls: XBaseControl[]) : void {
+        // clear other issues
+        this.otherIssues.length = 0;
+
+        let controlIssues : {[controlId: string] : ValidationIssue[]} = {}
+
+        for (let issue of validations) {
+            if (issue.elementId) {
+
+                let issues : ValidationIssue[] = controlIssues[issue.elementId];
+
+                if (!issues) {
+                    issues = [];
+                    controlIssues[issue.elementId] = issues;
+                }
+
+                issues.push(issue);
+
+                continue;
+            }
+
+            // do data name checking
+            if (issue.dataName) {
+                let controlId : string | null = null;
+
+                for (let control of controls) {
+                    let dataName = Reflect.get(control, 'valueName');
+
+                    if (dataName && dataName === issue.dataName) {
+                        controlId = control.id;
+                        break;
+                    }
+                }
+
+                if (controlId) {
+                    let issues : ValidationIssue[] = controlIssues[controlId];
+
+                    if (!issues) {
+                        issues = [];
+                        controlIssues[controlId] = issues;
+                    }
+
+                    issues.push(issue);
+
+                    continue;
+                }
+            }
+
+            // not for a control
+            this.otherIssues.push(issue);
+        }
+
+        // map to and ensure not over updating
+
+        for (let issueStore of Object.values(this.validationIssues)) {
+            let issues = controlIssues[issueStore.control.id];
+
+            if (!issues && issueStore.issues.length !== 0) {
+                // clear the array
+                issueStore.issues.length = 0;
+            }
+
+            if (issues) {
+                // todo: we might want to update
+                issueStore.issues = issues;
+            }
+        }
+
+    }
+
 }
+
+// todo: assume this is a sub store
+export class ControlRenderContext {
+    issues : ValidationIssue[] = [];
+    control: XBaseControl;
+
+    constructor(control: XBaseControl) {
+        this.control = control;
+    }
+}
+
+
