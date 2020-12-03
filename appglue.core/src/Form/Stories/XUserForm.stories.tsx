@@ -48,32 +48,33 @@ interface StoryHostXUserFormStyleProps {
 // --------------------------------
 
 
-const StoryHostWrapper = styled.div`
+const StoryHostWrapper = styled("div")<{background?: string}>`
     display: flex;
     flex-direction: row;
-    > div {
-        margin: 5px;
-    }
+    background: ${props => props.background || 'lightgray'}
 `;
 
 
 const XUserFormWrapper = styled("div")<StoryHostXUserFormStyleProps>`
     height: ${props => props.height ? `${props.height}px` : 'auto'};
     width: ${props => props.width ? `${props.width}px` : '100%'};
-    background: ${props => props.background || 'lightgray'};
     overflow: auto;
     border: ${props => props.border || 'solid 1px gray'};
+    background: #fff;
+    margin: 33px;
 `;
 
 const InfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    margin: 33px;
 `;
 
 interface StoryHostXUserFormProps extends XFormDesignerProps, StoryHostXUserFormStyleProps {
     formName? : string;
     showCancel? : boolean;
     formTitle?: string;
+    onFormClose?: (data: UserFormData) => void
 }
 
 const initialState: string[] = [];
@@ -120,16 +121,16 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
     }, [addEventLog])
 
     const onFormClose = useCallback((data: UserFormData) => {
+        props.storyHostProps.onFormClose!(data);
         setFormData(data);
         addEventLog('Close Form event is triggered')
     }, [addEventLog, setFormData])
 
     return (
-        <StoryHostWrapper>
+        <StoryHostWrapper background={props.storyHostProps.background}>
             <XUserFormWrapper
                 height={props.storyHostProps.height}
                 width={props.storyHostProps.width}
-                background={props.storyHostProps.background}
                 border={props.storyHostProps.border}
             >
                 <XUserForm
@@ -138,7 +139,7 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
                     onFormDataChange={onFormDataChange}
                     onFormButtonClick={onFormButtonClick}
                     onFormCancelButton={onFormCancelButton}
-                    onFormClose={onFormClose}
+                    onFormClose={props.storyHostProps.onFormClose ? onFormClose: undefined}
                 />
             </XUserFormWrapper>
             <InfoWrapper>
@@ -168,11 +169,9 @@ export default {
 } as Meta;
 
 form.remove(form.getContainers()[0]);
-form.formBackgroundColor = 'transparent';
 export const AllControls = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
 form = new XFormConfiguration();
-form.formBackgroundColor = 'transparent';
 let cContainer = new XColumnContainer();
 let hContainer = new XHStackContainer();
 let sContainer = new XStackContainer();
@@ -185,7 +184,6 @@ export const NoControls = Template.bind({}, {storyHostProps: {form}});
 
 
 form = new XFormConfiguration();
-form.formBackgroundColor = 'transparent';
 let columnContainer = new XColumnContainer();
 let actualCol = new XColumnContainerColumn();
 let actualCol2 = new XColumnContainerColumn();
@@ -244,7 +242,6 @@ export const ResponsiveThinForm = Template.bind({}, {storyHostProps: {form, widt
 
 form = getFormConfig();
 form.remove(form.getContainers()[0]);
-form.formBackgroundColor = 'transparent';
 form.doNotScrollLastContainerOnForm = true;
 form.doNotScrollFirstContainerOnForm = true;
 
@@ -260,7 +257,6 @@ export const PinnedSectionsForEmptyForm = Template.bind({}, {storyHostProps: {fo
 
 
 form = new XFormConfiguration();
-form.formBackgroundColor = 'transparent';
 let stackContainer = new XStackContainer();
 let textField = new XTextField();
 
@@ -378,10 +374,11 @@ form.remove(form.getContainers()[0]);
 
 export const ButtonEvents = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
-export const CloseAction = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Form'}});
+const onFormClose = (data: UserFormData) => {}
+
+export const CloseAction = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Form', onFormClose }} );
 
 form = new XFormConfiguration();
-form.formBackgroundColor = 'transparent';
 let stack = new XStackContainer();
 form.add(stack);
 let control = new XTextField();
