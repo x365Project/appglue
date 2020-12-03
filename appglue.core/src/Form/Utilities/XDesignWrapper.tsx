@@ -220,7 +220,7 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                                         anchorEl={this.innerComponentRef}
                                                     >
                                                         <ValidationList borderColor={validationIssue?.level === ValidationLevel.WARNING ? '#F69D5C' : undefined}>
-                                                            <ValidationItem>{validationIssue.issue}</ValidationItem>
+                                                            <ValidationItem data-testid="validation-item">{validationIssue.issue}</ValidationItem>
                                                         </ValidationList>
                                                     </Popover>
                                                 </ErrorDiv>
