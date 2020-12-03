@@ -1,7 +1,22 @@
+import React from "react";
+
+import styled from "styled-components";
+
 import {UserFormData} from "./UserFormData";
 import {XFormConfiguration} from "./XFormConfiguration";
-import React from "react";
 import {FormRuntimeContext} from "./Utilities/FormEditContext";
+import { TextField, Button } from "@material-ui/core";
+import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
+
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+
+    .MuiButtonBase-root {
+        margin-left: auto;
+    }
+`;
 
 export interface IUserFormParameters {
     form: XFormConfiguration;
@@ -50,7 +65,19 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
 
     render() {
         return (
-            this.props.form.render()
+            <>
+                <Header>
+                    {
+                        this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
+                    }
+                    {
+                        this.props.onFormClose && <Button onClick={this.props.onFormClose} data-testid="btn-form-close">
+                            <CloseIcon />
+                        </Button>
+                    }
+                </Header>
+                {this.props.form.render()}
+            </>
         );
     }
 }
