@@ -16,7 +16,7 @@ export class FormRuntimeContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
     data: UserFormData = new UserFormData();
-    runtimeIssues: ValidationIssues = new ValidationIssues();
+    runtimeIssues: FormContextStore = new FormContextStore();
 
     public onFormDataChange?: (data: UserFormData) => void;
     public onFormButtonClick? : (buttonName: string, data: UserFormData) => void ;
@@ -60,8 +60,8 @@ export class FormRuntimeContext {
     }
 
 
-    getRuntimeValidationIssuesForControl(control: XBaseControl):  ControlValidationIssue {
-        return this.runtimeIssues.getValidationIssueForControl(control);
+    getRuntimeControlContext(control: XBaseControl):  ControlRenderContext {
+        return this.runtimeIssues.getControlRenderContext(control);
     }
 
     setFormDataValue(fieldName: string, value: any): void {
@@ -108,7 +108,7 @@ export class FormRuntimeContext {
 export class FormEditContext extends FormRuntimeContext {
     designer? : XFormDesigner;
 
-    designIssues: ValidationIssues = new ValidationIssues();
+    designIssues: FormContextStore = new FormContextStore();
 
 
     formName?: string;
@@ -175,8 +175,8 @@ export class FormEditContext extends FormRuntimeContext {
     }
 
     // todo: change this.  its not optimized.
-    getDesignValidationIssuesForControl(control: XBaseControl):  ControlValidationIssue {
-        return this.designIssues.getValidationIssueForControl(control);
+    getDesignControlContext(control: XBaseControl):  ControlRenderContext {
+        return this.designIssues.getControlRenderContext(control);
     }
 
 
@@ -211,8 +211,8 @@ export class FormEditContext extends FormRuntimeContext {
 
 // todo: make this a store
 // todo: add other stuff here like data? hidden? disabled?
-export class ValidationIssues {
-    validationIssues : {[controlId: string] : ControlValidationIssue }  = {}
+export class FormContextStore {
+    validationIssues : {[controlId: string] : ControlRenderContext }  = {}
     otherIssues : ValidationIssue[] = [];
 
     getAllIssues(): ValidationIssue[] {
@@ -227,11 +227,11 @@ export class ValidationIssues {
         return issues;
     };
 
-    getValidationIssueForControl(control: XBaseControl) : ControlValidationIssue {
+    getControlRenderContext(control: XBaseControl) : ControlRenderContext {
         let retVal = this.validationIssues[control.id];
 
         if (!retVal) {
-            retVal = new ControlValidationIssue(control);
+            retVal = new ControlRenderContext(control);
             this.validationIssues[control.id] = retVal;
         }
 
@@ -311,7 +311,7 @@ export class ValidationIssues {
 }
 
 // todo: assume this is a sub store
-export class ControlValidationIssue {
+export class ControlRenderContext {
     issues : ValidationIssue[] = [];
     control: XBaseControl;
 
