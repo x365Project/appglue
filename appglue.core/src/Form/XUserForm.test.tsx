@@ -234,6 +234,31 @@ describe("XUserForm", () => {
         expect(queryAllByTestId('line-between-containers')).toHaveLength(4);
         expect(queryAllByTestId('line-between-columns')).toHaveLength(3);
 
-    })
+    });
+
+    it("Check the form title and form close button action", () => {
+        let form:XFormConfiguration = new XFormConfiguration();
+
+        let isOnFormClose = false;
+        let onFormClose = (data: UserFormData) => {
+            isOnFormClose = true;
+        }
+
+        let formTitle = 'Test Form Title';
+
+        const {getByTestId} = render(
+            <XUserForm form={form} onFormClose={onFormClose} formTitle={formTitle} /> 
+        )
+
+        let btnFormClose = getByTestId('btn-form-close');
+        expect(btnFormClose).toBeInTheDocument();
+        fireEvent.click(btnFormClose);
+        expect(isOnFormClose).toEqual(true);
+
+        let formTitleInput = getByTestId('test-form-title').querySelector('input') as HTMLInputElement;
+        expect(formTitleInput).toBeInTheDocument();
+        expect(formTitleInput.value).toEqual(formTitle);
+
+    });
 
 });

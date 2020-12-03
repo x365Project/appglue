@@ -73,6 +73,7 @@ const InfoWrapper = styled.div`
 interface StoryHostXUserFormProps extends XFormDesignerProps, StoryHostXUserFormStyleProps {
     formName? : string;
     showCancel? : boolean;
+    formTitle?: string;
 }
 
 const initialState: string[] = [];
@@ -133,6 +134,7 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
             >
                 <XUserForm
                     form={props.storyHostProps.form}
+                    formTitle={props.storyHostProps.formTitle}
                     onFormDataChange={onFormDataChange}
                     onFormButtonClick={onFormButtonClick}
                     onFormCancelButton={onFormCancelButton}
@@ -360,8 +362,12 @@ export const  DataChangingExternallyWithFullTestData = Template.bind({}, {storyH
 
 
 export const ValidationBreaks = MissingTemplate.bind({}, {});
-export const ButtonEvents = MissingTemplate.bind({}, {});
-export const CloseAction = MissingTemplate.bind({}, {});
+
+form = getFormConfig();
+export const ButtonEvents = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
+
+form = new XFormConfiguration();
+export const CloseAction = Template.bind({}, {storyHostProps: {form, width: 800, height: 800, formTitle: 'Test Form'}});
 
 form = new XFormConfiguration();
 form.formBackgroundColor = 'transparent';
