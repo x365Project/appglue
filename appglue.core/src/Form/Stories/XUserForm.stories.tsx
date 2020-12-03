@@ -249,14 +249,6 @@ export const PinnedSections = Template.bind({}, {storyHostProps: {form, width: 8
 
 
 form = new XFormConfiguration();
-form.doNotScrollFirstContainerOnForm = true;
-form.doNotScrollLastContainerOnForm = true;
-
-
-export const PinnedSectionsForEmptyForm = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
-
-
-form = new XFormConfiguration();
 let stackContainer = new XStackContainer();
 let textField = new XTextField();
 
