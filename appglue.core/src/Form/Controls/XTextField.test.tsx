@@ -31,8 +31,8 @@ describe("XTextField", () => {
         // console.log = renderLog
     })
 
-
     afterEach(() => {
+
         console.error = originalError;
         console.warn = originalWarn;
         console.log = originalLog;
@@ -133,6 +133,12 @@ describe("XTextField", () => {
         const ui = new FormEditContext(form);
         form.setFormEditContext(ui);
         const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
-        expect(getByTestId('control-error-validation')).toBeInTheDocument();
+
+        const validationIcon = getByTestId('control-error-validation');
+        expect(validationIcon).toBeInTheDocument();
+
+        fireEvent.click(validationIcon);
+        expect(getByTestId('validation-item')).toBeInTheDocument();
+
     });
 });
