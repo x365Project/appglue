@@ -82,7 +82,7 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
                             this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
                         }
                         {
-                            this.props.onFormClose && <Button onClick={this.props.onFormClose} data-testid="btn-form-close">
+                            this.props.onFormClose && <Button onClick={() => this.props.onFormClose(this.formRuntimeContext.getFormData())} data-testid="btn-form-close">
                                 <CloseIcon />
                             </Button>
                         }   
