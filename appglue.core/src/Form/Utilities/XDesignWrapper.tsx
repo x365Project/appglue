@@ -7,7 +7,7 @@ import { OverlapDiv } from "../Containers/XBaseStackContainer";
 import { FormMode } from "../FormDesignConstants";
 import { XBaseContainer } from "../Containers/XBaseContainer";
 import { FormDesignConstants } from '../FormDesignConstants'
-import {FormEditContext} from "./FormEditContext";
+import {ControlValidationIssue, FormEditContext} from "./FormEditContext";
 import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidationProvider";
 import { ExclamationRedIcon } from "../../CommonUI/Icon/ExclamationRedIcon";
 import { WarningRedIcon } from "../../CommonUI/Icon/WarningRedIcon";
@@ -143,16 +143,16 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
     render() {
 
         let validationIssue: ValidationIssue | undefined = undefined;
-        const validationIssues: ValidationIssue[] = this.props.editContext.getDesignValidationIssuesForControl(this.props.innerComponent);
-        if (validationIssues.length > 0) {
-            let issues = validationIssues.filter((v) => 
+        const validationIssues: ControlValidationIssue = this.props.editContext.getDesignValidationIssuesForControl(this.props.innerComponent);
+        if (validationIssues.issues.length > 0) {
+            let issues = validationIssues.issues.filter((v) =>
                 v.level === ValidationLevel.ERROR
             );
 
             if (issues.length > 0) {
                 validationIssue = issues[0]
             } else {
-                validationIssue = validationIssues[0];
+                validationIssue = validationIssues.issues[0];
             }
         }
 
