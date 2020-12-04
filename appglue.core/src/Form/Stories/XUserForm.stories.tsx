@@ -128,6 +128,11 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
     }, [addEventLog, setFormData])
 
 
+    if (props.storyHostProps.width) {
+        props.storyHostProps.form.runtimeWidth = props.storyHostProps.width;
+    }
+
+
     return (
         <StoryHostWrapper background={props.storyHostProps.background}>
             <XUserFormWrapper
@@ -208,11 +213,6 @@ columnContainer.overrideFormBorderSettings = DefaultOnOff.On;
 columnContainer.showContainerBorder = true;
 columnContainer.defaultShowColumnBorder = true;
 
-
-columnContainer.lineBetweenColumns = true;
-columnContainer.lineWidthBetweenColumns = 2;
-columnContainer.lineColorBetweenColumns = '#ff0';
-
 columnContainer.add(actualCol);
 columnContainer.add(actualCol2);
 columnContainer.add(actualCol3);
@@ -243,6 +243,59 @@ form.add(columnContainer);
 form.add(hstackContainer);
 
 export const ResponsiveThinForm = Template.bind({}, {storyHostProps: {form, width: 375, height: 667}});
+
+form = new XFormConfiguration();
+columnContainer = new XColumnContainer();
+actualCol = new XColumnContainerColumn();
+actualCol2 = new XColumnContainerColumn();
+actualCol3 = new XColumnContainerColumn();
+
+actualCol.targetWidth = 30;
+actualCol.minSizePx = 100;
+actualCol2.targetWidth = 70;
+actualCol2.minSizePx = 300;
+actualCol3.targetWidth = 20;
+actualCol3.minSizePx = 100;
+
+columnContainer.add(actualCol);
+columnContainer.add(actualCol2);
+columnContainer.add(actualCol3);
+
+columnContainer.overrideFormBorderSettings = DefaultOnOff.On;
+columnContainer.showContainerBorder = true;
+columnContainer.defaultShowColumnBorder = true;
+
+columnContainer.lineBetweenColumns = true;
+columnContainer.lineWidthBetweenColumns = 2;
+columnContainer.lineColorBetweenColumns = 'gray';
+
+form.add(columnContainer);
+export const ResponsiveThinWithLineBetweenColumns = Template.bind({}, {storyHostProps: {form, width: 375, height: 667}});
+
+form = new XFormConfiguration();
+columnContainer = new XColumnContainer();
+
+actualCol = new XColumnContainerColumn();
+actualCol2 = new XColumnContainerColumn();
+actualCol3 = new XColumnContainerColumn();
+
+columnContainer.add(actualCol);
+columnContainer.add(actualCol2);
+columnContainer.add(actualCol3);
+
+actualCol.targetWidth = 30;
+actualCol.minSizePx = 500;
+actualCol2.targetWidth = 70;
+actualCol2.minSizePx = 300;
+actualCol3.targetWidth = 20;
+actualCol3.minSizePx = 100;
+
+columnContainer.lineBetweenColumns = true;
+columnContainer.lineWidthBetweenColumns = 2;
+columnContainer.lineColorBetweenColumns = 'gray';
+
+form.add(columnContainer);
+export const LineBetweenWithOverlapColumsn = Template.bind({}, {storyHostProps: {form, width: 800, height: 800}});
 
 form = getFormConfig();
 form.doNotScrollLastContainerOnForm = true;

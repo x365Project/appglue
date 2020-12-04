@@ -211,14 +211,28 @@ export class XFormConfiguration
 		return this.containers;
 	}
 
+	getMode(): FormMode | string {
+		return this.getFormEditContext()?.mode ?? FormMode.Runtime;
+	}
+
+	getWidth(): number{
+		return this.getMode() === FormMode.Runtime && !!this.runtimeWidth
+			? this.runtimeWidth
+			: this.designFormWidth;
+	}
+
+	getContentWidth(): number {
+		const formWidth = this.getWidth();
+		return formWidth - (2 * this.formMargin);
+	}
+
 	render() {
 		// if there are no containers, ensure we have at least one (stack)
 		if (this.containers.length === 0) {
 			console.log('adding empty xstack')
 			this.add(new XStackContainer());
 		}
-
-		let mode = this.getFormEditContext()?.mode ?? FormMode.Runtime;
+		let mode = this.getMode();
 
 		const formStyles: {[key: string]: any} = {
 			padding: this.formMargin, 

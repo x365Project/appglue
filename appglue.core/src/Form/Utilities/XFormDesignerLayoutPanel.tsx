@@ -30,16 +30,10 @@ const FormContent = styled("div")<{
 
 export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormEditContext, height?: number }> {
 
-    getFormWidth = () => {
-        return this.props.editContext.mode === FormMode.Runtime 
-        ? (this.props.editContext.form.runtimeWidth || this.props.editContext.form.designFormWidth) 
-        : this.props.editContext.form.designFormWidth;
-    }
-
     render() {
         const formStyles: {[key: string]: any} = {
             marginBottom: 30,
-            width: this.getFormWidth()
+            width: this.props.editContext.form.getWidth()
         };
 
         const hasScroll = this.props.editContext.designConfig?.size !== FormDesignConstants.FORM_SIZE_MODE_DEFINED && (
