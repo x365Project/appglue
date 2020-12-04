@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
+import Tooltip from '@material-ui/core/Tooltip';
 import { RegisterUIControl, ControlType } from "../Utilities/RegisterUIControl";
 import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {IssueData} from "../Utilities/FormEditContext";
 
 
@@ -33,9 +33,9 @@ export class XTextField extends BaseTextEntryControl {
             size = this.size;
         
         const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
-		const issueText: string = issueData?.text || '';
+        const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
-        
+
         switch(style) {
             case TextControlStyle.LABELED :
                 return (
@@ -57,13 +57,21 @@ export class XTextField extends BaseTextEntryControl {
                             error={Boolean(issueText)}
                         />
                         {
-                            (issueText || this.hintText) && (
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
                                 <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
                                     {issueText ? issueText: this.hintText}
                                 </StyledFormHelperText>
                             )
                         }
-                        
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.SHADED :
@@ -169,11 +177,6 @@ class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
             </>
         );
     }
-}
-
-interface ValidationError {
-    type?: 'error' | 'warning';
-    message?: string;
 }
 
 const StyledTextFieldWrap = styled.div<{width?: string}>`

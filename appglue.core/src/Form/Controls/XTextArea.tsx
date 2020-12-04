@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {TextField, TextareaAutosize} from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
@@ -34,12 +35,21 @@ export class XTextArea extends BaseTextEntryControl {
 					error={issueText}
 				/>
 				{
-					(issueText || this.hintText) && (
-						<StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
-							{issueText ? issueText: this.hintText}
-						</StyledFormHelperText>
-					)
-				}
+                    (issueText && issueText.length > 30)  && (
+                        <Tooltip title={issueText} arrow placement="bottom">
+                            <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                {issueText.slice(0, 30) + '...'}
+                            </StyledFormHelperText>
+                        </Tooltip>
+                    ) 
+                }
+                {
+                    ((issueText && issueText.length < 31) || this.hintText) && (
+                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                            {issueText ? issueText: this.hintText}
+                        </StyledFormHelperText>
+                    )
+                }
 			</>
 		)
 	}

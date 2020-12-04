@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TextField from '@material-ui/core/TextField';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {DatePickerIcon} from "../../CommonUI/Icon/DatePickerIcon";
@@ -63,7 +63,16 @@ export class XDatePicker extends BaseTextEntryControl {
                     error={Boolean(issueText)}
                 />
                 {
-                    (issueText || this.hintText) && (
+                    (issueText && issueText.length > 30)  && (
+                        <Tooltip title={issueText} arrow placement="bottom">
+                            <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                {issueText.slice(0, 30) + '...'}
+                            </StyledFormHelperText>
+                        </Tooltip>
+                    ) 
+                }
+                {
+                    ((issueText && issueText.length < 31) || this.hintText) && (
                         <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
                             {issueText ? issueText: this.hintText}
                         </StyledFormHelperText>
