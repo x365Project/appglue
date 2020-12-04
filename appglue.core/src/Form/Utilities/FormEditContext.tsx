@@ -17,7 +17,7 @@ export class FormRuntimeContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
     data: UserFormData = new UserFormData();
-    controlContexts: FormContextStore = new FormContextStore();
+    controlContexts: FormContextStore ;
 
     public onFormDataChange?: (data: UserFormData) => void;
     public onFormButtonClick? : (buttonName: string, data: UserFormData) => void ;
@@ -30,6 +30,7 @@ export class FormRuntimeContext {
 
     constructor(form: XFormConfiguration) {
         this.form = form;
+        this.controlContexts = new FormContextStore()
     }
 
     refreshUserForm() : void {
@@ -140,6 +141,13 @@ export class FormEditContext extends FormRuntimeContext {
 
     private eventLog: ({} | string)[] = [];
 
+
+    constructor(form: XFormConfiguration) {
+        super(form);
+        this.controlContexts = new FormContextStore(this);
+        this.computeDesignValidationIssues();
+    }
+
     addToEventLog(event : {} | string) {
         this.eventLog.push(event);
         // make sure does not grow too big
@@ -210,9 +218,14 @@ export class FormEditContext extends FormRuntimeContext {
 // todo: make this a store
 // todo: add other stuff here like data? hidden? disabled?
 export class FormContextStore {
+    editContext? : FormEditContext;
     controlRenderContexts : {[controlId: string] : ControlRenderContext }  = {}
     otherRuntimeIssues : ValidationIssue[] = [];
     otherDesignIssues : ValidationIssue[] = [];
+
+    constructor(editContext?: FormEditContext) {
+        this.editContext = editContext;
+    }
 
     getAllRuntimeIssues(): ValidationIssue[] {
         // add up all issues from all controls
@@ -242,7 +255,7 @@ export class FormContextStore {
         let retVal = this.controlRenderContexts[control.id];
 
         if (!retVal) {
-            retVal = new ControlRenderContext(control);
+            retVal = new ControlRenderContext(control, this.editContext);
             this.controlRenderContexts[control.id] = retVal;
         }
 
@@ -265,7 +278,7 @@ export class FormContextStore {
 
 
             if (control) {
-                retVal = new ControlRenderContext(control);
+                retVal = new ControlRenderContext(control, this.editContext);
                 this.controlRenderContexts[controlId] = retVal;
             } else {
                 throw 'could not find control';
@@ -372,12 +385,14 @@ export class FormContextStore {
 
 // todo: assume this is a sub store
 export class ControlRenderContext {
+    editContext? : FormEditContext;
     runtimeIssues : ValidationIssue[] = [];
     designIssues : ValidationIssue[] = [];
     control: XBaseControl;
 
-    constructor(control: XBaseControl) {
+    constructor(control: XBaseControl, editContext? : FormEditContext) {
         this.control = control;
+        this.editContext = editContext;
     }
 
     getRuntimeIssueText() : string | null {
@@ -413,6 +428,10 @@ export class ControlRenderContext {
 
     getRuntimeIssueData() : IssueData | null{
         if (this.runtimeIssues.length === 0)
+            return null;
+
+        // do not return if we are not in runtime mode
+        if (this.editContext && this.editContext.mode !== FormMode.Runtime)
             return null;
 
         let highestLevel = ValidationLevel.WARNING;
