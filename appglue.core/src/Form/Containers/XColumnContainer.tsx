@@ -646,7 +646,7 @@ export class XColumnContainer
                     label="Columns"
                     list={this.columns.map((col, idx) => ({name: `Columns ${idx + 1}`, item: col}))}
                     showDialogCancel={false}
-                    itemUI={(item: {index: number, content: XColumnContainerColumn | null}) => ({
+                    itemUI={(item: {index: number, content?: XColumnContainerColumn | null}) => ({
                       onComplete : (item: {index: number, content: XColumnContainerColumn | null}) => {
                         if (item.content) {
                             Reflect.set(this.columns, item.index, item.content);
@@ -656,7 +656,7 @@ export class XColumnContainer
                         this.designerUpdate();
                       },
                       onCancel: () => {
-                        // delete item.content;
+                        delete item.content;
                         // this.designerUpdate();
                       },
                       ui: (

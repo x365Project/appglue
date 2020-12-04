@@ -92,7 +92,6 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: string}>`
 	width: ${({width}) => width} !important;
 	min-width: 246px !important;
-	height: 59px !important;
 	border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
 	box-sizing: border-box !important;
 	border-radius: 5px !important;
