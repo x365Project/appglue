@@ -7,6 +7,7 @@ import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
 import {ValidationIssue} from "../../Common/IDesignValidationProvider";
+import {IssueData} from "../Utilities/FormEditContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -28,7 +29,8 @@ export class XTextArea extends BaseTextEntryControl {
         //     runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
         // }
 
-		let issueText : string | null= this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueText();
+		let issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+		let issueText : string | null | undefined = issueData?.text;
 
 
 		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';

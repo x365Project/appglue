@@ -3,14 +3,15 @@ import {FormMode, IDesignPanelConfig} from "../FormDesignConstants";
 import {
     IDesignValidationProvider,
     IRuntimeValidationProvider,
-    ValidationIssue
+    ValidationIssue,
+    ValidationLevel
 } from "../../Common/IDesignValidationProvider";
 import {XFormDesigner} from "../XFormDesigner";
 import {AutoBind} from "../../Common/AutoBind";
 import {UserFormData} from "../UserFormData";
 import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
-import { XBaseControl } from "../Controls/XBaseControl";
+import {XBaseControl} from "../Controls/XBaseControl";
 
 export class FormRuntimeContext {
     form: XFormConfiguration;
@@ -332,6 +333,27 @@ export class ControlRenderContext {
 
         return issueText;
     }
+
+    getIssueData() : IssueData | null{
+        if (this.issues.length === 0)
+            return null;
+
+        let highestLevel = ValidationLevel.WARNING;
+
+        for (let issue of this.issues) {
+            if (issue.level === ValidationLevel.ERROR) {
+                highestLevel = ValidationLevel.ERROR;
+                break;
+            }
+        }
+
+        return {text : this.getIssueText(), highestLevel: highestLevel, issues: this.issues};
+    }
 }
 
+export class IssueData {
+    text: string | null = null;
+    highestLevel: ValidationLevel = ValidationLevel.ERROR;
+    issues?: ValidationIssue[];
+}
 
