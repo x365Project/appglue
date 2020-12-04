@@ -144,7 +144,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                     }
                     {
                         this.props.editContext.mode === FormMode.FormDesign && 
-                        <ValidationErrorRendering validations={this.props.editContext?.designIssues.getAllIssues() ?? []} />
+                        <ValidationErrorRendering validations={this.props.editContext?.controlContexts.getAllDesignIssues() ?? []} />
                     }
                 </Designer>
             </DragDropContext>

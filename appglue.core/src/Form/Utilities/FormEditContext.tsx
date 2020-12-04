@@ -17,7 +17,7 @@ export class FormRuntimeContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
     data: UserFormData = new UserFormData();
-    runtimeIssues: FormContextStore = new FormContextStore();
+    controlContexts: FormContextStore = new FormContextStore();
 
     public onFormDataChange?: (data: UserFormData) => void;
     public onFormButtonClick? : (buttonName: string, data: UserFormData) => void ;
@@ -56,14 +56,14 @@ export class FormRuntimeContext {
 
         // todo: call built in rules
 
-        this.runtimeIssues.updateValidationIssues(breaks, this.form.getAllControls());
+        this.controlContexts.updateValidationIssues(breaks, this.form.getAllControls(), true);
 
         return breaks;
     }
 
 
-    getRuntimeControlContext(control: XBaseControl):  ControlRenderContext {
-        return this.runtimeIssues.getControlRenderContext(control);
+    getControlContext(control: XBaseControl):  ControlRenderContext {
+        return this.controlContexts.getControlRenderContext(control);
     }
 
     setFormDataValue(fieldName: string, value: any): void {
@@ -112,9 +112,6 @@ export class FormRuntimeContext {
 
 export class FormEditContext extends FormRuntimeContext {
     designer? : XFormDesigner;
-
-    designIssues: FormContextStore = new FormContextStore();
-
 
     formName?: string;
 
@@ -174,14 +171,9 @@ export class FormEditContext extends FormRuntimeContext {
             breaks.push(...valBreaks);
         }
 
-        this.designIssues.updateValidationIssues(breaks, this.form.getAllControls());
+        this.controlContexts.updateValidationIssues(breaks, this.form.getAllControls(), false);
         
         return breaks;
-    }
-
-    // todo: change this.  its not optimized.
-    getDesignControlContext(control: XBaseControl):  ControlRenderContext {
-        return this.designIssues.getControlRenderContext(control);
     }
 
     @AutoBind
@@ -195,6 +187,8 @@ export class FormEditContext extends FormRuntimeContext {
         if (this.onDesignerUpdate) {
             this.onDesignerUpdate();
         }
+
+        this.computeDesignValidationIssues();
     }
 
     selectedId : string | null = null;
@@ -217,15 +211,28 @@ export class FormEditContext extends FormRuntimeContext {
 // todo: add other stuff here like data? hidden? disabled?
 export class FormContextStore {
     controlRenderContexts : {[controlId: string] : ControlRenderContext }  = {}
-    otherIssues : ValidationIssue[] = [];
+    otherRuntimeIssues : ValidationIssue[] = [];
+    otherDesignIssues : ValidationIssue[] = [];
 
-    getAllIssues(): ValidationIssue[] {
+    getAllRuntimeIssues(): ValidationIssue[] {
         // add up all issues from all controls
         let issues : ValidationIssue[] = [];
-        issues.push(...this.otherIssues);
+        issues.push(...this.otherRuntimeIssues);
 
         for (let issueList of Object.values(this.controlRenderContexts)) {
-            issues.push(...issueList.issues)
+            issues.push(...issueList.runtimeIssues)
+        }
+
+        return issues;
+    };
+
+    getAllDesignIssues(): ValidationIssue[] {
+        // add up all issues from all controls
+        let issues : ValidationIssue[] = [];
+        issues.push(...this.otherDesignIssues);
+
+        for (let issueList of Object.values(this.controlRenderContexts)) {
+            issues.push(...issueList.designIssues)
         }
 
         return issues;
@@ -269,9 +276,13 @@ export class FormContextStore {
     }
 
 
-    updateValidationIssues(validations: ValidationIssue[], controls: XBaseControl[]) : void {
+    updateValidationIssues(validations: ValidationIssue[], controls: XBaseControl[], isRuntimeIssues: boolean) : void {
         // clear other issues
-        this.otherIssues.length = 0;
+        if (isRuntimeIssues) {
+            this.otherRuntimeIssues.length = 0;
+        } else {
+            this.otherDesignIssues.length = 0;
+        }
 
         let controlIssues : {[controlId: string] : ValidationIssue[]} = {}
 
@@ -318,24 +329,40 @@ export class FormContextStore {
             }
 
             // not for a control
-            this.otherIssues.push(issue);
+            if (isRuntimeIssues) {
+                this.otherRuntimeIssues.push(issue);
+            } else {
+                this.otherDesignIssues.push(issue);
+            }
         }
 
         // map to and ensure not over updating
 
         for (let control of controls) {
-            let issueStore = this.getControlRenderContext(control);
+            let controlRenderContext = this.getControlRenderContext(control);
 
-            let issues = controlIssues[issueStore.control.id];
+            let issues = controlIssues[controlRenderContext.control.id];
 
-            if (!issues && issueStore.issues.length !== 0) {
-                // clear the array
-                issueStore.issues.length = 0;
-            }
+            if (isRuntimeIssues) {
+                if (!issues && controlRenderContext.runtimeIssues.length !== 0) {
+                    // clear the array
+                    controlRenderContext.runtimeIssues.length = 0;
+                }
 
-            if (issues) {
-                // todo: we might want to update
-                issueStore.issues = issues;
+                if (issues) {
+                    // todo: we might want to update
+                    controlRenderContext.runtimeIssues = issues;
+                }
+            } else {
+                if (!issues && controlRenderContext.designIssues.length !== 0) {
+                    // clear the array
+                    controlRenderContext.designIssues.length = 0;
+                }
+
+                if (issues) {
+                    // todo: we might want to update
+                    controlRenderContext.designIssues = issues;
+                }
             }
         }
 
@@ -345,43 +372,77 @@ export class FormContextStore {
 
 // todo: assume this is a sub store
 export class ControlRenderContext {
-    issues : ValidationIssue[] = [];
+    runtimeIssues : ValidationIssue[] = [];
+    designIssues : ValidationIssue[] = [];
     control: XBaseControl;
 
     constructor(control: XBaseControl) {
         this.control = control;
     }
 
-    getIssueText() : string | null {
+    getRuntimeIssueText() : string | null {
 
         let issueText: string | null = null;
 
-        if (this.issues && this.issues.length !== 0) {
-            if (this.issues.length === 1) {
-                issueText = this.issues[0].issue;
+        if (this.runtimeIssues && this.runtimeIssues.length !== 0) {
+            if (this.runtimeIssues.length === 1) {
+                issueText = this.runtimeIssues[0].issue;
             } else {
-                issueText = 'Issues (' + this.issues.length + ')';
+                issueText = 'Issues (' + this.runtimeIssues.length + ')';
             }
         }
 
         return issueText;
     }
 
-    getIssueData() : IssueData | null{
-        if (this.issues.length === 0)
+    getDesignIssueText() : string | null {
+
+        let issueText: string | null = null;
+
+        if (this.designIssues && this.designIssues.length !== 0) {
+            if (this.designIssues.length === 1) {
+                issueText = this.designIssues[0].issue;
+            } else {
+                issueText = 'Issues (' + this.designIssues.length + ')';
+            }
+        }
+
+        return issueText;
+    }
+
+
+    getRuntimeIssueData() : IssueData | null{
+        if (this.runtimeIssues.length === 0)
             return null;
 
         let highestLevel = ValidationLevel.WARNING;
 
-        for (let issue of this.issues) {
+        for (let issue of this.runtimeIssues) {
             if (issue.level === ValidationLevel.ERROR) {
                 highestLevel = ValidationLevel.ERROR;
                 break;
             }
         }
 
-        return {text : this.getIssueText(), highestLevel: highestLevel, issues: this.issues};
+        return {text : this.getRuntimeIssueText(), highestLevel: highestLevel, issues: this.runtimeIssues};
     }
+
+    getDesignIssueData() : IssueData | null{
+        if (this.designIssues.length === 0)
+            return null;
+
+        let highestLevel = ValidationLevel.WARNING;
+
+        for (let issue of this.designIssues) {
+            if (issue.level === ValidationLevel.ERROR) {
+                highestLevel = ValidationLevel.ERROR;
+                break;
+            }
+        }
+
+        return {text : this.getDesignIssueText(), highestLevel: highestLevel, issues: this.designIssues};
+    }
+
 }
 
 export class IssueData {

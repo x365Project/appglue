@@ -40,7 +40,7 @@ export class XTextField extends BaseTextEntryControl {
         if (this.overrideStyle && this.size)
             size = this.size;
         
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
 		const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         

@@ -483,7 +483,11 @@ export class XColumnContainer
     }
 
     getControls(): XBaseControl[] {
-        return this.columns;
+        let controls : XBaseControl[] = [];
+        for (let col of this.columns) {
+            controls.push(...col.getControls());
+        }
+        return controls;
     }
 
     renderEditUI(): JSX.Element {
