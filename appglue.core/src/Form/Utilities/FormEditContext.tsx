@@ -179,7 +179,6 @@ export class FormEditContext extends FormRuntimeContext {
         return this.designIssues.getControlRenderContext(control);
     }
 
-
     @AutoBind
     refreshDesigner() : void {
         if (this.selectedId) {
