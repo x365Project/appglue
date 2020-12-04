@@ -61,6 +61,33 @@ export const PinnedSections = Template.bind({}, {form: ui});
 ui = new XFormConfiguration();
 export const CloseXAction = Template.bind({}, {form: ui, onFormClose: () => {}});
 
+ui = getFormConfig();
+ui.gapBetweenContainers = 80;
+export const SpaceBetweenContainers = Template.bind({}, {form: ui});
+
+ui = getFormConfig();
+ui.showLinesBetweenContainers = true;
+export const LineBetweenContainers = Template.bind({}, {form: ui});
+
+ui = getFormConfig();
+ui.formMargin = 20;
+ui.defaultInnerContainerMargin = 40;
+ui.defaultShowContainerBorder = true;
+export const FormMarginAndDefaultContainerMagin = Template.bind({}, {form: ui});
+
+ui = getFormConfig()
+ui.formBackgroundColor = '#ff0';
+export const FormBackgroundColor = Template.bind({}, {form: ui});
+
+ui = getFormConfig();
+ui.defaultContainerBackgroundColor = '#ff0';
+export const FormDefaultContainerBackgroundColor = Template.bind({}, {form: ui});
+
+ui = getFormConfig();
+ui.defaultContainerBorderColor = '#ff0';
+ui.defaultShowContainerBorder = true;
+export const FormDefaultContainerBorder = Template.bind({}, {form: ui});
+
 export const BringUpInDialogByButton = MissingTemplate.bind({}, {form: ui});
 
 

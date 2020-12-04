@@ -9,9 +9,9 @@ import { FormMode } from "../FormDesignConstants";
 import { XStackContainer } from "../Containers/XStackContainer";
 import { XTextField } from "../Controls/XTextField";
 import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidationProvider";
-import { XBaseControl } from "../Controls/XBaseControl";
 import { XHStackContainer } from "../Containers/XHStackContainer";
-import { XColumnContainer } from "../Containers/XColumnContainer";
+import { XColumnContainer, XColumnContainerColumn } from "../Containers/XColumnContainer";
+import { DefaultOnOff } from "./DefaultOnOff";
 
 export default {
     title: "Form Designer/Designer/Pieces",
@@ -85,8 +85,6 @@ ui.designValidationProvider = {
 
 export const DesignPanelWithDesignTimeValidationIssue = Template.bind({}, {editContext: ui});
 
-
-
 form = getFormConfig();
 form.doNotScrollFirstContainerOnForm = true;
 form.doNotScrollLastContainerOnForm = true;
@@ -95,7 +93,6 @@ ui = new FormEditContext(form);
 form.setFormEditContext(ui);
 
 export const DesignPanelWithPinSection = Template.bind({}, {editContext: ui});
-
 
 form = new XFormConfiguration();
 stack = new XStackContainer();
@@ -127,3 +124,38 @@ ui.mode = FormMode.LayoutDesign;
 form.setFormEditContext(ui);
 
 export const LayoutModeDesignPanelWithEmptyContainer = Template.bind({}, {editContext: ui});
+
+
+
+form = new XFormConfiguration();
+columnContainer = new XColumnContainer();
+
+let actualCol = new XColumnContainerColumn();
+let actualCol2 = new XColumnContainerColumn();
+let actualCol3 = new XColumnContainerColumn();
+actualCol.add(new XTextField());
+actualCol2.add(new XTextField());
+actualCol3.add(new XTextField());
+
+columnContainer.add(actualCol);
+columnContainer.add(actualCol2);
+columnContainer.add(actualCol3);
+
+actualCol.targetWidth = 30;
+actualCol.minSizePx = 500;
+actualCol2.targetWidth = 70;
+actualCol2.minSizePx = 300;
+actualCol3.targetWidth = 20;
+actualCol3.minSizePx = 100;
+
+columnContainer.lineBetweenColumns = true;
+columnContainer.lineWidthBetweenColumns = 2;
+columnContainer.lineColorBetweenColumns = 'gray';
+
+form.add(columnContainer);
+
+ui = new FormEditContext(form);
+ui.mode = FormMode.LayoutDesign;
+form.setFormEditContext(ui);
+
+export const DesignPanelWithLineBetweenWithOverlap = Template.bind({}, {editContext: ui});

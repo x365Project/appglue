@@ -5,6 +5,7 @@ import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {IssueData} from "../Utilities/FormEditContext";
 import "./XControls.css"
 
 
@@ -25,14 +26,13 @@ export class XNumberBox extends BaseTextEntryControl {
             runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
         }
 
-        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueText: string = issueData?.text || '';
+        const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+
 		return (
 			<>
-				{
-                    this.label && (
-                        <StyledInputLabel>{this.label}</StyledInputLabel>
-                    )
-                }
+				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
                 <StyledTextField
                     type="number"
                     variant={"outlined"}
@@ -41,11 +41,13 @@ export class XNumberBox extends BaseTextEntryControl {
                     data-testid={this.valueName}
                     fullWidth
                     width={customWidth}
-                    error={Boolean(runtimeError.message)}
+                    error={Boolean(issueText)}
                 />
                 {
-                    (runtimeError.message || this.hintText) && (
-                        <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                    (issueText || this.hintText) && (
+                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                            {issueText ? issueText: this.hintText}
+                        </StyledFormHelperText>
                     )
                 }
             </>

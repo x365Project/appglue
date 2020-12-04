@@ -5,8 +5,8 @@ import {TextField, TextareaAutosize} from '@material-ui/core';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import "./XControls.css"
 import {IssueData} from "../Utilities/FormEditContext";
+import "./XControls.css"
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -15,10 +15,11 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMin: number = 5;
 
 	render() {
-		const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+        
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
 		const issueText: string = issueData?.text || '';
-		const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
-
+        const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
+        
 		return (
 			<>
 				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
@@ -30,7 +31,7 @@ export class XTextArea extends BaseTextEntryControl {
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
 					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
-					error={Boolean(issueText)}
+					error={issueText}
 				/>
 				{
 					(issueText || this.hintText) && (
@@ -78,16 +79,11 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
     }
 }
 
-interface ValidationError {
-    type?: 'error' | 'warning';
-    message?: string;
-}
-
-const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: boolean}>`
+const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: string}>`
 	width: ${({width}) => width} !important;
 	min-width: 246px !important;
 	height: 59px !important;
-	border: 1px solid #E6E9ED !important;
+	border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
 	box-sizing: border-box !important;
 	border-radius: 5px !important;
 	padding: 14px 20px 14px 20px !important;

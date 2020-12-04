@@ -5,9 +5,34 @@ import { XFormConfiguration } from "../XFormConfiguration";
 import { XTextArea } from "./XTextArea";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
-import { TextControlStyle } from "../FormDesignConstants";
 
 describe("XTextArea", () => {
+
+    let errorList: any[] = [];
+
+    const renderError = (output: string) => {
+        errorList.push(output);
+    };
+
+    const renderWarn = (output: any) => {
+        errorList.push(output);
+    }
+
+    const originalError = console.error
+    const originalWarn = console.error
+    const originalLog = console.log
+
+    beforeEach(() => {
+        console.error = renderError
+        console.warn = renderWarn
+    })
+
+    afterEach(() => {
+        console.error = originalError;
+        console.warn = originalWarn;
+        console.log = originalLog;
+    })
+
     const factory = (form: XFormConfiguration) => {
         const stack = new XStackContainer();
         form.add(stack);

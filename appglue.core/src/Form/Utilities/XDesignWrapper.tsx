@@ -7,7 +7,7 @@ import { OverlapDiv } from "../Containers/XBaseStackContainer";
 import { FormMode } from "../FormDesignConstants";
 import { XBaseContainer } from "../Containers/XBaseContainer";
 import { FormDesignConstants } from '../FormDesignConstants'
-import {ControlRenderContext, FormEditContext} from "./FormEditContext";
+import {ControlRenderContext, FormEditContext, IssueData} from "./FormEditContext";
 import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidationProvider";
 import { ExclamationRedIcon } from "../../CommonUI/Icon/ExclamationRedIcon";
 import { WarningRedIcon } from "../../CommonUI/Icon/WarningRedIcon";
@@ -142,20 +142,7 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
 
     render() {
 
-        let validationIssue: ValidationIssue | undefined = undefined;
-        const validationIssues: ControlRenderContext = this.props.editContext.getDesignControlContext(this.props.innerComponent);
-        if (validationIssues.issues.length > 0) {
-            let issues = validationIssues.issues.filter((v) =>
-                v.level === ValidationLevel.ERROR
-            );
-
-            if (issues.length > 0) {
-                validationIssue = issues[0]
-            } else {
-                validationIssue = validationIssues.issues[0];
-            }
-        }
-
+        const validationIssues: IssueData | null = this.props.editContext.getControlContext(this.props.innerComponent).getDesignIssueData();
 
         if (!this.props.editContext ||
             this.props.editContext.mode === FormMode.Runtime ||
@@ -167,9 +154,9 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
             let border = `solid ${FormDesignConstants.SELECTED_CONTROL_BORDER_WIDTH} ${FormDesignConstants.SELECTED_CONTROL_BORDER_COLOR}`;
 
             if (!this.props.innerComponent.isDesignSelected()) {
-                if (validationIssue?.level === ValidationLevel.ERROR) {
+                if (validationIssues?.highestLevel === ValidationLevel.ERROR) {
                     border = `solid ${FormDesignConstants.ERROR_CONTROL_BORDER_WIDTH} ${FormDesignConstants.ERROR_CONTROL_BORDER_COLOR}`;
-                } else if (validationIssue && validationIssue.level === ValidationLevel.WARNING) {
+                } else if (validationIssues && validationIssues.highestLevel === ValidationLevel.WARNING) {
                     border = 'none';
                 }
             }
@@ -197,19 +184,19 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                             data-testid="control-click-div"
                                             onClick={this.onSelect}
                                             aria-describedby={this.props.innerComponent.id}
-                                            selected={this.props.innerComponent.isDesignSelected() || validationIssue?.level === ValidationLevel.ERROR}
+                                            selected={this.props.innerComponent.isDesignSelected() || validationIssues?.highestLevel === ValidationLevel.ERROR}
                                             border={border}
                                         >
                                             {
-                                                validationIssue && <ErrorDiv>
+                                                validationIssues && <ErrorDiv>
                                                     
-                                                    <ErrorButton onClick={this.onClickValidationIcon} data-testid={ validationIssue?.level === ValidationLevel.ERROR ? 'control-error-validation' : 'control-warn-validation'}>
+                                                    <ErrorButton onClick={this.onClickValidationIcon} data-testid={ validationIssues?.highestLevel === ValidationLevel.ERROR ? 'control-error-validation' : 'control-warn-validation'}>
                                                         {
-                                                            validationIssue?.level === ValidationLevel.ERROR && 
+                                                            validationIssues?.highestLevel === ValidationLevel.ERROR &&
                                                             <ExclamationRedIcon style={{width: '20px'}}/>
                                                         }
                                                         {
-                                                            validationIssue?.level === ValidationLevel.WARNING && 
+                                                            validationIssues?.highestLevel === ValidationLevel.WARNING &&
                                                             <WarningRedIcon />
                                                         }
                                                     </ErrorButton>
@@ -219,8 +206,8 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                                         onClose={() => this.setState({open: false})}
                                                         anchorEl={this.innerComponentRef}
                                                     >
-                                                        <ValidationList borderColor={validationIssue?.level === ValidationLevel.WARNING ? '#F69D5C' : undefined}>
-                                                            <ValidationItem data-testid="validation-item">{validationIssue.issue}</ValidationItem>
+                                                        <ValidationList borderColor={ validationIssues?.highestLevel === ValidationLevel.WARNING ? '#F69D5C' : undefined}>
+                                                            <ValidationItem data-testid="validation-item">{ validationIssues!.text}</ValidationItem>
                                                         </ValidationList>
                                                     </Popover>
                                                 </ErrorDiv>

@@ -6,6 +6,8 @@ import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {ValidationIssue} from "../../Common/IDesignValidationProvider";
+import {IssueData} from "../Utilities/FormEditContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Field', ControlType.Control, <TextFieldIcon />)
@@ -38,20 +40,9 @@ export class XTextField extends BaseTextEntryControl {
         if (this.overrideStyle && this.size)
             size = this.size;
         
-        let isValid = false;
-        if (this.valueName) {
-            if (this.getFormDataValue(this.valueName)) {
-                isValid = true;
-            }
-        }
-        
-        const runtimeError: ValidationError = {}
-        if (this.valueName) {
-            runtimeError.type = 'error'
-            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
-        }
-        
-        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+		const issueText: string = issueData?.text || '';
+        const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         
         switch(style) {
             case TextControlStyle.LABELED :
@@ -72,24 +63,27 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={Boolean(runtimeError.message)}
+                            error={Boolean(issueText)}
                         />
                         
                         {
-                            (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText  error={Boolean(runtimeError.message)}  data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
                             )
                         }
+                        
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.SHADED :
                 return (
                     <StyledTextFieldWrap width={customWidth}>
-                    {
-                        this.label && (
-                            <StyledInputLabel data-role={TextControlStyle.SHADED}>{this.label}</StyledInputLabel>
-                        )
-                    }
+                        {
+                            this.label && (
+                                <StyledInputLabel data-role={TextControlStyle.SHADED}>{this.label}</StyledInputLabel>
+                            )
+                        }
                         
                         <StyledTextField
                             size={size}
@@ -100,25 +94,27 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={Boolean(runtimeError.message)}
-                        >
-                        </StyledTextField>
+                            error={Boolean(issueText)}
+                        />
                         
                         {
-                            (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
                             )
                         }
+
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.UNDERLINED :
                 return (
                     <StyledTextFieldWrap width={customWidth}>
-                    {
-                        this.label && (
-                            <StyledInputLabel data-role={TextControlStyle.UNDERLINED}>{this.label}</StyledInputLabel>
-                        )
-                    }
+                        {
+                            this.label && (
+                                <StyledInputLabel data-role={TextControlStyle.UNDERLINED}>{this.label}</StyledInputLabel>
+                            )
+                        }
                         
                         <StyledTextField
                             size={size}
@@ -129,25 +125,27 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={Boolean(runtimeError.message)}
-                        >
-                        </StyledTextField>
+                            error={Boolean(issueText)}
+                        />
                         
                         {
-                            (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
                             )
                         }
+
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.OUTLINE :
                 return (
                     <StyledTextFieldWrap width={customWidth}>
-                    {
-                        this.label && (
-                            <StyledInputLabel data-role={TextControlStyle.OUTLINE}>{this.label}</StyledInputLabel>
-                        )
-                    }
+                        {
+                            this.label && (
+                                <StyledInputLabel data-role={TextControlStyle.OUTLINE}>{this.label}</StyledInputLabel>
+                            )
+                        }
                         
                         <StyledTextField
                             size={size}
@@ -158,15 +156,17 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={Boolean(runtimeError.message)}
-                        >
-                        </StyledTextField>
+                            error={Boolean(issueText)}
+                        />
                         
                         {
-                            (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
                             )
                         }
+
                     </StyledTextFieldWrap>
                 );
             }
