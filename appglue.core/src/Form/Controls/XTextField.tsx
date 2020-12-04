@@ -6,7 +6,6 @@ import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {IssueData} from "../Utilities/FormEditContext";
 
 
@@ -14,14 +13,6 @@ import {IssueData} from "../Utilities/FormEditContext";
 export class XTextField extends BaseTextEntryControl {
     
     innerComponentRef: HTMLDivElement | null = null;
-    
-    constructor () {
-        super();
-
-        this.state = {
-            open: false,
-        }
-    }
     
     onSelect = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -41,7 +32,7 @@ export class XTextField extends BaseTextEntryControl {
             size = this.size;
         
         const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
-		const issueText: string = issueData?.text || '';
+        const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         
         switch(style) {
@@ -53,7 +44,6 @@ export class XTextField extends BaseTextEntryControl {
                                 <StyledInputLabel data-role={TextControlStyle.LABELED}>{this.label}</StyledInputLabel>
                             )
                         }
-                        
                         <StyledTextField
                             size={size}
                             data-size={size}
@@ -65,7 +55,6 @@ export class XTextField extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
                         />
-                        
                         {
                             (issueText || this.hintText) && (
                                 <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
@@ -73,18 +62,11 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
-                        
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.SHADED :
                 return (
                     <StyledTextFieldWrap width={customWidth}>
-                        {
-                            this.label && (
-                                <StyledInputLabel data-role={TextControlStyle.SHADED}>{this.label}</StyledInputLabel>
-                            )
-                        }
-                        
                         <StyledTextField
                             size={size}
                             data-size={size}
@@ -96,7 +78,6 @@ export class XTextField extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
                         />
-                        
                         {
                             (issueText || this.hintText) && (
                                 <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
@@ -104,18 +85,11 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
-
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.UNDERLINED :
                 return (
                     <StyledTextFieldWrap width={customWidth}>
-                        {
-                            this.label && (
-                                <StyledInputLabel data-role={TextControlStyle.UNDERLINED}>{this.label}</StyledInputLabel>
-                            )
-                        }
-                        
                         <StyledTextField
                             size={size}
                             data-size={size}
@@ -127,7 +101,6 @@ export class XTextField extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
                         />
-                        
                         {
                             (issueText || this.hintText) && (
                                 <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
@@ -135,18 +108,11 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
-
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.OUTLINE :
                 return (
                     <StyledTextFieldWrap width={customWidth}>
-                        {
-                            this.label && (
-                                <StyledInputLabel data-role={TextControlStyle.OUTLINE}>{this.label}</StyledInputLabel>
-                            )
-                        }
-                        
                         <StyledTextField
                             size={size}
                             data-size={size}
@@ -158,7 +124,6 @@ export class XTextField extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
                         />
-                        
                         {
                             (issueText || this.hintText) && (
                                 <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>
@@ -166,7 +131,6 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
-
                     </StyledTextFieldWrap>
                 );
             }

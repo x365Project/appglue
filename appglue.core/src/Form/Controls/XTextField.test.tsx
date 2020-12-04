@@ -8,6 +8,7 @@ import { XUserForm } from "../../Form/XUserForm";
 import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
 import { FormEditContext } from "../Utilities/FormEditContext";
 import { ValidationIssue } from '../../Common/IDesignValidationProvider';
+import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel"
 
 describe("XTextField", () => {
 
@@ -113,7 +114,8 @@ describe("XTextField", () => {
         form.defaultTextStyle = TextControlStyle.OUTLINE;
 
         let {container, getByTestId} = factory(form);
-        expect(container.querySelector(`[data-size="${TextControlSize.SMALL}"][data-role="${TextControlStyle.OUTLINE}"]`)).toBeInTheDocument();
+        expect(container.querySelector(`[data-size="${TextControlSize.SMALL}"]`)).toBeInTheDocument();
+        expect(container.querySelector(`[data-role="${TextControlStyle.OUTLINE}"]`)).not.toBeInTheDocument();
         expect(getByTestId('test-hinttext')).toHaveTextContent(/test hint/i);
 
     });
@@ -140,9 +142,8 @@ describe("XTextField", () => {
             }
         }
 
-        let {getByTestId} = render(<XUserForm form={form} />);
+        const {container, getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
         const helpText = getByTestId('test-hinttext');
         expect(helpText).toBeInTheDocument();
-        expect(helpText).toHaveClass("Mui-error");
     });
 });
