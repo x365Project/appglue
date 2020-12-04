@@ -6,6 +6,7 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
+import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -14,18 +15,21 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMin: number = 5;
 
 	render() {
-		let isValid = false;
-        if (this.valueName) {
-            if (this.getFormDataValue(this.valueName)) {
-                isValid = true;
-            }
-        }
+		// let isValid = false;
+        // if (this.valueName) {
+        //     if (this.getFormDataValue(this.valueName)) {
+        //         isValid = true;
+        //     }
+        // }
+		//
+        // const runtimeError: ValidationError = {}
+        // if (this.valueName) {
+        //     runtimeError.type = 'error'
+        //     runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
+        // }
 
-        const runtimeError: ValidationError = {}
-        if (this.valueName) {
-            runtimeError.type = 'error'
-            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
-        }
+		let issueText : string | null= this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueText();
+
 
 		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 		return (
@@ -39,11 +43,11 @@ export class XTextArea extends BaseTextEntryControl {
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
                     value={(this.valueName)?this.getFormDataValue(this.valueName):''}
-                    error={runtimeError.message}
+                    error={issueText}
 				/>
                 {
-                    (runtimeError.message || this.hintText) && (
-                        <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textarea'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                    (issueText || this.hintText) && (
+                        <StyledFormHelperText error={issueText} data-testid={`${this.valueName || 'textarea'}-hinttext`}>{issueText ? issueText: this.hintText}</StyledFormHelperText>
                     )
                 }
 			</>

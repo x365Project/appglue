@@ -318,6 +318,21 @@ export class ControlRenderContext {
     constructor(control: XBaseControl) {
         this.control = control;
     }
+
+    getIssueText() : string | null {
+
+        let issueText: string | null = null;
+
+        if (this.issues && this.issues.length !== 0) {
+            if (this.issues.length === 1) {
+                issueText = this.issues[0].issue;
+            } else {
+                issueText = 'Issues (' + this.issues.length + ')';
+            }
+        }
+
+        return issueText;
+    }
 }
 
 
