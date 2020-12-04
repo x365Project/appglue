@@ -6,6 +6,8 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
+import {ValidationIssue} from "../../Common/IDesignValidationProvider";
+import {IssueData} from "../Utilities/FormEditContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -14,6 +16,23 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMin: number = 5;
 
 	render() {
+		// let isValid = false;
+        // if (this.valueName) {
+        //     if (this.getFormDataValue(this.valueName)) {
+        //         isValid = true;
+        //     }
+        // }
+		//
+        // const runtimeError: ValidationError = {}
+        // if (this.valueName) {
+        //     runtimeError.type = 'error'
+        //     runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
+        // }
+
+		let issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+		let issueText : string | null | undefined = issueData?.text;
+
+
 		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 		return (
 			<>
@@ -25,11 +44,14 @@ export class XTextArea extends BaseTextEntryControl {
 					width={customWidth}
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
-					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+                    value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+                    error={issueText}
 				/>
-				{this.hintText && (
-					<StyledFormHelperText>{this.hintText}</StyledFormHelperText>
-				)}
+                {
+                    (issueText || this.hintText) && (
+                        <StyledFormHelperText error={issueText} data-testid={`${this.valueName || 'textarea'}-hinttext`}>{issueText ? issueText: this.hintText}</StyledFormHelperText>
+                    )
+                }
 			</>
 		)
 	}
@@ -69,7 +91,11 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
     }
 }
 
-// https://styled-components.com/docs/faqs#how-can-i-override-inline-styles
+interface ValidationError {
+    type?: 'error' | 'warning';
+    message?: string;
+}
+
 const StyledTextareaAutosize = styled(TextareaAutosize)`
 	width: ${props => props.width} !important;
 	min-width: 246px !important;

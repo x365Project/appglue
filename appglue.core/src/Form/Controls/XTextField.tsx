@@ -8,12 +8,26 @@ import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 
 
-
 @RegisterUIControl('Data (Entry)', 'Text Field', ControlType.Control, <TextFieldIcon />)
 export class XTextField extends BaseTextEntryControl {
+    
+    innerComponentRef: HTMLDivElement | null = null;
+    
+    constructor () {
+        super();
 
+        this.state = {
+            open: false,
+        }
+    }
+    
+    onSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        this.selectInDesigner();
+    }
 
     render() {
+
         let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
 
         if (this.overrideStyle && this.style)
@@ -24,11 +38,25 @@ export class XTextField extends BaseTextEntryControl {
         if (this.overrideStyle && this.size)
             size = this.size;
         
+        let isValid = false;
+        if (this.valueName) {
+            if (this.getFormDataValue(this.valueName)) {
+                isValid = true;
+            }
+        }
+        
+        const runtimeError: ValidationError = {}
+        if (this.valueName) {
+            runtimeError.type = 'error'
+            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
+        }
+        
         let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+        
         switch(style) {
             case TextControlStyle.LABELED :
                 return (
-                    <>
+                    <StyledTextFieldWrap width={customWidth}>
                         {
                             this.label && (
                                 <StyledInputLabel data-role={TextControlStyle.LABELED}>{this.label}</StyledInputLabel>
@@ -44,78 +72,102 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                        >
-    
-                        </StyledTextField>
+                            error={runtimeError.message}
+                        />
+                        
                         {
-                            this.hintText && (
-                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            (runtimeError.message || this.hintText) && (
+                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
-                    </>
+                    </StyledTextFieldWrap>
                 );
             case TextControlStyle.SHADED :
                 return (
-                    <>
-                        <TextField
-                            data-role={TextControlStyle.SHADED}
-                            data-size={size}
+                    <StyledTextFieldWrap width={customWidth}>
+                    {
+                        this.label && (
+                            <StyledInputLabel data-role={TextControlStyle.SHADED}>{this.label}</StyledInputLabel>
+                        )
+                    }
+                        
+                        <StyledTextField
                             size={size}
-                            variant={'filled'}
+                            data-size={size}
                             data-testid={this.valueName}
-                            fullWidth={true}
+                            variant={"filled"}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                            label={this.label}
                             onChange={this.handleChange}
-                        />
+                            error={runtimeError.message}
+                        >
+                        </StyledTextField>
+                        
                         {
-                            this.hintText && (
-                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            (runtimeError.message || this.hintText) && (
+                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
-                    </>
+                    </StyledTextFieldWrap>
                 );
             case TextControlStyle.UNDERLINED :
                 return (
-                    <>
-                        <TextField
+                    <StyledTextFieldWrap width={customWidth}>
+                    {
+                        this.label && (
+                            <StyledInputLabel data-role={TextControlStyle.UNDERLINED}>{this.label}</StyledInputLabel>
+                        )
+                    }
+                        
+                        <StyledTextField
                             size={size}
-                            data-role={TextControlStyle.UNDERLINED}
                             data-size={size}
-                            variant={'standard'}
                             data-testid={this.valueName}
-                            fullWidth={true}
+                            variant={"standard"}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                            label={this.label}
                             onChange={this.handleChange}
-                        />
+                            error={runtimeError.message}
+                        >
+                        </StyledTextField>
+                        
                         {
-                            this.hintText && (
-                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            (runtimeError.message || this.hintText) && (
+                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
-                    </>
+                    </StyledTextFieldWrap>
                 );
             case TextControlStyle.OUTLINE :
                 return (
-                    <>
-                        <TextField
+                    <StyledTextFieldWrap width={customWidth}>
+                    {
+                        this.label && (
+                            <StyledInputLabel data-role={TextControlStyle.OUTLINE}>{this.label}</StyledInputLabel>
+                        )
+                    }
+                        
+                        <StyledTextField
                             size={size}
-                            data-role={TextControlStyle.OUTLINE}
                             data-size={size}
-                            variant={'outlined'}
                             data-testid={this.valueName}
-                            fullWidth={true}
+                            variant={"outlined"}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                            label={this.label}
                             onChange={this.handleChange}
-                        />
+                            error={runtimeError.message}
+                        >
+                        </StyledTextField>
+                        
                         {
-                            this.hintText && (
-                                <StyledFormHelperText data-testid={`${this.valueName || 'textfield'}-hinttext`}>{this.hintText}</StyledFormHelperText>
+                            (runtimeError.message || this.hintText) && (
+                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
-                    </>
+                    </StyledTextFieldWrap>
                 );
             }
     
@@ -150,10 +202,23 @@ class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
     }
 }
 
+interface ValidationError {
+    type?: 'error' | 'warning';
+    message?: string;
+}
+
+const StyledTextFieldWrap = styled.div`
+    width: ${props => props.width} !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+`
+
 const StyledTextField = styled(TextField)`
     width: ${props => props.width} !important;
     height: 59px !important;
     box-sizing: border-box !important;
+    z-index: 1 !important;
     fieldset {
         border: unset !important;
     }
@@ -161,8 +226,8 @@ const StyledTextField = styled(TextField)`
         color: #01244E !important;
         border-radius: 5.65107px !important;
         &:focus {
-            border: 1.35302px solid #1873B9 !important;
+            border: 1.35302px solid ${props => props.error? '#F65C66' : '#1873B9'} !important;
         }
-        border: 1.35302px solid #E6E9ED !important;
+        border: 1.35302px solid ${props => props.error? '#F65C66' : '#E6E9ED'} !important;
     }
 `

@@ -14,7 +14,7 @@ import { WarningRedIcon } from "../../CommonUI/Icon/WarningRedIcon";
 
 const ErrorDiv = styled.div`
     position: absolute;
-    top: 8px;
+    top: 33px;
     right: 8px;
 `;
 
@@ -28,10 +28,12 @@ const ValidationList = styled("div")<{background?: string, borderColor?: string}
     border: solid 1px ${props => props.borderColor || '#F65C66'};
     border-radius: 3px; 
     padding: 0 6px;
+    width: 142px;
+    height: 20px;
 `;
 
 const ValidationItem = styled.div`
-    font-size: 9px;
+    font-size: 12px;
     line-height: 11px;
     margin: 3px 0;
 `;
@@ -204,7 +206,7 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                                     <ErrorButton onClick={this.onClickValidationIcon} data-testid={ validationIssue?.level === ValidationLevel.ERROR ? 'control-error-validation' : 'control-warn-validation'}>
                                                         {
                                                             validationIssue?.level === ValidationLevel.ERROR && 
-                                                            <ExclamationRedIcon />
+                                                            <ExclamationRedIcon style={{width: '20px'}}/>
                                                         }
                                                         {
                                                             validationIssue?.level === ValidationLevel.WARNING && 
@@ -212,7 +214,7 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                                         }
                                                     </ErrorButton>
                                                     <Popover
-                                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                                        anchorOrigin={{horizontal: 640, vertical: 70}}
                                                         open={this.state.open}
                                                         onClose={() => this.setState({open: false})}
                                                         anchorEl={this.innerComponentRef}

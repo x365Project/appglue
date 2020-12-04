@@ -26,6 +26,19 @@ export class XDatePicker extends BaseTextEntryControl {
     }
 
     render () {
+        let isValid = false;
+        if (this.valueName) {
+            if (this.getFormDataValue(this.valueName)) {
+                isValid = true;
+            }
+        }
+
+        const runtimeError: ValidationError = {}
+        if (this.valueName) {
+            runtimeError.type = 'error'
+            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
+        }
+
         let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         return (
             <form noValidate>
@@ -46,8 +59,8 @@ export class XDatePicker extends BaseTextEntryControl {
                     width={customWidth}
                 />
                 {
-                    this.hintText && (
-                        <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+                    (runtimeError.message || this.hintText) && (
+                        <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'datapicker'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                     )
                 }
             </form>
@@ -79,6 +92,11 @@ class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
             </>
         )
     }
+}
+
+interface ValidationError {
+    type?: 'error' | 'warning';
+    message?: string;
 }
 
 const StyledTextField = styled(TextField)`
