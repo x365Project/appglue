@@ -111,8 +111,8 @@ export class XSelectbox extends BaseTextEntryControl {
 
 }
 
-const StyledSelect = styled(Select)`
-    width: ${props => props.width} !important;
+const StyledSelect = styled(Select)<{width?: string}>`
+    width: ${({width}) => width} !important;
     select {
         height: 59px !important;
         border: 1px solid #E6E9ED !important;

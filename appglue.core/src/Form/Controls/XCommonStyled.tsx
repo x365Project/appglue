@@ -15,6 +15,6 @@ export const StyledFormHelperText = styled(FormHelperText)`
     font-weight: 600 !important;
     font-size: 12px !important;
     line-height: 15px !important;
-    color: ${props => props.error? '#F65C66' : '#677C95'} !important;
+    color: ${({error}) => error? '#F65C66' : '#677C95'} !important;
     margin-top: 6px !important;
 `;
