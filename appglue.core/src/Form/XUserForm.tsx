@@ -1,7 +1,27 @@
+import React from "react";
+
+import styled from "styled-components";
+
 import {UserFormData} from "./UserFormData";
 import {XFormConfiguration} from "./XFormConfiguration";
-import React from "react";
 import {FormRuntimeContext} from "./Utilities/FormEditContext";
+import { TextField, Button } from "@material-ui/core";
+import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
+
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    position: absolute;
+
+    .MuiButtonBase-root {
+        margin-left: auto;
+    }
+
+`;
 
 export interface IUserFormParameters {
     form: XFormConfiguration;
@@ -48,9 +68,28 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
 
     }
 
+    hasHeader = () : boolean => {
+        return !!this.props.formTitle || !!this.props.onFormClose;
+    }
+
     render() {
         return (
-            this.props.form.render()
+            <>
+                {
+                    this.hasHeader() && 
+                    <Header>
+                        {
+                            this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
+                        }
+                        {
+                            this.props.onFormClose && <Button onClick={() => this.props.onFormClose!(this.formRuntimeContext.getFormData())} data-testid="btn-form-close">
+                                <CloseIcon />
+                            </Button>
+                        }   
+                    </Header>
+                }
+                {this.props.form.render()}
+            </>
         );
     }
 }

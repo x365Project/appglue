@@ -32,12 +32,13 @@ const HStackContainerDiv = styled("div")<{
     borderRadius?: number,
     borderStyle?: BorderStyle,
     backgroundColor?: string | null;
+    minHeight: number;
 }>`
    padding: ${props => props.padding || 0}px;
    width: 100%;
    display: flex;
    flex-wrap: wrap;
-   min-height: ${props => (props.padding || 0) + 75}px;
+   min-height: ${props => (props.padding || 0) + props.minHeight}px;
 
    border: ${props => (
        props.hasBorder 
@@ -107,6 +108,7 @@ export class XHStackContainer
                                         borderWidth={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_WIDTH) ||this.borderWidth()}
                                         borderRadius={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_RADIUS) || this.borderRadius()}
                                         backgroundColor={this.backgroundColor()}
+                                        minHeight={this.controls.length > 0 ? 0 : 75}
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
                                     >
@@ -142,6 +144,7 @@ export class XHStackContainer
         } else {
             return (
                 <HStackContainerDiv
+                    minHeight={this.controls.length > 0 ? 0 : 75}
                     padding={this.getInnerMargin()}
                     hasBorder={this.hasBorder()}
                     borderColor={this.borderColor()}
