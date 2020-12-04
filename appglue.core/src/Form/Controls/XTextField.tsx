@@ -72,12 +72,12 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={runtimeError.message}
+                            error={Boolean(runtimeError.message)}
                         />
                         
                         {
                             (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                                <StyledFormHelperText  error={Boolean(runtimeError.message)}  data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
                     </StyledTextFieldWrap>
@@ -100,13 +100,13 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={runtimeError.message}
+                            error={Boolean(runtimeError.message)}
                         >
                         </StyledTextField>
                         
                         {
                             (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                                <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
                     </StyledTextFieldWrap>
@@ -129,13 +129,13 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={runtimeError.message}
+                            error={Boolean(runtimeError.message)}
                         >
                         </StyledTextField>
                         
                         {
                             (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                                <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
                     </StyledTextFieldWrap>
@@ -158,13 +158,13 @@ export class XTextField extends BaseTextEntryControl {
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
-                            error={runtimeError.message}
+                            error={Boolean(runtimeError.message)}
                         >
                         </StyledTextField>
                         
                         {
                             (runtimeError.message || this.hintText) && (
-                                <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                                <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textfield'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                             )
                         }
                     </StyledTextFieldWrap>
@@ -207,15 +207,15 @@ interface ValidationError {
     message?: string;
 }
 
-const StyledTextFieldWrap = styled.div`
-    width: ${props => props.width} !important;
+const StyledTextFieldWrap = styled.div<{width?: string}>`
+    width: ${({width}) => width} !important;
     height: 100% !important;
     box-sizing: border-box !important;
     position: relative !important;
 `
 
-const StyledTextField = styled(TextField)`
-    width: ${props => props.width} !important;
+const StyledTextField = styled(TextField)<{width?: string}>`
+    width: ${({width}) => width} !important;
     height: 59px !important;
     box-sizing: border-box !important;
     z-index: 1 !important;
@@ -226,8 +226,8 @@ const StyledTextField = styled(TextField)`
         color: #01244E !important;
         border-radius: 5.65107px !important;
         &:focus {
-            border: 1.35302px solid ${props => props.error? '#F65C66' : '#1873B9'} !important;
+            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
         }
-        border: 1.35302px solid ${props => props.error? '#F65C66' : '#E6E9ED'} !important;
+        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
     }
 `

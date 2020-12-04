@@ -41,10 +41,11 @@ export class XNumberBox extends BaseTextEntryControl {
                     data-testid={this.valueName}
                     fullWidth
                     width={customWidth}
+                    error={Boolean(runtimeError.message)}
                 />
                 {
                     (runtimeError.message || this.hintText) && (
-                        <StyledFormHelperText error={runtimeError.message} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                        <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
                     )
                 }
             </>
@@ -85,8 +86,8 @@ interface ValidationError {
     message?: string;
 }
 
-const StyledTextField = styled(TextField)`
-    width: ${props => props.width} !important;
+const StyledTextField = styled(TextField)<{width?: string}>`
+    width: ${({width}) => width} !important;
     height: 59px;
     box-sizing: border-box;
     border-radius: 5.65107px;
@@ -98,8 +99,8 @@ const StyledTextField = styled(TextField)`
         color: #01244E !important;
         border-radius: 5.65107px !important;
         &:focus {
-            border: 1.35302px solid #1873B9 !important;
+            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
         }
-        border: 1px solid #E6E9ED !important;
+        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
     }
 `
