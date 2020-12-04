@@ -6,44 +6,35 @@ import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TimePickerIcon} from "../../CommonUI/Icon/TimePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {IssueData} from "../Utilities/FormEditContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Time Picker', ControlType.Control, <TimePickerIcon />)
 export class XTimePicker extends BaseTextEntryControl {
 
     render () {
-        let isValid = false;
-        if (this.valueName) {
-            if (this.getFormDataValue(this.valueName)) {
-                isValid = true;
-            }
-        }
 
-        const runtimeError: ValidationError = {}
-        if (this.valueName) {
-            runtimeError.type = 'error'
-            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
-        }
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+        const issueText: string = issueData?.text || '';
+        const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 
-        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         return (
             <form noValidate>
                 <>
-                    {
-                        this.label && (
-                            <StyledInputLabel>{this.label}</StyledInputLabel>
-                        )
-                    }            
+                    {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
                     <StyledTextField
                         type="time"
                         value={this.valueName?this.getFormDataValue(this.valueName): String}
                         onChange={this.handleChange}
                         data-testid={this.valueName}
                         width={customWidth}
+                        error={Boolean(issueText)}
                     />
                     {
-                        (runtimeError.message || this.hintText) && (
-                            <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'datapicker'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                        (issueText || this.hintText) && (
+                            <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
+                                {issueText ? issueText: this.hintText}
+                            </StyledFormHelperText>
                         )
                     }
                 </>
@@ -88,13 +79,13 @@ const StyledTextField = styled(TextField)<{width?: string}>`
         justify-content: space-around !important;
         height: 59px !important;
         padding: 14px 20px !important;
-        border: 1px solid #E6E9ED !important;
         box-sizing: border-box !important;
         border-radius: 5.65107px !important;
         color: #677C95 !important;    
         &:focus {
             color: #01244E !important; 
-            border: 1.35302px solid #1873B9 !important;
+            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
         }
+        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
     }
 `
