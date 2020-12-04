@@ -7,7 +7,7 @@ import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
 import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
 import { FormEditContext } from "../Utilities/FormEditContext";
-import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel";
+import { ValidationIssue } from '../../Common/IDesignValidationProvider';
 
 describe("XTextField", () => {
 
@@ -28,7 +28,6 @@ describe("XTextField", () => {
     beforeEach(() => {
         console.error = renderError
         console.warn = renderWarn
-        // console.log = renderLog
     })
 
     afterEach(() => {
@@ -37,8 +36,6 @@ describe("XTextField", () => {
         console.warn = originalWarn;
         console.log = originalLog;
     })
-
-
 
     const factory = (form: XFormConfiguration) => {
         const stack = new XStackContainer();
@@ -123,22 +120,29 @@ describe("XTextField", () => {
 
     it("Check design validation display", () => {
         const form = new XFormConfiguration();
-        form.defaultTextSize = TextControlSize.SMALL;
-        form.defaultTextStyle = TextControlStyle.OUTLINE;
+        let ui = new FormEditContext(form);        
+        form.setFormEditContext(ui);
         const stack = new XStackContainer();
         form.add(stack);
         const control = new XTextField();
+        control.valueName = "test";
         control.label = "test label";
+        control.hintText = "test hint";
         stack.add(control);
-        const ui = new FormEditContext(form);
-        form.setFormEditContext(ui);
-        const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
+        
+        ui.runtimeValidationProvider = {
+            getRuntimeValidationIssues: (): ValidationIssue[] => {
+                let issues: ValidationIssue[] = [];
+                if (form.getFormRuntimeContext()?.getFormDataValue('test')) {
+                    issues.push(new ValidationIssue('Value is required', undefined, control.id));
+                }
+                return issues;
+            }
+        }
 
-        const validationIcon = getByTestId('control-error-validation');
-        expect(validationIcon).toBeInTheDocument();
-
-        fireEvent.click(validationIcon);
-        expect(getByTestId('validation-item')).toBeInTheDocument();
-
+        let {getByTestId} = render(<XUserForm form={form} />);
+        const helpText = getByTestId('test-hinttext');
+        expect(helpText).toBeInTheDocument();
+        expect(helpText).toHaveClass("Mui-error");
     });
 });

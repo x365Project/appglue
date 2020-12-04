@@ -10,6 +10,7 @@ import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEdito
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {IssueData} from "../Utilities/FormEditContext";
 import "./XControls.css"
 
 
@@ -22,20 +23,21 @@ interface XSelectboxItem {
 export class XSelectbox extends BaseTextEntryControl {
     items: XSelectboxItem[] = [];
     render() {
-        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+        const issueText: string = issueData?.text || '';
+        const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+        
         return (
             <>
-                {
-                    this.label && (
-                        <StyledInputLabel>{this.label}</StyledInputLabel>
-                    )
-                }            
+                {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
                 <StyledSelect     
                     value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                     native
                     onChange={this.handleChange}
                     data-testid={this.valueName}
                     width={customWidth}
+                    error={Boolean(issueText)}
                 >
                     {this.items.map((item, index) => {
                         return (
@@ -44,8 +46,10 @@ export class XSelectbox extends BaseTextEntryControl {
                     })}
                 </StyledSelect>
                 {
-                    this.hintText && (
-                        <StyledFormHelperText>{this.hintText}</StyledFormHelperText>
+                    (issueText || this.hintText) && (
+                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
+                            {issueText ? issueText: this.hintText}
+                        </StyledFormHelperText>
                     )
                 }
             </>
@@ -115,7 +119,6 @@ const StyledSelect = styled(Select)<{width?: string}>`
     width: ${({width}) => width} !important;
     select {
         height: 59px !important;
-        border: 1px solid #E6E9ED !important;
         box-sizing: border-box !important;
         border-radius: 5px !important;    
         padding-left: 20px !important;
@@ -125,7 +128,9 @@ const StyledSelect = styled(Select)<{width?: string}>`
         line-height: 20px !important;    
         &:focus {
             border: 1.35302px solid #1873B9 !important;    
+            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
         }
+        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
     }
     .MuiSelect-icon {
         right: 15px;
