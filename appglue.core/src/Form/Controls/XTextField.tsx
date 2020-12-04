@@ -6,6 +6,7 @@ import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {IssueData} from "../Utilities/FormEditContext";
 
 

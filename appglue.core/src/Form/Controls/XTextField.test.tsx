@@ -123,22 +123,10 @@ describe("XTextField", () => {
 
     it("Check design validation display", () => {
         const form = new XFormConfiguration();
-        form.defaultTextSize = TextControlSize.SMALL;
-        form.defaultTextStyle = TextControlStyle.OUTLINE;
-        const stack = new XStackContainer();
-        form.add(stack);
-        const control = new XTextField();
-        control.label = "test label";
-        stack.add(control);
-        const ui = new FormEditContext(form);
-        form.setFormEditContext(ui);
-        const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
-
-        const validationIcon = getByTestId('control-error-validation');
-        expect(validationIcon).toBeInTheDocument();
-
-        fireEvent.click(validationIcon);
-        expect(getByTestId('validation-item')).toBeInTheDocument();
-
+        let {getByTestId} = factory(form);
+        
+        const helpText = getByTestId('test-hinttext');
+        expect(helpText).toBeInTheDocument();
+        expect(helpText).toHaveClass("Mui-error");
     });
 });

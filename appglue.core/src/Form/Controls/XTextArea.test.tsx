@@ -1,11 +1,13 @@
 import React from "react";
-import { render, waitFor, fireEvent } from "@testing-library/react";
+import { render, waitFor, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { XFormConfiguration } from "../XFormConfiguration";
 import { XTextArea } from "./XTextArea";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
-import { TextControlStyle } from "../FormDesignConstants";
+import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
+import { FormEditContext } from "../Utilities/FormEditContext";
+import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel";
 
 describe("XTextArea", () => {
     const factory = (form: XFormConfiguration) => {
@@ -75,5 +77,14 @@ describe("XTextArea", () => {
         expect(newTextArea).toHaveValue("text area init");
         expect(secondForm.queryByText(/test label/i)).toBeInTheDocument();
         expect(secondForm.queryByText(/test hint/i)).toBeInTheDocument();
+    });
+
+    it("Check design validation display", () => {
+        const form = new XFormConfiguration();
+        let {getByTestId} = factory(form);
+        
+        const helpText = getByTestId('test-hinttext');
+        expect(helpText).toBeInTheDocument();
+        expect(helpText).toHaveClass("Mui-error");
     });
 });
