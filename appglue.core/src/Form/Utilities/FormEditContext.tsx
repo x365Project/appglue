@@ -37,6 +37,7 @@ export class FormRuntimeContext {
     }
 
     computeRuntimeValidations(): ValidationIssue[] {
+
         let breaks : ValidationIssue[];
         breaks = [];
 
@@ -67,7 +68,7 @@ export class FormRuntimeContext {
 
     setFormDataValue(fieldName: string, value: any): void {
         if (!this.data)
-            return;
+            this.data = new UserFormData();
 
         this.data[fieldName] = value;
 
@@ -76,6 +77,8 @@ export class FormRuntimeContext {
         if (this.onFormDataChange) {
             this.onFormDataChange(this.data);
         }
+
+        this.computeRuntimeValidations();
     }
 
     getFormDataValue(fieldName: string): any {
@@ -87,6 +90,7 @@ export class FormRuntimeContext {
 
     setFormData(data: UserFormData): void {
         this.data = data;
+        this.computeRuntimeValidations();
     }
 
     getFormData(): UserFormData {
@@ -212,7 +216,7 @@ export class FormEditContext extends FormRuntimeContext {
 // todo: make this a store
 // todo: add other stuff here like data? hidden? disabled?
 export class FormContextStore {
-    validationIssues : {[controlId: string] : ControlRenderContext }  = {}
+    controlRenderContexts : {[controlId: string] : ControlRenderContext }  = {}
     otherIssues : ValidationIssue[] = [];
 
     getAllIssues(): ValidationIssue[] {
@@ -220,7 +224,7 @@ export class FormContextStore {
         let issues : ValidationIssue[] = [];
         issues.push(...this.otherIssues);
 
-        for (let issueList of Object.values(this.validationIssues)) {
+        for (let issueList of Object.values(this.controlRenderContexts)) {
             issues.push(...issueList.issues)
         }
 
@@ -228,15 +232,42 @@ export class FormContextStore {
     };
 
     getControlRenderContext(control: XBaseControl) : ControlRenderContext {
-        let retVal = this.validationIssues[control.id];
+        let retVal = this.controlRenderContexts[control.id];
 
         if (!retVal) {
             retVal = new ControlRenderContext(control);
-            this.validationIssues[control.id] = retVal;
+            this.controlRenderContexts[control.id] = retVal;
         }
 
         return retVal;
     }
+
+    getControlRenderContextById(controlId: string, controls: XBaseControl[]) : ControlRenderContext {
+        let retVal = this.controlRenderContexts[controlId];
+
+        if (!retVal) {
+            // find control based on id
+            let control : XBaseControl | undefined;
+
+            for (let c of controls) {
+                if (c.id === controlId) {
+                    control = c;
+                    break;
+                }
+            }
+
+
+            if (control) {
+                retVal = new ControlRenderContext(control);
+                this.controlRenderContexts[controlId] = retVal;
+            } else {
+                throw 'could not find control';
+            }
+        }
+
+        return retVal;
+    }
+
 
     updateValidationIssues(validations: ValidationIssue[], controls: XBaseControl[]) : void {
         // clear other issues
@@ -292,7 +323,9 @@ export class FormContextStore {
 
         // map to and ensure not over updating
 
-        for (let issueStore of Object.values(this.validationIssues)) {
+        for (let control of controls) {
+            let issueStore = this.getControlRenderContext(control);
+
             let issues = controlIssues[issueStore.control.id];
 
             if (!issues && issueStore.issues.length !== 0) {
