@@ -6,6 +6,8 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
+import {ValidationIssue} from "../../Common/IDesignValidationProvider";
+import {IssueData} from "../Utilities/FormEditContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -15,17 +17,21 @@ export class XTextArea extends BaseTextEntryControl {
 
 	render() {
 		let isValid = false;
-        if (this.valueName) {
-            if (this.getFormDataValue(this.valueName)) {
-                isValid = true;
-            }
-        }
+		if (this.valueName) {
+				if (this.getFormDataValue(this.valueName)) {
+						isValid = true;
+				}
+		}
 
-        const runtimeError: ValidationError = {}
-        if (this.valueName) {
-            runtimeError.type = 'error'
-            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
-        }
+		const runtimeError: ValidationError = {}
+		if (this.valueName) {
+				runtimeError.type = 'error'
+				runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
+		}
+
+		// let issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+		// let issueText : string | null | undefined = issueData?.text;
+
 
 		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 		return (

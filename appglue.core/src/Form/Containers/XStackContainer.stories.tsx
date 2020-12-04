@@ -29,17 +29,16 @@ const MissingTemplate: Story<{}> = () => (
 
 function getUI() : {form: XFormConfiguration, container: XStackContainer} {
     let ui = new XFormConfiguration();
-    let columnContainer = new XStackContainer();
-// show border so we can see
-    columnContainer.overrideFormBorderSettings = DefaultOnOff.On;
-    columnContainer.showContainerBorder = true;
+    let stackContainer = new XStackContainer();
+    // show border so we can see
+    stackContainer.overrideFormBorderSettings = DefaultOnOff.On;
 
-    columnContainer.add(new XTextField());
-    columnContainer.add(new XTextField());
-    columnContainer.add(new XTextField());
-    ui.add(columnContainer);
+    stackContainer.add(new XTextField());
+    stackContainer.add(new XTextField());
+    stackContainer.add(new XTextField());
+    ui.add(stackContainer);
 
-    return {form: ui, container : columnContainer};
+    return {form: ui, container : stackContainer};
 }
 
 let ui = getUI();
@@ -67,3 +66,6 @@ ui.container.innerMargin = 30;
 
 export const OverrideSpacing = Template.bind({}, {form: ui.form});
 
+let form = new XFormConfiguration();
+form.defaultShowContainerBorder = true;
+export const PlaceholderInRuntime = Template.bind({}, {form});

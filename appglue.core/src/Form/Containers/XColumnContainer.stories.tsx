@@ -112,6 +112,15 @@ ui.colContainer.defaultShowColumnBorder = false;
 export const LineBetweenColumnsNoBorder = Template.bind({}, {form: ui.form});
 
 ui = getUI();
+ui.colContainer.paddingBetweenContainerAndColumns = 50;
+
+export const ContainerColumnSpace = Template.bind({}, {form: ui.form});
+
+ui = getUI();
+ui.colContainer.gapBetweenColumns = 40;
+export const ColumnsSpace = Template.bind({}, {form: ui.form});
+
+ui = getUI();
 ui.col1.targetWidth = 30;
 ui.col1.targetWidth = 60;
 ui.colContainer.containerBackgroundColor = 'blue';
@@ -119,7 +128,7 @@ ui.colContainer.defaultColumnBackgroundColor = 'red';
 ui.colContainer.defaultShowColumnBorder = true;
 ui.colContainer.defaultColumnBorderColor = '#ff0';
 
-export const ColumnColorAndBorder = Template.bind({}, {form: ui.form});
+export const FromFormColumnColorAndBorder = Template.bind({}, {form: ui.form});
 
 ui = getUI();
 ui.col1.targetWidth = 30;
@@ -128,5 +137,30 @@ ui.colContainer.containerBackgroundColor = 'blue';
 ui.colContainer.defaultColumnBackgroundColor = 'red';
 ui.col1.columnBackgroundColor = 'yellow';
 
+export const ColorsAndBorderOverride = Template.bind({}, {form: ui.form});
 
-export const ColorsAndBorderOverriding = Template.bind({}, {form: ui.form});
+
+ui = getUI();
+ui.form.defaultInterControlSpacing = 40;
+
+export const FromSpacingBetweenControls = Template.bind({}, {form: ui.form});
+
+ui = getUI();
+ui.form.defaultInterControlSpacing = 40;
+ui.col1.interControlSpacing = 10;
+ui.col2.interControlSpacing = 50;
+
+export const OverrideSpacingBetweenControls = Template.bind({}, {form: ui.form});
+
+
+ui = getUI();
+ui.form.defaultInnerColumnMargin = 40;
+
+export const FromFormInnerMargin = Template.bind({}, {form: ui.form});
+
+ui = getUI();
+ui.form.defaultInnerColumnMargin = 40;
+ui.colContainer.defaultInnerColumnMargin = 20;
+ui.col2.innerMargin = 80
+
+export const OverrideFormInnerMargin = Template.bind({}, {form: ui.form});
