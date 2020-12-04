@@ -36,7 +36,6 @@ export abstract class BaseDataControl extends XBaseControl {
 
         if (this.valueName && !this.getFormEditContext()?.getFormDataValue(this.valueName)) {
             issues.push(new ValidationIssue(this.requiredMessage, this.valueName, this.id));
-            console.log('pushing data validation')
         }
 
         return issues;
