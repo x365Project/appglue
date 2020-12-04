@@ -154,8 +154,8 @@ describe("XFormDesigner", () => {
 
         const formNameInput = getByTestId('formName').querySelector('input');
 
-        // fireEvent.change(formNameInput, { target: {value: 'Test Form Name'}})
-        // expect(formNameInput.value).toEqual('Test Form Name')
+        fireEvent.change(formNameInput, { target: {value: 'Test Form Name'}})
+        expect(formNameInput.value).toEqual('Test Form Name')
 
         expect(errorList).toHaveLength(0);
 
@@ -363,6 +363,6 @@ describe("XFormDesigner", () => {
         expect(queryByTestId('no-pinned-section')).not.toBeInTheDocument();
 
         // height should be unset.
-        // expect(formWrapper.children[0].style.height).toEqual("");
+        expect(formWrapper.children[0].style.height).toEqual("");
     });
 });

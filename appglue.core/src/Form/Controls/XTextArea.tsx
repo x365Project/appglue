@@ -6,7 +6,6 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import "./XControls.css"
-import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {IssueData} from "../Utilities/FormEditContext";
 
 
@@ -16,24 +15,10 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMin: number = 5;
 
 	render() {
-		let isValid = false;
-		if (this.valueName) {
-				if (this.getFormDataValue(this.valueName)) {
-						isValid = true;
-				}
-		}
+		const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+		const issueText: string = issueData?.text || '';
+		const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 
-		const runtimeError: ValidationError = {}
-		if (this.valueName) {
-				runtimeError.type = 'error'
-				runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
-		}
-
-		// let issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
-		// let issueText : string | null | undefined = issueData?.text;
-
-
-		let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
 		return (
 			<>
 				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
@@ -45,13 +30,15 @@ export class XTextArea extends BaseTextEntryControl {
 					placeholder={this.placeholderText}
 					onChange={this.handleChange}
 					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
-					error={runtimeError.message}
+					error={Boolean(issueText)}
 				/>
-                {
-                    (runtimeError.message || this.hintText) && (
-                        <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
-                    )
-                }
+				{
+					(issueText || this.hintText) && (
+						<StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+							{issueText ? issueText: this.hintText}
+						</StyledFormHelperText>
+					)
+				}
 			</>
 		)
 	}
@@ -96,7 +83,7 @@ interface ValidationError {
     message?: string;
 }
 
-const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: string}>`
+const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: boolean}>`
 	width: ${({width}) => width} !important;
 	min-width: 246px !important;
 	height: 59px !important;

@@ -93,7 +93,7 @@ describe("XUserFormTester", () => {
         const personDescription = getByTestId('personDescription') as HTMLTextAreaElement;
         fireEvent.change(personDescription, { target: { value: 'personDescription' } });
         resultjson = JSON.parse(resultjsontext.value);
-        // expect(resultjson.personDescription).toEqual(personDescription.value);
+        expect(resultjson.personDescription).toEqual(personDescription.value);
         expect(resultjson.personDescription).toEqual('personDescription');
         expect(personDescription).toBeInTheDocument();
 
