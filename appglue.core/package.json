@@ -30,7 +30,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "check-types": "tsc --project tsconfig.json",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "watch": "react-scripts test --watch",
@@ -68,12 +67,6 @@
     "@types/material-ui": "^0.21.8",
     "@types/styled-components": "^5.1.4",
     "babel-loader": "8.1.0",
-    "husky": "^4.3.0",
     "react-is": "^17.0.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run check-types"
-    }
   }
 }
