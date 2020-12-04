@@ -6,6 +6,7 @@ import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {IssueData} from "../Utilities/FormEditContext";
 
 
@@ -31,8 +32,8 @@ export class XTextField extends BaseTextEntryControl {
         if (this.overrideStyle && this.size)
             size = this.size;
         
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
-        const issueText: string = issueData?.text || '';
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+		const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         
         switch(style) {
@@ -62,6 +63,7 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
+                        
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.SHADED :
@@ -85,6 +87,7 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
+
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.UNDERLINED :
@@ -108,6 +111,7 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
+
                     </StyledTextFieldWrap>
                 );
             case TextControlStyle.OUTLINE :
@@ -131,6 +135,7 @@ export class XTextField extends BaseTextEntryControl {
                                 </StyledFormHelperText>
                             )
                         }
+
                     </StyledTextFieldWrap>
                 );
             }

@@ -28,10 +28,11 @@ const ContainerDiv = styled("div")<{
     borderRadius?: number;
     borderStyle?: BorderStyle;
     backgroundColor?: string | null;
+    minHeight?: number;
 }>`
     width: 100%;
     padding: ${props => props.padding || 0}px;
-    min-height: ${props => (props.padding || 0) * 2 + 75}px;
+    min-height: ${props => (props.padding || 0) * 2 + (props.minHeight || 75)}px;
     border: ${props => (
         props.hasBorder 
         ? `${(props.borderStyle || FormDesignConstants.CONTAINER_BORDER_STYLE).toLowerCase()} ${props.borderWidth || FormDesignConstants.CONTAINER_BORDER_WIDTH}px ${props.borderColor || FormDesignConstants.CONTAINER_BORDER_COLOR}`
@@ -86,15 +87,22 @@ const ColumnDiv = styled("div")<{
     background-color: ${props => props.backgroundColor ? props.backgroundColor : 'transparent'};
 `;
 
+enum Orientation {
+    Vertical = 'veritical',
+    Horizontal = 'horizontal'
+}
+
 const ColumnDivider = styled("div")<{
     lineColorBetweenColumns: string;
     lineWidthBetweenColumns: number;
     colGap: number;
+    orientation: Orientation 
 }>`
-    width: ${props => props.lineWidthBetweenColumns}px;
     background-color: ${props => props.lineColorBetweenColumns};
     display: flex;
     margin: ${props => (props.colGap)}px 0px;
+    width: ${props => props.orientation === Orientation.Vertical ? `${props.lineWidthBetweenColumns}px` : '100%'} ;
+    height: ${props => props.orientation === Orientation.Horizontal ? `${props.lineWidthBetweenColumns}px` : 'auto'};
 `;
 
 const ChildFullWidthDiv = styled.div`
@@ -263,7 +271,13 @@ export class XColumnContainer
         return this.paddingBetweenContainerAndColumns || this.getFormRuntimeContext()?.form?.defaultInnerContainerMargin
     }
 
+    getFormWidth(): number | undefined {
+        return (this.getFormEditContext() ?? this.getFormRuntimeContext())?.form.getContentWidth();
+    }
+
     render() {
+        const formWidth = this.getFormWidth();
+        let sumMinWidth = 0;
 
         if (this.columns.length === 0) {
             // no cols, lets add some
@@ -277,7 +291,6 @@ export class XColumnContainer
         if (editContext)
             mode = editContext.mode;
 
-
         if (mode === FormMode.FormDesign) {
             return (
                 <ContainerDiv
@@ -289,6 +302,7 @@ export class XColumnContainer
                     borderWidth={this.borderWidth()}
                     borderRadius={this.borderRadius()}
                     backgroundColor={this.backgroundColor()}
+                    minHeight={this.columns.length > 0 ? 1 : 75}
                 >
                     <RowDiv 
                         colGap={this.gapBetweenColumns / 2}
@@ -296,6 +310,15 @@ export class XColumnContainer
                     >
                     {
                         this.columns.map((col, index) => {
+                            sumMinWidth += col.minSizePx || 0;
+                            let isNextLine = false;
+
+                            if (index > 0) {
+                                isNextLine = !!formWidth && sumMinWidth > formWidth;
+                            }
+
+                            if (isNextLine) sumMinWidth = col.minSizePx || 0;
+
                             return (
                                 <React.Fragment key={col.id}>
                                     {
@@ -305,6 +328,7 @@ export class XColumnContainer
                                                 lineColorBetweenColumns={this.lineColorBetweenColumns}
                                                 lineWidthBetweenColumns={this.lineWidthBetweenColumns}
                                                 colGap={this.gapBetweenColumns / 2}
+                                                orientation={isNextLine ? Orientation.Horizontal : Orientation.Vertical}
                                             />
                                         )
                                     }
@@ -378,7 +402,7 @@ export class XColumnContainer
                     borderWidth={this.borderWidth()}
                     borderRadius={this.borderRadius()}
                     backgroundColor={this.backgroundColor()}
-                    
+                    minHeight={this.columns.length > 0 ? 1 : 75}
                     key={'column' + this.columns[0].id}
                 >
                     <RowDiv
@@ -387,6 +411,15 @@ export class XColumnContainer
                     >
                     {
                         this.columns.map((col, index) => {
+                            sumMinWidth += col.minSizePx || 0;
+                            let isNextLine = false;
+
+                            if (index > 0) {
+                                isNextLine = !!formWidth && sumMinWidth > formWidth;
+                            }
+
+                            if (isNextLine) sumMinWidth = col.minSizePx || 0;
+
                             return (
                                 <React.Fragment key={col.id}>
                                     {
@@ -396,6 +429,7 @@ export class XColumnContainer
                                                 lineColorBetweenColumns={this.lineColorBetweenColumns}
                                                 lineWidthBetweenColumns={this.lineWidthBetweenColumns}
                                                 colGap={this.gapBetweenColumns / 2}
+                                                orientation={isNextLine ? Orientation.Horizontal : Orientation.Vertical}
                                             />
                                         )
                                     }
@@ -483,7 +517,11 @@ export class XColumnContainer
     }
 
     getControls(): XBaseControl[] {
-        return this.columns;
+        let controls : XBaseControl[] = [];
+        for (let col of this.columns) {
+            controls.push(...col.getControls());
+        }
+        return controls;
     }
 
     renderEditUI(): JSX.Element {
