@@ -6,6 +6,7 @@ import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {DatePickerIcon} from "../../CommonUI/Icon/DatePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
+import {IssueData} from "../Utilities/FormEditContext";
 import "./XControls.css"
 
 @RegisterUIControl('Data (Entry)', 'Date Picker', ControlType.Control, <DatePickerIcon />)
@@ -42,14 +43,13 @@ export class XDatePicker extends BaseTextEntryControl {
             runtimeError.message = this.requiredOnAllOutcomes && !isValid? this.requiredMessage : "";
         }
 
-        let customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getRuntimeControlContext(this)!.getIssueData();
+        const issueText: string = issueData?.text || '';
+        const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
+
         return (
             <form noValidate>
-                {
-                    this.label && (
-                        <StyledInputLabel>{this.label}</StyledInputLabel>
-                    )
-                }
+                {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
                 <StyledTextField
                     label=""
                     type="date"
@@ -60,10 +60,13 @@ export class XDatePicker extends BaseTextEntryControl {
                     }}
                     data-testid={this.valueName}
                     width={customWidth}
+                    error={Boolean(issueText)}
                 />
                 {
-                    (runtimeError.message || this.hintText) && (
-                        <StyledFormHelperText error={Boolean(runtimeError.message)} data-testid={`${this.valueName || 'datapicker'}-hinttext`}>{runtimeError.message ? runtimeError.message: this.hintText}</StyledFormHelperText>
+                    (issueText || this.hintText) && (
+                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                            {issueText ? issueText: this.hintText}
+                        </StyledFormHelperText>
                     )
                 }
             </form>
@@ -109,13 +112,13 @@ const StyledTextField = styled(TextField)<{width?: string}>`
         justify-content: space-around !important;
         height: 59px !important;
         padding: 14px 20px !important;
-        border: 1px solid #E6E9ED !important;
         box-sizing: border-box !important;
         border-radius: 5.65107px !important;
         color: #677C95 !important;    
         &:focus {
             color: #01244E !important; 
-            border: 1.35302px solid #1873B9 !important;
+            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
         }
+        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
     }
 `
