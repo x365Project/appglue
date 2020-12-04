@@ -121,7 +121,7 @@ export class FormEditContext extends FormRuntimeContext {
     isMovingConfigPanel: boolean = false;
 
     // this should ONLY be in designer.  Not here.
-    mode: FormMode | string = FormMode.FormDesign;
+    private _mode: FormMode | string = FormMode.FormDesign;
 
     designValidationProvider?: IDesignValidationProvider;
     onFormClose?: () => void;
@@ -146,6 +146,18 @@ export class FormEditContext extends FormRuntimeContext {
         super(form);
         this.controlContexts = new FormContextStore(this);
         this.computeDesignValidationIssues();
+    }
+
+
+    get mode(): FormMode | string {
+        return this._mode;
+    }
+
+    set mode(value: FormMode | string) {
+        this._mode = value;
+        
+        if (value === FormMode.Runtime)
+            this.computeRuntimeValidations();
     }
 
     addToEventLog(event : {} | string) {
