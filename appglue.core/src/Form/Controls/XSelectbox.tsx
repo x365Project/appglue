@@ -74,7 +74,7 @@ export class XSelectbox extends BaseTextEntryControl {
                     list={this.items.map((item, index) => ({name: `Option ${index + 1}`, item: item}))}
                     showDialogCancel={false}
                     itemUI={
-                        (item: {index: number, content: XSelectboxItem}) => ({
+                        (item: {index: number, content?: XSelectboxItem}) => ({
                             onComplete : (item: {index: number, content: XSelectboxItem | null}) => {
                                 if (item.content) {
                                     Reflect.set(this.items, item.index, item.content);
@@ -84,11 +84,12 @@ export class XSelectbox extends BaseTextEntryControl {
                                 this.designerUpdate();
                             },
                             onCancel: () => {
-                                // delete item.content;
+                                delete item.content;
                                 // this.designerUpdate();
                             },
                             ui: (
-                                <div>
+                                item.content && 
+                                (<div>
                                     <PropertyEditorText
                                         editObject={item.content}
                                         label="Label"
@@ -101,7 +102,7 @@ export class XSelectbox extends BaseTextEntryControl {
                                         propertyName="value"
                                         updateCallback={this.designerUpdate}
                                     />
-                                </div>
+                                </div>)
                             )
                         })
                     }
