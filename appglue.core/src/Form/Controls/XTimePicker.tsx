@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
+import {TextControlStyle} from "../FormDesignConstants";
 import {TimePickerIcon} from "../../CommonUI/Icon/TimePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/FormEditContext";
@@ -15,6 +16,16 @@ export class XTimePicker extends BaseTextEntryControl {
 
     render () {
 
+        let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
+
+        if (this.overrideStyle && this.style)
+            style = this.style;
+
+        let size : 'medium' | 'small' = (this.getFormRuntimeContext()?.form)?.defaultTextSize ?? 'medium';
+
+        if (this.overrideStyle && this.size)
+            size = this.size;
+
         const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
@@ -22,8 +33,12 @@ export class XTimePicker extends BaseTextEntryControl {
         return (
             <form noValidate>
                 <>
-                    {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
+                    {this.label && <StyledInputLabel data-role={TextControlStyle.LABELED}>{this.label}</StyledInputLabel>}
                     <StyledTextField
+                        size='medium'
+                        data-size={size}
+                        variant={"filled"}
+                        fullWidth={this.fullWidth}
                         type="time"
                         value={this.valueName?this.getFormDataValue(this.valueName): String}
                         onChange={this.handleChange}
@@ -82,20 +97,35 @@ interface ValidationError {
     message?: string;
 }
 
-const StyledTextField = styled(TextField)<{width?: string}>`
-    width: ${({width}) => width} !important;
-    input {
-        display: flex !important;
-        justify-content: space-around !important;
-        height: 59px !important;
-        padding: 14px 20px !important;
-        box-sizing: border-box !important;
-        border-radius: 5.65107px !important;
-        color: #677C95 !important;    
-        &:focus {
-            color: #01244E !important; 
-            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
-        }
-        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
-    }
-`
+interface TextFieldProps {
+    size: string;
+    width: string;
+    variant: string;
+    type: string;
+    value: string;
+    onChange: any;
+    error: boolean;
+    fullWidth: boolean;
+}
+
+const StyledTextField = styled(TextField)`
+    width: ${(props: TextFieldProps) => props.width} !important;
+    
+    `   as React.ComponentType<TextFieldProps>
+
+// const StyledTextField = styled(TextField)<{width?: string, size?: string}>`
+//     width: ${({width}) => width} !important;
+//     input {
+//         display: flex !important;
+//         justify-content: space-around !important;
+//         padding: 14px 20px !important;
+//         box-sizing: border-box !important;
+//         border-radius: 5.65107px !important;
+//         color: #677C95 !important;    
+//         &:focus {
+//             color: #01244E !important; 
+//             border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
+//         }
+//         border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
+//     }
+// `
