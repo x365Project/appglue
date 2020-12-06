@@ -112,6 +112,9 @@ export class FormDesignConstants {
     public static DROPPABLE_BORDER_RADIUS: number = 5;
 
     public static DEFAULT_TEXT_STYLE : TextControlStyle = TextControlStyle.LABELED;
+    // public static DEFAULT_TEXT_STYLE : TextControlStyle = TextControlStyle.OUTLINE;
+    // public static DEFAULT_TEXT_STYLE : TextControlStyle = TextControlStyle.SHADED;
+    // public static DEFAULT_TEXT_STYLE : TextControlStyle = TextControlStyle.UNDERLINED;
     public static DEFAULT_TEXT_SIZE : TextControlSize = TextControlSize.STANDARD;
 
     public static BACKGROUND_MODE: string[] = [
