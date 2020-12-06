@@ -6,8 +6,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormContext";
 import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)

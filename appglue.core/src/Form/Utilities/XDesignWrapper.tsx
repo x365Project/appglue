@@ -5,10 +5,11 @@ import {Popover} from "@material-ui/core";
 import {XBaseControl} from "../Controls/XBaseControl";
 import {OverlapDiv} from "../Containers/XBaseStackContainer";
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
-import {FormContext, IssueData} from "./FormContext";
+import {FormContext} from "./FormContext";
 import {ValidationLevel} from "../../Common/IDesignValidationProvider";
 import {ExclamationRedIcon} from "../../CommonUI/Icon/ExclamationRedIcon";
 import {WarningRedIcon} from "../../CommonUI/Icon/WarningRedIcon";
+import {IssueData} from "./ControlRenderContext";
 
 const ErrorDiv = styled.div`
     position: absolute;

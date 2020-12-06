@@ -10,7 +10,9 @@ import {
     IRuntimeValidationProvider,
     ValidationIssue
 } from "../../Common/IDesignValidationProvider";
-import {ControlRenderContext, FormContext} from "../Utilities/FormContext";
+import {FormContext} from "../Utilities/FormContext";
+import {makeAutoObservable} from "mobx";
+import {ControlRenderContext} from "../Utilities/ControlRenderContext";
 
 export abstract class XBaseControl
     extends React.Component
@@ -37,6 +39,7 @@ export abstract class XBaseControl
 
         // generates ID to be a guid
         this.id = generateUniqueId();
+
     }
 
     get controlRenderContext() : ControlRenderContext | null | undefined {

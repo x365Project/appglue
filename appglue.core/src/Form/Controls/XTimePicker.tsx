@@ -7,7 +7,7 @@ import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TimePickerIcon} from "../../CommonUI/Icon/TimePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormContext";
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Time Picker', ControlType.Control, <TimePickerIcon />)

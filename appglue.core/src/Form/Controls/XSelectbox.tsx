@@ -10,8 +10,8 @@ import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEdito
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormContext";
 import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 
 interface XSelectboxItem {

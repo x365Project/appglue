@@ -6,8 +6,8 @@ import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormContext";
 import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 
 @RegisterUIControl('Data (Entry)', 'NumberBox', ControlType.Control, <NumberboxIcon />)
