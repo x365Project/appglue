@@ -8,7 +8,6 @@ import {XBaseControl} from "./Controls/XBaseControl";
 import {XBaseContainer} from "./Containers/XBaseContainer";
 import {BorderStyle, FormDesignConstants, FormMode, TextControlSize, TextControlStyle} from "./FormDesignConstants";
 import {UIControlRegistration} from "./Utilities/RegisterUIControl";
-import {XContainerDesignWrapper} from "./Utilities/XDesignWrapper";
 import {IEditable} from "../CommonUI/IEditable";
 import {PropertyEditorInteger} from "../CommonUI/PropertyEditing/PropertyEditorInteger";
 import {PropertyEditorBoolean} from "../CommonUI/PropertyEditing/PropertyEditorBoolean";
@@ -23,6 +22,7 @@ import {
 import {FormContext} from "./Utilities/FormContext";
 import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
+import {XContainerDesignWrapper} from "./Utilities/XContainerDesignWrapper";
 
 
 export const PinnedNotifyDiv = styled("div")<{

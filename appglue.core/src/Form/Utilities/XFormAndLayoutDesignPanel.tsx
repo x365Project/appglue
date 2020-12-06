@@ -87,15 +87,12 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
     render() {
 
-        let editUIComponent: JSX.Element | null = null;
+        let editUIComponent = this.props.editContext.getEditUI();
         let selectedControl: XBaseControl | null = null;
-        if (this.props.editContext?.selectedId) {
-            selectedControl = this.props.editContext.form.find(this.props.editContext?.selectedId);
-            if (selectedControl) {
-                editUIComponent = selectedControl.renderEditUI();
-            } else if (this.props.editContext?.selectedId === CONFIG_FORM_KEY) {
-                editUIComponent = this.props.editContext.form.renderEditUI()
-            }
+        let selectedId = this.props.editContext?.getSelectedId();
+
+        if (selectedId) {
+            selectedControl = this.props.editContext.form.find(selectedId);
         }
 
         return (
@@ -109,7 +106,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                         updateCallback={this.updateUI}
                         onSelectFormDefaultConfig={() => {
                             if (this.props.editContext)
-                                this.props.editContext.selectedId = CONFIG_FORM_KEY;
+                                this.props.editContext.selectControl(CONFIG_FORM_KEY);
                             this.updateUI();
                         }}
                     />
@@ -168,11 +165,11 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
         if (control) {
             if (this.props.editContext)
-                this.props.editContext.selectedId = control.id;
+                this.props.editContext.selectControl(control.id);
             this.updateUI();
         } else {
             if (this.props.editContext)
-                this.props.editContext.selectedId = null;
+                this.props.editContext.unSelectControl();
             this.updateUI();
         }
     }
@@ -236,7 +233,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
         if (control) {
             if (this.props.editContext)
-                this.props.editContext.selectedId = control.id;
+                this.props.editContext.selectControl(control.id);
         }
         // this.dragPlaceholder = null;
         this.updateUI();

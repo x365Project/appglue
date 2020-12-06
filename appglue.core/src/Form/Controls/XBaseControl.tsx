@@ -10,7 +10,7 @@ import {
     IRuntimeValidationProvider,
     ValidationIssue
 } from "../../Common/IDesignValidationProvider";
-import {FormContext} from "../Utilities/FormContext";
+import {ControlRenderContext, FormContext} from "../Utilities/FormContext";
 
 export abstract class XBaseControl
     extends React.Component
@@ -37,6 +37,10 @@ export abstract class XBaseControl
 
         // generates ID to be a guid
         this.id = generateUniqueId();
+    }
+
+    get controlRenderContext() : ControlRenderContext | null | undefined {
+        return this.getFormContext()?.getControlContext(this);
     }
 
     getFormContext(): FormContext | undefined {
@@ -66,7 +70,7 @@ export abstract class XBaseControl
 
     isDesignSelected() : boolean {
         if (this.getFormContext()) {
-            return this.getFormContext()!.selectedId === this.id;
+            return this.getFormContext()!.getControlContext(this).selected;
         }
 
         return false;
@@ -74,15 +78,13 @@ export abstract class XBaseControl
 
     selectInDesigner() : void {
         if (this.getFormContext()) {
-            this.getFormContext()!.selectedId = this.id;
-            this.getFormContext()!.refreshDesigner();
+            this.getFormContext()!.selectControl(this.id);
         }
     }
 
     unselectInDesigner(): void {
         if (this.getFormContext()) {
-            this.getFormContext()!.selectedId = null;
-            this.getFormContext()!.refreshDesigner();
+            this.getFormContext()!.unSelectControl();
         }
     }
 

@@ -12,6 +12,7 @@ import {UserFormData} from "../UserFormData";
 import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
+import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 
 export class FormContext {
     form: XFormConfiguration;
@@ -202,10 +203,50 @@ export class FormContext {
         this.computeDesignValidationIssues();
     }
 
+    getEditUI(): JSX.Element | undefined | null {
+        if (!this.selectedId)
+            return;
+
+        if (this.selectedId === CONFIG_FORM_KEY) {
+            return this.form.renderEditUI();
+        }
+
+        let control = this.form.find(this.selectedId);
+
+        if (control)
+            return control.renderEditUI();
+
+
+    }
+
     selectedId : string | null = null;
+
+    getSelectedId() : string | null {
+        return this.selectedId;
+    }
+
+    @AutoBind
+    selectControl(selectedId: string) {
+        this.selectedId = selectedId;
+
+        if (selectedId !== CONFIG_FORM_KEY && this.form.find(selectedId)) {
+            let cc = this.controlContexts.getControlRenderContextById(selectedId, this.form.getAllControls());
+            cc.setSelected(true);
+        }
+
+        this.refreshDesigner();
+    }
 
     @AutoBind
     unSelectControl() {
+        if (this.selectedId) {
+            if (this.selectedId !== CONFIG_FORM_KEY && this.form.find(this.selectedId)) {
+                let cc = this.controlContexts.getControlRenderContextById(this.selectedId, this.form.getAllControls());
+                cc.setSelected(false);
+            }
+        }
+
+
         this.selectedId = null;
         this.refreshDesigner();
     }
@@ -465,6 +506,11 @@ export class ControlRenderContext {
         return {text : this.getDesignIssueText(), highestLevel: highestLevel, issues: this.designIssues};
     }
 
+    selected : boolean = false;
+
+    setSelected(selected: boolean) {
+        this.selected = selected;
+    }
 }
 
 export class IssueData {
