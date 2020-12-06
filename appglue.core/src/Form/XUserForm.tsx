@@ -5,8 +5,9 @@ import styled from "styled-components";
 import {UserFormData} from "./UserFormData";
 import {XFormConfiguration} from "./XFormConfiguration";
 import {FormContext} from "./Utilities/FormContext";
-import { TextField, Button } from "@material-ui/core";
-import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
+import {Button, TextField} from "@material-ui/core";
+import {CloseIcon} from "../CommonUI/Icon/CloseIcon";
+import {FormMode} from "./FormDesignConstants";
 
 const Header = styled.div`
     display: flex;
@@ -43,6 +44,7 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
         super(props, {});
 
         let fContext = new FormContext(props.form);
+        fContext.mode = FormMode.Runtime;
 
         if (this.props.formData)
             fContext.setFormData(this.props.formData);

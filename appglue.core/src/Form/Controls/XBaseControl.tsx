@@ -12,7 +12,7 @@ import {
 } from "../../Common/IDesignValidationProvider";
 import {FormContext} from "../Utilities/FormContext";
 import {ControlRenderContext} from "../Utilities/ControlRenderContext";
-import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export abstract class XBaseControl
@@ -45,11 +45,11 @@ export abstract class XBaseControl
 
 
     componentDidMount() {
-        DataStore.addListener(this, this);
+        StateManager.addObserver(this, this);
     }
 
     componentWillUnmount() {
-        DataStore.removeListener(this, this);
+        StateManager.removeObserver(this, this);
     }
 
     get controlRenderContext() : ControlRenderContext | null | undefined {
@@ -78,7 +78,7 @@ export abstract class XBaseControl
 
     @AutoBind
     designerUpdate () : void {
-        DataStore.triggerUpdate(this);
+        StateManager.changed(this);
         //        this.getFormContext()?.refreshDesigner();
     }
 

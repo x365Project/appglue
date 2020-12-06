@@ -9,10 +9,8 @@ import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/ControlRenderContext";
 
-
 @RegisterUIControl('Data (Entry)', 'Text Field', ControlType.Control, <TextFieldIcon />)
 export class XTextField extends BaseTextEntryControl {
-
 
     render() {
 

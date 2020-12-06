@@ -10,7 +10,7 @@ import {ValidationLevel} from "../../Common/IDesignValidationProvider";
 import {ExclamationRedIcon} from "../../CommonUI/Icon/ExclamationRedIcon";
 import {WarningRedIcon} from "../../CommonUI/Icon/WarningRedIcon";
 import {IssueData} from "./ControlRenderContext";
-import {RefreshListener} from "../../CommonUI/StateManagement/IDataStore";
+import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 
 const ErrorDiv = styled.div`
     position: absolute;
@@ -119,7 +119,7 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                         ref={(ref) => this.innerComponentRef = ref}
                                         style={{position: 'relative'}}
                                     >
-                                        <RefreshListener
+                                        <ObserveState
                                             listenTo={this.props.innerComponent}
                                             control={() => {
                                                 return (

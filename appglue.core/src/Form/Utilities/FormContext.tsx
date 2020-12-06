@@ -13,7 +13,7 @@ import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
 import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
-import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
+import {action, StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export class FormContext {
@@ -33,7 +33,7 @@ export class FormContext {
 
     constructor(form: XFormConfiguration) {
         this.form = form;
-        this.controlContexts = new FormContextStore()
+        this.controlContexts = new FormContextStore(this);
         this.computeDesignValidationIssues();
     }
 
@@ -243,7 +243,7 @@ export class FormContext {
         this.expandedConfigPanel = true;
 
 //        this.refreshDesigner();
-        DataStore.triggerUpdate(this);
+      //  StateManager.triggerUpdate(this);
     }
 
     @AutoBind
@@ -260,7 +260,7 @@ export class FormContext {
 //        this.refreshDesigner();
         this.expandedConfigPanel = false;
 
-        DataStore.triggerUpdate(this);
+        StateManager.changed(this);
     }
 
     @AutoBind
@@ -274,12 +274,12 @@ export class FormContext {
 // todo: make this a store
 // todo: add other stuff here like data? hidden? disabled?
 export class FormContextStore {
-    editContext? : FormContext;
+    editContext : FormContext;
     controlRenderContexts : {[controlId: string] : ControlRenderContext }  = {}
     otherRuntimeIssues : ValidationIssue[] = [];
     otherDesignIssues : ValidationIssue[] = [];
 
-    constructor(editContext?: FormContext) {
+    constructor(editContext: FormContext) {
         this.editContext = editContext;
     }
 

@@ -24,7 +24,8 @@ import {FormDesignConstants, FormMode} from "../FormDesignConstants";
 import {FormContext} from "./FormContext";
 import { ExpandIcon } from "../../CommonUI/Icon/ExpandIcon";
 import { ValidationErrorRendering } from "../Components/ValidationErrorRendering";
-import {DataStore, RefreshListener} from "../../CommonUI/StateManagement/IDataStore";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 
 export const CONFIG_FORM_KEY: string = 'configForm';
 
@@ -46,12 +47,12 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
     componentDidMount() {
         document.addEventListener('mousedown', this.handleClickOutside);
-        DataStore.addListener(this.props.editContext, this);
+        StateManager.addObserver(this.props.editContext, this);
     }
 
     componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
-        DataStore.removeListener(this.props.editContext, this);
+        StateManager.removeObserver(this.props.editContext, this);
     }
 
     handleClickOutside = (event: MouseEvent): void => {
@@ -100,7 +101,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
         return (
 
-            <RefreshListener
+            <ObserveState
                 listenTo={this.props.editContext}
                 control={() => {
                     return (
@@ -140,7 +141,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                                         </EditLayerStyledTypography>
                                                     </EditLayerStyledAccordionSummary>
                                                     <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                                        <RefreshListener
+                                                        <ObserveState
                                                             listenTo={selectedControl}
                                                             control={() => {
                                                                 return (

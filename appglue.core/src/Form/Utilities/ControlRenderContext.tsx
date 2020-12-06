@@ -3,15 +3,15 @@ import {ValidationIssue, ValidationLevel} from "../../Common/IDesignValidationPr
 import {XBaseControl} from "../Controls/XBaseControl";
 import {FormMode} from "../FormDesignConstants";
 import {FormContext} from "./FormContext";
-import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 
 export class ControlRenderContext {
-    editContext?: FormContext;
+    editContext: FormContext;
     runtimeIssues: ValidationIssue[] = [];
     designIssues: ValidationIssue[] = [];
     control: XBaseControl;
 
-    constructor(control: XBaseControl, editContext?: FormContext) {
+    constructor(control: XBaseControl, editContext: FormContext) {
         this.control = control;
         this.editContext = editContext;
     }
@@ -48,6 +48,9 @@ export class ControlRenderContext {
 
 
     getRuntimeIssueData(): IssueData | null {
+        if (this.editContext.mode !== FormMode.Runtime)
+            return null;
+
         if (this.runtimeIssues.length === 0)
             return null;
 
@@ -87,7 +90,7 @@ export class ControlRenderContext {
 
     setSelected(selected: boolean) {
         this.selected = selected;
-        DataStore.triggerUpdate(this);
+        StateManager.changed(this);
     }
 }
 
