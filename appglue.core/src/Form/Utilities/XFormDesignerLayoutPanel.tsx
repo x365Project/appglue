@@ -2,7 +2,7 @@ import React from "react";
 import {Paper} from "@material-ui/core";
 import styled from "styled-components";
 import { FormDesignConstants, FormMode } from "../FormDesignConstants";
-import {FormEditContext} from "./FormEditContext";
+import {FormContext} from "./FormContext";
 
 
 const FormWrapper = styled("div")<{
@@ -28,7 +28,7 @@ const FormContent = styled("div")<{
     position: relative;
 `;
 
-export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormEditContext, height?: number }> {
+export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormContext, height?: number }> {
 
     render() {
         const formStyles: {[key: string]: any} = {

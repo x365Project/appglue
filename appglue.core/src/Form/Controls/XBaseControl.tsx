@@ -10,7 +10,7 @@ import {
     IRuntimeValidationProvider,
     ValidationIssue
 } from "../../Common/IDesignValidationProvider";
-import {FormRuntimeContext, FormEditContext} from "../Utilities/FormEditContext";
+import {FormContext} from "../Utilities/FormContext";
 
 export abstract class XBaseControl
     extends React.Component
@@ -24,8 +24,7 @@ export abstract class XBaseControl
     id: string ;
 
     // not serialized
-    private _formRuntimeContext?: FormRuntimeContext;
-    private _formEditContext?: FormEditContext;
+    private _formContext?: FormContext;
 
     // to implement
     abstract getDesignValidationIssues() : ValidationIssue[];
@@ -40,35 +39,19 @@ export abstract class XBaseControl
         this.id = generateUniqueId();
     }
 
-    getFormRuntimeContext(throwExceptionIfNotFound: boolean = true): FormRuntimeContext | undefined {
-        let c = this._formRuntimeContext ?? this._formEditContext;
-
-        if (throwExceptionIfNotFound && !c)
-            throw 'no runtime context found';
-
-        return c;
+    getFormContext(): FormContext | undefined {
+        return this._formContext ;
     }
 
-    setFormRuntimeContext(value: FormRuntimeContext | undefined) : void {
-        if (!value)
-            throw 'cannot set form context to null (base control)';
-
-        this._formRuntimeContext = value;
-    }
-
-    getFormEditContext(): FormEditContext | undefined {
-        return this._formEditContext ;
-    }
-
-    setFormEditContext(value: FormEditContext | undefined) : void {
+    setFormContext(value: FormContext | undefined) : void {
         if (!value)
             throw 'cannot set edit context to null (base control)';
 
-        this._formEditContext = value;
+        this._formContext = value;
     }
 
     getStorageData(): object {
-        return cloneWithoutReact(this, ['owner', '_formEditContext', '_formRuntimeContext']);
+        return cloneWithoutReact(this, ['owner', '_formContext', '_formRuntimeContext']);
     }
 
     setStorageData(data: object): void {
@@ -78,45 +61,45 @@ export abstract class XBaseControl
 
     @AutoBind
     designerUpdate () : void {
-        this.getFormEditContext()?.refreshDesigner();
+        this.getFormContext()?.refreshDesigner();
     }
 
     isDesignSelected() : boolean {
-        if (this.getFormEditContext()) {
-            return this.getFormEditContext()!.selectedId === this.id;
+        if (this.getFormContext()) {
+            return this.getFormContext()!.selectedId === this.id;
         }
 
         return false;
     }
 
     selectInDesigner() : void {
-        if (this.getFormEditContext()) {
-            this.getFormEditContext()!.selectedId = this.id;
-            this.getFormEditContext()!.refreshDesigner();
+        if (this.getFormContext()) {
+            this.getFormContext()!.selectedId = this.id;
+            this.getFormContext()!.refreshDesigner();
         }
     }
 
     unselectInDesigner(): void {
-        if (this.getFormEditContext()) {
-            this.getFormEditContext()!.selectedId = null;
-            this.getFormEditContext()!.refreshDesigner();
+        if (this.getFormContext()) {
+            this.getFormContext()!.selectedId = null;
+            this.getFormContext()!.refreshDesigner();
         }
     }
 
     getFormData(): UserFormData | undefined | null {
-        return (this.getFormRuntimeContext())?.getFormData();
+        return (this.getFormContext())?.getFormData();
     }
 
     getFormDataValue(fieldName: string): any {
-        return (this.getFormRuntimeContext())?.getFormDataValue(fieldName);
+        return (this.getFormContext())?.getFormDataValue(fieldName);
     }
 
     setFormData(value: UserFormData): void {
-        return (this.getFormRuntimeContext())?.setFormData(value);
+        return (this.getFormContext())?.setFormData(value);
     }
 
     setFormDataValue(fieldName: string, value: any): void {
-        (this.getFormRuntimeContext())?.setFormDataValue(fieldName, value);
+        (this.getFormContext())?.setFormDataValue(fieldName, value);
     }
 
     toString() : string | null {

@@ -11,7 +11,7 @@ import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import { DefaultOnOff } from "../Utilities/DefaultOnOff";
 import { PropertyEditorOptionWithButtonGroup } from "../../CommonUI/PropertyEditing/PropertyEditorOptionWithButtonGroup";
 import { EmptyContainer, ControlDiv } from "../Components/EmptyContainer";
-import {FormRuntimeContext, FormEditContext} from "../Utilities/FormEditContext";
+import {FormContext} from "../Utilities/FormContext";
 import { MovingIcon } from "../../CommonUI/Icon/MovingIcon";
 
 const ChildFullWidthDiv = styled.div`
@@ -86,14 +86,14 @@ export abstract class XBaseContainer
                             label="Border Width"
                             propertyName="containerBorderWidth"
                             updateCallback={this.designerUpdate}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form.defaultContainerBorderWidth}
+                            parentDefaultValue={this.getFormContext()?.form.defaultContainerBorderWidth}
                         />
                         <PropertyEditorInteger
                             editObject={this}
                             label="Border Radius"
                             propertyName="containerBorderRadius"
                             updateCallback={this.designerUpdate}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderRadius}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderRadius}
                         />
                         
                         <PropertyEditorColor
@@ -101,7 +101,7 @@ export abstract class XBaseContainer
                             label="Border Color"
                             propertyName="containerBorderColor"
                             updateCallback={this.designerUpdate}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderColor}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderColor}
                         />
                         <PropertyEditorSelect
                             editObject={this}
@@ -109,7 +109,7 @@ export abstract class XBaseContainer
                             propertyName="containerBorderStyle"
                             updateCallback={this.designerUpdate}
                             options={FormDesignConstants.BORDER_STYLES}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderStyle}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderStyle}
                         />
                     </ChildFullWidthDiv>
                 </Collapse>
@@ -122,55 +122,42 @@ export abstract class XBaseContainer
     }
 
     hasBorder(): boolean | undefined {
-        return this.hasOwnBorder() || (this.overrideFormBorderSettings === DefaultOnOff.DEFAULT && this.getFormRuntimeContext()?.form?.defaultShowContainerBorder)
+        return this.hasOwnBorder() || (this.overrideFormBorderSettings === DefaultOnOff.DEFAULT && this.getFormContext()?.form?.defaultShowContainerBorder)
     }
 
     borderColor(): string | undefined {
-        return (this.hasOwnBorder() && this.containerBorderColor) || this.getFormRuntimeContext()?.form?.defaultContainerBorderColor
+        return (this.hasOwnBorder() && this.containerBorderColor) || this.getFormContext()?.form?.defaultContainerBorderColor
     }
 
     borderStyle(): BorderStyle | undefined {
-        return (this.hasOwnBorder() && this.containerBorderStyle) || this.getFormRuntimeContext()?.form?.defaultContainerBorderStyle
+        return (this.hasOwnBorder() && this.containerBorderStyle) || this.getFormContext()?.form?.defaultContainerBorderStyle
     }
 
     borderWidth(): number | undefined {
-        return (this.hasOwnBorder() && this.containerBorderWidth) || this.getFormRuntimeContext()?.form?.defaultContainerBorderWidth
+        return (this.hasOwnBorder() && this.containerBorderWidth) || this.getFormContext()?.form?.defaultContainerBorderWidth
     }
 
     borderRadius(): number | undefined {
-        return (this.hasOwnBorder() && this.containerBorderRadius) || this.getFormRuntimeContext()?.form?.defaultContainerBorderRadius
+        return (this.hasOwnBorder() && this.containerBorderRadius) || this.getFormContext()?.form?.defaultContainerBorderRadius
     }
 
     backgroundColor(): string | undefined | null {
-        return this.containerBackgroundColor || this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor
+        return this.containerBackgroundColor || this.getFormContext()?.form?.defaultContainerBackgroundColor
     }
 
     // ----- Overrides to set contexts ----
-    setFormRuntimeContext(value: FormRuntimeContext | undefined) : void {
-        if (!value)
-            return;
-        
-        super.setFormRuntimeContext(value);
 
-        let controls = this.getControls();
-        if (controls) {
-            for (let control of controls) {
-                control.setFormRuntimeContext( this.getFormRuntimeContext() );
-            }
-        }
-    }
-
-    setFormEditContext(value: FormEditContext | undefined) : void {
+    setFormContext(value: FormContext | undefined) : void {
         if (!value)
             return;
 
-        super.setFormEditContext(value);
+        super.setFormContext(value);
 
         let controls = this.getControls();
         if (controls) {
             for (let control of controls) {
                 // set edit context first
-                control.setFormEditContext( value) ;
+                control.setFormContext( value) ;
             }
         }
     }

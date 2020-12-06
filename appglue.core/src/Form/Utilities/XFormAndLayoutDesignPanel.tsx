@@ -21,7 +21,7 @@ import {
     EditLayerStyledAccordion
 } from "../../CommonUI/CommonStyles";
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
-import {FormEditContext} from "./FormEditContext";
+import {FormContext} from "./FormContext";
 import { ExpandIcon } from "../../CommonUI/Icon/ExpandIcon";
 import { ValidationErrorRendering } from "../Components/ValidationErrorRendering";
 
@@ -36,7 +36,7 @@ const Designer = styled.div`
 
 
 interface IDesignPanelProperties {
-    editContext: FormEditContext;
+    editContext: FormContext;
 }
 
 
@@ -196,7 +196,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
         }
 
         if (control)
-            control.setFormEditContext(this.props.editContext);
+            control.setFormContext(this.props.editContext);
 
         if (result.destination.droppableId === FormDesignConstants.LAYOUT_FORM_KEY_NAME) {
             // we are moving things around or adjusting base form

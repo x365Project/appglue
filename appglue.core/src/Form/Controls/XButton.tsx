@@ -19,9 +19,9 @@ export class XButton extends XBaseControl {
                 variant="contained"
                 onClick={() => {
                     if (this.isCancelButton) {
-                        this.getFormRuntimeContext()?.cancelOutcomeTriggered(this.label)
+                        this.getFormContext()?.cancelOutcomeTriggered(this.label)
                     } else {
-                        this.getFormRuntimeContext()?.outcomeTriggered(this.label)
+                        this.getFormContext()?.outcomeTriggered(this.label)
                     }
                 }}
             >

@@ -7,7 +7,7 @@ import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TimePickerIcon} from "../../CommonUI/Icon/TimePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
+import {IssueData} from "../Utilities/FormContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Time Picker', ControlType.Control, <TimePickerIcon />)
@@ -15,7 +15,7 @@ export class XTimePicker extends BaseTextEntryControl {
 
     render () {
 
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 

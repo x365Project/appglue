@@ -13,7 +13,7 @@ import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
 
-export class FormRuntimeContext {
+export class FormContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
     data: UserFormData = new UserFormData();
@@ -31,10 +31,7 @@ export class FormRuntimeContext {
     constructor(form: XFormConfiguration) {
         this.form = form;
         this.controlContexts = new FormContextStore()
-    }
-
-    refreshUserForm() : void {
-        // todo: refresh user form
+        this.computeDesignValidationIssues();
     }
 
     computeRuntimeValidations(): ValidationIssue[] {
@@ -109,9 +106,12 @@ export class FormRuntimeContext {
         if (this.onFormCancelButton)
             this.onFormCancelButton();
     }
-}
 
-export class FormEditContext extends FormRuntimeContext {
+    // ------------------------------------------------
+    // -- Designer Context ----------------------------
+    // ------------------------------------------------
+
+
     designer? : XFormDesigner;
 
     formName?: string;
@@ -124,7 +124,6 @@ export class FormEditContext extends FormRuntimeContext {
     private _mode: FormMode | string = FormMode.FormDesign;
 
     designValidationProvider?: IDesignValidationProvider;
-    onFormClose?: () => void;
     onFormSave?: (data: any) => void;
     sampleDataProvider? : ISampleDataProvider ;
     designConfig?: IDesignPanelConfig;
@@ -140,14 +139,6 @@ export class FormEditContext extends FormRuntimeContext {
     bottomDesignerExtensions?: IAction[];
 
     private eventLog: ({} | string)[] = [];
-
-
-    constructor(form: XFormConfiguration) {
-        super(form);
-        this.controlContexts = new FormContextStore(this);
-        this.computeDesignValidationIssues();
-    }
-
 
     get mode(): FormMode | string {
         return this._mode;
@@ -230,12 +221,12 @@ export class FormEditContext extends FormRuntimeContext {
 // todo: make this a store
 // todo: add other stuff here like data? hidden? disabled?
 export class FormContextStore {
-    editContext? : FormEditContext;
+    editContext? : FormContext;
     controlRenderContexts : {[controlId: string] : ControlRenderContext }  = {}
     otherRuntimeIssues : ValidationIssue[] = [];
     otherDesignIssues : ValidationIssue[] = [];
 
-    constructor(editContext?: FormEditContext) {
+    constructor(editContext?: FormContext) {
         this.editContext = editContext;
     }
 
@@ -397,12 +388,12 @@ export class FormContextStore {
 
 // todo: assume this is a sub store
 export class ControlRenderContext {
-    editContext? : FormEditContext;
+    editContext? : FormContext;
     runtimeIssues : ValidationIssue[] = [];
     designIssues : ValidationIssue[] = [];
     control: XBaseControl;
 
-    constructor(control: XBaseControl, editContext? : FormEditContext) {
+    constructor(control: XBaseControl, editContext? : FormContext) {
         this.control = control;
         this.editContext = editContext;
     }

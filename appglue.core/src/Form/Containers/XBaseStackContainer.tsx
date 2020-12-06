@@ -37,10 +37,8 @@ export abstract class XBaseStackContainer
             this.controls.splice(index, 0, control)
         }
 
-        if (this.getFormEditContext())
-            control.setFormEditContext(this.getFormEditContext()!) ;
-        else if (this.getFormRuntimeContext(false))
-            control.setFormRuntimeContext(this.getFormRuntimeContext()!)  ;
+        if (this.getFormContext())
+            control.setFormContext(this.getFormContext()!) ;
     }
 
     remove(control: XBaseControl): void {
@@ -90,7 +88,7 @@ export abstract class XBaseStackContainer
     }
 
     getStorageData(): object {
-        let retData = cloneWithoutReact(this, ['container', 'form', 'controls', '_formEditContext', '_formRuntimeContext']);
+        let retData = cloneWithoutReact(this, ['container', 'form', 'controls', '_formContext']);
         Reflect.set(retData, '__controls', this.controls.map(c => {
             return c.getStorageData()
         }));
@@ -111,11 +109,8 @@ export abstract class XBaseStackContainer
                     // @ts-ignore
                     let cc = val as XBaseControl;
 
-                    if (this.getFormEditContext())
-                        cc.setFormEditContext(this.getFormEditContext()) ;
-
-                    else if (this.getFormRuntimeContext(false))
-                        cc.setFormRuntimeContext(this.getFormRuntimeContext());
+                    if (this.getFormContext())
+                        cc.setFormContext(this.getFormContext()) ;
 
                     cc.setStorageData(controlData);
                     this.controls.push(cc);
@@ -127,7 +122,7 @@ export abstract class XBaseStackContainer
     }
 
     getInnerMargin(): number | undefined {
-        return this.innerMargin || this.getFormRuntimeContext()?.form?.defaultInnerContainerMargin
+        return this.innerMargin || this.getFormContext()?.form?.defaultInnerContainerMargin
     }
 
 }

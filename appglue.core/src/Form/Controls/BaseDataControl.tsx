@@ -33,7 +33,7 @@ export abstract class BaseDataControl extends XBaseControl {
     getRuntimeValidationIssues() : ValidationIssue[] {
         let issues: ValidationIssue[] = [];
 
-        if (this.requiredOnAllOutcomes && this.valueName && !this.getFormRuntimeContext(false)?.getFormDataValue(this.valueName)) {
+        if (this.requiredOnAllOutcomes && this.valueName && !this.getFormContext()?.getFormDataValue(this.valueName)) {
             issues.push(new ValidationIssue(this.requiredMessage, this.valueName, this.id));
         }
 

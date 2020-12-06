@@ -33,8 +33,8 @@ export abstract class BaseTextEntryControl extends BaseDataControl {
                     updateCallback={this.designerUpdate}
                 />
                 <Collapse in={this.overrideStyle}>
-                    <PropertyEditorTextStyleSelection updateCallback={this.designerUpdate} propertyName={'style'} editObject={this} parentDefaultValue={this.getFormRuntimeContext()?.form.defaultTextStyle}/>
-                    <PropertyEditorTextSizeSelection updateCallback={this.designerUpdate} propertyName={'size'} editObject={this} parentDefaultValue={this.getFormRuntimeContext()?.form.defaultTextSize}/>
+                    <PropertyEditorTextStyleSelection updateCallback={this.designerUpdate} propertyName={'style'} editObject={this} parentDefaultValue={this.getFormContext()?.form.defaultTextStyle}/>
+                    <PropertyEditorTextSizeSelection updateCallback={this.designerUpdate} propertyName={'size'} editObject={this} parentDefaultValue={this.getFormContext()?.form.defaultTextSize}/>
                 </Collapse>
 
             </>

@@ -86,7 +86,7 @@ export class XHStackContainer
         if (this.verticalAlignment === HStackVerticalAlignment.MIDDLE) verticalAlign = 'center';
         else if (this.verticalAlignment === HStackVerticalAlignment.BOTTOM) verticalAlign = 'flex-end';
 
-        let mode = this.getFormEditContext()?.mode ?? FormMode.Runtime;
+        let mode = this.getFormContext()?.mode ?? FormMode.Runtime;
 
 
         if (mode === FormMode.FormDesign) {
@@ -113,7 +113,7 @@ export class XHStackContainer
                                         {...provided.droppableProps}
                                     >
                                         <HStackRowDiv
-                                            colGap={this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                                            colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing}
                                             align={alignment}
                                             verticalAlign={verticalAlign}    
                                         >
@@ -121,8 +121,8 @@ export class XHStackContainer
                                             this.controls.map((control, index) =>
                                             {
                                                 return (
-                                                    <HStackColumn key={index} colGap={this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing} >
-                                                        <XDesignWrapper key={control.id} id={control.id} index={index} innerComponent={control} editContext={this.getFormEditContext()!}>
+                                                    <HStackColumn key={index} colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing} >
+                                                        <XDesignWrapper key={control.id} id={control.id} index={index} innerComponent={control} editContext={this.getFormContext()!}>
                                                             { control.render() }
                                                         </XDesignWrapper>                                                                                                                                                                                                                                                                                                   
                                                     </HStackColumn>
@@ -154,13 +154,13 @@ export class XHStackContainer
                     backgroundColor={this.backgroundColor()}
                 >
                     <HStackRowDiv
-                        colGap={this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                        colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing}
                         align={alignment}
                         verticalAlign={verticalAlign}    
                     >
                     {this.controls.map((control, index) => {
                         return (
-                            <HStackColumn colGap={this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing} key={index}>
+                            <HStackColumn colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing} key={index}>
                                 {control.render()}
                             </HStackColumn>
                         );
@@ -182,7 +182,7 @@ export class XHStackContainer
                     label={"Control Gap"}
                     propertyName={"interControlSpacing"}
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInterControlSpacing}
                 >
                 </PropertyEditorInteger>
                 <PropertyEditorInteger
@@ -190,7 +190,7 @@ export class XHStackContainer
                     label="Inner Margin"
                     propertyName={"innerMargin"}
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInnerContainerMargin}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInnerContainerMargin}
                 >
                 </PropertyEditorInteger>
                 <PropertyEditorSelect
@@ -213,7 +213,7 @@ export class XHStackContainer
                     label="Container Color"
                     propertyName="containerBackgroundColor"
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultContainerBackgroundColor}
                 />
 
                 {

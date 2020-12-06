@@ -10,7 +10,7 @@ import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEdito
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
+import {IssueData} from "../Utilities/FormContext";
 import "./XControls.css"
 
 
@@ -24,7 +24,7 @@ export class XSelectbox extends BaseTextEntryControl {
     items: XSelectboxItem[] = [];
     render() {
 
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         

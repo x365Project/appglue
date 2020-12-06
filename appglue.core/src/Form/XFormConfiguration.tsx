@@ -20,7 +20,7 @@ import {
 	PropertyEditorTextSizeSelection,
 	PropertyEditorTextStyleSelection
 } from "../CommonUI/PropertyEditing/TextSelectionButtonGroups";
-import {FormRuntimeContext, FormEditContext} from "./Utilities/FormEditContext";
+import {FormContext} from "./Utilities/FormContext";
 import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 
@@ -113,8 +113,7 @@ export class XFormConfiguration
 	defaultTextSize : TextControlSize = FormDesignConstants.DEFAULT_TEXT_SIZE;
 
 	// this is either designer or runtime form
-	private _formRuntimeContext: FormRuntimeContext | null = null;
-	private _formEditContext: FormEditContext | null = null;
+	private _formContext: FormContext | null = null;
 
 	constructor(container?: XBaseContainer[]) {
 		super({});
@@ -122,50 +121,29 @@ export class XFormConfiguration
 
 		if (this.containers) {
 			for (let bc of this.containers) {
-				if (this._formRuntimeContext)
-					bc.setFormRuntimeContext(this._formRuntimeContext);
 
-				if (this._formEditContext)
-					bc.setFormEditContext(this._formEditContext) ;
+				if (this._formContext)
+					bc.setFormContext(this._formContext) ;
 			}
 		}
 	}
 
-	getFormRuntimeContext(): FormRuntimeContext | null {
-		return this._formRuntimeContext ?? this._formEditContext;
+	getFormContext(): FormContext | null {
+		return this._formContext;
 	}
 
-	setFormRuntimeContext(value: FormRuntimeContext | null) {
+	setFormContext(value: FormContext | null) {
 		if (!value)
 			throw 'cannot set form context to null (Form Config)'
 
-		this._formRuntimeContext = value;
+		this._formContext = value;
 
 		if (value) {
 			for (let cont of this.containers) {
-				cont.setFormRuntimeContext(value) ;
+				cont.setFormContext(value) ;
 			}
 		}
 	}
-
-	getFormEditContext(): FormEditContext | null {
-		return this._formEditContext;
-	}
-
-	setFormEditContext(value: FormEditContext | null) {
-		if (!value)
-			throw 'cannot set form context to null (Form Config)'
-
-		this._formEditContext = value;
-
-		if (value) {
-			for (let cont of this.containers) {
-				cont.setFormEditContext(value);
-			};
-
-		}
-	}
-
 
 	add(container: XBaseContainer, index?: number) {
 		// set control order
@@ -176,13 +154,10 @@ export class XFormConfiguration
 		}
 
 
-		if (this.getFormRuntimeContext()) {
-			container.setFormRuntimeContext(this.getFormRuntimeContext()!) ;
+		if (this.getFormContext()) {
+			container.setFormContext(this.getFormContext()!) ;
 		}
 
-		if (this.getFormEditContext()) {
-			container.setFormEditContext(this.getFormEditContext()!);
-		}
 
 	}
 
@@ -212,7 +187,7 @@ export class XFormConfiguration
 	}
 
 	getMode(): FormMode | string {
-		return this.getFormEditContext()?.mode ?? FormMode.Runtime;
+		return this.getFormContext()?.mode ?? FormMode.Runtime;
 	}
 
 	getWidth(): number{
@@ -285,7 +260,7 @@ export class XFormConfiguration
 														id={firstContainer.id}
 														index={0}
 														innerComponent={firstContainer}
-														editContext={this.getFormEditContext()!}
+														editContext={this.getFormContext()!}
 													/>
 												</ContainerDiv>
 											</ContainerSectionDiv>
@@ -317,7 +292,7 @@ export class XFormConfiguration
 																	id={c.id}
 																	index={i}
 																	innerComponent={c}
-																	editContext={this.getFormEditContext()!}
+																	editContext={this.getFormContext()!}
 																/>
 															</ContainerDiv>
 														</React.Fragment>
@@ -349,7 +324,7 @@ export class XFormConfiguration
 															id={lastContainer.id}
 															index={this.containers.length - 1}
 															innerComponent={lastContainer}
-															editContext={this.getFormEditContext()!}
+															editContext={this.getFormContext()!}
 														/>
 													</ContainerDiv>
 												</ContainerSectionDiv>
@@ -379,7 +354,7 @@ export class XFormConfiguration
 									id={firstContainer.id}
 									index={0}
 									innerComponent={firstContainer}
-									editContext={this.getFormEditContext()!}
+									editContext={this.getFormContext()!}
 								/>
 							</ContainerDiv>
 						}
@@ -403,7 +378,7 @@ export class XFormConfiguration
 													id={c.id}
 													index={firstContainer ? i + 1 : i}
 													innerComponent={c}
-													editContext={this.getFormEditContext()!}
+													editContext={this.getFormContext()!}
 												/>
 											</ContainerDiv>
 										</React.Fragment>
@@ -428,7 +403,7 @@ export class XFormConfiguration
 										id={lastContainer.id}
 										index={this.containers.length - 1}
 										innerComponent={lastContainer}
-										editContext={this.getFormEditContext()!}
+										editContext={this.getFormContext()!}
 									/>
 								</>
 							</ContainerDiv>
@@ -454,7 +429,7 @@ export class XFormConfiguration
 										id={firstContainer.id}
 										index={0}
 										innerComponent={firstContainer}
-										editContext={this.getFormEditContext()!}
+										editContext={this.getFormContext()!}
 									/>
 								</ContainerDiv>
 							</ContainerSectionDiv>
@@ -486,7 +461,7 @@ export class XFormConfiguration
 													id={c.id}
 													index={i}
 													innerComponent={c}
-													editContext={this.getFormEditContext()!}
+													editContext={this.getFormContext()!}
 												/>
 											</ContainerDiv>
 										</React.Fragment >
@@ -518,7 +493,7 @@ export class XFormConfiguration
 											id={lastContainer.id}
 											index={this.containers.length - 1}
 											innerComponent={lastContainer}
-											editContext={this.getFormEditContext()!}
+											editContext={this.getFormContext()!}
 										/>
 									</ContainerDiv>
 								</ContainerSectionDiv>
@@ -562,7 +537,7 @@ export class XFormConfiguration
 
 
 	getStorageData(): object {
-		let retData = cloneWithoutReact(this, ['containers', 'host', '_formEditContext', '_formRuntimeContext']);
+		let retData = cloneWithoutReact(this, ['containers', 'host', '_formContext', '_formRuntimeContext']);
 		let containers = [];
 
 		for (let container of this.containers) {
@@ -580,8 +555,7 @@ export class XFormConfiguration
 		this.containers = [];
 		let containerArray = Reflect.get(data, '__containers');
 
-		let runtimeContext: FormRuntimeContext | null = this.getFormRuntimeContext()
-		let editContext: FormEditContext | null = this.getFormEditContext();
+		let editContext: FormContext | null = this.getFormContext();
 
 		if (containerArray && containerArray instanceof Array && containerArray.length !== 0) {
 			for (let container of containerArray) {
@@ -593,12 +567,8 @@ export class XFormConfiguration
 					// @ts-ignore
 					let control = val as XBaseContainer;
 
-					if (runtimeContext) {
-						control.setFormRuntimeContext(runtimeContext);
-					}
-
 					if (editContext)
-						control.setFormEditContext(editContext);
+						control.setFormContext(editContext);
 
 					control.setStorageData(container);
 					this.containers.push(control);
@@ -608,8 +578,8 @@ export class XFormConfiguration
 	}
 
 	refreshDesigner = (): void => {
-		if (this._formEditContext) {
-			this._formEditContext?.refreshDesigner();
+		if (this._formContext) {
+			this._formContext?.refreshDesigner();
 		}
 	}
 

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {Collapse} from "@material-ui/core";
-import {ControlType, RegisterUIControl, UIControlRegistration} from "../Utilities/RegisterUIControl";
+import {ControlType, RegisterUIControl} from "../Utilities/RegisterUIControl";
 import {XBaseContainer} from "./XBaseContainer";
 import {XBaseControl} from "../Controls/XBaseControl";
 import {Droppable, DroppableProvided, DroppableStateSnapshot} from "react-beautiful-dnd";
@@ -145,7 +145,7 @@ export class XColumnContainerColumn extends XBaseStackContainer {
 
     // avoiding refresh on this as it is never added
     setFormDataValue(fieldName: string, value: any): void {
-        this.getFormRuntimeContext()?.setFormDataValue(fieldName, value);
+        this.getFormContext()?.setFormDataValue(fieldName, value);
     }
 
     renderEditUI(): JSX.Element | null {
@@ -228,11 +228,8 @@ export class XColumnContainer
             throw new Error('Must be a stack container, cannot add other types of controls here');
         }
 
-        if (this.getFormRuntimeContext(false))
-            control.setFormRuntimeContext(this.getFormRuntimeContext());
-
-        if (this.getFormEditContext())
-            control.setFormEditContext(this.getFormEditContext()) ;
+        if (this.getFormContext())
+            control.setFormContext(this.getFormContext()) ;
 
     }
 
@@ -268,11 +265,11 @@ export class XColumnContainer
     }
 
     getInnerMargin(): number | undefined {
-        return this.paddingBetweenContainerAndColumns || this.getFormRuntimeContext()?.form?.defaultInnerContainerMargin
+        return this.paddingBetweenContainerAndColumns || this.getFormContext()?.form?.defaultInnerContainerMargin
     }
 
     getFormWidth(): number | undefined {
-        return (this.getFormEditContext() ?? this.getFormRuntimeContext())?.form.getContentWidth();
+        return (this.getFormContext() ?? this.getFormContext())?.form.getContentWidth();
     }
 
     render() {
@@ -287,7 +284,7 @@ export class XColumnContainer
         }
 
         let mode: FormMode | string = FormMode.Runtime;
-        let editContext = this.getFormEditContext();
+        let editContext = this.getFormContext();
         if (editContext)
             mode = editContext.mode;
 
@@ -340,16 +337,16 @@ export class XColumnContainer
                                         maxWidth={col.maxSizePx}
                                         colGap={this.gapBetweenColumns / 2}
                                         minHeight={col.getControls().length > 0 ? 1 : 75}
-                                        padding={col.getInnerMargin() || this.defaultInnerColumnMargin || this.getFormRuntimeContext()?.form?.defaultInnerColumnMargin}
+                                        padding={col.getInnerMargin() || this.defaultInnerColumnMargin || this.getFormContext()?.form?.defaultInnerColumnMargin}
                                         hasBorder={
                                             col.hasOwnBorder()
                                             || (col.overrideFormBorderSettings === DefaultOnOff.DEFAULT && this.defaultShowColumnBorder)
                                         }
-                                        backgroundColor={col.backgroundColor() || this.defaultColumnBackgroundColor || this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor}
-                                        borderColor={col.borderColor() || this.defaultColumnBorderColor || this.getFormRuntimeContext()?.form?.defaultContainerBorderColor}
-                                        borderStyle={col.borderStyle()  || this.defaultColumnBorderStyle || this.getFormRuntimeContext()?.form?.defaultContainerBorderStyle}
-                                        borderWidth={col.borderWidth() || this.defaultColumnBorderWidth || this.getFormRuntimeContext()?.form?.defaultContainerBorderWidth || this.getFormRuntimeContext()?.form?.defaultContainerBorderWidth}
-                                        borderRadius={col.borderRadius() || this.defaultColumnBorderRadius || this.getFormRuntimeContext()?.form?.defaultContainerBorderRadius}
+                                        backgroundColor={col.backgroundColor() || this.defaultColumnBackgroundColor || this.getFormContext()?.form?.defaultContainerBackgroundColor}
+                                        borderColor={col.borderColor() || this.defaultColumnBorderColor || this.getFormContext()?.form?.defaultContainerBorderColor}
+                                        borderStyle={col.borderStyle()  || this.defaultColumnBorderStyle || this.getFormContext()?.form?.defaultContainerBorderStyle}
+                                        borderWidth={col.borderWidth() || this.defaultColumnBorderWidth || this.getFormContext()?.form?.defaultContainerBorderWidth || this.getFormContext()?.form?.defaultContainerBorderWidth}
+                                        borderRadius={col.borderRadius() || this.defaultColumnBorderRadius || this.getFormContext()?.form?.defaultContainerBorderRadius}
                                         lineBetweenColumns={this.lineBetweenColumns}
                                     >
                                         <Droppable droppableId={col.id}>
@@ -366,11 +363,11 @@ export class XColumnContainer
                                                         {col.getControls().map((control, index ) => {
                                                             return (
                                                                 <StackContainerColumn
-                                                                    colGap={col.interControlSpacing || this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                                                                    colGap={col.interControlSpacing || this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing}
                                                                     key={index}
                                                                 >
                                                                     <XDesignWrapper key={control.id} id={control.id} index={index}
-                                                                                    innerComponent={control} editContext={this.getFormEditContext()!}>
+                                                                                    innerComponent={control} editContext={this.getFormContext()!}>
                                                                         {control.render()}
                                                                     </XDesignWrapper>
                                                                 </StackContainerColumn>
@@ -441,23 +438,23 @@ export class XColumnContainer
                                         maxWidth={col.maxSizePx}
                                         colGap={this.gapBetweenColumns / 2}
                                         minHeight={col.getControls().length > 0 ? 1 : 75}
-                                        padding={col.getInnerMargin() || this.defaultInnerColumnMargin || this.getFormRuntimeContext()?.form?.defaultInnerColumnMargin}
-                                        backgroundColor={col.backgroundColor() || this.defaultColumnBackgroundColor || this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor}
+                                        padding={col.getInnerMargin() || this.defaultInnerColumnMargin || this.getFormContext()?.form?.defaultInnerColumnMargin}
+                                        backgroundColor={col.backgroundColor() || this.defaultColumnBackgroundColor || this.getFormContext()?.form?.defaultContainerBackgroundColor}
                                         hasBorder={
                                             col.hasOwnBorder()
                                             || (col.overrideFormBorderSettings === DefaultOnOff.DEFAULT && this.defaultShowColumnBorder)
                                         }
-                                        borderColor={col.borderColor() || this.defaultColumnBorderColor || this.getFormRuntimeContext()?.form?.defaultContainerBorderColor}
-                                        borderStyle={col.borderStyle()  || this.defaultColumnBorderStyle || this.getFormRuntimeContext()?.form?.defaultContainerBorderStyle}
-                                        borderWidth={col.borderWidth() || this.defaultColumnBorderWidth || this.getFormRuntimeContext()?.form?.defaultContainerBorderWidth}
-                                        borderRadius={col.borderRadius() || this.defaultColumnBorderRadius || this.getFormRuntimeContext()?.form?.defaultContainerBorderRadius || this.getFormRuntimeContext()?.form?.defaultContainerBorderRadius}
+                                        borderColor={col.borderColor() || this.defaultColumnBorderColor || this.getFormContext()?.form?.defaultContainerBorderColor}
+                                        borderStyle={col.borderStyle()  || this.defaultColumnBorderStyle || this.getFormContext()?.form?.defaultContainerBorderStyle}
+                                        borderWidth={col.borderWidth() || this.defaultColumnBorderWidth || this.getFormContext()?.form?.defaultContainerBorderWidth}
+                                        borderRadius={col.borderRadius() || this.defaultColumnBorderRadius || this.getFormContext()?.form?.defaultContainerBorderRadius || this.getFormContext()?.form?.defaultContainerBorderRadius}
                                         lineBetweenColumns={this.lineBetweenColumns}
                                     >
                                         <StackContainerDiv>
                                             {col.getControls().map((control, index ) => {
                                                 return (
                                                     <StackContainerColumn
-                                                        colGap={col.interControlSpacing || this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                                                        colGap={col.interControlSpacing || this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing}
                                                         key={index}
                                                     >
                                                         {control.render()}
@@ -480,7 +477,7 @@ export class XColumnContainer
 
 
     getStorageData(): object {
-        let retData = cloneWithoutReact(this, ['columns', 'form', 'container', '_formEditContext', '_formRuntimeContext']);
+        let retData = cloneWithoutReact(this, ['columns', 'form', 'container', '_formContext']);
 
         let colData : object[] = [];
         this.columns.map(c => {
@@ -502,8 +499,7 @@ export class XColumnContainer
                 let val = new XColumnContainerColumn();
                 let control = val as XColumnContainerColumn;
 
-                control.setFormRuntimeContext(this.getFormRuntimeContext(false)) ;
-                control.setFormEditContext(this.getFormEditContext()) ;
+                control.setFormContext(this.getFormContext()) ;
 
                 control.setStorageData(container);
                 this.columns.push(control);
@@ -562,14 +558,14 @@ export class XColumnContainer
                     label={"Gap Between Controls"}
                     propertyName="interControlSpacing"
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInterControlSpacing}
                 />
                 <PropertyEditorInteger
                     editObject={this}
                     label="Inner Margin"
                     propertyName={"paddingBetweenContainerAndColumns"}
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInnerContainerMargin}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInnerContainerMargin}
                 />
 
                 <PropertyEditorColor
@@ -577,7 +573,7 @@ export class XColumnContainer
                     label="Container Color"
                     propertyName="containerBackgroundColor"
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultContainerBackgroundColor}
                 />
 
                 <PropertyEditorInteger
@@ -585,7 +581,7 @@ export class XColumnContainer
                     label="(Default) Inner Column Margin"
                     propertyName="defaultInnerColumnMargin"
                     updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInnerColumnMargin}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInnerColumnMargin}
                 />
 
                 <PropertyEditorColor
@@ -613,21 +609,21 @@ export class XColumnContainer
                             label="Columns Border Width"
                             propertyName="defaultColumnBorderWidth"
                             updateCallback={this.designerUpdate}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderWidth}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderWidth}
                         />
                         <PropertyEditorInteger
                             editObject={this}
                             label="Columns Border Radius"
                             propertyName="defaultColumnBorderRadius"
                             updateCallback={this.designerUpdate}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderRadius}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderRadius}
                         />
                         <PropertyEditorColor
                             editObject={this}
                             label="Columns Border Color"
                             propertyName="defaultColumnBorderColor"
                             updateCallback={this.designerUpdate}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderColor}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderColor}
                         />
                         <PropertyEditorSelect
                             editObject={this}
@@ -635,7 +631,7 @@ export class XColumnContainer
                             propertyName="defaultColumnBorderStyle"
                             updateCallback={this.designerUpdate}
                             options={FormDesignConstants.BORDER_STYLES}
-                            parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBorderStyle}
+                            parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderStyle}
                         />
                     </ChildFullWidthDiv>
                     
@@ -700,7 +696,7 @@ export class XColumnContainer
                                         label="Gap Between Controls"
                                         propertyName="interControlSpacing"
                                         updateCallback={this.designerUpdate}
-                                        parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                                        parentDefaultValue={this.getFormContext()?.form?.defaultInterControlSpacing}
                                     />
 
                                     <PropertyEditorOptionWithButtonGroup

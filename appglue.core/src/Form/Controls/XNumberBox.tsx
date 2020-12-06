@@ -6,7 +6,7 @@ import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
+import {IssueData} from "../Utilities/FormContext";
 import "./XControls.css"
 
 
@@ -27,7 +27,7 @@ export class XNumberBox extends BaseTextEntryControl {
             runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
         }
 
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 

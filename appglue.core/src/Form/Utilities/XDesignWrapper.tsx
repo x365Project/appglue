@@ -7,8 +7,8 @@ import { OverlapDiv } from "../Containers/XBaseStackContainer";
 import { FormMode } from "../FormDesignConstants";
 import { XBaseContainer } from "../Containers/XBaseContainer";
 import { FormDesignConstants } from '../FormDesignConstants'
-import {ControlRenderContext, FormEditContext, IssueData} from "./FormEditContext";
-import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidationProvider";
+import { FormContext, IssueData} from "./FormContext";
+import { ValidationLevel } from "../../Common/IDesignValidationProvider";
 import { ExclamationRedIcon } from "../../CommonUI/Icon/ExclamationRedIcon";
 import { WarningRedIcon } from "../../CommonUI/Icon/WarningRedIcon";
 
@@ -42,12 +42,12 @@ export class XDraggableData {
     id: string;
     index: number;
     innerComponent: XBaseControl;
-    editContext: FormEditContext;
+    editContext: FormContext;
 
     constructor(id: string,
         index: number,
         innerComponent: XBaseControl,
-        editContext: FormEditContext) {
+        editContext: FormContext) {
         this.id = id;
         this.index = index;
         this.innerComponent = innerComponent;
