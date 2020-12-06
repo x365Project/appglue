@@ -72,7 +72,7 @@ export function getFormConfig(): XFormConfiguration {
   selectBox.items = [
     {
       label: 'Pizza',
-      value: ""
+      value: "0"
     },
     {
       label: 'Fried Rice',

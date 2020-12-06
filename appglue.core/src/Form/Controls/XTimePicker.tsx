@@ -1,6 +1,4 @@
 import React from "react";
-import styled from "styled-components";
-import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
@@ -9,7 +7,7 @@ import {TextControlStyle} from "../FormDesignConstants";
 import {TimePickerIcon} from "../../CommonUI/Icon/TimePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/FormEditContext";
-import {TextFieldProps} from "./XControlProps";
+import {StyledTextField} from "./XCommonStyled";
 
 
 @RegisterUIControl('Data (Entry)', 'Time Picker', ControlType.Control, <TimePickerIcon />)
@@ -76,6 +74,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 size={size}
                                 data-size={size}
                                 variant={"filled"}
+                                customStyle={"filled"}
                                 fullWidth={this.fullWidth}
                                 type="time"
                                 value={this.valueName?this.getFormDataValue(this.valueName): String}
@@ -112,6 +111,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 size={size}
                                 data-size={size}
                                 variant={"standard"}
+                                customStyle={"standard"}
                                 fullWidth={this.fullWidth}
                                 type="time"
                                 value={this.valueName?this.getFormDataValue(this.valueName): String}
@@ -147,7 +147,8 @@ export class XTimePicker extends BaseTextEntryControl {
                             <StyledTextField
                                 size={size}
                                 data-size={size}
-                                variant={"standard"}
+                                variant={"outlined"}
+                                customStyle={"outlined"}
                                 fullWidth={this.fullWidth}
                                 type="time"
                                 value={this.valueName?this.getFormDataValue(this.valueName): String}
@@ -204,24 +205,3 @@ class XTimePickerEditUI extends React.Component<{editMe: XTimePicker}> {
         )
     }
 }
-
-const StyledTextField = styled(TextField)`
-    width: ${(props: TextFieldProps) => props.width} !important;
-    fieldset {
-        border: unset !important;
-    }
-    input {
-        display: flex !important;
-        justify-content: space-around !important;
-        align-items: center;
-        border-radius: 5.65107px !important;
-        color: #677C95 !important;
-        padding-left: 20px;
-        padding-right: 20px;
-        &:focus {
-            color: #01244E !important; 
-            border: ${({variant}) => variant === "outlined" ? '1.35302px':'0px'} solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
-        }
-        border: ${({variant}) => variant === "outlined" ? '1.35302px':'0px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
-    }
-`   as React.ComponentType<TextFieldProps>

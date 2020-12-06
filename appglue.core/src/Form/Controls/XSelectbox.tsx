@@ -3,10 +3,12 @@ import styled from "styled-components";
 import {
     Select
 } from '@material-ui/core';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
-import { PropertyEditorList } from '../../CommonUI/PropertyEditing/PropertyEditorList';
-import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEditorText";
+import {PropertyEditorList} from '../../CommonUI/PropertyEditing/PropertyEditorList';
+import {PropertyEditorText} from "../../CommonUI/PropertyEditing/PropertyEditorText";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
@@ -24,19 +26,34 @@ export class XSelectbox extends BaseTextEntryControl {
     items: XSelectboxItem[] = [];
     render() {
 
+        let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
+
+        if (this.overrideStyle && this.style)
+            style = this.style;
+
+        let size : 'medium' | 'small' = (this.getFormRuntimeContext()?.form)?.defaultTextSize ?? 'medium';
+
+        if (this.overrideStyle && this.size)
+            size = this.size;
+
         const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         
         return (
-            <>
-                {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
-                <StyledSelect     
+            <StyledFormControl
+                variant="outlined"
+            >
+                {/* {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>} */}
+                <InputLabel >{this.valueName}</InputLabel>
+                <Select
+                    // data-size={size}
+                    // customStyle={"outlined"}
                     value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                     native
                     onChange={this.handleChange}
                     data-testid={this.valueName}
-                    width={customWidth}
+                    // width={customWidth}
                     error={Boolean(issueText)}
                 >
                     {this.items.map((item, index) => {
@@ -44,7 +61,7 @@ export class XSelectbox extends BaseTextEntryControl {
                             <option value={item.value} key={index} >{item.label}</option>   
                         );
                     })}
-                </StyledSelect>
+                </Select>
                 {
                     (issueText || this.hintText) && (
                         <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
@@ -52,7 +69,7 @@ export class XSelectbox extends BaseTextEntryControl {
                         </StyledFormHelperText>
                     )
                 }
-            </>
+            </StyledFormControl>
         );
     }
 
@@ -115,6 +132,9 @@ export class XSelectbox extends BaseTextEntryControl {
     }
 
 }
+
+const StyledFormControl = styled(FormControl)`
+`
 
 const StyledSelect = styled(Select)<{width?: string}>`
     width: ${({width}) => width} !important;

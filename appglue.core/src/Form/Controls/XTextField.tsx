@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import TextField from "@material-ui/core/TextField";
 import Tooltip from '@material-ui/core/Tooltip';
 import { RegisterUIControl, ControlType } from "../Utilities/RegisterUIControl";
 import { BaseTextEntryControl} from "./BaseTextEntryControl";
@@ -8,8 +7,7 @@ import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/FormEditContext";
-import {TextFieldProps} from "./XControlProps";
-
+import {StyledTextField} from "./XCommonStyled";
 @RegisterUIControl('Data (Entry)', 'Text Field', ControlType.Control, <TextFieldIcon />)
 export class XTextField extends BaseTextEntryControl {
     
@@ -190,36 +188,3 @@ const StyledTextFieldWrap = styled.div<{width?: string}>`
     box-sizing: border-box !important;
     position: relative !important;
 `
-
-const StyledTextField = styled(TextField)`
-    width: ${(props: TextFieldProps) => props.width} !important;
-    height: 59px !important;
-    box-sizing: border-box !important;
-    z-index: 1 !important;
-    fieldset {
-        border: none !important;
-    }
-    label {
-        padding: 0 5px;
-        background-color: ${({customStyle}) => customStyle==='outlined'? '#FFF' : 'unset'};
-    }
-    input {
-        color: #01244E;
-        border-radius: 5.65107px;
-        background-color: ${({customStyle}) => customStyle==='filled'? '#E6E9ED' : 'unset'};
-        &:focus {
-            border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
-        }
-        border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
-    }
-    .MuiFormLabel-root.Mui-focused {
-        color: ${({error}) => error? '#F65C66' : '#15466B'};
-    }
-    .MuiFilledInput-underline:after, .MuiInput-underline:after {
-        border-bottom: 1px solid #15466B;
-    }
-    .MuiFilledInput-underline:before, .MuiInput-underline:before {
-        border-bottom: 1px solid #677C95;
-        opacity: 0.3;
-    }
-    `   as React.ComponentType<TextFieldProps>
