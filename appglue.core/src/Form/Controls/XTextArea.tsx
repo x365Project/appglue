@@ -6,8 +6,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
 import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -17,7 +17,7 @@ export class XTextArea extends BaseTextEntryControl {
 
 	render() {
         
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
 		const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
         
@@ -75,11 +75,11 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 
 				<TextField label="Row Max" type="number" value={this.props.editMe.rowMax} onChange={event => {
                     this.props.editMe.rowMax = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 				<TextField label="Row Min" type="number" value={this.props.editMe.rowMin} onChange={event => {
                     this.props.editMe.rowMin = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 
 				{this.props.editMe.renderTextStyleSelectionEditor()}

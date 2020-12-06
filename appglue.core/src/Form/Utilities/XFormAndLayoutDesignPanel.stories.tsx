@@ -2,7 +2,7 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import {Meta, Story} from "@storybook/react/types-6-0";
 import {XFormAndLayoutDesignPanel} from "./XFormAndLayoutDesignPanel";
-import { FormEditContext } from "./FormEditContext";
+import { FormContext } from "./FormContext";
 import { XFormConfiguration } from "../XFormConfiguration";
 import { getFormConfig } from "../Testing/FormTestData";
 import { FormMode } from "../FormDesignConstants";
@@ -21,7 +21,7 @@ export default {
 
 
 const Template: Story<{
-    editContext: FormEditContext
+    editContext: FormContext
 }> = (args) => {
     const ref = React.createRef<XFormAndLayoutDesignPanel>()
     // hook to the update
@@ -35,15 +35,15 @@ const Template: Story<{
 
 
 let form: XFormConfiguration = getFormConfig();
-let ui: FormEditContext = new FormEditContext(form);
-form.setFormEditContext(ui);
+let ui: FormContext = new FormContext(form);
+form.setFormContext(ui);
 
 
 export const DesignFormMode = Template.bind({}, {editContext: ui});
 
 form = getFormConfig();
-ui = new FormEditContext(form);
-form.setFormEditContext(ui);
+ui = new FormContext(form);
+form.setFormContext(ui);
 ui.mode = FormMode.LayoutDesign;
 
 export const DesignPanelOnlyControlMode = Template.bind({}, {editContext: ui})
@@ -63,8 +63,8 @@ stack.add(textField);
 
 form1.add(stack);
 
-ui = new FormEditContext(form1);
-form1.setFormEditContext(ui);
+ui = new FormContext(form1);
+form1.setFormContext(ui);
 
 ui.designValidationProvider = {
     getDesignValidationIssues: (): ValidationIssue[] => {
@@ -89,8 +89,8 @@ form = getFormConfig();
 form.doNotScrollFirstContainerOnForm = true;
 form.doNotScrollLastContainerOnForm = true;
 
-ui = new FormEditContext(form);
-form.setFormEditContext(ui);
+ui = new FormContext(form);
+form.setFormContext(ui);
 
 export const DesignPanelWithPinSection = Template.bind({}, {editContext: ui});
 
@@ -103,8 +103,8 @@ form.add(hstack);
 let columnContainer = new XColumnContainer();
 form.add(columnContainer);
 
-ui = new FormEditContext(form);
-form.setFormEditContext(ui);
+ui = new FormContext(form);
+form.setFormContext(ui);
 
 export const FormModeDesignPanelWithEmptyContainer = Template.bind({}, {editContext: ui});
 
@@ -119,9 +119,9 @@ form.add(hstack);
 columnContainer = new XColumnContainer();
 form.add(columnContainer);
 
-ui = new FormEditContext(form);
+ui = new FormContext(form);
 ui.mode = FormMode.LayoutDesign;
-form.setFormEditContext(ui);
+form.setFormContext(ui);
 
 export const LayoutModeDesignPanelWithEmptyContainer = Template.bind({}, {editContext: ui});
 
@@ -154,8 +154,8 @@ columnContainer.lineColorBetweenColumns = 'gray';
 
 form.add(columnContainer);
 
-ui = new FormEditContext(form);
+ui = new FormContext(form);
 ui.mode = FormMode.LayoutDesign;
-form.setFormEditContext(ui);
+form.setFormContext(ui);
 
 export const DesignPanelWithLineBetweenWithOverlap = Template.bind({}, {editContext: ui});

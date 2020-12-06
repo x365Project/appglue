@@ -1,16 +1,16 @@
 import React from "react";
-import { Draggable, DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd";
+import {Draggable, DraggableProvided, DraggableStateSnapshot} from "react-beautiful-dnd";
 import styled from "styled-components";
 import {Popover} from "@material-ui/core";
-import { XBaseControl } from "../Controls/XBaseControl";
-import { OverlapDiv } from "../Containers/XBaseStackContainer";
-import { FormMode } from "../FormDesignConstants";
-import { XBaseContainer } from "../Containers/XBaseContainer";
-import { FormDesignConstants } from '../FormDesignConstants'
-import {ControlRenderContext, FormEditContext, IssueData} from "./FormEditContext";
-import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidationProvider";
-import { ExclamationRedIcon } from "../../CommonUI/Icon/ExclamationRedIcon";
-import { WarningRedIcon } from "../../CommonUI/Icon/WarningRedIcon";
+import {XBaseControl} from "../Controls/XBaseControl";
+import {OverlapDiv} from "../Containers/XBaseStackContainer";
+import {FormDesignConstants, FormMode} from "../FormDesignConstants";
+import {FormContext} from "./FormContext";
+import {ValidationLevel} from "../../Common/IDesignValidationProvider";
+import {ExclamationRedIcon} from "../../CommonUI/Icon/ExclamationRedIcon";
+import {WarningRedIcon} from "../../CommonUI/Icon/WarningRedIcon";
+import {IssueData} from "./ControlRenderContext";
+import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 
 const ErrorDiv = styled.div`
     position: absolute;
@@ -42,76 +42,16 @@ export class XDraggableData {
     id: string;
     index: number;
     innerComponent: XBaseControl;
-    editContext: FormEditContext;
+    editContext: FormContext;
 
     constructor(id: string,
         index: number,
         innerComponent: XBaseControl,
-        editContext: FormEditContext) {
+        editContext: FormContext) {
         this.id = id;
         this.index = index;
         this.innerComponent = innerComponent;
         this.editContext = editContext;
-    }
-}
-
-export class XContainerDesignWrapper extends React.Component<XDraggableData> {
-    wrapped: XBaseContainer;
-    innerComponentRef: HTMLDivElement | null = null;
-
-    constructor(value: XDraggableData) {
-        super(value);
-        this.wrapped = value.innerComponent as XBaseContainer;
-    }
-
-    onSelect = (event: React.MouseEvent<HTMLDivElement>) => {
-        event.preventDefault();
-        this.props.innerComponent.selectInDesigner();
-    }
-
-    render() {
-        if (!this.props.editContext ||
-            this.props.editContext.mode === FormMode.Runtime ||
-            this.props.editContext.mode === FormMode.FormDesign) {
-            return (
-                <div>
-                    {this.props.innerComponent.render()}
-                </div>
-            );
-        } else {
-            return (
-                <Draggable
-                    draggableId={this.props.id}
-                    index={this.props.index}
-                >
-                    {
-                        (provided: DraggableProvided) => {
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                >
-                                    <div
-                                        data-testid={this.props.innerComponent.id}
-                                        ref={(ref) => this.innerComponentRef = ref}
-                                        style={{position: 'relative'}}
-                                    >
-                                        {this.props.innerComponent.render()}
-                                        <OverlapDiv
-                                            data-test="container-click-div"
-                                            onClick={this.onSelect}
-                                            selected={this.props.innerComponent.isDesignSelected()}
-                                            border={`solid ${FormDesignConstants.SELECTED_CONTROL_BORDER_WIDTH} ${FormDesignConstants.SELECTED_CONTROL_BORDER_COLOR}`}
-                                        />
-                                    </div>
-                                </div>
-                            );
-                        }
-                    }
-                </Draggable>
-            );
-        }
     }
 }
 
@@ -179,7 +119,16 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                         ref={(ref) => this.innerComponentRef = ref}
                                         style={{position: 'relative'}}
                                     >
-                                        {this.props.innerComponent.render()}
+                                        <ObserveState
+                                            listenTo={this.props.innerComponent}
+                                            control={() => {
+                                                return (
+                                                    this.props.innerComponent.render()
+                                                );
+                                            }}
+                                        />
+
+                                        {}
                                         <OverlapDiv
                                             data-testid="control-click-div"
                                             onClick={this.onSelect}

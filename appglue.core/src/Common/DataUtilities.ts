@@ -17,7 +17,9 @@ export function cloneWithoutReact(value: object, alsoExclude: string[] = []): ob
         if (alsoExclude.indexOf(i) !== -1){
             // excluding
         } else {
-            Reflect.set(output, i, Reflect.get(value, i));
+            // these are special properties we do not want in output
+            if (!i.startsWith('_____'))
+                Reflect.set(output, i, Reflect.get(value, i));
         }
 
     }

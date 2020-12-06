@@ -45,7 +45,7 @@ class XLabelEditUI extends React.Component<{editMe: XLabel}> {
             <>
                 <TextField label="Content Text" value={this.props.editMe.text} onChange={event => {
                     this.props.editMe.text = event.target.value;
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}/>
                 <TextField label="Html For" value={this.props.editMe.htmlFor}  />
             </>

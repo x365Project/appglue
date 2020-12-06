@@ -3,8 +3,7 @@ import {FormMode, IDesignPanelConfig} from "../FormDesignConstants";
 import {
     IDesignValidationProvider,
     IRuntimeValidationProvider,
-    ValidationIssue,
-    ValidationLevel
+    ValidationIssue
 } from "../../Common/IDesignValidationProvider";
 import {XFormDesigner} from "../XFormDesigner";
 import {AutoBind} from "../../Common/AutoBind";
@@ -12,8 +11,12 @@ import {UserFormData} from "../UserFormData";
 import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
+import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
+import {ControlRenderContext} from "./ControlRenderContext";
+import {action, StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {ElementFactory} from "../../CommonUI/ElementFactory";
 
-export class FormRuntimeContext {
+export class FormContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
     data: UserFormData = new UserFormData();
@@ -30,11 +33,8 @@ export class FormRuntimeContext {
 
     constructor(form: XFormConfiguration) {
         this.form = form;
-        this.controlContexts = new FormContextStore()
-    }
-
-    refreshUserForm() : void {
-        // todo: refresh user form
+        this.controlContexts = new FormContextStore(this);
+        this.computeDesignValidationIssues();
     }
 
     computeRuntimeValidations(): ValidationIssue[] {
@@ -109,9 +109,12 @@ export class FormRuntimeContext {
         if (this.onFormCancelButton)
             this.onFormCancelButton();
     }
-}
 
-export class FormEditContext extends FormRuntimeContext {
+    // ------------------------------------------------
+    // -- Designer Context ----------------------------
+    // ------------------------------------------------
+
+
     designer? : XFormDesigner;
 
     formName?: string;
@@ -124,7 +127,6 @@ export class FormEditContext extends FormRuntimeContext {
     private _mode: FormMode | string = FormMode.FormDesign;
 
     designValidationProvider?: IDesignValidationProvider;
-    onFormClose?: () => void;
     onFormSave?: (data: any) => void;
     sampleDataProvider? : ISampleDataProvider ;
     designConfig?: IDesignPanelConfig;
@@ -140,14 +142,6 @@ export class FormEditContext extends FormRuntimeContext {
     bottomDesignerExtensions?: IAction[];
 
     private eventLog: ({} | string)[] = [];
-
-
-    constructor(form: XFormConfiguration) {
-        super(form);
-        this.controlContexts = new FormContextStore(this);
-        this.computeDesignValidationIssues();
-    }
-
 
     get mode(): FormMode | string {
         return this._mode;
@@ -211,12 +205,57 @@ export class FormEditContext extends FormRuntimeContext {
         this.computeDesignValidationIssues();
     }
 
+    getEditUI(): ElementFactory<any> | undefined {
+        if (!this.selectedId)
+            return;
+
+        if (this.selectedId === CONFIG_FORM_KEY) {
+            return this.form.getEditor();
+        }
+
+        let control = this.form.find(this.selectedId);
+
+        if (control)
+            return control.getEditor();
+
+
+    }
+
     selectedId : string | null = null;
+
+    getSelectedId() : string | null {
+        return this.selectedId;
+    }
+
+    @AutoBind
+    selectControl(selectedId: string) {
+        this.unSelectControl();
+
+        this.selectedId = selectedId;
+
+        if (selectedId !== CONFIG_FORM_KEY && this.form.find(selectedId)) {
+            let cc = this.controlContexts.getControlRenderContextById(selectedId, this.form.getAllControls());
+            cc.setSelected(true);
+        }
+
+        this.expandedConfigPanel = true;
+
+        StateManager.changed(this);
+    }
 
     @AutoBind
     unSelectControl() {
+        if (this.selectedId) {
+            if (this.selectedId !== CONFIG_FORM_KEY && this.form.find(this.selectedId)) {
+                let cc = this.controlContexts.getControlRenderContextById(this.selectedId, this.form.getAllControls());
+                cc.setSelected(false);
+            }
+        }
+
         this.selectedId = null;
-        this.refreshDesigner();
+        this.expandedConfigPanel = false;
+
+        StateManager.changed(this);
     }
 
     @AutoBind
@@ -230,12 +269,12 @@ export class FormEditContext extends FormRuntimeContext {
 // todo: make this a store
 // todo: add other stuff here like data? hidden? disabled?
 export class FormContextStore {
-    editContext? : FormEditContext;
+    editContext : FormContext;
     controlRenderContexts : {[controlId: string] : ControlRenderContext }  = {}
     otherRuntimeIssues : ValidationIssue[] = [];
     otherDesignIssues : ValidationIssue[] = [];
 
-    constructor(editContext?: FormEditContext) {
+    constructor(editContext: FormContext) {
         this.editContext = editContext;
     }
 
@@ -393,92 +432,5 @@ export class FormContextStore {
 
     }
 
-}
-
-// todo: assume this is a sub store
-export class ControlRenderContext {
-    editContext? : FormEditContext;
-    runtimeIssues : ValidationIssue[] = [];
-    designIssues : ValidationIssue[] = [];
-    control: XBaseControl;
-
-    constructor(control: XBaseControl, editContext? : FormEditContext) {
-        this.control = control;
-        this.editContext = editContext;
-    }
-
-    getRuntimeIssueText() : string | null {
-
-        let issueText: string | null = null;
-
-        if (this.runtimeIssues && this.runtimeIssues.length !== 0) {
-            if (this.runtimeIssues.length === 1) {
-                issueText = this.runtimeIssues[0].issue;
-            } else {
-                issueText = 'Issues (' + this.runtimeIssues.length + ')';
-            }
-        }
-
-        return issueText;
-    }
-
-    getDesignIssueText() : string | null {
-
-        let issueText: string | null = null;
-
-        if (this.designIssues && this.designIssues.length !== 0) {
-            if (this.designIssues.length === 1) {
-                issueText = this.designIssues[0].issue;
-            } else {
-                issueText = 'Issues (' + this.designIssues.length + ')';
-            }
-        }
-
-        return issueText;
-    }
-
-
-    getRuntimeIssueData() : IssueData | null{
-        if (this.runtimeIssues.length === 0)
-            return null;
-
-        // do not return if we are not in runtime mode
-        if (this.editContext && this.editContext.mode !== FormMode.Runtime)
-            return null;
-
-        let highestLevel = ValidationLevel.WARNING;
-
-        for (let issue of this.runtimeIssues) {
-            if (issue.level === ValidationLevel.ERROR) {
-                highestLevel = ValidationLevel.ERROR;
-                break;
-            }
-        }
-
-        return {text : this.getRuntimeIssueText(), highestLevel: highestLevel, issues: this.runtimeIssues};
-    }
-
-    getDesignIssueData() : IssueData | null{
-        if (this.designIssues.length === 0)
-            return null;
-
-        let highestLevel = ValidationLevel.WARNING;
-
-        for (let issue of this.designIssues) {
-            if (issue.level === ValidationLevel.ERROR) {
-                highestLevel = ValidationLevel.ERROR;
-                break;
-            }
-        }
-
-        return {text : this.getDesignIssueText(), highestLevel: highestLevel, issues: this.designIssues};
-    }
-
-}
-
-export class IssueData {
-    text: string | null = null;
-    highestLevel: ValidationLevel = ValidationLevel.ERROR;
-    issues?: ValidationIssue[];
 }
 

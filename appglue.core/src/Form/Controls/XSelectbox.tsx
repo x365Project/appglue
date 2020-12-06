@@ -10,8 +10,8 @@ import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEdito
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
 import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 
 interface XSelectboxItem {
@@ -24,7 +24,7 @@ export class XSelectbox extends BaseTextEntryControl {
     items: XSelectboxItem[] = [];
     render() {
 
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
         
@@ -81,7 +81,7 @@ export class XSelectbox extends BaseTextEntryControl {
                                 } else {
                                     this.items.splice(item.index, 1);
                                 }
-                                this.designerUpdate();
+                                this.controlUpdate();
                             },
                             onCancel: () => {
                                 delete item.content;
@@ -94,13 +94,13 @@ export class XSelectbox extends BaseTextEntryControl {
                                         editObject={item.content}
                                         label="Label"
                                         propertyName="label"
-                                        updateCallback={this.designerUpdate}
+                                        updateCallback={this.controlUpdate}
                                     />
                                     <PropertyEditorText
                                         editObject={item.content}
                                         label="Value"
                                         propertyName="value"
-                                        updateCallback={this.designerUpdate}
+                                        updateCallback={this.controlUpdate}
                                     />
                                 </div>)
                             )
