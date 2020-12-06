@@ -32,6 +32,7 @@ export const StyledTextField = styled(TextField)`
     label {
         padding: 0 5px;
         background-color: ${({customStyle}) => customStyle==='outlined'? '#FFF' : 'unset'};
+        top: ${({isPicker, error}) => isPicker === true && error? '-12px' : '0px'};
     }
     input {
         color: #01244E;
@@ -45,6 +46,7 @@ export const StyledTextField = styled(TextField)`
         border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
     }
     .MuiFormLabel-root.Mui-focused {
+        top: 0px;
         color: ${({error}) => error? '#F65C66' : '#15466B'};
     }
     .MuiFilledInput-underline:after, .MuiInput-underline:after {

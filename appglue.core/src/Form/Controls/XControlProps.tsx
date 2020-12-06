@@ -9,4 +9,5 @@ export interface TextFieldProps {
   error: boolean;
   fullWidth: boolean;
   customStyle?: string;
+  isPicker? :boolean;
 }

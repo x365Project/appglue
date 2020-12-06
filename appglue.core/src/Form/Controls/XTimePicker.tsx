@@ -120,6 +120,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 width={customWidth}
                                 error={Boolean(issueText)}
                                 label={this.valueName}
+                                isPicker={true}
                             />
                             {
                                 (issueText && issueText.length > 30)  && (
@@ -157,6 +158,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 width={customWidth}
                                 error={Boolean(issueText)}
                                 label={this.valueName}
+                                isPicker={true}
                             />
                             {
                                 (issueText && issueText.length > 30)  && (
@@ -191,8 +193,6 @@ export class XTimePicker extends BaseTextEntryControl {
         return <XTimePickerEditUI editMe={this} />;
     }
 }
-
-
 
 class XTimePickerEditUI extends React.Component<{editMe: XTimePicker}> {
     render () {
