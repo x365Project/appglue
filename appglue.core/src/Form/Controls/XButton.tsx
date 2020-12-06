@@ -54,7 +54,7 @@ class XButtonEditUI extends React.Component<{editMe: XButton}> {
                     value={this.props.editMe.label}
                     onChange={event => {
                         this.props.editMe.label = event.target.value;
-                        this.props.editMe.designerUpdate();
+                        this.props.editMe.controlUpdate();
                     }}
                 />
             </>

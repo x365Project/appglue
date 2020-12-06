@@ -7,6 +7,7 @@ class ListenerRegistration {
     functions: {function: Function, properties?: string[]}[] = [];
 }
 
+// todo, keep copy of old object, only send out updates if actual changes were made
 export class StateManager {
 
     static readonly OBSERVERS_VALUE_NAME = '_____observers';

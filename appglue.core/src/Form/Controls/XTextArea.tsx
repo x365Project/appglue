@@ -75,11 +75,11 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 
 				<TextField label="Row Max" type="number" value={this.props.editMe.rowMax} onChange={event => {
                     this.props.editMe.rowMax = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 				<TextField label="Row Min" type="number" value={this.props.editMe.rowMin} onChange={event => {
                     this.props.editMe.rowMin = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 
 				{this.props.editMe.renderTextStyleSelectionEditor()}

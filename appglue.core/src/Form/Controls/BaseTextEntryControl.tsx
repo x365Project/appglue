@@ -30,11 +30,11 @@ export abstract class BaseTextEntryControl extends BaseDataControl {
                     editObject={this}
                     label="Override Text Style"
                     propertyName="overrideStyle"
-                    updateCallback={this.designerUpdate}
+                    updateCallback={this.controlUpdate}
                 />
                 <Collapse in={this.overrideStyle}>
-                    <PropertyEditorTextStyleSelection updateCallback={this.designerUpdate} propertyName={'style'} editObject={this} parentDefaultValue={this.getFormContext()?.form.defaultTextStyle}/>
-                    <PropertyEditorTextSizeSelection updateCallback={this.designerUpdate} propertyName={'size'} editObject={this} parentDefaultValue={this.getFormContext()?.form.defaultTextSize}/>
+                    <PropertyEditorTextStyleSelection updateCallback={this.controlUpdate} propertyName={'style'} editObject={this} parentDefaultValue={this.getFormContext()?.form.defaultTextStyle}/>
+                    <PropertyEditorTextSizeSelection updateCallback={this.controlUpdate} propertyName={'size'} editObject={this} parentDefaultValue={this.getFormContext()?.form.defaultTextSize}/>
                 </Collapse>
 
             </>
@@ -45,11 +45,11 @@ export abstract class BaseTextEntryControl extends BaseDataControl {
     renderTextControlBasePropertyEditor() {
         return (
             <>
-                <PropertyEditorText label={'Hint Text'} updateCallback={this.designerUpdate} propertyName={'hintText'} editObject={this}/>
-                <PropertyEditorText label={'Placeholder Text'} updateCallback={this.designerUpdate} propertyName={'placeholderText'} editObject={this}/>
-                <PropertyEditorBoolean label={'Full Width'} updateCallback={this.designerUpdate} propertyName={'fullWidth'} editObject={this}/>
+                <PropertyEditorText label={'Hint Text'} updateCallback={this.controlUpdate} propertyName={'hintText'} editObject={this}/>
+                <PropertyEditorText label={'Placeholder Text'} updateCallback={this.controlUpdate} propertyName={'placeholderText'} editObject={this}/>
+                <PropertyEditorBoolean label={'Full Width'} updateCallback={this.controlUpdate} propertyName={'fullWidth'} editObject={this}/>
                 <Collapse in={!this.fullWidth}>
-                    <PropertyEditorInteger label={'Width'} updateCallback={this.designerUpdate} propertyName={'width'} editObject={this}/>
+                    <PropertyEditorInteger label={'Width'} updateCallback={this.controlUpdate} propertyName={'width'} editObject={this}/>
                 </Collapse>
             </>
         );

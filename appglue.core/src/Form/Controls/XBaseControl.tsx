@@ -44,13 +44,13 @@ export abstract class XBaseControl
     }
 
 
-    componentDidMount() {
-        StateManager.addObserver(this, this);
-    }
-
-    componentWillUnmount() {
-        StateManager.removeObserver(this, this);
-    }
+    // componentDidMount() {
+    //     StateManager.addObserver(this, this);
+    // }
+    //
+    // componentWillUnmount() {
+    //     StateManager.removeObserver(this, this);
+    // }
 
     get controlRenderContext() : ControlRenderContext | null | undefined {
         return this.getFormContext()?.getControlContext(this);
@@ -76,10 +76,16 @@ export abstract class XBaseControl
     }
 
 
+    // notifies state manager that this control has been updated
+    @AutoBind
+    controlUpdate () : void {
+        StateManager.changed(this);
+    }
+
+    // forces refresh of entire designer (expensive)
     @AutoBind
     designerUpdate () : void {
-        StateManager.changed(this);
-        //        this.getFormContext()?.refreshDesigner();
+        this.getFormContext()?.refreshDesigner();
     }
 
     isDesignSelected() : boolean {

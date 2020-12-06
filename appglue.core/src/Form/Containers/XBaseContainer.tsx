@@ -75,7 +75,7 @@ export abstract class XBaseContainer
                     editObject={this}
                     label="Override Border Settings"
                     propertyName="overrideFormBorderSettings"
-                    updateCallback={this.designerUpdate}
+                    updateCallback={this.controlUpdate}
                 />
       
                 <Collapse in={this.overrideFormBorderSettings === DefaultOnOff.On}>
@@ -85,14 +85,14 @@ export abstract class XBaseContainer
                             editObject={this}
                             label="Border Width"
                             propertyName="containerBorderWidth"
-                            updateCallback={this.designerUpdate}
+                            updateCallback={this.controlUpdate}
                             parentDefaultValue={this.getFormContext()?.form.defaultContainerBorderWidth}
                         />
                         <PropertyEditorInteger
                             editObject={this}
                             label="Border Radius"
                             propertyName="containerBorderRadius"
-                            updateCallback={this.designerUpdate}
+                            updateCallback={this.controlUpdate}
                             parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderRadius}
                         />
                         
@@ -100,14 +100,14 @@ export abstract class XBaseContainer
                             editObject={this}
                             label="Border Color"
                             propertyName="containerBorderColor"
-                            updateCallback={this.designerUpdate}
+                            updateCallback={this.controlUpdate}
                             parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderColor}
                         />
                         <PropertyEditorSelect
                             editObject={this}
                             label="Border Style"
                             propertyName="containerBorderStyle"
-                            updateCallback={this.designerUpdate}
+                            updateCallback={this.controlUpdate}
                             options={FormDesignConstants.BORDER_STYLES}
                             parentDefaultValue={this.getFormContext()?.form?.defaultContainerBorderStyle}
                         />

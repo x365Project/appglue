@@ -81,7 +81,7 @@ export class XSelectbox extends BaseTextEntryControl {
                                 } else {
                                     this.items.splice(item.index, 1);
                                 }
-                                this.designerUpdate();
+                                this.controlUpdate();
                             },
                             onCancel: () => {
                                 delete item.content;
@@ -94,13 +94,13 @@ export class XSelectbox extends BaseTextEntryControl {
                                         editObject={item.content}
                                         label="Label"
                                         propertyName="label"
-                                        updateCallback={this.designerUpdate}
+                                        updateCallback={this.controlUpdate}
                                     />
                                     <PropertyEditorText
                                         editObject={item.content}
                                         label="Value"
                                         propertyName="value"
-                                        updateCallback={this.designerUpdate}
+                                        updateCallback={this.controlUpdate}
                                     />
                                 </div>)
                             )

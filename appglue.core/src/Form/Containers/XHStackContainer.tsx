@@ -181,7 +181,7 @@ export class XHStackContainer
                     editObject={this}
                     label={"Control Gap"}
                     propertyName={"interControlSpacing"}
-                    updateCallback={this.designerUpdate}
+                    updateCallback={this.controlUpdate}
                     parentDefaultValue={this.getFormContext()?.form?.defaultInterControlSpacing}
                 >
                 </PropertyEditorInteger>
@@ -189,7 +189,7 @@ export class XHStackContainer
                     editObject={this}
                     label="Inner Margin"
                     propertyName={"innerMargin"}
-                    updateCallback={this.designerUpdate}
+                    updateCallback={this.controlUpdate}
                     parentDefaultValue={this.getFormContext()?.form?.defaultInnerContainerMargin}
                 >
                 </PropertyEditorInteger>
@@ -198,21 +198,21 @@ export class XHStackContainer
                     label={'Alignment'}
                     propertyName={'alignment'}
                     options={['Left', 'Center', 'Right']}
-                    updateCallback={this.designerUpdate}>
+                    updateCallback={this.controlUpdate}>
                 </PropertyEditorSelect>
                 <PropertyEditorSelect
                     editObject={this}
                     label={'Vertical Alignment'}
                     propertyName={'verticalAlignment'}
                     options={['Top', 'Bottom', 'Middle']}
-                    updateCallback={this.designerUpdate}>
+                    updateCallback={this.controlUpdate}>
                 </PropertyEditorSelect>
 
                 <PropertyEditorText
                     editObject={this}
                     label="Container Color"
                     propertyName="containerBackgroundColor"
-                    updateCallback={this.designerUpdate}
+                    updateCallback={this.controlUpdate}
                     parentDefaultValue={this.getFormContext()?.form?.defaultContainerBackgroundColor}
                 />
 
