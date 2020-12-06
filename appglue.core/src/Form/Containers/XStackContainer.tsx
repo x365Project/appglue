@@ -9,7 +9,6 @@ import { PropertyEditorInteger } from "../../CommonUI/PropertyEditing/PropertyEd
 import { PropertyEditorColor } from "../../CommonUI/PropertyEditing/PropertyEditorColor";
 import { StackIcon } from "../../CommonUI/Icon/StackIcon";
 
-
 export const StackContainerDiv = styled("div")<{
     padding?: number; 
     hasBorder?: boolean;

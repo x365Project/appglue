@@ -10,6 +10,7 @@ import {ValidationLevel} from "../../Common/IDesignValidationProvider";
 import {ExclamationRedIcon} from "../../CommonUI/Icon/ExclamationRedIcon";
 import {WarningRedIcon} from "../../CommonUI/Icon/WarningRedIcon";
 import {IssueData} from "./ControlRenderContext";
+import {RefreshListener} from "../../CommonUI/StateManagement/IDataStore";
 
 const ErrorDiv = styled.div`
     position: absolute;
@@ -118,7 +119,16 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                         ref={(ref) => this.innerComponentRef = ref}
                                         style={{position: 'relative'}}
                                     >
-                                        {this.props.innerComponent.render()}
+                                        <RefreshListener
+                                            listenTo={this.props.innerComponent}
+                                            control={() => {
+                                                return (
+                                                    this.props.innerComponent.render()
+                                                );
+                                            }}
+                                        />
+
+                                        {}
                                         <OverlapDiv
                                             data-testid="control-click-div"
                                             onClick={this.onSelect}

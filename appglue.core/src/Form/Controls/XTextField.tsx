@@ -152,25 +152,20 @@ export class XTextField extends BaseTextEntryControl {
     }
 
     renderEditUI(): JSX.Element | null {
-        return (
-            <XTextFieldEditUI
-                editMe={this}
-            />
-        );;
+        return  <XTextFieldEditUI editMe={this} />;
     }
+
+
 }
 
-class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
-
-    render() {
-        return (
-            <>
-                {this.props.editMe.renderBaseDataControlEditor()}
-                {this.props.editMe.renderTextControlBasePropertyEditor()}
-                {this.props.editMe.renderTextStyleSelectionEditor()}
-            </>
-        );
-    }
+function XTextFieldEditUI(props: { editMe: XTextField }) {
+    return (
+        <>
+            {props.editMe.renderBaseDataControlEditor()}
+            {props.editMe.renderTextControlBasePropertyEditor()}
+            {props.editMe.renderTextStyleSelectionEditor()}
+        </>
+    );
 }
 
 const StyledTextFieldWrap = styled.div<{width?: string}>`

@@ -30,7 +30,7 @@ export const CONFIG_FORM_KEY: string = 'configForm';
 
 const Designer = styled.div`
   display: flex;
-  width: 100%;
+  width: 100%; 
   overflow: hidden;
   position: relative;
 `;
@@ -98,7 +98,6 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
             selectedControl = this.props.editContext.form.find(selectedId);
         }
 
-
         return (
 
             <RefreshListener
@@ -121,7 +120,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                 />
                                 <XFormDesignerLayoutPanel editContext={this.props.editContext}  />
                                 {
-                                    editUIComponent && (
+                                    (editUIComponent) && (
                                         <ReactDraggable
                                             bounds="parent"
                                             onDrag={this.onDragMovingConfigPanel}
@@ -141,7 +140,16 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                                         </EditLayerStyledTypography>
                                                     </EditLayerStyledAccordionSummary>
                                                     <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                                        {editUIComponent}
+                                                        <RefreshListener
+                                                            listenTo={selectedControl}
+                                                            control={() => {
+                                                                return (
+                                                                     editUIComponent?.create()
+                                                                );
+                                                            }}
+                                                        />
+
+
                                                     </EditLayerStyledAccordionDetails>
                                                 </EditLayerStyledAccordion>
                                             </EditLayerConfigArea>

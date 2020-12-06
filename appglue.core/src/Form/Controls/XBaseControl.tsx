@@ -1,4 +1,4 @@
-import React from "react";
+import React, {JSXElementConstructor, ReactElement} from "react";
 import {IConfigStorage} from "../../Common/IConfigStorage";
 import {cloneWithoutReact, generateUniqueId, spreadData} from "../../Common/DataUtilities";
 import {IEditable} from "../../CommonUI/IEditable";
@@ -13,6 +13,7 @@ import {
 import {FormContext} from "../Utilities/FormContext";
 import {ControlRenderContext} from "../Utilities/ControlRenderContext";
 import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
+import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export abstract class XBaseControl
     extends React.Component
@@ -77,7 +78,8 @@ export abstract class XBaseControl
 
     @AutoBind
     designerUpdate () : void {
-        this.getFormContext()?.refreshDesigner();
+        DataStore.triggerUpdate(this);
+        //        this.getFormContext()?.refreshDesigner();
     }
 
     isDesignSelected() : boolean {
@@ -137,5 +139,18 @@ export abstract class XBaseControl
         return null;
     }
 
+    getEditor() : ElementFactory<any>
+    {
+        return new ElementFactory(
+            this.renderEditUI.bind(this), {});
+    }
+
+
+}
+
+function MyEditor() {
+    return (
+        <div>editor</div>
+    )
 }
 

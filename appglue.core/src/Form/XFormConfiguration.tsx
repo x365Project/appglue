@@ -23,7 +23,7 @@ import {FormContext} from "./Utilities/FormContext";
 import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 import {XContainerDesignWrapper} from "./Utilities/XContainerDesignWrapper";
-
+import {ElementFactory} from "../CommonUI/ElementFactory";
 
 export const PinnedNotifyDiv = styled("div")<{
 	color?: string;
@@ -581,6 +581,12 @@ export class XFormConfiguration
 		if (this._formContext) {
 			this._formContext?.refreshDesigner();
 		}
+	}
+
+	getEditor() : ElementFactory<any>
+	{
+		return new ElementFactory(
+			this.renderEditUI.bind(this), {});
 	}
 
 	renderEditUI(): JSX.Element | null {

@@ -14,6 +14,7 @@ import {XBaseControl} from "../Controls/XBaseControl";
 import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
 import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
+import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export class FormContext {
     form: XFormConfiguration;
@@ -205,18 +206,18 @@ export class FormContext {
         this.computeDesignValidationIssues();
     }
 
-    getEditUI(): JSX.Element | undefined | null {
+    getEditUI(): ElementFactory<any> | undefined {
         if (!this.selectedId)
             return;
 
         if (this.selectedId === CONFIG_FORM_KEY) {
-            return this.form.renderEditUI();
+            return this.form.getEditor();
         }
 
         let control = this.form.find(this.selectedId);
 
         if (control)
-            return control.renderEditUI();
+            return control.getEditor();
 
 
     }

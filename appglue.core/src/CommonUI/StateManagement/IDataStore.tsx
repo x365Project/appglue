@@ -1,17 +1,19 @@
-import React, {Ref} from "react";
+import React, {ReactNode, Ref} from "react";
 import {generateUniqueId} from "../../Common/DataUtilities";
 import {AutoBind} from "../../Common/AutoBind";
 
-// <RefreshListener
-//     listenTo={}
-//     control={() => {
-//         return (
-//
-//         );
-//     }}
-// />
+/**
+<RefreshListener
+    listenTo={}
+    control={() => {
+        return (
 
-export class RefreshMultiListener extends React.Component<{listenTo: (object | null | undefined)[], control: () => JSX.Element}> {
+        );
+    }}
+/>
+ **/
+
+export class RefreshMultiListener extends React.Component<{listenTo: (object | null | undefined)[], control: () => JSX.Element | ReactNode}> {
 
 
     constructor(props: { listenTo: (object | null | undefined)[]; control: () => JSX.Element }) {
@@ -49,7 +51,7 @@ export class RefreshMultiListener extends React.Component<{listenTo: (object | n
 }
 
 
-export class RefreshListener extends React.Component<{listenTo: object | null | undefined, control: () => JSX.Element}> {
+export class RefreshListener extends React.Component<{listenTo: object | null | undefined, control: () => JSX.Element | React.ReactNode}> {
 
 
     constructor(props: { listenTo: object | null | undefined; control: () => JSX.Element }) {
