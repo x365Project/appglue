@@ -28,7 +28,7 @@ const FormContent = styled("div")<{
     position: relative;
 `;
 
-export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormContext, height?: number }> {
+export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormContext, height?: number}> {
 
     render() {
         const formStyles: {[key: string]: any} = {

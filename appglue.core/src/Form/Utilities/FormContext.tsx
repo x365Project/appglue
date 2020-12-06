@@ -13,6 +13,7 @@ import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
 import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
+import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
 
 export class FormContext {
     form: XFormConfiguration;
@@ -190,6 +191,7 @@ export class FormContext {
 
     @AutoBind
     refreshDesigner() : void {
+        console.trace();
         if (this.selectedId) {
             this.expandedConfigPanel = true;
         }
@@ -227,6 +229,9 @@ export class FormContext {
 
     @AutoBind
     selectControl(selectedId: string) {
+        console.log('selecting control')
+        this.unSelectControl();
+
         this.selectedId = selectedId;
 
         if (selectedId !== CONFIG_FORM_KEY && this.form.find(selectedId)) {
@@ -234,7 +239,10 @@ export class FormContext {
             cc.setSelected(true);
         }
 
-        this.refreshDesigner();
+        this.expandedConfigPanel = true;
+
+//        this.refreshDesigner();
+        DataStore.triggerUpdate(this);
     }
 
     @AutoBind
@@ -248,7 +256,10 @@ export class FormContext {
 
 
         this.selectedId = null;
-        this.refreshDesigner();
+//        this.refreshDesigner();
+        this.expandedConfigPanel = false;
+
+        DataStore.triggerUpdate(this);
     }
 
     @AutoBind

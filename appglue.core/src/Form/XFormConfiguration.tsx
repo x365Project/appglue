@@ -584,6 +584,7 @@ export class XFormConfiguration
 	}
 
 	renderEditUI(): JSX.Element | null {
+		console.log('rendering edit');
 
 		return (
 		<>

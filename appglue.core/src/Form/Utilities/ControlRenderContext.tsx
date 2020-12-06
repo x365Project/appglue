@@ -3,6 +3,7 @@ import {ValidationIssue, ValidationLevel} from "../../Common/IDesignValidationPr
 import {XBaseControl} from "../Controls/XBaseControl";
 import {FormMode} from "../FormDesignConstants";
 import {FormContext} from "./FormContext";
+import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
 
 export class ControlRenderContext {
     editContext?: FormContext;
@@ -86,6 +87,7 @@ export class ControlRenderContext {
 
     setSelected(selected: boolean) {
         this.selected = selected;
+        DataStore.triggerUpdate(this);
     }
 }
 

@@ -11,8 +11,8 @@ import {
     ValidationIssue
 } from "../../Common/IDesignValidationProvider";
 import {FormContext} from "../Utilities/FormContext";
-import {makeAutoObservable} from "mobx";
 import {ControlRenderContext} from "../Utilities/ControlRenderContext";
+import {DataStore} from "../../CommonUI/StateManagement/IDataStore";
 
 export abstract class XBaseControl
     extends React.Component
@@ -40,6 +40,15 @@ export abstract class XBaseControl
         // generates ID to be a guid
         this.id = generateUniqueId();
 
+    }
+
+
+    componentDidMount() {
+        DataStore.addListener(this, this);
+    }
+
+    componentWillUnmount() {
+        DataStore.removeListener(this, this);
     }
 
     get controlRenderContext() : ControlRenderContext | null | undefined {
@@ -80,6 +89,7 @@ export abstract class XBaseControl
     }
 
     selectInDesigner() : void {
+        console.log('calling select in designer')
         if (this.getFormContext()) {
             this.getFormContext()!.selectControl(this.id);
         }
