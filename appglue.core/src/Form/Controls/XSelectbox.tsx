@@ -10,6 +10,7 @@ import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {PropertyEditorList} from '../../CommonUI/PropertyEditing/PropertyEditorList';
 import {PropertyEditorText} from "../../CommonUI/PropertyEditing/PropertyEditorText";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
+import {TextControlStyle} from "../FormDesignConstants";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/FormEditContext";
@@ -39,38 +40,142 @@ export class XSelectbox extends BaseTextEntryControl {
         const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
-        
-        return (
-            <StyledFormControl
-                variant="outlined"
-            >
-                {/* {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>} */}
-                <InputLabel >{this.valueName}</InputLabel>
-                <Select
-                    // data-size={size}
-                    // customStyle={"outlined"}
-                    value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
-                    native
-                    onChange={this.handleChange}
-                    data-testid={this.valueName}
-                    // width={customWidth}
-                    error={Boolean(issueText)}
-                >
-                    {this.items.map((item, index) => {
-                        return (
-                            <option value={item.value} key={index} >{item.label}</option>   
-                        );
-                    })}
-                </Select>
-                {
-                    (issueText || this.hintText) && (
-                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
-                            {issueText ? issueText: this.hintText}
-                        </StyledFormHelperText>
-                    )
-                }
-            </StyledFormControl>
-        );
+
+        switch(style) {
+            case TextControlStyle.LABELED :
+                return (
+                    <>
+                        {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
+                        <StyledFormControl
+                            size={size}
+                            data-size={size}
+                            variant="outlined"
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                        >
+                            <Select
+                                defaultValue={'Pizza'}
+                                value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                                native
+                                onChange={this.handleChange}
+                                data-testid={this.valueName}
+                            >
+                                {this.items.map((item, index) => {
+                                    return (
+                                        <option value={item.value} key={index} >{item.label}</option>   
+                                    );
+                                })}
+                            </Select>
+                            {
+                                (issueText || this.hintText) && (
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
+                                        {issueText ? issueText: this.hintText}
+                                    </StyledFormHelperText>
+                                )
+                            }
+                        </StyledFormControl>
+                    </>
+                );
+            case TextControlStyle.SHADED :
+                return (
+                    <StyledFormControl
+                        size={size}
+                        data-size={size}
+                        variant="filled"
+                        customStyle={"filled"}
+                        width={customWidth}
+                        error={Boolean(issueText)}
+                    >
+                        <InputLabel >{this.valueName}</InputLabel>
+                        <Select
+                            defaultValue={'Pizza'}
+                            value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                            native
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                        >
+                            {this.items.map((item, index) => {
+                                return (
+                                    <option value={item.value} key={index} >{item.label}</option>   
+                                );
+                            })}
+                        </Select>
+                        {
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledFormControl>
+                );
+            case TextControlStyle.OUTLINE :
+                return (
+                    <StyledFormControl
+                        size={size}
+                        data-size={size}
+                        variant="outlined"
+                        customStyle={"outlined"}
+                        width={customWidth}
+                        error={Boolean(issueText)}
+                    >
+                        <InputLabel >{this.valueName}</InputLabel>
+                        <Select
+                            defaultValue={'Pizza'}
+                            value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                            native
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                        >
+                            {this.items.map((item, index) => {
+                                return (
+                                    <option value={item.value} key={index} >{item.label}</option>   
+                                );
+                            })}
+                        </Select>
+                        {
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledFormControl>
+                );
+            case TextControlStyle.UNDERLINED :
+                return (
+                    <StyledFormControl
+                        size={size}
+                        data-size={size}
+                        variant="standard"
+                        customStyle={"standard"}
+                        width={customWidth}
+                        error={Boolean(issueText)}
+                    >
+                        <InputLabel >{this.valueName}</InputLabel>
+                        <Select
+                            defaultValue={'Pizza'}
+                            value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
+                            native
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                        >
+                            {this.items.map((item, index) => {
+                                return (
+                                    <option value={item.value} key={index} >{item.label}</option>   
+                                );
+                            })}
+                        </Select>
+                        {
+                            (issueText || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'selectbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledFormControl>
+                );
+        }
     }
 
     private handleChange = (event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
@@ -133,27 +238,50 @@ export class XSelectbox extends BaseTextEntryControl {
 
 }
 
-const StyledFormControl = styled(FormControl)`
-`
+interface FormControlProps {
+    variant: string,
+    size: string,
+    width?: string,
+    customStyle?: string,
+    error: boolean,
+}
 
-const StyledSelect = styled(Select)<{width?: string}>`
-    width: ${({width}) => width} !important;
+const StyledFormControl = styled(FormControl)`
+    width: ${(props: FormControlProps) => props.width} !important;
+    fieldset {
+        border: none !important;
+    }
+    label {
+        padding: 0 5px;
+        background-color: ${({customStyle}) => customStyle==='outlined'? '#FFF' : 'unset'};
+    }
     select {
-        height: 59px !important;
-        box-sizing: border-box !important;
-        border-radius: 5px !important;    
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-        color: #01244E !important;
+        color: #01244E;
         font-weight: 400 !important;
         line-height: 20px !important;    
+        border-radius: 5.65107px;
+        padding-left: ${({customStyle}) => customStyle!=='standard'? '20px' : '0px'};
+        padding-right: ${({customStyle}) => customStyle!=='standard'? '20px' : '0px'};
         &:focus {
-            border: 1.35302px solid #1873B9 !important;    
-            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
+            border-radius: 5.65107px;
+            border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
         }
-        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
+        border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
     }
-    .MuiSelect-icon {
-        right: 15px;
+    .MuiFormLabel-root.Mui-focused {
+        color: ${({error}) => error? '#F65C66' : '#15466B'};
     }
-`
+    .MuiFormHelperText-contained {
+        margin-left: 0px;
+    }
+    .MuiSelect-select.MuiSelect-select: focus {
+        background-color: ${({customStyle}) => customStyle==='filled'? '#E6E9ED' : 'unset'};
+    }
+    .MuiFilledInput-underline:after, .MuiInput-underline:after {
+        border-bottom: 1px solid #15466B;
+    }
+    .MuiFilledInput-underline:before, .MuiInput-underline:before {
+        border-bottom: 1px solid #677C95;
+        opacity: 0.3;
+    }
+`   as React.ComponentType<FormControlProps>

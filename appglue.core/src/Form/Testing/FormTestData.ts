@@ -69,7 +69,12 @@ export function getFormConfig(): XFormConfiguration {
   compositeCheckList.list = ["Upwork", "Hubstaff", 'Google Sites']
 
   let selectBox = new XSelectbox();
+  selectBox.valueName='selectLabel'
   selectBox.items = [
+    {
+      label: '',
+      value: ""
+    },
     {
       label: 'Pizza',
       value: "0"
