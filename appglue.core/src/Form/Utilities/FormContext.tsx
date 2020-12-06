@@ -192,7 +192,6 @@ export class FormContext {
 
     @AutoBind
     refreshDesigner() : void {
-        console.trace();
         if (this.selectedId) {
             this.expandedConfigPanel = true;
         }
@@ -230,7 +229,6 @@ export class FormContext {
 
     @AutoBind
     selectControl(selectedId: string) {
-        console.log('selecting control')
         this.unSelectControl();
 
         this.selectedId = selectedId;
@@ -242,8 +240,7 @@ export class FormContext {
 
         this.expandedConfigPanel = true;
 
-//        this.refreshDesigner();
-      //  StateManager.triggerUpdate(this);
+        StateManager.changed(this);
     }
 
     @AutoBind
@@ -255,9 +252,7 @@ export class FormContext {
             }
         }
 
-
         this.selectedId = null;
-//        this.refreshDesigner();
         this.expandedConfigPanel = false;
 
         StateManager.changed(this);
