@@ -81,6 +81,9 @@ ui.designValidationProvider = {
     }
 }
 
+// todo: remove these parts, we need to listen to all compoments
+ui.computeDesignValidationIssues();
+
 
 export const DesignPanelWithDesignTimeValidationIssue = Template.bind({}, {editContext: ui});
 

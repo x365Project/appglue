@@ -161,10 +161,14 @@ export class XFormConfiguration
 
 	}
 
-	remove(control: XBaseContainer): void {
-		const index = this.containers.indexOf(control, 0);
+	remove(control: XBaseControl): void {
+		const index = (this.containers as XBaseControl[]).indexOf(control, 0);
 		if (index > -1) {
-		this.containers.splice(index, 1);
+			this.containers.splice(index, 1);
+		} else {
+			for (let cont of this.containers) {	
+				cont.remove(control);
+			}	
 		}
 	}
 
@@ -512,13 +516,13 @@ export class XFormConfiguration
 		return null;
 
 		for (let cont of this.containers) {
-		if (cont.id === id)
-			return cont;
+			if (cont.id === id)
+				return cont;
 
-		let res = cont.find(id);
+			let res = cont.find(id);
 
-		if (res)
-			return res;
+			if (res)
+				return res;
 		}
 
 		return null;
