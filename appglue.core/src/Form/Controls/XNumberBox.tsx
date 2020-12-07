@@ -14,12 +14,12 @@ export class XNumberBox extends BaseTextEntryControl {
 
 	render() {
 
-        let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
+        let style = (this.getFormContext()?.form)?.defaultTextStyle;
 
         if (this.overrideStyle && this.style)
             style = this.style;
 
-        let size : 'medium' | 'small' = (this.getFormRuntimeContext()?.form)?.defaultTextSize ?? 'medium';
+        let size : 'medium' | 'small' = (this.getFormContext()?.form)?.defaultTextSize ?? 'medium';
 
         if (this.overrideStyle && this.size)
             size = this.size;
