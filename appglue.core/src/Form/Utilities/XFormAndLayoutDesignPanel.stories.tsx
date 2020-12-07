@@ -82,6 +82,7 @@ ui.designValidationProvider = {
     }
 }
 
+// todo: remove these parts, we need to listen to all compoments
 ui.computeDesignValidationIssues();
 
 

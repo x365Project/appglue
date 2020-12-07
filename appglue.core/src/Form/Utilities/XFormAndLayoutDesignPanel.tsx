@@ -212,13 +212,13 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                             : undefined
                                         }
                                     >
-                                        <MenuItem onClick={() => this.props.editContext.onCopy(contextControl!.selectedId)}>
+                                        <MenuItem onClick={() => this.props.editContext.onCopy(contextControl!.selectedId)} data-testid="btn-context-copy">
                                             <CopyWhiteIcon/> Copy
                                         </MenuItem>
-                                        <MenuItem onClick={() => this.props.editContext.onCut(contextControl!.selectedId)}>
+                                        <MenuItem onClick={() => this.props.editContext.onCut(contextControl!.selectedId)} data-testid="btn-context-cut">
                                             <CutWhiteIcon/> Cut
                                         </MenuItem>
-                                        <MenuItem onClick={() => this.props.editContext.onDelete(contextControl!.selectedId)}>
+                                        <MenuItem onClick={() => this.props.editContext.onDelete(contextControl!.selectedId)} data-testid="btn-context-paste">
                                             <DeleteWhiteIcon /> Delete
                                         </MenuItem>
                                     </ContextMenuForControl>
