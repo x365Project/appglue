@@ -1,6 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import ReactDraggable from 'react-draggable';
+import {
+    Button,
+    DialogTitle,
+    DialogContentText,
+    DialogContent,
+    DialogActions,
+    Dialog
+} from "@material-ui/core";
+
+
 import {UIControlRegistration} from "./RegisterUIControl";
 import {
     DragDropContext,
@@ -12,6 +22,8 @@ import {XBaseControl} from "../Controls/XBaseControl";
 import {XFormDesignerLayoutPanel} from "./XFormDesignerLayoutPanel";
 import { DesignerToolBox } from "../Components/DesignerToolbox";
 import { AutoBind } from "../../Common/AutoBind";
+
+
 import './XFormAndLayoutDesignPanel.css'
 import {
     EditLayerStyledAccordionDetails,
@@ -85,6 +97,19 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
         }, 500);
     }
 
+    deleteControl = () => {
+        if (this.props.editContext.deleteControl) {
+            this.props.editContext.form.remove(this.props.editContext.deleteControl);
+            this.props.editContext.deleteControl = null;
+            this.forceUpdate();
+        }
+    }
+
+    cancelDeleteControl = () => {
+        this.props.editContext.deleteControl = null;
+        this.forceUpdate();
+    }
+
     render() {
 
         let editUIComponent: JSX.Element | null = null;
@@ -146,6 +171,15 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                         this.props.editContext.mode === FormMode.FormDesign && 
                         <ValidationErrorRendering validations={this.props.editContext?.controlContexts.getAllDesignIssues() ?? []} />
                     }
+                    <Dialog open={!!this.props.editContext.deleteControl}>
+                        <DialogTitle>Warning</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>Are you sure to delete this?</DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="contained" color="primary" onClick={this.deleteControl}>OK</Button><Button variant="contained" onClick={this.cancelDeleteControl}>Cancel</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Designer>
             </DragDropContext>
         );

@@ -12,6 +12,8 @@ import {UserFormData} from "../UserFormData";
 import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
+import { generateUniqueId } from "../../Common/DataUtilities";
+import { UIControlRegistration } from "./RegisterUIControl";
 
 export class FormRuntimeContext {
     form: XFormConfiguration;
@@ -122,15 +124,81 @@ export class FormEditContext extends FormRuntimeContext {
     // this should ONLY be in designer.  Not here.
     mode: FormMode | string = FormMode.FormDesign;
 
+    selectedId : string | null = null;
+
     designValidationProvider?: IDesignValidationProvider;
     onFormClose?: () => void;
     onFormSave?: (data: any) => void;
     sampleDataProvider? : ISampleDataProvider ;
     designConfig?: IDesignPanelConfig;
-    onCopy?: () => void;
-    onCut?: () => void;
-    onDelete?: () => void;
-    onPaste?: () => void;
+
+    clipboardControl: XBaseControl | null = null;
+    deleteControl: XBaseControl | null = null;
+
+    @AutoBind
+    cloneControl(control: XBaseControl) : XBaseControl {
+        let type = Reflect.get(control, '__type');
+        let registeredControl = UIControlRegistration[type];
+        let val = new registeredControl.prototype.constructor();
+
+        return Object.assign(val, control);
+    }
+
+    @AutoBind
+    onCopy(id?: string)  {
+        let controlId = id ? id : this.selectedId;
+        if (!controlId) return;
+
+        let control = this.form.find(controlId);
+        if (!control) return;
+
+        this.clipboardControl = this.cloneControl(control);
+
+        this.refreshDesigner();
+    }
+
+    @AutoBind
+    onCut(id?: string) {
+        let controlId = id ? id : this.selectedId;
+        if (!controlId) return;
+
+        let control = this.form.find(controlId);
+        if (!control) return;
+
+        this.clipboardControl = this.cloneControl(control);
+
+        this.selectedId = null;
+        this.form.remove(control);
+
+        this.refreshDesigner();
+    }
+
+    @AutoBind
+    onDelete(id?: string) {
+        let controlId = id ? id : this.selectedId;
+        if (!controlId) return;
+
+        let control = this.form.find(controlId);
+
+        if (!control) return;
+        this.deleteControl = control;
+        this.refreshDesigner();
+    };
+
+    @AutoBind
+    onPaste() {
+        if (this.clipboardControl && this.selectedId) {
+            let control = this.form.find(this.selectedId);
+            this.form.getContainers().forEach((c) => {
+                let index = c.getControls().indexOf(control!);
+                if (index >= 0) {
+                    c.add(this.clipboardControl!, index + 1);
+                }
+            })
+
+            this.refreshDesigner();
+        }
+    }
 
     // called when we force a designer update
     onDesignerUpdate?: () => void;
@@ -178,9 +246,6 @@ export class FormEditContext extends FormRuntimeContext {
 
     @AutoBind
     refreshDesigner() : void {
-        if (this.selectedId) {
-            this.expandedConfigPanel = true;
-        }
 
         this.designer?.forceUpdate();
 
@@ -190,8 +255,6 @@ export class FormEditContext extends FormRuntimeContext {
 
         this.computeDesignValidationIssues();
     }
-
-    selectedId : string | null = null;
 
     @AutoBind
     unSelectControl() {

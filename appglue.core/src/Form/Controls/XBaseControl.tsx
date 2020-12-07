@@ -90,8 +90,10 @@ export abstract class XBaseControl
     }
 
     selectInDesigner() : void {
-        if (this.getFormEditContext()) {
+        let editFormContext = this.getFormEditContext();
+        if (editFormContext) {
             this.getFormEditContext()!.selectedId = this.id;
+            this.getFormEditContext()!.expandedConfigPanel = true;
             this.getFormEditContext()!.refreshDesigner();
         }
     }
