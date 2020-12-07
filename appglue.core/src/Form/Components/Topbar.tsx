@@ -14,7 +14,7 @@ import { AutoBind } from "../../Common/AutoBind";
 import { FormDesignConstants,  FormMode } from "../FormDesignConstants";
 
 import "./Topbar.css"
-import {FormEditContext} from "../Utilities/FormEditContext";
+import {FormContext} from "../Utilities/FormContext";
 import {theme} from "../Utilities/UITheme";
 import { DropdownIcon } from "../../CommonUI/Icon/DropdownIcon";
 import { DefinedIcon } from "../../CommonUI/Icon/DefinedIcon";
@@ -287,7 +287,7 @@ const TopbarSaveButton = styled(Button)`
 `;
 
 
-export class Topbar extends React.Component<{editContext: FormEditContext}> {
+export class Topbar extends React.Component<{editContext: FormContext}> {
 
 	@AutoBind
 	onChangeFormTitle(event: React.ChangeEvent<HTMLInputElement>) {

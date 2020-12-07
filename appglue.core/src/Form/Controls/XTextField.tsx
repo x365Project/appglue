@@ -6,31 +6,25 @@ import { BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
+import {IssueData} from "../Utilities/ControlRenderContext";
 import {StyledTextField} from "./XCommonStyled";
+
 @RegisterUIControl('Data (Entry)', 'Text Field', ControlType.Control, <TextFieldIcon />)
 export class XTextField extends BaseTextEntryControl {
-    
-    innerComponentRef: HTMLDivElement | null = null;
-    
-    onSelect = (event: React.MouseEvent<HTMLDivElement>) => {
-        event.preventDefault();
-        this.selectInDesigner();
-    }
 
     render() {
 
-        let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
+        let style = (this.getFormContext()?.form)?.defaultTextStyle;
 
         if (this.overrideStyle && this.style)
             style = this.style;
 
-        let size : 'medium' | 'small' = (this.getFormRuntimeContext()?.form)?.defaultTextSize ?? 'medium';
+        let size : 'medium' | 'small' = (this.getFormContext()?.form)?.defaultTextSize ?? 'medium';
 
         if (this.overrideStyle && this.size)
             size = this.size;
         
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 
@@ -161,25 +155,20 @@ export class XTextField extends BaseTextEntryControl {
     }
 
     renderEditUI(): JSX.Element | null {
-        return (
-            <XTextFieldEditUI
-                editMe={this}
-            />
-        );;
+        return  <XTextFieldEditUI editMe={this} />;
     }
+
+
 }
 
-class XTextFieldEditUI extends React.Component<{ editMe: XTextField }> {
-
-    render() {
-        return (
-            <>
-                {this.props.editMe.renderBaseDataControlEditor()}
-                {this.props.editMe.renderTextControlBasePropertyEditor()}
-                {this.props.editMe.renderTextStyleSelectionEditor()}
-            </>
-        );
-    }
+function XTextFieldEditUI(props: { editMe: XTextField }) {
+    return (
+        <>
+            {props.editMe.renderBaseDataControlEditor()}
+            {props.editMe.renderTextControlBasePropertyEditor()}
+            {props.editMe.renderTextStyleSelectionEditor()}
+        </>
+    );
 }
 
 const StyledTextFieldWrap = styled.div<{width?: string}>`

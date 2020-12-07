@@ -69,11 +69,11 @@ class XButtonGroupEditUI extends React.Component<{ editMe: XButtonGroup }> {
       <>
         <TextField label="Content Text" value={this.props.editMe.label} onChange={event => {
           this.props.editMe.label = event.target.value;
-          this.props.editMe.designerUpdate();
+          this.props.editMe.controlUpdate();
         }} />
         <TextField label="Value Name" value={this.props.editMe.valueName} onChange={event => {
           this.props.editMe.valueName = event.target.value;
-          this.props.editMe.designerUpdate();
+          this.props.editMe.controlUpdate();
         }} />
         <List style={{ width: '100%' }}>
           {
@@ -85,7 +85,7 @@ class XButtonGroupEditUI extends React.Component<{ editMe: XButtonGroup }> {
                     size="small"
                     onChange={event => {
                       this.props.editMe.list[idx] = event.target.value;
-                      this.props.editMe.designerUpdate();
+                      this.props.editMe.controlUpdate();
                     }}
                     key={idx}
                   />
@@ -93,7 +93,7 @@ class XButtonGroupEditUI extends React.Component<{ editMe: XButtonGroup }> {
                 <ListItemSecondaryAction>
                   <IconButton color="secondary" size="small" onClick={() => {
                     this.props.editMe.list.splice(idx, 1);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                   }}>
                     <RemoveIcon />
                   </IconButton>
@@ -104,7 +104,7 @@ class XButtonGroupEditUI extends React.Component<{ editMe: XButtonGroup }> {
         </List>
         <Button color="primary" onClick={() => {
           this.props.editMe.list.push('');
-          this.props.editMe.designerUpdate();
+          this.props.editMe.controlUpdate();
         }}> Add Button </Button>
       </>
     );

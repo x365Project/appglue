@@ -72,7 +72,7 @@ class XHeadingEditUI extends React.Component<{ editMe: XHeading }> {
             <>
                 <Select value={this.props.editMe.type} onChange={event => {
                     this.props.editMe.type = event.target.value as ThemeVariant;
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}>
                     {
                         this.options.map((option) => (
@@ -84,7 +84,7 @@ class XHeadingEditUI extends React.Component<{ editMe: XHeading }> {
                     value={this.props.editMe.text}
                     onChange={event => {
                         this.props.editMe.text = event.target.value;
-                        this.props.editMe.designerUpdate();
+                        this.props.editMe.controlUpdate();
                     }}
                 />
                 <FormControlLabel
@@ -95,7 +95,7 @@ class XHeadingEditUI extends React.Component<{ editMe: XHeading }> {
                             checked={this.props.editMe.wordwrap}
                             onChange={(event) => {
                                 this.props.editMe.wordwrap = event.target.checked;
-                                this.props.editMe.designerUpdate();
+                                this.props.editMe.controlUpdate();
                             }}
                         />
                     }

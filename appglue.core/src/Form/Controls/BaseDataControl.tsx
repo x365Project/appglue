@@ -33,7 +33,7 @@ export abstract class BaseDataControl extends XBaseControl {
     getRuntimeValidationIssues() : ValidationIssue[] {
         let issues: ValidationIssue[] = [];
 
-        if (this.requiredOnAllOutcomes && this.valueName && !this.getFormRuntimeContext(false)?.getFormDataValue(this.valueName)) {
+        if (this.requiredOnAllOutcomes && this.valueName && !this.getFormContext()?.getFormDataValue(this.valueName)) {
             issues.push(new ValidationIssue(this.requiredMessage, this.valueName, this.id));
         }
 
@@ -45,11 +45,11 @@ export abstract class BaseDataControl extends XBaseControl {
     renderBaseDataControlEditor() {
         return(
             <>
-                <PropertyEditorText editObject={this} label={'Label'} propertyName={'label'} updateCallback={this.designerUpdate}/>
-                <PropertyEditorText editObject={this} label={'Value Name'} propertyName={'valueName'} updateCallback={this.designerUpdate}/>
-                <PropertyEditorBoolean editObject={this} label={'Required On All Outcomes'} propertyName={'requiredOnAllOutcomes'} updateCallback={this.designerUpdate}/>
+                <PropertyEditorText editObject={this} label={'Label'} propertyName={'label'} updateCallback={this.controlUpdate}/>
+                <PropertyEditorText editObject={this} label={'Value Name'} propertyName={'valueName'} updateCallback={this.controlUpdate}/>
+                <PropertyEditorBoolean editObject={this} label={'Required On All Outcomes'} propertyName={'requiredOnAllOutcomes'} updateCallback={this.controlUpdate}/>
                 <Collapse in={this.requiredOnAllOutcomes}>
-                    <PropertyEditorText editObject={this} label={'Required Message'} propertyName={'requiredMessage'} updateCallback={this.designerUpdate}/>
+                    <PropertyEditorText editObject={this} label={'Required Message'} propertyName={'requiredMessage'} updateCallback={this.controlUpdate}/>
                 </Collapse>
             </>
         );

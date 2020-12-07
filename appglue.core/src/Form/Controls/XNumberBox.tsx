@@ -5,7 +5,7 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
+import {IssueData} from "../Utilities/ControlRenderContext";
 import {StyledTextField} from "./XCommonStyled";
 
 
@@ -24,7 +24,7 @@ export class XNumberBox extends BaseTextEntryControl {
         if (this.overrideStyle && this.size)
             size = this.size;
 
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 

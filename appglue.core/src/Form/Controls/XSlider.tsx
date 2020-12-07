@@ -58,17 +58,17 @@ class XSliderEditUI extends React.Component<{ editMe: XSlider }> {
 			<TextField label="Min" type="number" value={this.props.editMe.min} onChange={event => {
 				let min = Math.max(0, parseInt(event.target.value));
 				this.props.editMe.min = min;
-				this.props.editMe.designerUpdate();
+				this.props.editMe.controlUpdate();
 			}} />
 			<TextField label="Max" type="number" value={this.props.editMe.max} onChange={event => {
 				let max = Math.max(0, parseInt(event.target.value));
 				this.props.editMe.max = max;
-				this.props.editMe.designerUpdate();
+				this.props.editMe.controlUpdate();
 			}} />
 			<TextField label="Step" type="number" value={this.props.editMe.step} onChange={event => {
 				let step = Math.max(1, parseInt(event.target.value));
 				this.props.editMe.step = step;
-				this.props.editMe.designerUpdate();
+				this.props.editMe.controlUpdate();
 			}} />
 		</>
     );

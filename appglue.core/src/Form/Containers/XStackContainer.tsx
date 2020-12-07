@@ -9,7 +9,6 @@ import { PropertyEditorInteger } from "../../CommonUI/PropertyEditing/PropertyEd
 import { PropertyEditorColor } from "../../CommonUI/PropertyEditing/PropertyEditorColor";
 import { StackIcon } from "../../CommonUI/Icon/StackIcon";
 
-
 export const StackContainerDiv = styled("div")<{
     padding?: number; 
     hasBorder?: boolean;
@@ -52,7 +51,7 @@ export class XStackContainer
     extends XBaseStackContainer {
 
     render() {
-        let mode = this.getFormEditContext()?.mode ?? FormMode.Runtime;
+        let mode = this.getFormContext()?.mode ?? FormMode.Runtime;
 
         if (mode === FormMode.FormDesign) {
             return (
@@ -78,11 +77,11 @@ export class XStackContainer
                                     this.controls.map((control, index) => {
                                         return (
                                             <StackContainerColumn
-                                                colGap={this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}
+                                                colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing}
                                                 key={index}
                                                 id={control.id}
                                             >
-                                                <XDesignWrapper key={control.id} id={control.id} index={index} innerComponent={control} editContext={this.getFormEditContext()!}>
+                                                <XDesignWrapper key={control.id} id={control.id} index={index} innerComponent={control} editContext={this.getFormContext()!}>
                                                     { control.render() }
                                                 </XDesignWrapper>
                                             </StackContainerColumn>
@@ -114,7 +113,7 @@ export class XStackContainer
                     {
                         this.controls.map((control, index) => {
                             return (
-                                <StackContainerColumn colGap={this.interControlSpacing || this.getFormRuntimeContext()?.form?.defaultInterControlSpacing} key={index} id={control.id}>
+                                <StackContainerColumn colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing} key={index} id={control.id}>
                                     {control.render()}
                                 </StackContainerColumn>
                             );
@@ -135,23 +134,23 @@ export class XStackContainer
                     editObject={this}
                     label={"Control Gap"}
                     propertyName={"interControlSpacing"}
-                    updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInterControlSpacing}>
+                    updateCallback={this.controlUpdate}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInterControlSpacing}>
                 </PropertyEditorInteger>
                 <PropertyEditorInteger
                     editObject={this}
                     label="Inner Margin"
                     propertyName={"innerMargin"}
-                    updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultInnerContainerMargin}
+                    updateCallback={this.controlUpdate}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultInnerContainerMargin}
                 >
                 </PropertyEditorInteger>
                 <PropertyEditorColor
                     editObject={this}
                     label="Container Color"
                     propertyName="containerBackgroundColor"
-                    updateCallback={this.designerUpdate}
-                    parentDefaultValue={this.getFormRuntimeContext()?.form?.defaultContainerBackgroundColor}
+                    updateCallback={this.controlUpdate}
+                    parentDefaultValue={this.getFormContext()?.form?.defaultContainerBackgroundColor}
                 />
                 {
                     this.renderBorderConfigUI()

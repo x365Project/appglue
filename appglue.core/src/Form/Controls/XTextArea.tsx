@@ -7,7 +7,7 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
+import {IssueData} from "../Utilities/ControlRenderContext";
 import {StyledTextField} from "./XCommonStyled";
 
 
@@ -18,13 +18,13 @@ export class XTextArea extends BaseTextEntryControl {
 
     render() {
         
-        let style = (this.getFormRuntimeContext()?.form)?.defaultTextStyle;
+        let style = (this.getFormContext()?.form)?.defaultTextStyle;
 
         if (this.overrideStyle && this.style)
             style = this.style;
-            
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
-		const issueText: string = issueData?.text || '';
+        
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
         
         switch(style) {
@@ -191,11 +191,11 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 
 				<TextField label="Row Max" type="number" value={this.props.editMe.rowMax} onChange={event => {
                     this.props.editMe.rowMax = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 				<TextField label="Row Min" type="number" value={this.props.editMe.rowMin} onChange={event => {
                     this.props.editMe.rowMin = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 
 				{this.props.editMe.renderTextStyleSelectionEditor()}

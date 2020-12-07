@@ -1,4 +1,4 @@
-import React from "react";
+import React, {JSXElementConstructor, ReactElement} from "react";
 import {IConfigStorage} from "../../Common/IConfigStorage";
 import {cloneWithoutReact, generateUniqueId, spreadData} from "../../Common/DataUtilities";
 import {IEditable} from "../../CommonUI/IEditable";
@@ -10,7 +10,10 @@ import {
     IRuntimeValidationProvider,
     ValidationIssue
 } from "../../Common/IDesignValidationProvider";
-import {FormRuntimeContext, FormEditContext} from "../Utilities/FormEditContext";
+import {FormContext} from "../Utilities/FormContext";
+import {ControlRenderContext} from "../Utilities/ControlRenderContext";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export abstract class XBaseControl
     extends React.Component
@@ -24,8 +27,7 @@ export abstract class XBaseControl
     id: string ;
 
     // not serialized
-    private _formRuntimeContext?: FormRuntimeContext;
-    private _formEditContext?: FormEditContext;
+    private _formContext?: FormContext;
 
     // to implement
     abstract getDesignValidationIssues() : ValidationIssue[];
@@ -38,37 +40,35 @@ export abstract class XBaseControl
 
         // generates ID to be a guid
         this.id = generateUniqueId();
+
     }
 
-    getFormRuntimeContext(throwExceptionIfNotFound: boolean = true): FormRuntimeContext | undefined {
-        let c = this._formRuntimeContext ?? this._formEditContext;
 
-        if (throwExceptionIfNotFound && !c)
-            throw 'no runtime context found';
+    // componentDidMount() {
+    //     StateManager.addObserver(this, this);
+    // }
+    //
+    // componentWillUnmount() {
+    //     StateManager.removeObserver(this, this);
+    // }
 
-        return c;
+    get controlRenderContext() : ControlRenderContext | null | undefined {
+        return this.getFormContext()?.getControlContext(this);
     }
 
-    setFormRuntimeContext(value: FormRuntimeContext | undefined) : void {
-        if (!value)
-            throw 'cannot set form context to null (base control)';
-
-        this._formRuntimeContext = value;
+    getFormContext(): FormContext | undefined {
+        return this._formContext ;
     }
 
-    getFormEditContext(): FormEditContext | undefined {
-        return this._formEditContext ;
-    }
-
-    setFormEditContext(value: FormEditContext | undefined) : void {
+    setFormContext(value: FormContext | undefined) : void {
         if (!value)
             throw 'cannot set edit context to null (base control)';
 
-        this._formEditContext = value;
+        this._formContext = value;
     }
 
     getStorageData(): object {
-        return cloneWithoutReact(this, ['owner', '_formEditContext', '_formRuntimeContext']);
+        return cloneWithoutReact(this, ['owner', '_formContext', '_formRuntimeContext']);
     }
 
     setStorageData(data: object): void {
@@ -76,47 +76,53 @@ export abstract class XBaseControl
     }
 
 
+    // notifies state manager that this control has been updated
+    @AutoBind
+    controlUpdate () : void {
+        StateManager.changed(this);
+    }
+
+    // forces refresh of entire designer (expensive)
     @AutoBind
     designerUpdate () : void {
-        this.getFormEditContext()?.refreshDesigner();
+        this.getFormContext()?.refreshDesigner();
     }
 
     isDesignSelected() : boolean {
-        if (this.getFormEditContext()) {
-            return this.getFormEditContext()!.selectedId === this.id;
+        if (this.getFormContext()) {
+            return this.getFormContext()!.getControlContext(this).selected;
         }
 
         return false;
     }
 
     selectInDesigner() : void {
-        if (this.getFormEditContext()) {
-            this.getFormEditContext()!.selectedId = this.id;
-            this.getFormEditContext()!.refreshDesigner();
+        console.log('calling select in designer')
+        if (this.getFormContext()) {
+            this.getFormContext()!.selectControl(this.id);
         }
     }
 
     unselectInDesigner(): void {
-        if (this.getFormEditContext()) {
-            this.getFormEditContext()!.selectedId = null;
-            this.getFormEditContext()!.refreshDesigner();
+        if (this.getFormContext()) {
+            this.getFormContext()!.unSelectControl();
         }
     }
 
     getFormData(): UserFormData | undefined | null {
-        return (this.getFormRuntimeContext())?.getFormData();
+        return (this.getFormContext())?.getFormData();
     }
 
     getFormDataValue(fieldName: string): any {
-        return (this.getFormRuntimeContext())?.getFormDataValue(fieldName);
+        return (this.getFormContext())?.getFormDataValue(fieldName);
     }
 
     setFormData(value: UserFormData): void {
-        return (this.getFormRuntimeContext())?.setFormData(value);
+        return (this.getFormContext())?.setFormData(value);
     }
 
     setFormDataValue(fieldName: string, value: any): void {
-        (this.getFormRuntimeContext())?.setFormDataValue(fieldName, value);
+        (this.getFormContext())?.setFormDataValue(fieldName, value);
     }
 
     toString() : string | null {
@@ -139,5 +145,18 @@ export abstract class XBaseControl
         return null;
     }
 
+    getEditor() : ElementFactory<any>
+    {
+        return new ElementFactory(
+            this.renderEditUI.bind(this), {});
+    }
+
+
+}
+
+function MyEditor() {
+    return (
+        <div>editor</div>
+    )
 }
 

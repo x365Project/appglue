@@ -4,9 +4,10 @@ import styled from "styled-components";
 
 import {UserFormData} from "./UserFormData";
 import {XFormConfiguration} from "./XFormConfiguration";
-import {FormRuntimeContext} from "./Utilities/FormEditContext";
-import { TextField, Button } from "@material-ui/core";
-import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
+import {FormContext} from "./Utilities/FormContext";
+import {Button, TextField} from "@material-ui/core";
+import {CloseIcon} from "../CommonUI/Icon/CloseIcon";
+import {FormMode} from "./FormDesignConstants";
 
 const Header = styled.div`
     display: flex;
@@ -36,13 +37,14 @@ export interface IUserFormParameters {
 export class XUserForm extends React.Component<IUserFormParameters, any> {
     name? : string;
 
-    formRuntimeContext: FormRuntimeContext;
+    formContext: FormContext;
 
 
     constructor(props: IUserFormParameters) {
         super(props, {});
 
-        let fContext = new FormRuntimeContext(props.form);
+        let fContext = new FormContext(props.form);
+        fContext.mode = FormMode.Runtime;
 
         if (this.props.formData)
             fContext.setFormData(this.props.formData);
@@ -62,9 +64,9 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
         if (this.props.formTitle)
             fContext.formTitle = this.props.formTitle;
         
-        this.formRuntimeContext = fContext;
+        this.formContext = fContext;
 
-        this.props.form.setFormRuntimeContext(fContext);
+        this.props.form.setFormContext(fContext);
 
     }
 
@@ -82,7 +84,7 @@ export class XUserForm extends React.Component<IUserFormParameters, any> {
                             this.props.formTitle && <TextField value={this.props.formTitle} data-testid="test-form-title" />
                         }
                         {
-                            this.props.onFormClose && <Button onClick={() => this.props.onFormClose!(this.formRuntimeContext.getFormData())} data-testid="btn-form-close">
+                            this.props.onFormClose && <Button onClick={() => this.props.onFormClose!(this.formContext.getFormData())} data-testid="btn-form-close">
                                 <CloseIcon />
                             </Button>
                         }   

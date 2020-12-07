@@ -11,7 +11,7 @@ import {Topbar} from "./Components/Topbar";
 import {AutoBind} from '../Common/AutoBind';
 import {ISampleDataProvider} from "../Common/ISampleDataProvider";
 import {IDesignValidationProvider} from "../Common/IDesignValidationProvider";
-import {FormEditContext} from './Utilities/FormEditContext';
+import {FormContext} from './Utilities/FormContext';
 import {UserFormData} from "./UserFormData";
 import {XUserFormTester} from "./Utilities/XUserFormTester";
 import { LayoutIcon } from '../CommonUI/Icon/LayoutIcon';
@@ -131,7 +131,7 @@ export class XFormDesigner extends React.Component<{
 {
     formName: string = '';
     // this is either designer or runtime form
-    editContext: FormEditContext ;
+    editContext: FormContext ;
 
     tabs: JSX.Element[] = [
         <StyledTab
@@ -200,7 +200,7 @@ export class XFormDesigner extends React.Component<{
             nextMode: FormMode.FormDesign
         }
 
-        let eContext = new FormEditContext(props.form);
+        let eContext = new FormContext(props.form);
         eContext.designer = this;
         this.editContext = eContext;
 
@@ -220,7 +220,7 @@ export class XFormDesigner extends React.Component<{
             eContext.mode = props.initialMode;
         }
 
-        this.props.form.setFormEditContext(eContext) ;
+        this.props.form.setFormContext(eContext) ;
 
         if (props.formName) {
             this.formName = props.formName;

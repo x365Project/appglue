@@ -1,5 +1,5 @@
 import React from "react";
-import {FormEditContext} from "./FormEditContext";
+import {FormContext} from "./FormContext";
 import {AutoBind} from "../../Common/AutoBind";
 import {Button, TextareaAutosize} from "@material-ui/core";
 import {XFormDesignerLayoutPanel} from "./XFormDesignerLayoutPanel";
@@ -55,14 +55,14 @@ const TestToolbox = styled.div`
 
 
 export class XUserFormTester extends React.Component<{
-    editContext: FormEditContext
+    editContext: FormContext
 },
     {
         resultValue: string,
         height?: number
     }> {
 
-    constructor(props: { editContext: FormEditContext}) {
+    constructor(props: { editContext: FormContext}) {
         super(props);
         this.state = {
             resultValue: JSON.stringify(props.editContext.getFormData(), null, 2)
