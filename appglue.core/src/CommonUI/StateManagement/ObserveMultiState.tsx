@@ -1,5 +1,5 @@
 import React, {ReactNode} from "react";
-import {generateUniqueId} from "../../Common/DataUtilities";
+import {DataUtilities} from "../../Common/DataUtilities";
 import {StateManager} from "./StateManager";
 
 /**
@@ -23,7 +23,7 @@ export class ObserveMultiState extends React.Component<{ listenTo: (object | nul
 
     render() {
         return (
-            <div key={generateUniqueId()}>
+            <div key={DataUtilities.generateUniqueId()}>
                 {this.props.control()}
             </div>
         );

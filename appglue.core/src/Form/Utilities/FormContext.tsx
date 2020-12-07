@@ -11,14 +11,14 @@ import {UserFormData} from "../UserFormData";
 import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
-import { generateUniqueId } from "../../Common/DataUtilities";
+import { DataUtilities } from "../../Common/DataUtilities";
 import { IContextForControl } from "../../Common/IContextForControl";
 import { UIControlRegistration } from "./RegisterUIControl";
 import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
 import {action, StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ElementFactory} from "../../CommonUI/ElementFactory";
-
+ 
 export class FormContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
@@ -199,7 +199,7 @@ export class FormContext {
     onPaste(id?: string) {
         let controlId = (id || this.lastSelectedId);
         if (this.clipboardControl && controlId) {
-            this.clipboardControl.id = generateUniqueId();
+            this.clipboardControl.id = DataUtilities.generateUniqueId();
             let control = this.form.find(controlId);
             this.form.getContainers().forEach((c) => {
                 let index = c.getControls().indexOf(control!);

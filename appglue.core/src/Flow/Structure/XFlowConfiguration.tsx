@@ -1,11 +1,11 @@
 import React from "react";
-import {generateUniqueId} from "../../Common/DataUtilities";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "./FlowStepSequence";
 import {IFlowElement} from "./IFlowElement";
+import {DataUtilities} from "../../Common/DataUtilities";
 
 export class XFlowConfiguration implements IFlowElement{
-    _id: string = generateUniqueId();
+    _id: string = DataUtilities.generateUniqueId();
    sequences : FlowStepSequence[];
   // connections: FlowStepSequenceConnection[];
 

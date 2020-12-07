@@ -6,9 +6,9 @@ import { XTextField } from "./XTextField";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
 import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
-import { FormContext } from "../Utilities/FormContext";
 import { ValidationIssue } from '../../Common/IDesignValidationProvider';
 import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel"
+import {FormContext} from "../Utilities/FormContext";
 
 describe("XTextField", () => {
 

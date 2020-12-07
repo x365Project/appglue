@@ -2,7 +2,6 @@ import React from "react";
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import {Meta, Story} from "@storybook/react/types-6-0";
 import {XFormAndLayoutDesignPanel} from "./XFormAndLayoutDesignPanel";
-import { FormContext } from "./FormContext";
 import { XFormConfiguration } from "../XFormConfiguration";
 import { getFormConfig } from "../Testing/FormTestData";
 import { FormMode } from "../FormDesignConstants";
@@ -11,7 +10,7 @@ import { XTextField } from "../Controls/XTextField";
 import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidationProvider";
 import { XHStackContainer } from "../Containers/XHStackContainer";
 import { XColumnContainer, XColumnContainerColumn } from "../Containers/XColumnContainer";
-import { DefaultOnOff } from "./DefaultOnOff";
+import {FormContext} from "./FormContext";
 
 export default {
     title: "Form Designer/Designer/Pieces",
