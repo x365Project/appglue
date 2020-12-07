@@ -70,28 +70,7 @@ export function getFormConfig(): XFormConfiguration {
 
   let selectBox = new XSelectbox();
   selectBox.valueName='selectLabel'
-  selectBox.items = [
-    {
-      label: '',
-      value: ""
-    },
-    {
-      label: 'Pizza',
-      value: "0"
-    },
-    {
-      label: 'Fried Rice',
-      value: "1"
-    },
-    {
-      label: 'Cake',
-      value: "2"
-    },
-    {
-      label: 'Beer',
-      value: "3"
-    },
-  ];
+  selectBox.list = ['Pizza', 'Cake', 'Beer', 'Candy'];
 
   let textbox = new XTextArea();
   textbox.valueName = 'personDescription'
