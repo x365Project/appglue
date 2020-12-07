@@ -74,7 +74,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 size={size}
                                 data-size={size}
                                 variant={"filled"}
-                                customStyle={"filled"}
+                                customstyle={"filled"}
                                 fullWidth={this.fullWidth}
                                 type="time"
                                 value={this.valueName?this.getFormDataValue(this.valueName): String}
@@ -111,7 +111,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 size={size}
                                 data-size={size}
                                 variant={"standard"}
-                                customStyle={"standard"}
+                                customstyle={"standard"}
                                 fullWidth={this.fullWidth}
                                 type="time"
                                 value={this.valueName?this.getFormDataValue(this.valueName): String}
@@ -120,7 +120,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 width={customWidth}
                                 error={Boolean(issueText)}
                                 label={this.valueName}
-                                isPicker={true}
+                                ispicker={'true'}
                             />
                             {
                                 (issueText && issueText.length > 30)  && (
@@ -149,7 +149,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 size={size}
                                 data-size={size}
                                 variant={"outlined"}
-                                customStyle={"outlined"}
+                                customstyle={"outlined"}
                                 fullWidth={this.fullWidth}
                                 type="time"
                                 value={this.valueName?this.getFormDataValue(this.valueName): String}
@@ -158,7 +158,7 @@ export class XTimePicker extends BaseTextEntryControl {
                                 width={customWidth}
                                 error={Boolean(issueText)}
                                 label={this.valueName}
-                                isPicker={true}
+                                ispicker={'true'}
                             />
                             {
                                 (issueText && issueText.length > 30)  && (

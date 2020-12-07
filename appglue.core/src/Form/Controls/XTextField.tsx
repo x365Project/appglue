@@ -80,7 +80,7 @@ export class XTextField extends BaseTextEntryControl {
                             data-size={size}
                             data-testid={this.valueName}
                             variant={"filled"}
-                            customStyle={"filled"}
+                            customstyle={"filled"}
                             fullWidth={this.fullWidth}
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
@@ -106,7 +106,7 @@ export class XTextField extends BaseTextEntryControl {
                             data-size={size}
                             data-testid={this.valueName}
                             variant={"standard"}
-                            customStyle={"standard"}
+                            customstyle={"standard"}
                             fullWidth={this.fullWidth}
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
@@ -132,7 +132,7 @@ export class XTextField extends BaseTextEntryControl {
                             data-size={size}
                             data-testid={this.valueName}
                             variant={"outlined"}
-                            customStyle={"outlined"}
+                            customstyle={"outlined"}
                             fullWidth={this.fullWidth}
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}

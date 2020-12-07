@@ -1,6 +1,6 @@
 export interface TextFieldProps {
   label?: string;
-  size: string;
+  size?: string;
   width: string;
   variant: string;
   type?: string;
@@ -8,6 +8,9 @@ export interface TextFieldProps {
   onChange: any;
   error: boolean;
   fullWidth: boolean;
-  customStyle?: string;
-  isPicker? :boolean;
+  customstyle?: string;
+  ispicker?: string;
+  rows?: number;
+  rowsMax?: number;
+  multiline? :any;
 }

@@ -42,7 +42,7 @@ export const StackContainerColumn = styled("div")<{
     margin-top: ${props => props.colGap || 0}px;
     padding: ${props => props.padding || 0}px;
     &:first-child {
-        margin-top: 0px;
+        margin-top: 5px;
     }
 `
 

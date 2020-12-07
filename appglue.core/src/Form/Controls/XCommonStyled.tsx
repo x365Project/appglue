@@ -23,7 +23,6 @@ export const StyledFormHelperText = styled(FormHelperText)`
 
 export const StyledTextField = styled(TextField)`
     width: ${(props: TextFieldProps) => props.width} !important;
-    height: 59px !important;
     box-sizing: border-box !important;
     z-index: 1 !important;
     fieldset {
@@ -31,19 +30,34 @@ export const StyledTextField = styled(TextField)`
     }
     label {
         padding: 0 5px;
-        background-color: ${({customStyle}) => customStyle==='outlined'? '#FFF' : 'unset'};
-        top: ${({isPicker, error}) => isPicker === true && error? '-12px' : '0px'};
+        background-color: ${({customstyle}) => customstyle==='outlined'? '#FFF' : 'unset'};
+        top: ${({ispicker, error}) => ispicker === 'true' && error? '-12px' : '0px'};
     }
     input {
         color: #01244E;
         border-radius: 5.65107px;
-        padding-left: ${({customStyle}) => customStyle!=='standard'? '20px' : '0px'};
-        padding-right: ${({customStyle}) => customStyle!=='standard'? '20px' : '0px'};
-        background-color: ${({customStyle}) => customStyle==='filled'? '#E6E9ED' : 'unset'};
+        padding-left: ${({customstyle}) => customstyle!=='standard'? '20px' : '0px'};
+        padding-right: ${({customstyle}) => customstyle!=='standard'? '20px' : '0px'};
+        background-color: ${({customstyle}) => customstyle==='filled'? '#E6E9ED' : 'unset'};
         &:focus {
-            border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
+            border: ${({customstyle}) => customstyle==='filled' || customstyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
         }
-        border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
+        border: ${({customstyle}) => customstyle==='filled' || customstyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
+    }
+    textarea {
+        color: #01244E;
+        border-radius: 5.65107px;
+        padding-top: ${({variant}) => variant==='outlined'? '15px' : '0px'};
+        padding-left: ${({customstyle}) => customstyle!=='standard'? '20px' : '0px'};
+        padding-right: ${({customstyle}) => customstyle!=='standard'? '20px' : '0px'};
+        background-color: ${({customstyle}) => customstyle==='filled'? '#E6E9ED' : 'unset'};
+        &:focus {
+            border: ${({customstyle}) => customstyle==='filled' || customstyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
+        }
+        border: ${({customstyle}) => customstyle==='filled' || customstyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
+    }
+    .MuiOutlinedInput-multiline {
+        padding: 0px;
     }
     .MuiFormLabel-root.Mui-focused {
         top: 0px;
@@ -55,5 +69,12 @@ export const StyledTextField = styled(TextField)`
     .MuiFilledInput-underline:before, .MuiInput-underline:before {
         border-bottom: 1px solid #677C95;
         opacity: 0.3;
+    }
+    .MuiFilledInput-root, .MuiFilledInput-root:hover {
+        background-color: #E6E9ED;
+    }
+    .MuiFilledInput-multiline {
+        padding-left: 0px;
+        padding-right: 0px;
     }
 `   as React.ComponentType<TextFieldProps>

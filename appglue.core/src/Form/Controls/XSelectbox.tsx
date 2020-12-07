@@ -14,7 +14,6 @@ import {TextControlStyle} from "../FormDesignConstants";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/FormEditContext";
-import "./XControls.css"
 
 
 interface XSelectboxItem {
@@ -82,7 +81,7 @@ export class XSelectbox extends BaseTextEntryControl {
                         size={size}
                         data-size={size}
                         variant="filled"
-                        customStyle={"filled"}
+                        customstyle={"filled"}
                         width={customWidth}
                         error={Boolean(issueText)}
                     >
@@ -115,7 +114,7 @@ export class XSelectbox extends BaseTextEntryControl {
                         size={size}
                         data-size={size}
                         variant="outlined"
-                        customStyle={"outlined"}
+                        customstyle={"outlined"}
                         width={customWidth}
                         error={Boolean(issueText)}
                     >
@@ -148,7 +147,7 @@ export class XSelectbox extends BaseTextEntryControl {
                         size={size}
                         data-size={size}
                         variant="standard"
-                        customStyle={"standard"}
+                        customstyle={"standard"}
                         width={customWidth}
                         error={Boolean(issueText)}
                     >
@@ -242,7 +241,7 @@ interface FormControlProps {
     variant: string,
     size: string,
     width?: string,
-    customStyle?: string,
+    customstyle?: string,
     error: boolean,
 }
 
@@ -253,20 +252,21 @@ const StyledFormControl = styled(FormControl)`
     }
     label {
         padding: 0 5px;
-        background-color: ${({customStyle}) => customStyle==='outlined'? '#FFF' : 'unset'};
+        background-color: ${({customstyle}) => customstyle==='outlined'? '#FFF' : 'unset'};
     }
     select {
         color: #01244E;
         font-weight: 400 !important;
         line-height: 20px !important;    
         border-radius: 5.65107px;
-        padding-left: ${({customStyle}) => customStyle!=='standard'? '20px' : '0px'};
-        padding-right: ${({customStyle}) => customStyle!=='standard'? '20px' : '0px'};
+        background-color: ${({customstyle}) => customstyle==='filled'? '#E6E9ED' : 'unset'};
+        padding-left: ${({customstyle}) => customstyle!=='standard'? '20px' : '0px'};
+        padding-right: ${({customstyle}) => customstyle!=='standard'? '20px' : '0px'};
         &:focus {
             border-radius: 5.65107px;
-            border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
+            border: ${({customstyle}) => customstyle==='filled' || customstyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#1873B9'};
         }
-        border: ${({customStyle}) => customStyle==='filled' || customStyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
+        border: ${({customstyle}) => customstyle==='filled' || customstyle==='standard'? '0px' : '1.35302px'} solid ${({error}) => error? '#F65C66' : '#E6E9ED'};
     }
     .MuiFormLabel-root.Mui-focused {
         color: ${({error}) => error? '#F65C66' : '#15466B'};
@@ -275,7 +275,7 @@ const StyledFormControl = styled(FormControl)`
         margin-left: 0px;
     }
     .MuiSelect-select.MuiSelect-select: focus {
-        background-color: ${({customStyle}) => customStyle==='filled'? '#E6E9ED' : 'unset'};
+        background-color: ${({customstyle}) => customstyle==='filled'? '#E6E9ED' : 'unset'};
     }
     .MuiFilledInput-underline:after, .MuiInput-underline:after {
         border-bottom: 1px solid #15466B;

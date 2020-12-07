@@ -7,7 +7,6 @@ import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/FormEditContext";
 import {StyledTextField} from "./XCommonStyled";
-import "./XControls.css"
 
 
 @RegisterUIControl('Data (Entry)', 'NumberBox', ControlType.Control, <NumberboxIcon />)
@@ -72,7 +71,7 @@ export class XNumberBox extends BaseTextEntryControl {
                             data-size={size}
                             type="number"
                             variant={"filled"}
-                            customStyle={"filled"}
+                            customstyle={"filled"}
                             value={this.getValue()}
                             onChange={this.handleChange}
                             data-testid={this.valueName}
@@ -107,7 +106,7 @@ export class XNumberBox extends BaseTextEntryControl {
                             data-size={size}
                             type="number"
                             variant={"standard"}
-                            customStyle={"standard"}
+                            customstyle={"standard"}
                             value={this.getValue()}
                             onChange={this.handleChange}
                             data-testid={this.valueName}
@@ -142,7 +141,7 @@ export class XNumberBox extends BaseTextEntryControl {
                             data-size={size}
                             type="number"
                             variant={"outlined"}
-                            customStyle={"outlined"}
+                            customstyle={"outlined"}
                             value={this.getValue()}
                             onChange={this.handleChange}
                             data-testid={this.valueName}

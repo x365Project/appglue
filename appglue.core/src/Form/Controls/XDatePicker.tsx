@@ -82,7 +82,7 @@ export class XDatePicker extends BaseTextEntryControl {
                             size={size}
                             data-size={size}
                             variant={"filled"}
-                            customStyle={"filled"}
+                            customstyle={"filled"}
                             type="date"
                             fullWidth={this.fullWidth}
                             value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
@@ -117,7 +117,7 @@ export class XDatePicker extends BaseTextEntryControl {
                             size={size}
                             data-size={size}
                             variant={"standard"}
-                            customStyle={"standard"}
+                            customstyle={"standard"}
                             type="date"
                             fullWidth={this.fullWidth}
                             value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
@@ -126,7 +126,7 @@ export class XDatePicker extends BaseTextEntryControl {
                             width={customWidth}
                             error={Boolean(issueText)}
                             label={this.label}
-                            isPicker={true}
+                            ispicker={'true'}
                         />
                         {
                             (issueText && issueText.length > 30)  && (
@@ -153,7 +153,7 @@ export class XDatePicker extends BaseTextEntryControl {
                             size={size}
                             data-size={size}
                             variant={"outlined"}
-                            customStyle={"outlined"}
+                            customstyle={"outlined"}
                             type="date"
                             fullWidth={this.fullWidth}
                             value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
@@ -162,7 +162,7 @@ export class XDatePicker extends BaseTextEntryControl {
                             width={customWidth}
                             error={Boolean(issueText)}
                             label={this.label}
-                            isPicker={true}
+                            ispicker={'true'}
                         />
                         {
                             (issueText && issueText.length > 30)  && (
