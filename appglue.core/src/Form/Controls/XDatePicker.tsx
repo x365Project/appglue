@@ -1,13 +1,12 @@
 import React from "react";
-import styled from "styled-components";
-import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
+import {TextControlStyle} from "../FormDesignConstants";
 import {DatePickerIcon} from "../../CommonUI/Icon/DatePickerIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import "./XControls.css"
 import {IssueData} from "../Utilities/ControlRenderContext";
+import {StyledTextField} from "./XCommonStyled";
 
 @RegisterUIControl('Data (Entry)', 'Date Picker', ControlType.Control, <DatePickerIcon />)
 export class XDatePicker extends BaseTextEntryControl {
@@ -27,59 +26,164 @@ export class XDatePicker extends BaseTextEntryControl {
     }
 
     render () {
-        let isValid = false;
-        if (this.valueName) {
-            if (this.getFormDataValue(this.valueName)) {
-                isValid = true;
-            }
-        }
+        
+        let style = (this.getFormContext()?.form)?.defaultTextStyle;
 
-        const runtimeError: ValidationError = {
-            type: '',
-            message: '',
-        }
-        if (this.valueName) {
-            runtimeError.type = 'error'
-            runtimeError.message = this.requiredOnAllOutcomes && !isValid? this.requiredMessage : "";
-        }
+        if (this.overrideStyle && this.style)
+            style = this.style;
+
+        let size : 'medium' | 'small' = (this.getFormContext()?.form)?.defaultTextSize ?? 'medium';
+
+        if (this.overrideStyle && this.size)
+            size = this.size;
 
         const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
-
-        return (
-            <form noValidate>
-                {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
-                <StyledTextField
-                    label=""
-                    type="date"
-                    value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
-                    onChange={this.handleChange}
-                    InputLabelProps={{
-                        shrink: false,
-                    }}
-                    data-testid={this.valueName}
-                    width={customWidth}
-                    error={Boolean(issueText)}
-                />
-                {
-                    (issueText && issueText.length > 30)  && (
-                        <Tooltip title={issueText} arrow placement="bottom">
-                            <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
-                                {issueText.slice(0, 30) + '...'}
-                            </StyledFormHelperText>
-                        </Tooltip>
-                    ) 
-                }
-                {
-                    ((issueText && issueText.length < 31) || this.hintText) && (
-                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
-                            {issueText ? issueText: this.hintText}
-                        </StyledFormHelperText>
-                    )
-                }
-            </form>
-        );
+        
+        switch(style) {
+            case TextControlStyle.LABELED :
+                return (
+                    <form noValidate>
+                        {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"outlined"}
+                            type="date"
+                            fullWidth={this.fullWidth}
+                            value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </form>
+                );
+            case TextControlStyle.SHADED :
+                return (
+                    <form noValidate>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"filled"}
+                            customstyle={"filled"}
+                            type="date"
+                            fullWidth={this.fullWidth}
+                            value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.label}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </form>
+                );
+            case TextControlStyle.UNDERLINED :
+                return (
+                    <form noValidate>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"standard"}
+                            customstyle={"standard"}
+                            type="date"
+                            fullWidth={this.fullWidth}
+                            value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.label}
+                            ispicker={'true'}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </form>
+                );
+            case TextControlStyle.OUTLINE :
+                return (
+                    <form noValidate>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"outlined"}
+                            customstyle={"outlined"}
+                            type="date"
+                            fullWidth={this.fullWidth}
+                            value={this.valueName?this.getFormDataValue(this.valueName):this.formatDate(new Date())}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.label}
+                            ispicker={'true'}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'datepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </form>
+                );
+        }
     }
 
     private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,8 +198,6 @@ export class XDatePicker extends BaseTextEntryControl {
     }
 }
 
-
-
 class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
     render () {
         return (
@@ -108,26 +210,3 @@ class XDatePickerEditUI extends React.Component<{editMe: XDatePicker}> {
         )
     }
 }
-
-interface ValidationError {
-    type?: 'error' | 'warning' | '';
-    message?: string;
-}
-
-const StyledTextField = styled(TextField)<{width?: string}>`
-    width: ${({width}) => width} !important;
-    input {
-        display: flex !important;
-        justify-content: space-around !important;
-        height: 59px !important;
-        padding: 14px 20px !important;
-        box-sizing: border-box !important;
-        border-radius: 5.65107px !important;
-        color: #677C95 !important;    
-        &:focus {
-            color: #01244E !important; 
-            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
-        }
-        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
-    }
-`

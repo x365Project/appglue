@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import TextField from "@material-ui/core/TextField";
 import Tooltip from '@material-ui/core/Tooltip';
 import { RegisterUIControl, ControlType } from "../Utilities/RegisterUIControl";
 import { BaseTextEntryControl} from "./BaseTextEntryControl";
@@ -8,6 +7,7 @@ import {TextControlStyle} from "../FormDesignConstants";
 import {TextFieldIcon} from "../../CommonUI/Icon/TextFieldIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/ControlRenderContext";
+import {StyledTextField} from "./XCommonStyled";
 
 @RegisterUIControl('Data (Entry)', 'Text Field', ControlType.Control, <TextFieldIcon />)
 export class XTextField extends BaseTextEntryControl {
@@ -74,11 +74,13 @@ export class XTextField extends BaseTextEntryControl {
                             data-size={size}
                             data-testid={this.valueName}
                             variant={"filled"}
+                            customstyle={"filled"}
                             fullWidth={this.fullWidth}
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
+                            label={this.valueName}
                         />
                         {
                             (issueText || this.hintText) && (
@@ -98,11 +100,13 @@ export class XTextField extends BaseTextEntryControl {
                             data-size={size}
                             data-testid={this.valueName}
                             variant={"standard"}
+                            customstyle={"standard"}
                             fullWidth={this.fullWidth}
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
+                            label={this.valueName}
                         />
                         {
                             (issueText || this.hintText) && (
@@ -122,11 +126,13 @@ export class XTextField extends BaseTextEntryControl {
                             data-size={size}
                             data-testid={this.valueName}
                             variant={"outlined"}
+                            customstyle={"outlined"}
                             fullWidth={this.fullWidth}
                             width={customWidth}
                             value={(this.valueName) ? this.getFormDataValue(this.valueName) : ""}
                             onChange={this.handleChange}
                             error={Boolean(issueText)}
+                            label={this.valueName}
                         />
                         {
                             (issueText || this.hintText) && (
@@ -141,7 +147,6 @@ export class XTextField extends BaseTextEntryControl {
             }
     
     }
-
 
     private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (this.valueName) {
@@ -171,22 +176,4 @@ const StyledTextFieldWrap = styled.div<{width?: string}>`
     height: 100% !important;
     box-sizing: border-box !important;
     position: relative !important;
-`
-
-const StyledTextField = styled(TextField)<{width?: string}>`
-    width: ${({width}) => width} !important;
-    height: 59px !important;
-    box-sizing: border-box !important;
-    z-index: 1 !important;
-    fieldset {
-        border: unset !important;
-    }
-    input {
-        color: #01244E !important;
-        border-radius: 5.65107px !important;
-        &:focus {
-            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
-        }
-        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
-    }
 `
