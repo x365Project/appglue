@@ -15,7 +15,7 @@ import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
 import {action, StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ElementFactory} from "../../CommonUI/ElementFactory";
-
+ 
 export class FormContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;

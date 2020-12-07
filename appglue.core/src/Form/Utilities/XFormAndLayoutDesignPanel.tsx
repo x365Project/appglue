@@ -21,11 +21,12 @@ import {
     EditLayerStyledAccordion
 } from "../../CommonUI/CommonStyles";
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
-import {FormContext} from "./FormContext";
 import { ExpandIcon } from "../../CommonUI/Icon/ExpandIcon";
 import { ValidationErrorRendering } from "../Components/ValidationErrorRendering";
-import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
+import {ElementFactory} from "../../CommonUI/ElementFactory";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {FormContext} from "./FormContext";
 
 export const CONFIG_FORM_KEY: string = 'configForm';
 
@@ -47,12 +48,10 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
     componentDidMount() {
         document.addEventListener('mousedown', this.handleClickOutside);
-        StateManager.addObserver(this.props.editContext, this);
     }
 
     componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
-        StateManager.removeObserver(this.props.editContext, this);
     }
 
     handleClickOutside = (event: MouseEvent): void => {
@@ -91,14 +90,6 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
     render() {
 
-        let editUIComponent = this.props.editContext.getEditUI();
-        let selectedControl: XBaseControl | null = null;
-        let selectedId = this.props.editContext?.getSelectedId();
-
-        if (selectedId) {
-            selectedControl = this.props.editContext.form.find(selectedId);
-        }
-
         return (
 
             <ObserveState
@@ -121,41 +112,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                 />
                                 <XFormDesignerLayoutPanel editContext={this.props.editContext}  />
                                 {
-                                    (editUIComponent) && (
-                                        <ReactDraggable
-                                            bounds="parent"
-                                            onDrag={this.onDragMovingConfigPanel}
-                                            onStop={this.onEndMovingConfigPanel}
-                                            handle=".config-form-header"
-                                            nodeRef={this.configFormNode}
-                                        >
-                                            <EditLayerConfigArea ref={this.configFormNode}>
-                                                <EditLayerStyledAccordion
-                                                    expanded={this.props.editContext?.expandedConfigPanel}
-                                                    onChange={this.onToggleExpandedConfigPanel}
-                                                    defaultExpanded
-                                                >
-                                                    <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
-                                                        <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
-                                                            Edit: {selectedControl?.toString() || 'Form Config'}
-                                                        </EditLayerStyledTypography>
-                                                    </EditLayerStyledAccordionSummary>
-                                                    <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                                        <ObserveState
-                                                            listenTo={selectedControl}
-                                                            control={() => {
-                                                                return (
-                                                                     editUIComponent?.create()
-                                                                );
-                                                            }}
-                                                        />
-
-
-                                                    </EditLayerStyledAccordionDetails>
-                                                </EditLayerStyledAccordion>
-                                            </EditLayerConfigArea>
-                                        </ReactDraggable>
-                                    )
+                                    this.renderEditUI()
                                 }
                                 {
                                     this.props.editContext.mode === FormMode.FormDesign &&
@@ -169,6 +126,57 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
         );
 
+    }
+
+    renderEditUI() {
+        let editUIComponent = this.props.editContext.getEditUI();
+        let selectedControl: XBaseControl | null = null;
+        let selectedId = this.props.editContext?.getSelectedId();
+
+        if (selectedId) {
+            selectedControl = this.props.editContext.form.find(selectedId);
+        }
+
+        if (!editUIComponent) {
+
+        } else {
+            return (
+                <ReactDraggable
+                    bounds="parent"
+                    onDrag={this.onDragMovingConfigPanel}
+                    onStop={this.onEndMovingConfigPanel}
+                    handle=".config-form-header"
+                    nodeRef={this.configFormNode}
+                >
+                    <EditLayerConfigArea ref={this.configFormNode}>
+                        <EditLayerStyledAccordion
+                            expanded={this.props.editContext?.expandedConfigPanel}
+                            onChange={this.onToggleExpandedConfigPanel}
+                            defaultExpanded
+                        >
+                            <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
+                                <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
+                                    Edit: {selectedControl?.toString() || 'Form Config'}
+                                </EditLayerStyledTypography>
+                            </EditLayerStyledAccordionSummary>
+                            <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
+                                <ObserveState
+                                    listenTo={selectedControl}
+                                    control={() => {
+                                        return (
+                                            editUIComponent?.create()
+                                        );
+                                    }}
+                                />
+
+
+                            </EditLayerStyledAccordionDetails>
+                        </EditLayerStyledAccordion>
+                    </EditLayerConfigArea>
+                </ReactDraggable>
+
+            );
+        }
     }
 
     @AutoBind

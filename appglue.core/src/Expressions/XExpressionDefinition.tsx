@@ -3,16 +3,16 @@ import {BaseExpression} from "./BaseExpression";
 import React from "react";
 import {ExpressionValueType} from "./ExpressionValueType";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
-import {generateUniqueId} from "../Common/DataUtilities";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";
 import {RootExpression} from "./Utilities/RootExpression";
+import {DataUtilities} from "../Common/DataUtilities";
 
 export class XExpressionDefinition
     implements IBaseExpressionElement  {
 
     readonly canSelect: boolean = true;
 
-    _id : string = generateUniqueId();
+    _id : string = DataUtilities.generateUniqueId();
     private rootExpression: RootExpression = new RootExpression();
     editContext?: ExpressionEditContext ;
 

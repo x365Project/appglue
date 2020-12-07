@@ -3,7 +3,7 @@ import {Droppable, DroppableProvided, DroppableStateSnapshot} from "react-beauti
 import styled from "styled-components";
 import {Collapse, Divider, IconButton, Typography} from "@material-ui/core";
 import {IConfigStorage} from "../Common/IConfigStorage";
-import {cloneWithoutReact, spreadData} from "../Common/DataUtilities";
+import {DataUtilities} from "../Common/DataUtilities";
 import {XBaseControl} from "./Controls/XBaseControl";
 import {XBaseContainer} from "./Containers/XBaseContainer";
 import {BorderStyle, FormDesignConstants, FormMode, TextControlSize, TextControlStyle} from "./FormDesignConstants";
@@ -19,10 +19,10 @@ import {
 	PropertyEditorTextSizeSelection,
 	PropertyEditorTextStyleSelection
 } from "../CommonUI/PropertyEditing/TextSelectionButtonGroups";
-import {FormContext} from "./Utilities/FormContext";
 import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 import {XContainerDesignWrapper} from "./Utilities/XContainerDesignWrapper";
+import {FormContext} from "./Utilities/FormContext";
 import {ElementFactory} from "../CommonUI/ElementFactory";
 
 export const PinnedNotifyDiv = styled("div")<{
@@ -537,7 +537,7 @@ export class XFormConfiguration
 
 
 	getStorageData(): object {
-		let retData = cloneWithoutReact(this, ['containers', 'host', '_formContext', '_formRuntimeContext']);
+		let retData = DataUtilities.cloneWithoutReact(this, ['containers', 'host', '_formContext', '_formRuntimeContext']);
 		let containers = [];
 
 		for (let container of this.containers) {
@@ -550,7 +550,7 @@ export class XFormConfiguration
 	}
 
 	setStorageData(data: object): void {
-		spreadData(this, data, ['__containers']);
+		DataUtilities.spreadData(this, data, ['__containers']);
 
 		this.containers = [];
 		let containerArray = Reflect.get(data, '__containers');

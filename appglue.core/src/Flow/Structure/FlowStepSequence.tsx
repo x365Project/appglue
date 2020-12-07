@@ -1,10 +1,10 @@
-import {generateUniqueId} from "../../Common/DataUtilities";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import React from "react";
 import {IFlowElement} from "./IFlowElement";
+import {DataUtilities} from "../../Common/DataUtilities";
 
 export class FlowStepSequence implements IFlowElement {
-    _id: string = generateUniqueId();
+    _id: string = DataUtilities.generateUniqueId();
     name?: string;
 
     x: number = -1;

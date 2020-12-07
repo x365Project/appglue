@@ -2,14 +2,13 @@ import {ExpressionExpectedType} from "./ExpressionExpectedType";
 import {ExpressionValueType} from "./ExpressionValueType";
 import {BaseExpression} from "./BaseExpression";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
-import {XExpressionDefinition} from "./XExpressionDefinition";
-import {generateUniqueId} from "../Common/DataUtilities";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";
+import {DataUtilities} from "../Common/DataUtilities";
 
 export class ExpressionValue
     implements IBaseExpressionElement {
 
-    _id : string = generateUniqueId();
+    _id : string = DataUtilities.generateUniqueId();
     name?: string;
     readonly canSelect: boolean = true;
 
