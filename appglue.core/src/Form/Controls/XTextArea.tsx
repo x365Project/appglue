@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
-import {TextField, TextareaAutosize} from '@material-ui/core';
+import {TextField} from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
+import {TextControlStyle} from "../FormDesignConstants";
 import {TextAreaIcon} from "../../CommonUI/Icon/TextAreaIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
-import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
+import {StyledTextField} from "./XCommonStyled";
 
 
 @RegisterUIControl('Data (Entry)', 'Text Area', ControlType.Control, <TextAreaIcon />)
@@ -14,34 +16,158 @@ export class XTextArea extends BaseTextEntryControl {
 	rowMax: number = 10;
 	rowMin: number = 5;
 
-	render() {
+    render() {
         
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
-		const issueText: string = issueData?.text || '';
+        let style = (this.getFormContext()?.form)?.defaultTextStyle;
+
+        if (this.overrideStyle && this.style)
+            style = this.style;
+        
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
+        const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '50%';
         
-		return (
-			<>
-				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
-				<StyledTextareaAutosize
-					data-testid={this.valueName}
-					rowsMax={this.rowMax}
-					rowsMin={this.rowMin}
-					width={customWidth}
-					placeholder={this.placeholderText}
-					onChange={this.handleChange}
-					value={(this.valueName)?this.getFormDataValue(this.valueName):''}
-					error={issueText}
-				/>
-				{
-					(issueText || this.hintText) && (
-						<StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
-							{issueText ? issueText: this.hintText}
-						</StyledFormHelperText>
-					)
-				}
-			</>
-		)
+        switch(style) {
+            case TextControlStyle.LABELED :
+                return (
+                    <StyledTextFieldWrap width={customWidth}>
+                        {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
+                        <StyledTextField
+                            width={customWidth}
+                            variant={"outlined"}
+                            fullWidth={this.fullWidth}
+                            error={Boolean(issueText)}
+                            data-testid={this.valueName}
+                            rows={this.rowMin}
+                            rowsMax={this.rowMax}
+                            multiline
+                            onChange={this.handleChange}
+                            value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledTextFieldWrap>
+                )
+            case TextControlStyle.SHADED :
+                return (
+                    <StyledTextFieldWrap width={customWidth}>
+                        <StyledTextField
+                            width={customWidth}
+                            variant={"filled"}
+                            customstyle={"filled"}
+                            fullWidth={this.fullWidth}
+                            error={Boolean(issueText)}
+                            data-testid={this.valueName}
+                            rows={this.rowMin}
+                            rowsMax={this.rowMax}
+                            multiline
+                            onChange={this.handleChange}
+                            value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+                            label={this.label}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledTextFieldWrap>
+                )
+            case TextControlStyle.UNDERLINED :
+                return (
+                    <StyledTextFieldWrap width={customWidth}>
+                        <StyledTextField
+                            width={customWidth}
+                            variant={"standard"}
+                            customstyle={"standard"}
+                            fullWidth={this.fullWidth}
+                            error={Boolean(issueText)}
+                            data-testid={this.valueName}
+                            rows={this.rowMin}
+                            rowsMax={this.rowMax}
+                            multiline
+                            onChange={this.handleChange}
+                            value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+                            label={this.label}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledTextFieldWrap>
+                )
+            case TextControlStyle.OUTLINE :
+                return (
+                    <StyledTextFieldWrap width={customWidth}>
+                        <StyledTextField
+                            width={customWidth}
+                            variant={"outlined"}
+                            customstyle={"outlined"}
+                            fullWidth={this.fullWidth}
+                            error={Boolean(issueText)}
+                            data-testid={this.valueName}
+                            rows={this.rowMin}
+                            rowsMax={this.rowMax}
+                            multiline
+                            onChange={this.handleChange}
+                            value={(this.valueName)?this.getFormDataValue(this.valueName):''}
+                            label={this.label}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'textarea'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </StyledTextFieldWrap>
+                )
+        }
 	}
 
 	private handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -65,11 +191,11 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
 
 				<TextField label="Row Max" type="number" value={this.props.editMe.rowMax} onChange={event => {
                     this.props.editMe.rowMax = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 				<TextField label="Row Min" type="number" value={this.props.editMe.rowMin} onChange={event => {
                     this.props.editMe.rowMin = parseInt(event.target.value, 10);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                 }}  />
 
 				{this.props.editMe.renderTextStyleSelectionEditor()}
@@ -79,26 +205,9 @@ class XTextAreaEditUI extends React.Component<{editMe:XTextArea}> {
     }
 }
 
-const StyledTextareaAutosize = styled(TextareaAutosize)<{width?: string, error?: string}>`
-	width: ${({width}) => width} !important;
-	min-width: 246px !important;
-	height: 59px !important;
-	border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
-	box-sizing: border-box !important;
-	border-radius: 5px !important;
-	padding: 14px 20px 14px 20px !important;
-	font-family: Mulish !important;
-	font-weight: 600 !important;
-	font-size: 16px !important;
-	line-height: 24px !important;
-    color: #01244E !important;
-    outline: unset !important;
-	&:focus {
-		border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
-	}
-    &::-webkit-input-placeholder {
-        font: 16px;
-        line-height: 20px;
-        color: #677C95;
-    }
+const StyledTextFieldWrap = styled.div<{width?: string}>`
+    width: ${({width}) => width} !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
 `

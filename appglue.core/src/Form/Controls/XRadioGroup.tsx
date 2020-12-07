@@ -81,7 +81,7 @@ class XRadioGroupEditUI extends React.Component<{ editMe: XRadioGroup }> {
                     value={this.props.editMe.label}
                     onChange={(event) => {
                         this.props.editMe.label = event.target.value;
-                        this.props.editMe.designerUpdate();
+                        this.props.editMe.controlUpdate();
                     }}
                 />
                 <TextField
@@ -89,7 +89,7 @@ class XRadioGroupEditUI extends React.Component<{ editMe: XRadioGroup }> {
                     value={this.props.editMe.valueName}
                     onChange={(event) => {
                         this.props.editMe.valueName = event.target.value;
-                        this.props.editMe.designerUpdate();
+                        this.props.editMe.controlUpdate();
                     }}
                 />
                 <List style={{ width: "100%" }}>
@@ -103,7 +103,7 @@ class XRadioGroupEditUI extends React.Component<{ editMe: XRadioGroup }> {
                                     onChange={(event) => {
                                         this.props.editMe.list[idx] =
                                             event.target.value;
-                                        this.props.editMe.designerUpdate();
+                                        this.props.editMe.controlUpdate();
                                     }}
                                     key={idx}
                                 />
@@ -114,7 +114,7 @@ class XRadioGroupEditUI extends React.Component<{ editMe: XRadioGroup }> {
                                     size="small"
                                     onClick={() => {
                                         this.props.editMe.list.splice(idx, 1);
-                                        this.props.editMe.designerUpdate();
+                                        this.props.editMe.controlUpdate();
                                     }}
                                 >
                                     <RemoveIcon />
@@ -127,7 +127,7 @@ class XRadioGroupEditUI extends React.Component<{ editMe: XRadioGroup }> {
                     color="primary"
                     onClick={() => {
                         this.props.editMe.list.push("");
-                        this.props.editMe.designerUpdate();
+                        this.props.editMe.controlUpdate();
                     }}
                 >
                     Add Item

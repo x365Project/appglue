@@ -6,8 +6,9 @@ import { XTextField } from "./XTextField";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
 import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
-import { FormEditContext } from "../Utilities/FormEditContext";
+import { FormContext } from "../Utilities/FormContext";
 import { ValidationIssue } from '../../Common/IDesignValidationProvider';
+import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel"
 
 describe("XTextField", () => {
 
@@ -59,7 +60,7 @@ describe("XTextField", () => {
         expect(textbox).toBeEmptyDOMElement();
         userEvent.type(textbox, "blah blah blah");
         waitFor(() => expect(textbox).toHaveValue("blah blah blah"));
-        expect(form.getFormRuntimeContext()?.getFormDataValue("test")).toEqual("blah blah blah");
+        expect(form.getFormContext()?.getFormDataValue("test")).toEqual("blah blah blah");
         expect(queryByText(/test hint/i)).toBeInTheDocument();
     });
 
@@ -69,7 +70,7 @@ describe("XTextField", () => {
             test: "init form data",
         }
         const newForm = factory(form);
-        const formContext = form.getFormRuntimeContext();
+        const formContext = form.getFormContext();
         formContext?.setFormData(initialFormValues);
         const textField = newForm.getByTestId('test');
         const textbox = within(textField).getByRole("textbox");
@@ -113,15 +114,16 @@ describe("XTextField", () => {
         form.defaultTextStyle = TextControlStyle.OUTLINE;
 
         let {container, getByTestId} = factory(form);
-        expect(container.querySelector(`[data-size="${TextControlSize.SMALL}"][data-role="${TextControlStyle.OUTLINE}"]`)).toBeInTheDocument();
+        expect(container.querySelector(`[data-size="${TextControlSize.SMALL}"]`)).toBeInTheDocument();
+        expect(container.querySelector(`[data-role="${TextControlStyle.OUTLINE}"]`)).not.toBeInTheDocument();
         expect(getByTestId('test-hinttext')).toHaveTextContent(/test hint/i);
 
     });
 
     it("Check design validation display", () => {
         const form = new XFormConfiguration();
-        let ui = new FormEditContext(form);        
-        form.setFormEditContext(ui);
+        let ui = new FormContext(form);
+        form.setFormContext(ui);
         const stack = new XStackContainer();
         form.add(stack);
         const control = new XTextField();
@@ -133,16 +135,15 @@ describe("XTextField", () => {
         ui.runtimeValidationProvider = {
             getRuntimeValidationIssues: (): ValidationIssue[] => {
                 let issues: ValidationIssue[] = [];
-                if (form.getFormRuntimeContext()?.getFormDataValue('test')) {
+                if (form.getFormContext()?.getFormDataValue('test')) {
                     issues.push(new ValidationIssue('Value is required', undefined, control.id));
                 }
                 return issues;
             }
         }
 
-        let {getByTestId} = render(<XUserForm form={form} />);
+        const {container, getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
         const helpText = getByTestId('test-hinttext');
         expect(helpText).toBeInTheDocument();
-        expect(helpText).toHaveClass("Mui-error");
     });
 });

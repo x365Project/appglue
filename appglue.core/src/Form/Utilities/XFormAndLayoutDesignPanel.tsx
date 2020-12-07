@@ -33,22 +33,24 @@ import {
     EditLayerStyledAccordion
 } from "../../CommonUI/CommonStyles";
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
-import {FormEditContext} from "./FormEditContext";
+import {FormContext} from "./FormContext";
 import { ExpandIcon } from "../../CommonUI/Icon/ExpandIcon";
 import { ValidationErrorRendering } from "../Components/ValidationErrorRendering";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 
 export const CONFIG_FORM_KEY: string = 'configForm';
 
 const Designer = styled.div`
   display: flex;
-  width: 100%;
+  width: 100%; 
   overflow: hidden;
   position: relative;
 `;
 
 
 interface IDesignPanelProperties {
-    editContext: FormEditContext;
+    editContext: FormContext;
 }
 
 
@@ -57,10 +59,12 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
     componentDidMount() {
         document.addEventListener('mousedown', this.handleClickOutside);
+        StateManager.addObserver(this.props.editContext, this);
     }
 
     componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
+        StateManager.removeObserver(this.props.editContext, this);
     }
 
     handleClickOutside = (event: MouseEvent): void => {
@@ -112,76 +116,90 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
     render() {
 
-        let editUIComponent: JSX.Element | null = null;
+        let editUIComponent = this.props.editContext.getEditUI();
         let selectedControl: XBaseControl | null = null;
-        if (this.props.editContext?.selectedId) {
-            selectedControl = this.props.editContext.form.find(this.props.editContext?.selectedId);
-            if (selectedControl) {
-                editUIComponent = selectedControl.renderEditUI();
-            } else if (this.props.editContext?.selectedId === CONFIG_FORM_KEY) {
-                editUIComponent = this.props.editContext.form.renderEditUI()
-            }
+        let selectedId = this.props.editContext?.getSelectedId();
+
+        if (selectedId) {
+            selectedControl = this.props.editContext.form.find(selectedId);
         }
 
         return (
-            <DragDropContext
-                onDragStart={this.onDragStart}
-                onDragEnd={this.onDragEnd}
-            >
-                <Designer key='formdesigner'>
-                    <DesignerToolBox
-                        mode={this.props.editContext.mode}
-                        updateCallback={this.updateUI}
-                        onSelectFormDefaultConfig={() => {
-                            if (this.props.editContext)
-                                this.props.editContext.selectedId = CONFIG_FORM_KEY;
-                            this.updateUI();
-                        }}
-                    />
-                    <XFormDesignerLayoutPanel editContext={this.props.editContext}  />
-                    {
-                        editUIComponent && (
-                            <ReactDraggable
-                                bounds="parent"
-                                onDrag={this.onDragMovingConfigPanel}
-                                onStop={this.onEndMovingConfigPanel}
-                                handle=".config-form-header"
-                                nodeRef={this.configFormNode}
-                            >
-                                <EditLayerConfigArea ref={this.configFormNode}>
-                                    <EditLayerStyledAccordion
-                                        expanded={this.props.editContext?.expandedConfigPanel}
-                                        onChange={this.onToggleExpandedConfigPanel}
-                                        defaultExpanded
-                                    >
-                                        <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
-                                            <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
-                                                Edit: {selectedControl?.toString() || 'Form Config'}
-                                            </EditLayerStyledTypography>
-                                        </EditLayerStyledAccordionSummary>
-                                        <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                            {editUIComponent}
-                                        </EditLayerStyledAccordionDetails>
-                                    </EditLayerStyledAccordion>
-                                </EditLayerConfigArea>
-                            </ReactDraggable>
-                        )
-                    }
-                    {
-                        this.props.editContext.mode === FormMode.FormDesign && 
-                        <ValidationErrorRendering validations={this.props.editContext?.controlContexts.getAllDesignIssues() ?? []} />
-                    }
-                    <Dialog open={!!this.props.editContext.deleteControl}>
-                        <DialogTitle>Warning</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>Are you sure to delete this?</DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="contained" color="primary" onClick={this.deleteControl}>OK</Button><Button variant="contained" onClick={this.cancelDeleteControl}>Cancel</Button>
-                        </DialogActions>
-                    </Dialog>
-                </Designer>
-            </DragDropContext>
+            <ObserveState
+                listenTo={this.props.editContext}
+                control={() => {
+                    return (
+                        <DragDropContext
+                            onDragStart={this.onDragStart}
+                            onDragEnd={this.onDragEnd}
+                        >
+                            <Designer key='formdesigner'>
+                                <DesignerToolBox
+                                    mode={this.props.editContext.mode}
+                                    updateCallback={this.updateUI}
+                                    onSelectFormDefaultConfig={() => {
+                                        if (this.props.editContext)
+                                            this.props.editContext.selectControl(CONFIG_FORM_KEY);
+//                                        this.updateUI();
+                                    }}
+                                />
+                                <XFormDesignerLayoutPanel editContext={this.props.editContext}  />
+                                {
+                                    (editUIComponent) && (
+                                        <ReactDraggable
+                                            bounds="parent"
+                                            onDrag={this.onDragMovingConfigPanel}
+                                            onStop={this.onEndMovingConfigPanel}
+                                            handle=".config-form-header"
+                                            nodeRef={this.configFormNode}
+                                        >
+                                            <EditLayerConfigArea ref={this.configFormNode}>
+                                                <EditLayerStyledAccordion
+                                                    expanded={this.props.editContext?.expandedConfigPanel}
+                                                    onChange={this.onToggleExpandedConfigPanel}
+                                                    defaultExpanded
+                                                >
+                                                    <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
+                                                        <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
+                                                            Edit: {selectedControl?.toString() || 'Form Config'}
+                                                        </EditLayerStyledTypography>
+                                                    </EditLayerStyledAccordionSummary>
+                                                    <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
+                                                        <ObserveState
+                                                            listenTo={selectedControl}
+                                                            control={() => {
+                                                                return (
+                                                                     editUIComponent?.create()
+                                                                );
+                                                            }}
+                                                        />
+
+
+                                                    </EditLayerStyledAccordionDetails>
+                                                </EditLayerStyledAccordion>
+                                            </EditLayerConfigArea>
+                                        </ReactDraggable>
+                                    )
+                                }
+                                {
+                                    this.props.editContext.mode === FormMode.FormDesign &&
+                                    <ValidationErrorRendering validations={this.props.editContext?.controlContexts.getAllDesignIssues() ?? []} />
+                                }
+                                <Dialog open={!!this.props.editContext.deleteControl}>
+                                    <DialogTitle>Warning</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>Are you sure to delete this?</DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button variant="contained" color="primary" onClick={this.deleteControl}>OK</Button><Button variant="contained" onClick={this.cancelDeleteControl}>Cancel</Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </Designer>
+                        </DragDropContext>
+                    );
+                }}
+            />
+
         );
 
     }
@@ -202,11 +220,11 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
         if (control) {
             if (this.props.editContext)
-                this.props.editContext.selectedId = control.id;
+                this.props.editContext.selectControl(control.id);
             this.updateUI();
         } else {
             if (this.props.editContext)
-                this.props.editContext.selectedId = null;
+                this.props.editContext.unSelectControl();
             this.updateUI();
         }
     }
@@ -230,7 +248,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
         }
 
         if (control)
-            control.setFormEditContext(this.props.editContext);
+            control.setFormContext(this.props.editContext);
 
         if (result.destination.droppableId === FormDesignConstants.LAYOUT_FORM_KEY_NAME) {
             // we are moving things around or adjusting base form
@@ -270,7 +288,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
 
         if (control) {
             if (this.props.editContext)
-                this.props.editContext.selectedId = control.id;
+                this.props.editContext.selectControl(control.id);
         }
         // this.dragPlaceholder = null;
         this.updateUI();

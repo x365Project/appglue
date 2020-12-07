@@ -83,7 +83,7 @@ class XCheckboxListEditUI extends React.Component<{ editMe: XCheckboxList }> {
                   value={s}
                   onChange={(event) => {
                     this.props.editMe.list[idx] = event.target.value;
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                   }}
                   size="small"
                   key={idx}
@@ -95,7 +95,7 @@ class XCheckboxListEditUI extends React.Component<{ editMe: XCheckboxList }> {
                   size="small"
                   onClick={() => {
                     this.props.editMe.list.splice(idx, 1);
-                    this.props.editMe.designerUpdate();
+                    this.props.editMe.controlUpdate();
                   }}
                 >
                   <RemoveIcon />
@@ -108,7 +108,7 @@ class XCheckboxListEditUI extends React.Component<{ editMe: XCheckboxList }> {
           color="primary"
           onClick={() => {
             this.props.editMe.list.push("");
-            this.props.editMe.designerUpdate();
+            this.props.editMe.controlUpdate();
           }}
         >
           Add Item

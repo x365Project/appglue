@@ -14,7 +14,7 @@ import { AutoBind } from "../../Common/AutoBind";
 import { FormDesignConstants,  FormMode } from "../FormDesignConstants";
 
 import "./Topbar.css"
-import {FormEditContext} from "../Utilities/FormEditContext";
+import {FormContext} from "../Utilities/FormContext";
 import {theme} from "../Utilities/UITheme";
 import { DropdownIcon } from "../../CommonUI/Icon/DropdownIcon";
 import { DefinedIcon } from "../../CommonUI/Icon/DefinedIcon";
@@ -31,6 +31,7 @@ import { CutIcon } from "../../CommonUI/Icon/CutIcon";
 import { CopyIcon } from "../../CommonUI/Icon/CopyIcon";
 import { CloseIcon } from "../../CommonUI/Icon/CloseIcon";
 import { PasteIcon } from "../../CommonUI/Icon/PasteIcon";
+import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 
 const SelectDiv = styled.div`
 	position: relative;
@@ -314,13 +315,65 @@ const TopbarActionButton: React.FC<{action?: () => void, disabled: boolean, titl
 
 }
 
-
-export class Topbar extends React.Component<{editContext: FormEditContext}> {
+class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
 
 	@AutoBind
 	isActionDisabled() {
-		return !(this.props.editContext.mode === FormMode.FormDesign || this.props.editContext.mode === FormMode.LayoutDesign) || !this.props.editContext.selectedId
+		return !(this.props.editContext.mode === FormMode.FormDesign || this.props.editContext.mode === FormMode.LayoutDesign) || !this.props.editContext.getLastSelectedId()
 	}
+
+	render() {
+		return (
+			<ObserveState
+				listenTo={this.props.editContext}
+				control={ () => 
+					<ButtonGroup
+						variant="outlined"
+						size="small"
+						classes={{
+							root: 'TopbarButtonGroup-root'
+						}}
+					>
+						<TopbarActionButton
+							title="Copy"
+							icon={<CopyIcon />}
+							disabled={this.isActionDisabled()}
+							testId="btn-topbar-copy"
+							action={this.props.editContext.onCopy}
+						/>
+						<TopbarActionButton
+							title="Cut"
+							icon={<CutIcon />}
+							disabled={this.isActionDisabled()}
+							testId="btn-topbar-cut"
+							action={this.props.editContext.onCut}
+						/>
+						<TopbarActionButton
+							title="Paste"
+							icon={<PasteIcon />}
+							disabled={this.isActionDisabled() || !this.props.editContext.clipboardControl || !this.props.editContext.getLastSelectedId()}
+							testId="btn-topbar-paste"
+							action={this.props.editContext.onPaste}
+						/>
+						<TopbarActionButton
+							title="Delete"
+							icon={<DeleteIcon />}
+							disabled={this.isActionDisabled()}
+							testId="btn-topbar-delete"
+							action={this.props.editContext.onDelete}
+						/>
+					</ButtonGroup>
+				}
+			/>
+		)
+		
+	}
+
+}
+
+
+export class Topbar extends React.Component<{editContext: FormContext}> {
+
 
 	@AutoBind
 	onChangeFormTitle(event: React.ChangeEvent<HTMLInputElement>) {
@@ -358,6 +411,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 
 	render() {
 		const formName = this.props.editContext.formName;
+		console.log('this.props.editContext.getLastSelectedId:', this.props.editContext.getLastSelectedId());
 		return (
 			<div style={{width: '100%', overflow: 'auto', borderBottom: '1px solid #E6E9ED'}}>
 				<TopbarDiv>
@@ -535,42 +589,7 @@ export class Topbar extends React.Component<{editContext: FormEditContext}> {
 						this.props.editContext.mode !== FormMode.Runtime && 
 						<TopbarItemDiv style={{marginRight: 'auto'}}>
 							<ThemeProvider theme={theme}>	
-								<ButtonGroup
-									variant="outlined"
-									size="small"
-									classes={{
-										root: 'TopbarButtonGroup-root'
-									}}
-								>
-									<TopbarActionButton
-										title="Copy"
-										icon={<CopyIcon />}
-										disabled={this.isActionDisabled()}
-										testId="btn-topbar-copy"
-										action={this.props.editContext.onCopy}
-									/>
-									<TopbarActionButton
-										title="Cut"
-										icon={<CutIcon />}
-										disabled={this.isActionDisabled()}
-										testId="btn-topbar-cut"
-										action={this.props.editContext.onCut}
-									/>
-									<TopbarActionButton
-										title="Paste"
-										icon={<PasteIcon />}
-										disabled={this.isActionDisabled() || !this.props.editContext.clipboardControl || !this.props.editContext.selectedId}
-										testId="btn-topbar-paste"
-										action={this.props.editContext.onPaste}
-									/>
-									<TopbarActionButton
-										title="Delete"
-										icon={<DeleteIcon />}
-										disabled={this.isActionDisabled()}
-										testId="btn-topbar-delete"
-										action={this.props.editContext.onDelete}
-									/>
-								</ButtonGroup>
+								<TopbarActionGroup editContext={this.props.editContext} />
 							</ThemeProvider>
 						</TopbarItemDiv>
 					}

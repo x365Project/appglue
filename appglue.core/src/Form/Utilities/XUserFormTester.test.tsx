@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, getByTestId } from "@testing-library/react";
 import { XFormConfiguration } from '../XFormConfiguration';
 import { getFormConfig } from "../Testing/FormTestData";
-import { FormEditContext } from './FormEditContext';
+import { FormContext } from './FormContext';
 import { XUserFormTester } from './XUserFormTester';
 import { FormMode, FormDesignConstants } from '../FormDesignConstants';
 
@@ -37,12 +37,12 @@ describe("XUserFormTester", () => {
     });
 
     it("Check outputting json.", () => {
-        let ui: FormEditContext;
+        let ui: FormContext;
 
         let form: XFormConfiguration = getFormConfig();
-        ui = new FormEditContext(form);
+        ui = new FormContext(form);
     
-        ui.form.setFormRuntimeContext(ui);
+        ui.form.setFormContext(ui);
 
         const { getByText, getByTestId } = render(<XUserFormTester editContext={ui} />);
 
@@ -132,9 +132,9 @@ describe("XUserFormTester", () => {
         form.doNotScrollLastContainerOnForm = true;
         form.doNotScrollFirstContainerOnForm = true;
 
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
         ui.mode = FormMode.Runtime;
-        ui.form.setFormRuntimeContext(ui);
+        ui.form.setFormContext(ui);
         ui.designConfig = {
             size: FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL,
             background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
@@ -160,9 +160,9 @@ describe("XUserFormTester", () => {
         form.doNotScrollLastContainerOnForm = true;
         form.doNotScrollFirstContainerOnForm = true;
 
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
         ui.mode = FormMode.Runtime;
-        ui.form.setFormRuntimeContext(ui);
+        ui.form.setFormContext(ui);
         ui.designConfig = {
             size: FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL,
             background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
@@ -189,9 +189,9 @@ describe("XUserFormTester", () => {
         form.doNotScrollLastContainerOnForm = true;
         form.doNotScrollFirstContainerOnForm = true;
 
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
         ui.mode = FormMode.Runtime;
-        ui.form.setFormRuntimeContext(ui);
+        ui.form.setFormContext(ui);
         ui.designConfig = {
             size: FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL,
             background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
@@ -218,9 +218,9 @@ describe("XUserFormTester", () => {
         form.doNotScrollLastContainerOnForm = true;
         form.doNotScrollFirstContainerOnForm = true;
 
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
         ui.mode = FormMode.Runtime;
-        ui.form.setFormRuntimeContext(ui);
+        ui.form.setFormContext(ui);
         ui.designConfig = {
             size: FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL,
             background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,

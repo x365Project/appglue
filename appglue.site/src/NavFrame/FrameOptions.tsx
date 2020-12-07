@@ -9,7 +9,7 @@ export class FrameOptions {
     icon: JSX.Element | undefined;
     tenantName: string = 'AppGlue';
     color: string = 'darkblue';
-    colorGradientEnd?: string;
+    colorGradientEnd?: string; // gradients have 2 colors...
 
     layout: Layout = Layout.VERTICAL;
     sideBarType: SideBarType = SideBarType.DEFAULT;

@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import { XFormAndLayoutDesignPanel } from "./XFormAndLayoutDesignPanel"
 import { XFormConfiguration } from '../XFormConfiguration';
 import { getFormConfig } from "../Testing/FormTestData";
-import { FormEditContext } from './FormEditContext';
+import { FormContext } from './FormContext';
 import { FormMode } from '../FormDesignConstants';
 import { XStackContainer } from '../Containers/XStackContainer';
 import { XTextField } from '../Controls/XTextField';
@@ -47,12 +47,12 @@ describe("InternalUserFormDesignPanel", () => {
     })
 
     it("Renders FormDesign Mode empty XFormAndLayoutDesignPanel component correctly", () => {
-        let ui: FormEditContext;
+        let ui: FormContext;
 
         let form: XFormConfiguration = new XFormConfiguration()
-        ui = new FormEditContext(form);
+        ui = new FormContext(form);
     
-        ui.form.setFormEditContext(ui);
+        ui.form.setFormContext(ui);
 
         const { getByText } = render(<XFormAndLayoutDesignPanel editContext={ui} />);
 
@@ -80,13 +80,13 @@ describe("InternalUserFormDesignPanel", () => {
 
 
     it("Renders Layout Mode empty XFormAndLayoutDesignPanel component correctly", () => {
-        let ui: FormEditContext;
+        let ui: FormContext;
 
         let form: XFormConfiguration = new XFormConfiguration()
-        ui = new FormEditContext(form);
+        ui = new FormContext(form);
         ui.mode = FormMode.LayoutDesign;
 
-        ui.form.setFormEditContext(ui);
+        ui.form.setFormContext(ui);
 
         const { getByText } = render(<XFormAndLayoutDesignPanel editContext={ui} />);
         expect(errorList).toHaveLength(0);
@@ -102,9 +102,9 @@ describe("InternalUserFormDesignPanel", () => {
 
     it("Renders XFormAndLayoutDesignPanel component correctly with full", () => {
         let form = getFormConfig();
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
 
-        form.setFormEditContext(ui);
+        form.setFormContext(ui);
 
         const { getByText } = render(<XFormAndLayoutDesignPanel editContext={ui} />);
 
@@ -118,9 +118,9 @@ describe("InternalUserFormDesignPanel", () => {
 
     it("Check the selected controls", () => {
         let form = getFormConfig();
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
 
-        form.setFormEditContext(ui);
+        form.setFormContext(ui);
 
         const ref = React.createRef<XFormAndLayoutDesignPanel>()
 
@@ -145,9 +145,9 @@ describe("InternalUserFormDesignPanel", () => {
 
     it("Check the selection layouts", () => {
         let form = getFormConfig();
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
         ui.mode = FormMode.LayoutDesign;
-        form.setFormEditContext(ui);
+        form.setFormContext(ui);
 
         const ref = React.createRef<XFormAndLayoutDesignPanel>()
 
@@ -181,8 +181,8 @@ describe("InternalUserFormDesignPanel", () => {
         stack.add(errorField);
 
         form.add(stack)
-        let ui = new FormEditContext(form);
-        form.setFormEditContext(ui);
+        let ui = new FormContext(form);
+        form.setFormContext(ui);
 
         ui.designValidationProvider = {
             getDesignValidationIssues: (): ValidationIssue[] => {
@@ -225,9 +225,9 @@ describe("InternalUserFormDesignPanel", () => {
         form.doNotScrollFirstContainerOnForm = true;
         form.doNotScrollLastContainerOnForm = true;
 
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
     
-        form.setFormEditContext(ui);
+        form.setFormContext(ui);
 
         const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
         expect(getByTestId('pin-first-container')).toBeInTheDocument();
@@ -244,8 +244,8 @@ describe("InternalUserFormDesignPanel", () => {
         let stack = new XStackContainer();
         form.add(stack);
 
-        let ui = new FormEditContext(form);
-        form.setFormEditContext(ui);
+        let ui = new FormContext(form);
+        form.setFormContext(ui);
 
         let hstack = new XHStackContainer();
         form.add(hstack);
@@ -267,9 +267,9 @@ describe("InternalUserFormDesignPanel", () => {
         let stack = new XStackContainer();
         form.add(stack);
 
-        let ui = new FormEditContext(form);
+        let ui = new FormContext(form);
         ui.mode = FormMode.LayoutDesign;
-        form.setFormEditContext(ui);
+        form.setFormContext(ui);
 
         let hstack = new XHStackContainer();
         form.add(hstack);

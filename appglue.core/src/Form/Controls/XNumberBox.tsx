@@ -1,57 +1,174 @@
 import React from 'react';
-import styled from "styled-components";
-import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 import {RegisterUIControl, ControlType} from '../Utilities/RegisterUIControl';
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
+import {TextControlStyle} from "../FormDesignConstants";
 import {NumberboxIcon} from "../../CommonUI/Icon/NumberboxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/FormEditContext";
-import "./XControls.css"
+import {IssueData} from "../Utilities/ControlRenderContext";
+import {StyledTextField} from "./XCommonStyled";
 
 
 @RegisterUIControl('Data (Entry)', 'NumberBox', ControlType.Control, <NumberboxIcon />)
 export class XNumberBox extends BaseTextEntryControl {
 
 	render() {
-        let isValid = false;
-        if (this.valueName) {
-            if (this.getFormDataValue(this.valueName)) {
-                isValid = true;
-            }
-        }
 
-        const runtimeError: ValidationError = {}
-        if (this.valueName) {
-            runtimeError.type = 'error'
-            runtimeError.message = this.requiredOnAllOutcomes && !isValid ? this.requiredMessage : "";
-        }
+        let style = (this.getFormContext()?.form)?.defaultTextStyle;
 
-        const issueData : IssueData | null =  this.getFormRuntimeContext()!.getControlContext(this)!.getRuntimeIssueData();
+        if (this.overrideStyle && this.style)
+            style = this.style;
+
+        let size : 'medium' | 'small' = (this.getFormContext()?.form)?.defaultTextSize ?? 'medium';
+
+        if (this.overrideStyle && this.size)
+            size = this.size;
+
+        const issueData : IssueData | null =  this.getFormContext()!.getControlContext(this)!.getRuntimeIssueData();
         const issueText: string = issueData?.text || '';
         const customWidth = this.fullWidth ? '100%' : this.width ? `${this.width}px` : '200px';
 
-		return (
-			<>
-				{this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
-                <StyledTextField
-                    type="number"
-                    variant={"outlined"}
-                    value={this.getValue()}
-                    onChange={this.handleChange}
-                    data-testid={this.valueName}
-                    fullWidth
-                    width={customWidth}
-                    error={Boolean(issueText)}
-                />
-                {
-                    (issueText || this.hintText) && (
-                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
-                            {issueText ? issueText: this.hintText}
-                        </StyledFormHelperText>
-                    )
-                }
-            </>
-		)
+        switch(style) {
+            case TextControlStyle.LABELED :
+                return (
+                    <>
+                        {this.label && <StyledInputLabel>{this.label}</StyledInputLabel>}
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            type="number"
+                            variant={"outlined"}
+                            value={this.getValue()}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
+                );
+            case TextControlStyle.SHADED :
+                return (
+                    <>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            type="number"
+                            variant={"filled"}
+                            customstyle={"filled"}
+                            value={this.getValue()}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.valueName}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
+                );
+            case TextControlStyle.UNDERLINED :
+                return (
+                    <>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            type="number"
+                            variant={"standard"}
+                            customstyle={"standard"}
+                            value={this.getValue()}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.valueName}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
+                );
+            case TextControlStyle.OUTLINE :
+                return (
+                    <>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            type="number"
+                            variant={"outlined"}
+                            customstyle={"outlined"}
+                            value={this.getValue()}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            fullWidth={this.fullWidth}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.valueName}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
+                                    <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                        {issueText.slice(0, 30) + '...'}
+                                    </StyledFormHelperText>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'numberbox'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
+                );
+        }
 	}
 
 	private handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -82,27 +199,3 @@ class XNumberBoxEditUI extends React.Component<{ editMe: XNumberBox }> {
         );
     }
 }
-
-interface ValidationError {
-    type?: 'error' | 'warning';
-    message?: string;
-}
-
-const StyledTextField = styled(TextField)<{width?: string}>`
-    width: ${({width}) => width} !important;
-    height: 59px;
-    box-sizing: border-box;
-    border-radius: 5.65107px;
-    outline: unset !important;
-    fieldset {
-        border: unset !important;
-    }
-    input {
-        color: #01244E !important;
-        border-radius: 5.65107px !important;
-        &:focus {
-            border: 1.35302px solid ${({error}) => error? '#F65C66' : '#1873B9'} !important;
-        }
-        border: 1.35302px solid ${({error}) => error? '#F65C66' : '#E6E9ED'} !important;
-    }
-`

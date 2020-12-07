@@ -54,7 +54,7 @@ describe("XTextArea", () => {
         expect(textarea).toBeEmptyDOMElement();
         userEvent.type(textarea, "blah blah blah");
         waitFor(() => expect(textarea).toHaveValue("blah blah blah"));
-        waitFor(() => expect(form.getFormRuntimeContext()?.getFormDataValue("test")).toEqual("blah blah blah"));
+        waitFor(() => expect(form.getFormContext()?.getFormDataValue("test")).toEqual("blah blah blah"));
         waitFor(() => expect(queryByText(/test hint/i)).toBeInTheDocument());
     });
 
@@ -64,7 +64,7 @@ describe("XTextArea", () => {
             test: "init form value",
         }
         const newForm = factory(form);
-        const formContext = form.getFormRuntimeContext();
+        const formContext = form.getFormContext();
         formContext?.setFormData(initialFormValues);
         const textarea = newForm.getByTestId('test');
         
