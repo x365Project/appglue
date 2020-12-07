@@ -41,6 +41,7 @@ describe("XUserFormTester", () => {
 
         let form: XFormConfiguration = getFormConfig();
         ui = new FormContext(form);
+        ui.mode = FormMode.Runtime;
     
         ui.form.setFormContext(ui);
 
@@ -90,7 +91,7 @@ describe("XUserFormTester", () => {
         expect(resultjson.isMale).toEqual(!originIsMale);
         expect(isMale).toBeInTheDocument();
 
-        const personDescription = getByTestId('personDescription') as HTMLTextAreaElement;
+        const personDescription = getByTestId('personDescription').querySelector('textarea') as HTMLTextAreaElement;
         fireEvent.change(personDescription, { target: { value: 'personDescription' } });
         resultjson = JSON.parse(resultjsontext.value);
         expect(resultjson.personDescription).toEqual(personDescription.value);

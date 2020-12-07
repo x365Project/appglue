@@ -12,6 +12,7 @@ import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
 import { generateUniqueId } from "../../Common/DataUtilities";
+import { IContextForControl } from "../../Common/IContextForControl";
 import { UIControlRegistration } from "./RegisterUIControl";
 import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
@@ -129,6 +130,7 @@ export class FormContext {
     private _mode: FormMode | string = FormMode.FormDesign;
 
     selectedId : string | null = null;
+    contextControl: IContextForControl | null = null;
     lastSelectedId: string | null = null;
 
     designValidationProvider?: IDesignValidationProvider;
@@ -158,6 +160,8 @@ export class FormContext {
 
         this.clipboardControl = this.cloneControl(control);
 
+        if (id) this.unselectContextControl();
+
         StateManager.changed(this);
     }
 
@@ -173,6 +177,7 @@ export class FormContext {
 
         this.unSelectControl();
         this.form.remove(control);
+        if (id) this.unselectContextControl();
 
         StateManager.changed(this);
     }
@@ -186,20 +191,23 @@ export class FormContext {
 
         if (!control) return;
         this.deleteControl = control;
+        if (id) this.unselectContextControl();
         StateManager.changed(this);
     };
 
     @AutoBind
-    onPaste() {
-        if (this.clipboardControl && this.lastSelectedId) {
+    onPaste(id?: string) {
+        let controlId = (id || this.lastSelectedId);
+        if (this.clipboardControl && controlId) {
             this.clipboardControl.id = generateUniqueId();
-            let control = this.form.find(this.lastSelectedId);
+            let control = this.form.find(controlId);
             this.form.getContainers().forEach((c) => {
                 let index = c.getControls().indexOf(control!);
                 if (index >= 0) {
                     c.add(this.clipboardControl!, index + 1);
                 }
-            })
+            });
+            if (id) this.unselectContextControl();
 
             StateManager.changed(this);
         }
@@ -256,7 +264,6 @@ export class FormContext {
         }
 
         this.controlContexts.updateValidationIssues(breaks, this.form.getAllControls(), false);
-        
         return breaks;
     }
 
@@ -287,8 +294,6 @@ export class FormContext {
 
 
     }
-
-    selectedId : string | null = null;
 
     getSelectedId() : string | null {
         return this.selectedId;
@@ -327,6 +332,18 @@ export class FormContext {
         this.selectedId = null;
         this.expandedConfigPanel = false;
 
+        StateManager.changed(this);
+    }
+
+    @AutoBind
+    selectContextControl(control: IContextForControl) {
+        this.contextControl = control;
+        StateManager.changed(this);
+    }
+
+    @AutoBind
+    unselectContextControl () {
+        this.contextControl = null;
         StateManager.changed(this);
     }
 

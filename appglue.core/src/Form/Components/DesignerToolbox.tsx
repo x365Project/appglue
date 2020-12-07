@@ -242,7 +242,6 @@ const StyledAccordionDetails = styled(AccordionDetails)`
 
 
 interface DesignerToolBoxPropsInterface {
-	updateCallback: CallableFunction;
 	onSelectFormDefaultConfig: CallableFunction;
 	mode: FormMode | string
 }

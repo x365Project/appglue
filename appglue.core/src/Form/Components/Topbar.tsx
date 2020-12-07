@@ -366,7 +366,6 @@ class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
 				}
 			/>
 		)
-		
 	}
 
 }
@@ -406,12 +405,10 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 
 			this.props.editContext.refreshDesigner();
 		}
-
 	}
 
 	render() {
 		const formName = this.props.editContext.formName;
-		console.log('this.props.editContext.getLastSelectedId:', this.props.editContext.getLastSelectedId());
 		return (
 			<div style={{width: '100%', overflow: 'auto', borderBottom: '1px solid #E6E9ED'}}>
 				<TopbarDiv>

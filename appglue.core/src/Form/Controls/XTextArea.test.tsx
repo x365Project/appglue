@@ -49,7 +49,7 @@ describe("XTextArea", () => {
         const { getByTestId, queryByText } = factory(form);
 
         expect(queryByText(/test label/i)).toBeInTheDocument();
-        const textarea = getByTestId("test");
+        const textarea = getByTestId("test").querySelector('textarea') as HTMLTextAreaElement;
         expect(textarea).toBeInTheDocument();
         expect(textarea).toBeEmptyDOMElement();
         userEvent.type(textarea, "blah blah blah");
@@ -66,7 +66,7 @@ describe("XTextArea", () => {
         const newForm = factory(form);
         const formContext = form.getFormContext();
         formContext?.setFormData(initialFormValues);
-        const textarea = newForm.getByTestId('test');
+        const textarea = newForm.getByTestId('test').querySelector('textarea') as HTMLTextAreaElement;
         
         let compareValues = {
             test: "init form value",
@@ -86,7 +86,7 @@ describe("XTextArea", () => {
     it("configure form and text area", async () => {
         const form = new XFormConfiguration();
         const firstForm = factory(form);
-        const textarea = firstForm.getByTestId('test');
+        const textarea = firstForm.getByTestId('test').querySelector('textarea') as HTMLTextAreaElement;
         fireEvent.change(textarea, { target: {value: "text area init"}})
         expect(textarea).toBeInTheDocument();
         expect(textarea).toBeEmptyDOMElement();
@@ -94,11 +94,10 @@ describe("XTextArea", () => {
         
         let newForm = new XFormConfiguration();
         const secondForm = render(<XUserForm form={newForm} />);
-        let newTextArea = secondForm.getByTestId('test');
+        let newTextArea = secondForm.getByTestId('test').querySelector('textarea') as HTMLTextAreaElement;
         expect(newTextArea).toBeInTheDocument();
         expect(newTextArea).toBeEmptyDOMElement();
         expect(newTextArea).toHaveValue("text area init");
         expect(secondForm.queryByText(/test label/i)).toBeInTheDocument();
-        expect(secondForm.queryByText(/test hint/i)).toBeInTheDocument();
     });
 });

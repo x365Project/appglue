@@ -7,7 +7,9 @@ import {
     DialogContentText,
     DialogContent,
     DialogActions,
-    Dialog
+    Dialog,
+    Menu,
+    MenuItem
 } from "@material-ui/core";
 
 
@@ -30,11 +32,17 @@ import {
     EditLayerStyledAccordionSummary,
     EditLayerStyledTypography,
     EditLayerConfigArea, 
-    EditLayerStyledAccordion
+    EditLayerStyledAccordion,
+    ContextMenuForControl
 } from "../../CommonUI/CommonStyles";
+
+
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
 import {FormContext} from "./FormContext";
 import { ExpandIcon } from "../../CommonUI/Icon/ExpandIcon";
+import { CopyWhiteIcon } from "../../CommonUI/Icon/CopyWhiteIcon";
+import { CutWhiteIcon } from "../../CommonUI/Icon/CutWhiteIcon";
+import { DeleteWhiteIcon } from "../../CommonUI/Icon/DeleteWhiteIcon";
 import { ValidationErrorRendering } from "../Components/ValidationErrorRendering";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
@@ -124,6 +132,8 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
             selectedControl = this.props.editContext.form.find(selectedId);
         }
 
+        let contextControl = this.props.editContext.contextControl;
+
         return (
             <ObserveState
                 listenTo={this.props.editContext}
@@ -136,11 +146,9 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                             <Designer key='formdesigner'>
                                 <DesignerToolBox
                                     mode={this.props.editContext.mode}
-                                    updateCallback={this.updateUI}
                                     onSelectFormDefaultConfig={() => {
                                         if (this.props.editContext)
                                             this.props.editContext.selectControl(CONFIG_FORM_KEY);
-//                                        this.updateUI();
                                     }}
                                 />
                                 <XFormDesignerLayoutPanel editContext={this.props.editContext}  />
@@ -173,8 +181,6 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                                                 );
                                                             }}
                                                         />
-
-
                                                     </EditLayerStyledAccordionDetails>
                                                 </EditLayerStyledAccordion>
                                             </EditLayerConfigArea>
@@ -194,6 +200,29 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                         <Button variant="contained" color="primary" onClick={this.deleteControl}>OK</Button><Button variant="contained" onClick={this.cancelDeleteControl}>Cancel</Button>
                                     </DialogActions>
                                 </Dialog>
+                                {
+                                    contextControl && 
+                                    <ContextMenuForControl
+                                        open={!!contextControl}
+                                        onClose={this.props.editContext.unselectContextControl}
+                                        anchorReference="anchorPosition"
+                                        anchorPosition={
+                                        contextControl.mouseY !== null && contextControl.mouseX !== null
+                                            ? { top: contextControl.mouseY, left: contextControl.mouseX }
+                                            : undefined
+                                        }
+                                    >
+                                        <MenuItem onClick={() => this.props.editContext.onCopy(contextControl!.selectedId)}>
+                                            <CopyWhiteIcon/> Copy
+                                        </MenuItem>
+                                        <MenuItem onClick={() => this.props.editContext.onCut(contextControl!.selectedId)}>
+                                            <CutWhiteIcon/> Cut
+                                        </MenuItem>
+                                        <MenuItem onClick={() => this.props.editContext.onDelete(contextControl!.selectedId)}>
+                                            <DeleteWhiteIcon /> Delete
+                                        </MenuItem>
+                                    </ContextMenuForControl>
+                                }
                             </Designer>
                         </DragDropContext>
                     );

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {AccordionDetails, AccordionSummary, Typography, Accordion} from "@material-ui/core";
+import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu} from "@material-ui/core";
 import MovementIcon from "../assets/images/icons/movement.svg";
 
 export const EditLayerConfigArea = styled.div`
@@ -71,6 +71,30 @@ export const EditLayerStyledAccordionDetails = styled(AccordionDetails)`
         .MuiCollapse-wrapperInner > div {
             margin-bottom: 18px;
             width: 100%;
+        }
+    }
+`;
+
+
+export const ContextMenuForControl = styled(Menu)`
+    && {
+        .MuiMenu-list {
+            background: #01244E;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+
+            img {
+                margin-right: 8px;
+            }
+
+            .MuiListItem-root {
+                border-top: solid 1px #fff;
+
+                &:first-child {
+                    border-top: none;
+                }
+            }
         }
     }
 `;
