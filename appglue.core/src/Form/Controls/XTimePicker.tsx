@@ -32,152 +32,144 @@ export class XTimePicker extends BaseTextEntryControl {
         switch(style) {
             case TextControlStyle.LABELED :
                 return (
-                    <form noValidate>
-                        <>
-                            {this.label && <StyledInputLabel data-role={TextControlStyle.LABELED}>{this.label}</StyledInputLabel>}
-                            <StyledTextField
-                                size={size}
-                                data-size={size}
-                                variant={"outlined"}
-                                fullWidth={this.fullWidth}
-                                type="time"
-                                value={this.valueName?this.getFormDataValue(this.valueName): String}
-                                onChange={this.handleChange}
-                                data-testid={this.valueName}
-                                width={customWidth}
-                                error={Boolean(issueText)}
-                            />
-                            {
-                                (issueText && issueText.length > 30)  && (
-                                    <Tooltip title={issueText} arrow placement="bottom">
-                                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                            {issueText.slice(0, 30) + '...'}
-                                        </StyledFormHelperText>
-                                    </Tooltip>
-                                ) 
-                            }
-                            {
-                                ((issueText && issueText.length < 31) || this.hintText) && (
+                    <>
+                        {this.label && <StyledInputLabel data-role={TextControlStyle.LABELED}>{this.label}</StyledInputLabel>}
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"outlined"}
+                            fullWidth={this.fullWidth}
+                            type="time"
+                            value={this.valueName?this.getFormDataValue(this.valueName): String}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
                                     <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                        {issueText ? issueText: this.hintText}
+                                        {issueText.slice(0, 30) + '...'}
                                     </StyledFormHelperText>
-                                )
-                            }
-                        </>
-                    </form>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );
             case TextControlStyle.SHADED :
                 return (
-                    <form noValidate>
-                        <>
-                            <StyledTextField
-                                size={size}
-                                data-size={size}
-                                variant={"filled"}
-                                customstyle={"filled"}
-                                fullWidth={this.fullWidth}
-                                type="time"
-                                value={this.valueName?this.getFormDataValue(this.valueName): String}
-                                onChange={this.handleChange}
-                                data-testid={this.valueName}
-                                width={customWidth}
-                                error={Boolean(issueText)}
-                                label={this.valueName}
-                            />
-                            {
-                                (issueText && issueText.length > 30)  && (
-                                    <Tooltip title={issueText} arrow placement="bottom">
-                                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                            {issueText.slice(0, 30) + '...'}
-                                        </StyledFormHelperText>
-                                    </Tooltip>
-                                ) 
-                            }
-                            {
-                                ((issueText && issueText.length < 31) || this.hintText) && (
+                    <>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"filled"}
+                            customstyle={"filled"}
+                            fullWidth={this.fullWidth}
+                            type="time"
+                            value={this.valueName?this.getFormDataValue(this.valueName): String}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.valueName}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
                                     <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                        {issueText ? issueText: this.hintText}
+                                        {issueText.slice(0, 30) + '...'}
                                     </StyledFormHelperText>
-                                )
-                            }
-                        </>
-                    </form>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );
             case TextControlStyle.UNDERLINED :
                 return (
-                    <form noValidate>
-                        <>
-                            <StyledTextField
-                                size={size}
-                                data-size={size}
-                                variant={"standard"}
-                                customstyle={"standard"}
-                                fullWidth={this.fullWidth}
-                                type="time"
-                                value={this.valueName?this.getFormDataValue(this.valueName): String}
-                                onChange={this.handleChange}
-                                data-testid={this.valueName}
-                                width={customWidth}
-                                error={Boolean(issueText)}
-                                label={this.valueName}
-                                ispicker={'true'}
-                            />
-                            {
-                                (issueText && issueText.length > 30)  && (
-                                    <Tooltip title={issueText} arrow placement="bottom">
-                                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                            {issueText.slice(0, 30) + '...'}
-                                        </StyledFormHelperText>
-                                    </Tooltip>
-                                ) 
-                            }
-                            {
-                                ((issueText && issueText.length < 31) || this.hintText) && (
+                    <>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"standard"}
+                            customstyle={"standard"}
+                            fullWidth={this.fullWidth}
+                            type="time"
+                            value={this.valueName?this.getFormDataValue(this.valueName): String}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.valueName}
+                            ispicker={'true'}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
                                     <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                        {issueText ? issueText: this.hintText}
+                                        {issueText.slice(0, 30) + '...'}
                                     </StyledFormHelperText>
-                                )
-                            }
-                        </>
-                    </form>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );  
             case TextControlStyle.OUTLINE :
                 return (
-                    <form noValidate>
-                        <>
-                            <StyledTextField
-                                size={size}
-                                data-size={size}
-                                variant={"outlined"}
-                                customstyle={"outlined"}
-                                fullWidth={this.fullWidth}
-                                type="time"
-                                value={this.valueName?this.getFormDataValue(this.valueName): String}
-                                onChange={this.handleChange}
-                                data-testid={this.valueName}
-                                width={customWidth}
-                                error={Boolean(issueText)}
-                                label={this.valueName}
-                                ispicker={'true'}
-                            />
-                            {
-                                (issueText && issueText.length > 30)  && (
-                                    <Tooltip title={issueText} arrow placement="bottom">
-                                        <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                            {issueText.slice(0, 30) + '...'}
-                                        </StyledFormHelperText>
-                                    </Tooltip>
-                                ) 
-                            }
-                            {
-                                ((issueText && issueText.length < 31) || this.hintText) && (
+                    <>
+                        <StyledTextField
+                            size={size}
+                            data-size={size}
+                            variant={"outlined"}
+                            customstyle={"outlined"}
+                            fullWidth={this.fullWidth}
+                            type="time"
+                            value={this.valueName?this.getFormDataValue(this.valueName): String}
+                            onChange={this.handleChange}
+                            data-testid={this.valueName}
+                            width={customWidth}
+                            error={Boolean(issueText)}
+                            label={this.valueName}
+                            ispicker={'true'}
+                        />
+                        {
+                            (issueText && issueText.length > 30)  && (
+                                <Tooltip title={issueText} arrow placement="bottom">
                                     <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
-                                        {issueText ? issueText: this.hintText}
+                                        {issueText.slice(0, 30) + '...'}
                                     </StyledFormHelperText>
-                                )
-                            }
-                        </>
-                    </form>
+                                </Tooltip>
+                            ) 
+                        }
+                        {
+                            ((issueText && issueText.length < 31) || this.hintText) && (
+                                <StyledFormHelperText error={Boolean(issueText)} data-testid={`${this.valueName || 'timepicker'}-hinttext`}>
+                                    {issueText ? issueText: this.hintText}
+                                </StyledFormHelperText>
+                            )
+                        }
+                    </>
                 );
         }
 

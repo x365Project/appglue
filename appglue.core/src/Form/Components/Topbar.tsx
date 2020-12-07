@@ -66,18 +66,19 @@ const DropDownDiv = styled.div`
 const FormTitleInput = styled(Input)`
 	&& {
 		color: #01244E;
-		font-size: 13px;
+		font-size: 14px;
+		font-weight: bold;
 
 		@media (min-width: 768px) {
-			font-size: (13px + 3 * (100vw - 768px) / 598);
+			font-size: (14px + 4 * (100vw - 768px) / 598);
 		}
 
 		@media (min-width: 1366px) {
-			font-size: calc(16px + 4 * (100vw - 1366px) / 554);
+			font-size: calc(18px + 6 * (100vw - 1366px) / 554);
 		}
 
 		@media (min-width: 1920px) {
-			font-size: 20px;
+			font-size: 24px;
 		}
 
 		input {

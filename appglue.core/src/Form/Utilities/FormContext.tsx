@@ -204,7 +204,7 @@ export class FormContext {
             this.form.getContainers().forEach((c) => {
                 let index = c.getControls().indexOf(control!);
                 if (index >= 0) {
-                    c.add(this.clipboardControl!, index + 1);
+                    c.add(this.cloneControl(this.clipboardControl!), index + 1);
                 }
             });
             if (id) this.unselectContextControl();
