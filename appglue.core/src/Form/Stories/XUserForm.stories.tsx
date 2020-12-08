@@ -125,7 +125,7 @@ function StoryHostXUserForm(props: {storyHostProps : StoryHostXUserFormProps}) {
         props.storyHostProps.onFormClose!(data);
         setFormData(data);
         addEventLog('Close Form event is triggered')
-    }, [addEventLog, setFormData])
+    }, [addEventLog, props.storyHostProps.onFormClose])
 
 
     if (props.storyHostProps.width) {
@@ -321,16 +321,7 @@ textareaField.label = 'Textarea Field';
 
 let selectField = new XSelectbox();
 selectField.valueName = 'selectbox';
-selectField.items = [
-    {
-        label: 'Option 1',
-        value: '1',
-    },
-    {
-        label: 'Option 2',
-        value: '2',
-    },
-];
+selectField.list = ['Option 1', 'Option 2'];
 
 let checkboxField = new XCheckboxField();
 checkboxField.valueName = 'checkbox';
