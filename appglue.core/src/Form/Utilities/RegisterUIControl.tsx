@@ -1,4 +1,3 @@
-import React from "react";
 /*eslint no-useless-constructor: 0*/
 
 // decorator function to create registry for unpacking json

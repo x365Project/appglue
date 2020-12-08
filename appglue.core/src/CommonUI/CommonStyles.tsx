@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu, IconButton} from "@material-ui/core";
 import MovementIcon from "../assets/images/icons/movement.svg";
+import { BorderStyle } from "../Form/FormDesignConstants";
 
 export const EditLayerConfigArea = styled.div`
   position: absolute;
@@ -108,4 +109,30 @@ export const ContextMenuForControl = styled(Menu)`
             }
         }
     }
+`;
+
+
+export const ContainerDiv = styled("div")<{
+	colGap: number;
+}>`
+	margin: ${props => props.colGap || 0}px 0;
+`;
+
+export const RowDiv = styled("div")<{
+	colGap: number;
+	hasOverflow?: boolean;
+}>`
+	margin: ${props => -1 * (props.colGap || 0)}px 0;
+	overflow: ${props => props.hasOverflow ? 'auto': 'initial'};
+`
+
+export const ContainerDivider = styled("div")<{
+	lineColorBetweenContainers: string;
+	lineWidthBetweenContainers: number;
+	lineStyleBetweenContrainers: BorderStyle;
+	colGap: number;
+}>`
+	border: ${props => `${props.lineWidthBetweenContainers}px ${props.lineStyleBetweenContrainers} ${props.lineColorBetweenContainers}`};
+	width: 100%;
+	display: flex;
 `;

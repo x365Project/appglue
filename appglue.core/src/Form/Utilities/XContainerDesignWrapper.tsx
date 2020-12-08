@@ -20,10 +20,17 @@ export class XContainerDesignWrapper extends React.Component<XDraggableData> {
         this.props.innerComponent.selectInDesigner();
     }
 
+    isNotRequiredOverlap = () => {
+        let type = Reflect.get(this.props.innerComponent, '__type');
+        return (
+            !this.props.editContext
+            || this.props.editContext.mode === FormMode.Runtime
+            || (this.props.editContext.mode === FormMode.FormDesign || type === 'Tab Container')
+        );
+    }
+
     render() {
-        if (!this.props.editContext ||
-            this.props.editContext.mode === FormMode.Runtime ||
-            this.props.editContext.mode === FormMode.FormDesign) {
+        if (this.isNotRequiredOverlap()) {
             return (
                 <div>
                     {this.props.innerComponent.render()}

@@ -46,11 +46,18 @@ export enum NotificationType {
     INFO = 'info'
 }
 
+export enum TabOrientation {
+    Veritical = 'vertical',
+    Horizontal = 'horizontal',
+}
+
 
 export class FormDesignConstants {
     public static LAYOUT_FORM_KEY_NAME = 'baselayoutkey';
     public static SELECTED_CONTROL_BORDER_COLOR = '#4682B4';
     public static SELECTED_CONTROL_BORDER_WIDTH = '2px';
+
+    public static DEFAULT_TAB_CONTENT_HEIGHT = 300;
 
     public static ERROR_CONTROL_BORDER_WIDTH = '1px';
     public static ERROR_CONTROL_BORDER_COLOR = '#F65C66';
@@ -73,7 +80,10 @@ export class FormDesignConstants {
     public static CONTAINER_BORDER_RADIOUS: number = 5;
     public static CONTAINER_BORDER_WIDTH: number = 2;
     public static CONTAINER_BORDER_COLOR : string = 'lightgray'
-    public static CONTAINER_BORDER_STYLE: BorderStyle = BorderStyle.Solid
+    public static CONTAINER_BORDER_STYLE: BorderStyle = BorderStyle.Solid;
+
+    public static TAB_CONTENT_HEIGHT: number = 500;
+    public static TAB_CONTENT_WIDTH: number = 500;
 
     public static INNER_COLUMN_MARGIN: number = 10;
 

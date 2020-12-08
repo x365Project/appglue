@@ -386,8 +386,6 @@ export class XColumnContainer
                     }
                     </RowDiv>
                 </ContainerDiv>
-
-
             );
         } else {
             return (

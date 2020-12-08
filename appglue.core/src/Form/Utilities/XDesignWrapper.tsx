@@ -89,13 +89,19 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
         this.setState({open: true})
     }
 
+
+    isNotRequiredOverlap = () => {
+        let type = Reflect.get(this.props.innerComponent, '__type');
+        return !this.props.editContext ||
+        this.props.editContext.mode === FormMode.Runtime ||
+        (this.props.editContext.mode === FormMode.LayoutDesign || type === 'Tab Container');
+    }
+
     render() {
 
         const validationIssues: IssueData | null = this.props.editContext.getControlContext(this.props.innerComponent).getDesignIssueData();
 
-        if (!this.props.editContext ||
-            this.props.editContext.mode === FormMode.Runtime ||
-            this.props.editContext.mode === FormMode.LayoutDesign) {
+        if (this.isNotRequiredOverlap()) {
             return (
                 this.props.innerComponent.render()
             );
