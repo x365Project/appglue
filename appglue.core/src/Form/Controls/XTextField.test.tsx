@@ -6,9 +6,9 @@ import { XTextField } from "./XTextField";
 import { XStackContainer } from "../../Form/Containers/XStackContainer";
 import { XUserForm } from "../../Form/XUserForm";
 import { TextControlSize, TextControlStyle } from "../FormDesignConstants";
+import { FormContext } from "../Utilities/FormContext";
 import { ValidationIssue } from '../../Common/IDesignValidationProvider';
 import { XFormAndLayoutDesignPanel } from "../Utilities/XFormAndLayoutDesignPanel"
-import {FormContext} from "../Utilities/FormContext";
 
 describe("XTextField", () => {
 
@@ -44,6 +44,7 @@ describe("XTextField", () => {
         const control = new XTextField();
         control.valueName = "test";
         control.label = "test label";
+        control.hintText = "test hint";
         stack.add(control);
         return render(<XUserForm form={form} />);
     };
@@ -60,6 +61,7 @@ describe("XTextField", () => {
         userEvent.type(textbox, "blah blah blah");
         waitFor(() => expect(textbox).toHaveValue("blah blah blah"));
         expect(form.getFormContext()?.getFormDataValue("test")).toEqual("blah blah blah");
+        expect(queryByText(/test hint/i)).toBeInTheDocument();
     });
 
     it("control reads/writes form data properly", async () => {
@@ -96,6 +98,14 @@ describe("XTextField", () => {
         userEvent.type(textbox, "blah blah blah?");
         expect(textbox).toHaveClass('MuiOutlinedInput-input');
         expect(textbox).toHaveValue("blah blah blah?");
+        
+        let newForm = new XFormConfiguration();
+        const secondForm = render(<XUserForm form={newForm} />);
+        let newTextField = secondForm.getByTestId('test');
+        const newTextbox = within(newTextField).getByRole("textbox");
+        expect(newTextbox).toHaveValue("blah blah blah?");
+        expect(secondForm.queryByText(/test label/i)).toBeInTheDocument();
+        expect(secondForm.queryByText(/test hint/i)).toBeInTheDocument();
     });
 
     it("Check override the size and style", () => {
@@ -103,9 +113,37 @@ describe("XTextField", () => {
         form.defaultTextSize = TextControlSize.SMALL;
         form.defaultTextStyle = TextControlStyle.OUTLINE;
 
-        let {container} = factory(form);
+        let {container, getByTestId} = factory(form);
         expect(container.querySelector(`[data-size="${TextControlSize.SMALL}"]`)).toBeInTheDocument();
         expect(container.querySelector(`[data-role="${TextControlStyle.OUTLINE}"]`)).not.toBeInTheDocument();
+        expect(getByTestId('test-hinttext')).toHaveTextContent(/test hint/i);
 
+    });
+
+    it("Check design validation display", () => {
+        const form = new XFormConfiguration();
+        let ui = new FormContext(form);
+        form.setFormContext(ui);
+        const stack = new XStackContainer();
+        form.add(stack);
+        const control = new XTextField();
+        control.valueName = "test";
+        control.label = "test label";
+        control.hintText = "test hint";
+        stack.add(control);
+        
+        ui.runtimeValidationProvider = {
+            getRuntimeValidationIssues: (): ValidationIssue[] => {
+                let issues: ValidationIssue[] = [];
+                if (form.getFormContext()?.getFormDataValue('test')) {
+                    issues.push(new ValidationIssue('Value is required', undefined, control.id));
+                }
+                return issues;
+            }
+        }
+
+        const {container, getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
+        const helpText = getByTestId('test-hinttext');
+        expect(helpText).toBeInTheDocument();
     });
 });

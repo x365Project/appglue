@@ -4,6 +4,7 @@ import {ExpressionValue} from "../../ExpressionValue";
 import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import {ExpressionExpectedType} from "../../ExpressionExpectedType";
 import {IBaseExpressionElement} from "../../Utilities/IBaseExpressionElement";
+import {generateUniqueId} from "../../../Common/DataUtilities";
 import {ExpressionEditContext} from "../../Utilities/ExpressionEditContext";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import styled from "styled-components";
@@ -21,7 +22,6 @@ import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import {ExpressionLineDiv} from "../../ExpressionStyles";
 import {Grouping} from "./Grouping";
 import {TextIcon} from "../../../CommonUI/TextIcon";
-import {DataUtilities} from "../../../Common/DataUtilities";
 
 const AllIfDiv = styled.div`
     font-size:      18px;
@@ -85,7 +85,7 @@ class IfThenPair implements IBaseExpressionElement{
 
     ifExpression: Grouping = new Grouping();
     thenExpression: ExpressionValue = new ExpressionValue();
-    _id: string = DataUtilities.generateUniqueId();
+    _id: string = generateUniqueId();
 
     editContext?: ExpressionEditContext;
     setEditContext(editContext: ExpressionEditContext, owner: IBaseExpressionElement): void {

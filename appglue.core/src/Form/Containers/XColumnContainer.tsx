@@ -6,7 +6,7 @@ import {XBaseContainer} from "./XBaseContainer";
 import {XBaseControl} from "../Controls/XBaseControl";
 import {Droppable, DroppableProvided, DroppableStateSnapshot} from "react-beautiful-dnd";
 import {XDesignWrapper} from "../Utilities/XDesignWrapper";
-import {DataUtilities} from "../../Common/DataUtilities";
+import {cloneWithoutReact, spreadData} from "../../Common/DataUtilities";
 import {StackContainerColumn, StackContainerDiv} from "./XStackContainer";
 import {BorderStyle, FormDesignConstants, FormMode, WidthUnitInterface} from "../FormDesignConstants";
 import {XBaseStackContainer} from "./XBaseStackContainer";
@@ -477,7 +477,7 @@ export class XColumnContainer
 
 
     getStorageData(): object {
-        let retData = DataUtilities.cloneWithoutReact(this, ['columns', 'form', 'container', '_formContext']);
+        let retData = cloneWithoutReact(this, ['columns', 'form', 'container', '_formContext']);
 
         let colData : object[] = [];
         this.columns.map(c => {
@@ -491,7 +491,7 @@ export class XColumnContainer
     }
 
     setStorageData(data: object): void {
-        DataUtilities.spreadData(this, data, ['__columns']);
+        spreadData(this, data, ['__columns']);
 
         let containerArray = Reflect.get(data, '__columns');
         if (containerArray && containerArray instanceof Array && containerArray.length !== 0) {

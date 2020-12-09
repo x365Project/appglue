@@ -74,15 +74,6 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
         this.props.innerComponent.selectInDesigner();
     }
 
-    onContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
-        event.preventDefault();
-        this.props.editContext.selectContextControl({
-            selectedId: this.props.innerComponent.id,
-            mouseX: event.clientX,
-            mouseY: event.clientY
-        });
-    }
-
     onClickValidationIcon = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
@@ -127,7 +118,6 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
                                     <div
                                         ref={(ref) => this.innerComponentRef = ref}
                                         style={{position: 'relative'}}
-                                        data-testid="control-wrapper"
                                     >
                                         <ObserveState
                                             listenTo={this.props.innerComponent}
@@ -140,7 +130,6 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
 
                                         {}
                                         <OverlapDiv
-                                            onContextMenu={this.onContextMenu}
                                             data-testid="control-click-div"
                                             onClick={this.onSelect}
                                             aria-describedby={this.props.innerComponent.id}

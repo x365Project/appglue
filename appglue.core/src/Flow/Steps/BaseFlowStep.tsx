@@ -1,10 +1,10 @@
 import React from "react";
+import {generateUniqueId} from "../../Common/DataUtilities";
 import {StepNameLabel} from "../CommonUI/StepNameLabel";
 import styled from "styled-components";
 import {IFlowElement} from "../Structure/IFlowElement";
 import {IFlowStep} from "../Structure/IFlowStep";
 import {FlowStepOutput} from "../Structure/FlowStepOutput";
-import {DataUtilities} from "../../Common/DataUtilities";
 
 export const BasicStep = styled.div`
     width: 100%;
@@ -18,7 +18,7 @@ export abstract class BaseFlowStep
     extends React.Component
     implements IFlowElement,
         IFlowStep {
-    _id: string = DataUtilities.generateUniqueId();
+    _id: string = generateUniqueId();
     name?: string;
 
 

@@ -1,7 +1,7 @@
 import {XBaseContainer} from "./XBaseContainer";
 import {IConfigStorage} from "../../Common/IConfigStorage";
 import {XBaseControl} from "../Controls/XBaseControl";
-import {DataUtilities} from "../../Common/DataUtilities";
+import {cloneWithoutReact, spreadData} from "../../Common/DataUtilities";
 import styled from "styled-components";
 import {UIControlRegistration} from "../Utilities/RegisterUIControl";
 
@@ -88,7 +88,7 @@ export abstract class XBaseStackContainer
     }
 
     getStorageData(): object {
-        let retData = DataUtilities.cloneWithoutReact(this, ['container', 'form', 'controls', '_formContext']);
+        let retData = cloneWithoutReact(this, ['container', 'form', 'controls', '_formContext']);
         Reflect.set(retData, '__controls', this.controls.map(c => {
             return c.getStorageData()
         }));
@@ -96,7 +96,7 @@ export abstract class XBaseStackContainer
     }
 
     setStorageData(data: object): void {
-        DataUtilities.spreadData(this, data, ['__controls']);
+        spreadData(this, data, ['__controls']);
 
         let controlArray = Reflect.get(data, '__controls');
         if (controlArray && controlArray instanceof Array && controlArray.length !== 0) {

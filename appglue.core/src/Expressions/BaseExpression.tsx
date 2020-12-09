@@ -2,8 +2,8 @@ import React from "react";
 import {ExpressionExpectedType} from "./ExpressionExpectedType";
 import {ExpressionValue} from "./ExpressionValue";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
+import {generateUniqueId} from "../Common/DataUtilities";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";
-import {DataUtilities} from "../Common/DataUtilities";
 
 export abstract class BaseExpression
     extends React.Component<{}, {}>
@@ -11,7 +11,7 @@ export abstract class BaseExpression
 
     readonly canSelect: boolean = true;
     expressionValueType: ExpressionExpectedType = ExpressionExpectedType.NUMBER;
-    _id : string = DataUtilities.generateUniqueId();
+    _id : string = generateUniqueId();
     private values : ExpressionValue[] = [];
 
 

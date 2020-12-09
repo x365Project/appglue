@@ -1,26 +1,7 @@
 import React from "react";
 
-export function getFrameOptions() : FrameOptions {
+export function getFrameOptions(): FrameOptions {
     return new FrameOptions();
-}
-
-// these will be fetched from tenant then from user settings
-export class FrameOptions {
-    icon: JSX.Element | undefined;
-    tenantName: string = 'AppGlue';
-    color: string = 'darkblue';
-    colorGradientEnd?: string; // gradients have 2 colors...
-
-    layout: Layout = Layout.VERTICAL;
-    sideBarType: SideBarType = SideBarType.DEFAULT;
-    frameSize: FrameSize = FrameSize.STANDARD;
-    layoutWidth: LayoutWidth =LayoutWidth.FULL_WIDTH;
-    topBarTheme: TopBarTheme = TopBarTheme.DARK;
-    navBarTheme: NavBarTheme = NavBarTheme.DARK;
-    contentTheme: ContentTheme = ContentTheme.LIGHT;
-    preloader: Preloader = Preloader.ON;
-    minWidth: number = 1500;
-
 }
 
 export enum SideBarType {
@@ -36,7 +17,7 @@ export enum FrameSize {
 
 export enum LayoutWidth {
     FULL_WIDTH = 'fullwidth',
-    BOXED = 'boxed',
+    BOXED = 'boxed', //1440px
 }
 
 export enum TopBarTheme {
@@ -65,3 +46,23 @@ export enum Preloader {
     ON = 'on',
     OFF = 'off'
 }
+
+// these will be fetched from tenant then from user settings
+export class FrameOptions {
+    icon: JSX.Element | undefined;
+    tenantName: string = 'AppGlue';
+    color: string = '#203156;';
+    colorGradientEnd?: string; // gradients have 2 colors...
+
+    layout: Layout = Layout.HORIZONTAL;
+    sideBarType: SideBarType = SideBarType.DEFAULT;
+    frameSize: FrameSize = FrameSize.STANDARD;
+    layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
+    topBarTheme: TopBarTheme = TopBarTheme.DARK;
+    navBarTheme: NavBarTheme = NavBarTheme.DARK;
+    contentTheme: ContentTheme = ContentTheme.LIGHT;
+    preloader: Preloader = Preloader.ON;
+    minWidth: number = 1500;
+
+}
+

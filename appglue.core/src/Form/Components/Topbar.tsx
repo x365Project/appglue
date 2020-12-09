@@ -31,7 +31,6 @@ import { CutIcon } from "../../CommonUI/Icon/CutIcon";
 import { CopyIcon } from "../../CommonUI/Icon/CopyIcon";
 import { CloseIcon } from "../../CommonUI/Icon/CloseIcon";
 import { PasteIcon } from "../../CommonUI/Icon/PasteIcon";
-import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 
 const SelectDiv = styled.div`
 	position: relative;
@@ -66,19 +65,18 @@ const DropDownDiv = styled.div`
 const FormTitleInput = styled(Input)`
 	&& {
 		color: #01244E;
-		font-size: 14px;
-		font-weight: bold;
+		font-size: 13px;
 
 		@media (min-width: 768px) {
-			font-size: (14px + 4 * (100vw - 768px) / 598);
+			font-size: (13px + 3 * (100vw - 768px) / 598);
 		}
 
 		@media (min-width: 1366px) {
-			font-size: calc(18px + 6 * (100vw - 1366px) / 554);
+			font-size: calc(16px + 4 * (100vw - 1366px) / 554);
 		}
 
 		@media (min-width: 1920px) {
-			font-size: 24px;
+			font-size: 20px;
 		}
 
 		input {
@@ -198,7 +196,7 @@ const TopbarIconButton = styled(Button)`
 		min-width: 0;
 		border: none;
 
-		&.TopbarIconButton-selected {
+		&.TopbarIconButton-disabled {
 			background: #F2FAFE;
 		}
 		
@@ -232,7 +230,6 @@ const TopbarIconButton = styled(Button)`
 		}
 	}
 `;
-
 
 const TopbarSaveButton = styled(Button)`
 	&& {
@@ -290,90 +287,7 @@ const TopbarSaveButton = styled(Button)`
 `;
 
 
-const TopbarActionButton: React.FC<{action?: () => void, disabled: boolean, title: string, icon: JSX.Element, testId: string}> =({
-	action,
-	disabled,
-	title,
-	icon,
-	testId
-}) => {
-	const button = (
-		<TopbarIconButton
-			onClick={() => action!()}
-			data-testid={testId}
-			disabled={disabled}
-		>
-			{icon}
-		</TopbarIconButton>
-	)
-
-	if (!disabled) {
-		return <Tooltip title={title}>
-			{button}
-		</Tooltip>
-	}
-	return button
-
-}
-
-class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
-
-	@AutoBind
-	isActionDisabled() {
-		return !(this.props.editContext.mode === FormMode.FormDesign || this.props.editContext.mode === FormMode.LayoutDesign) || !this.props.editContext.getLastSelectedId()
-	}
-
-	render() {
-		return (
-			<ObserveState
-				listenTo={this.props.editContext}
-				control={ () => 
-					<ButtonGroup
-						variant="outlined"
-						size="small"
-						classes={{
-							root: 'TopbarButtonGroup-root'
-						}}
-					>
-						<TopbarActionButton
-							title="Copy"
-							icon={<CopyIcon />}
-							disabled={this.isActionDisabled()}
-							testId="btn-topbar-copy"
-							action={this.props.editContext.onCopy}
-						/>
-						<TopbarActionButton
-							title="Cut"
-							icon={<CutIcon />}
-							disabled={this.isActionDisabled()}
-							testId="btn-topbar-cut"
-							action={this.props.editContext.onCut}
-						/>
-						<TopbarActionButton
-							title="Paste"
-							icon={<PasteIcon />}
-							disabled={this.isActionDisabled() || !this.props.editContext.clipboardControl || !this.props.editContext.getLastSelectedId()}
-							testId="btn-topbar-paste"
-							action={this.props.editContext.onPaste}
-						/>
-						<TopbarActionButton
-							title="Delete"
-							icon={<DeleteIcon />}
-							disabled={this.isActionDisabled()}
-							testId="btn-topbar-delete"
-							action={this.props.editContext.onDelete}
-						/>
-					</ButtonGroup>
-				}
-			/>
-		)
-	}
-
-}
-
-
 export class Topbar extends React.Component<{editContext: FormContext}> {
-
 
 	@AutoBind
 	onChangeFormTitle(event: React.ChangeEvent<HTMLInputElement>) {
@@ -406,12 +320,14 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 
 			this.props.editContext.refreshDesigner();
 		}
+
 	}
 
 	render() {
 		const formName = this.props.editContext.formName;
 		return (
 			<div style={{width: '100%', overflow: 'auto', borderBottom: '1px solid #E6E9ED'}}>
+
 				<TopbarDiv>
 					{
 						formName &&
@@ -469,7 +385,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-size-defined"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_DEFINED ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_DEFINED ? 'TopbarIconButton-disabled': undefined
 										}}
 										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_DEFINED)}
 									>
@@ -480,7 +396,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-size-tablet-horizontal"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL ? 'TopbarIconButton-disabled': undefined
 										}}
 										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL)}
 									>
@@ -491,7 +407,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-size-tablet-vertical"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL ? 'TopbarIconButton-disabled': undefined
 										}}
 										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL)}
 									>
@@ -502,7 +418,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-size-phone-horizontal"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL ? 'TopbarIconButton-disabled': undefined
 										}}
 										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL)}
 									>
@@ -513,7 +429,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-size-phone-vertical"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL ? 'TopbarIconButton-disabled': undefined
 										}}
 										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL)}
 									>
@@ -539,7 +455,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-background-gray"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? 'TopbarIconButton-selected' : undefined
+											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? 'TopbarIconButton-disabled' : undefined
 										}}
 										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_GRAY)}
 									>
@@ -550,7 +466,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-background-paper"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_PAPER ? 'TopbarIconButton-selected' : undefined 
+											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_PAPER ? 'TopbarIconButton-disabled' : undefined 
 										}}
 										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_PAPER)}
 									>
@@ -562,7 +478,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-background-outline"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE ? 'TopbarIconButton-selected' : undefined 
+											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE ? 'TopbarIconButton-disabled' : undefined 
 										}}
 										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE)}
 									>
@@ -573,7 +489,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									<TopbarIconButton
 										data-testid="btn-topbar-background-white"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_NONE ? 'TopbarIconButton-selected' : undefined 
+											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_NONE ? 'TopbarIconButton-disabled' : undefined 
 										}}
 										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_NONE)}
 									>
@@ -587,7 +503,47 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 						this.props.editContext.mode !== FormMode.Runtime && 
 						<TopbarItemDiv style={{marginRight: 'auto'}}>
 							<ThemeProvider theme={theme}>	
-								<TopbarActionGroup editContext={this.props.editContext} />
+								<ButtonGroup
+									variant="outlined"
+									size="small"
+									classes={{
+										root: 'TopbarButtonGroup-root'
+									}}
+								>
+									<Tooltip title="Copy">
+										<TopbarIconButton
+											onClick={this.props.editContext.onCopy}
+											data-testid="btn-topbar-copy"
+										>
+											<CopyIcon />
+										</TopbarIconButton>
+									</Tooltip>
+									<Tooltip title="Cut">
+										<TopbarIconButton
+											onClick={this.props.editContext.onCut}
+											data-testid="btn-topbar-cut"
+										>
+											<CutIcon />
+										</TopbarIconButton>
+									</Tooltip>
+									<Tooltip title="Paste">
+										<TopbarIconButton
+											onClick={this.props.editContext.onPaste}
+											data-testid="btn-topbar-paste"
+										>
+											<PasteIcon />
+										</TopbarIconButton>
+									</Tooltip>
+									<Tooltip title="Delete">
+										<TopbarIconButton
+											onClick={this.props.editContext.onDelete}
+											data-testid="btn-topbar-delete"
+										>
+											
+											<DeleteIcon />
+										</TopbarIconButton>
+									</Tooltip>
+								</ButtonGroup>
 							</ThemeProvider>
 						</TopbarItemDiv>
 					}

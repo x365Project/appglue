@@ -11,14 +11,11 @@ import {UserFormData} from "../UserFormData";
 import {ISampleDataProvider} from "../../Common/ISampleDataProvider";
 import {IAction} from "../../CommonUI/IAction";
 import {XBaseControl} from "../Controls/XBaseControl";
-import { DataUtilities } from "../../Common/DataUtilities";
-import { IContextForControl } from "../../Common/IContextForControl";
-import { UIControlRegistration } from "./RegisterUIControl";
 import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
 import {action, StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ElementFactory} from "../../CommonUI/ElementFactory";
- 
+
 export class FormContext {
     form: XFormConfiguration;
     runtimeValidationProvider?: IRuntimeValidationProvider;
@@ -129,89 +126,14 @@ export class FormContext {
     // this should ONLY be in designer.  Not here.
     private _mode: FormMode | string = FormMode.FormDesign;
 
-    selectedId : string | null = null;
-    contextControl: IContextForControl | null = null;
-    lastSelectedId: string | null = null;
-
     designValidationProvider?: IDesignValidationProvider;
     onFormSave?: (data: any) => void;
     sampleDataProvider? : ISampleDataProvider ;
     designConfig?: IDesignPanelConfig;
-
-    clipboardControl: XBaseControl | null = null;
-    deleteControl: XBaseControl | null = null;
-
-    @AutoBind
-    cloneControl(control: XBaseControl) : XBaseControl {
-        let type = Reflect.get(control, '__type');
-        let registeredControl = UIControlRegistration[type];
-        let val = new registeredControl.prototype.constructor();
-
-        return Object.assign(val, control);
-    }
-
-    @AutoBind
-    onCopy(id?: string)  {
-        let controlId = id ? id : this.lastSelectedId;
-        if (!controlId) return;
-
-        let control = this.form.find(controlId);
-        if (!control) return;
-
-        this.clipboardControl = this.cloneControl(control);
-
-        if (id) this.unselectContextControl();
-
-        StateManager.changed(this);
-    }
-
-    @AutoBind
-    onCut(id?: string) {
-        let controlId = id ? id : this.lastSelectedId;
-        if (!controlId) return;
-
-        let control = this.form.find(controlId);
-        if (!control) return;
-
-        this.clipboardControl = this.cloneControl(control);
-
-        this.unSelectControl();
-        this.form.remove(control);
-        if (id) this.unselectContextControl();
-
-        StateManager.changed(this);
-    }
-
-    @AutoBind
-    onDelete(id?: string) {
-        let controlId = id ? id : this.lastSelectedId;
-        if (!controlId) return;
-
-        let control = this.form.find(controlId);
-
-        if (!control) return;
-        this.deleteControl = control;
-        if (id) this.unselectContextControl();
-        StateManager.changed(this);
-    };
-
-    @AutoBind
-    onPaste(id?: string) {
-        let controlId = (id || this.lastSelectedId);
-        if (this.clipboardControl && controlId) {
-            this.clipboardControl.id = DataUtilities.generateUniqueId();
-            let control = this.form.find(controlId);
-            this.form.getContainers().forEach((c) => {
-                let index = c.getControls().indexOf(control!);
-                if (index >= 0) {
-                    c.add(this.cloneControl(this.clipboardControl!), index + 1);
-                }
-            });
-            if (id) this.unselectContextControl();
-
-            StateManager.changed(this);
-        }
-    }
+    onCopy?: () => void;
+    onCut?: () => void;
+    onDelete?: () => void;
+    onPaste?: () => void;
 
     // called when we force a designer update
     onDesignerUpdate?: () => void;
@@ -264,11 +186,15 @@ export class FormContext {
         }
 
         this.controlContexts.updateValidationIssues(breaks, this.form.getAllControls(), false);
+        
         return breaks;
     }
 
     @AutoBind
     refreshDesigner() : void {
+        if (this.selectedId) {
+            this.expandedConfigPanel = true;
+        }
 
         this.designer?.forceUpdate();
 
@@ -295,12 +221,10 @@ export class FormContext {
 
     }
 
+    selectedId : string | null = null;
+
     getSelectedId() : string | null {
         return this.selectedId;
-    }
-
-    getLastSelectedId(): string | null {
-        return this.lastSelectedId;
     }
 
     @AutoBind
@@ -308,7 +232,6 @@ export class FormContext {
         this.unSelectControl();
 
         this.selectedId = selectedId;
-        this.lastSelectedId = selectedId;
 
         if (selectedId !== CONFIG_FORM_KEY && this.form.find(selectedId)) {
             let cc = this.controlContexts.getControlRenderContextById(selectedId, this.form.getAllControls());
@@ -332,18 +255,6 @@ export class FormContext {
         this.selectedId = null;
         this.expandedConfigPanel = false;
 
-        StateManager.changed(this);
-    }
-
-    @AutoBind
-    selectContextControl(control: IContextForControl) {
-        this.contextControl = control;
-        StateManager.changed(this);
-    }
-
-    @AutoBind
-    unselectContextControl () {
-        this.contextControl = null;
         StateManager.changed(this);
     }
 

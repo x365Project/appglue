@@ -145,7 +145,7 @@ describe("XUserForm", () => {
         const isMale = getByTestId('isMale').querySelector('input') as HTMLInputElement;
         expect(isMale).toBeInTheDocument();
 
-        const personDescription = getByTestId('personDescription').querySelector('textarea');
+        const personDescription = getByTestId('personDescription');
         expect(personDescription).toBeInTheDocument();
 
         expect(getByTestId('tester')).toBeInTheDocument();
@@ -264,7 +264,7 @@ describe("XUserForm", () => {
         fireEvent.change(getByTestId('birthday').querySelector('input') as HTMLInputElement, { target: {value: testData.birthday}})
 
         testData.personDescription = 'Person Description';
-        fireEvent.change(getByTestId('personDescription').querySelector('textarea') as HTMLTextAreaElement, { target: {value: testData.personDescription}});
+        fireEvent.change(getByTestId('personDescription') as HTMLTextAreaElement, { target: {value: testData.personDescription}});
 
         let btnFormClose = getByTestId('btn-form-close');
         expect(btnFormClose).toBeInTheDocument();

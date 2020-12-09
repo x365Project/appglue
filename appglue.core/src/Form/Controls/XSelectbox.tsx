@@ -1,22 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 import {
-    Button,
-    IconButton,
-    List, ListItem, ListItemSecondaryAction, ListItemText,
     Select
 } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+
 import {RegisterUIControl, ControlType} from "../Utilities/RegisterUIControl";
+import {PropertyEditorList} from '../../CommonUI/PropertyEditing/PropertyEditorList';
+import {PropertyEditorText} from "../../CommonUI/PropertyEditing/PropertyEditorText";
 import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
 import {IssueData} from "../Utilities/ControlRenderContext";
-import TextField from "@material-ui/core/TextField";
-import RemoveIcon from "@material-ui/icons/Remove";
-import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 
 interface XSelectboxItem {
     value: string,
@@ -25,30 +22,7 @@ interface XSelectboxItem {
 
 @RegisterUIControl('Data (Pick)', 'Selectbox', ControlType.Control, <SelectBoxIcon />)
 export class XSelectbox extends BaseTextEntryControl {
-    list: string[] = [];
-
-
-    getRuntimeValidationIssues(): ValidationIssue[] {
-        let issues = super.getRuntimeValidationIssues() ?? [];
-
-        if (this.valueName) {
-            let value = this.getFormDataValue(this.valueName);
-
-            if (value) {
-                if (this.list.length === 0 || this.list.indexOf(value) === -1){
-                    let issue = new ValidationIssue(
-                        'Value [' + value + '] is not in selection list',
-                        this.valueName,
-                        this.id);
-                    issues.push(issue);
-                }
-
-            }
-        }
-
-        return issues;
-    }
-
+    items: XSelectboxItem[] = [];
     render() {
 
         let style = (this.getFormContext()?.form)?.defaultTextStyle;
@@ -84,9 +58,9 @@ export class XSelectbox extends BaseTextEntryControl {
                                 onChange={this.handleChange}
                                 data-testid={this.valueName}
                             >
-                                {this.list.map((item, index) => {
+                                {this.items.map((item, index) => {
                                     return (
-                                        <option value={item} key={index} >{item}</option>
+                                        <option value={item.value} key={index} >{item.label}</option>   
                                     );
                                 })}
                             </Select>
@@ -118,9 +92,9 @@ export class XSelectbox extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             data-testid={this.valueName}
                         >
-                            {this.list.map((item, index) => {
+                            {this.items.map((item, index) => {
                                 return (
-                                    <option value={item} key={index} >{item}</option>
+                                    <option value={item.value} key={index} >{item.label}</option>   
                                 );
                             })}
                         </Select>
@@ -151,9 +125,9 @@ export class XSelectbox extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             data-testid={this.valueName}
                         >
-                            {this.list.map((item, index) => {
+                            {this.items.map((item, index) => {
                                 return (
-                                    <option value={item} key={index} >{item}</option>
+                                    <option value={item.value} key={index} >{item.label}</option>   
                                 );
                             })}
                         </Select>
@@ -184,9 +158,9 @@ export class XSelectbox extends BaseTextEntryControl {
                             onChange={this.handleChange}
                             data-testid={this.valueName}
                         >
-                            {this.list.map((item, index) => {
+                            {this.items.map((item, index) => {
                                 return (
-                                    <option value={item} key={index} >{item}</option>
+                                    <option value={item.value} key={index} >{item.label}</option>   
                                 );
                             })}
                         </Select>
@@ -215,46 +189,45 @@ export class XSelectbox extends BaseTextEntryControl {
                 {this.renderBaseDataControlEditor()}
                 {this.renderTextControlBasePropertyEditor()}
 
-                <List style={{ width: "100%" }}>
-                    {this.list.map((s: string, idx: number) => (
-                        <ListItem>
-                            <ListItemText>
-                                <TextField
-                                    label="Option Label"
-                                    value={s}
-                                    size="small"
-                                    onChange={(event) => {
-                                        this.list[idx] =
-                                            event.target.value;
-                                        this.controlUpdate();
-                                    }}
-                                    key={idx}
-                                />
-                            </ListItemText>
-                            <ListItemSecondaryAction>
-                                <IconButton
-                                    color="secondary"
-                                    size="small"
-                                    onClick={() => {
-                                        this.list.splice(idx, 1);
-                                        this.controlUpdate();
-                                    }}
-                                >
-                                    <RemoveIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    ))}
-                </List>
-                <Button
-                    color="primary"
-                    onClick={() => {
-                        this.list.push("");
-                        this.controlUpdate();
-                    }}
-                >
-                    Add Item
-                </Button>
+                <PropertyEditorList
+                    label="Options"
+                    list={this.items.map((item, index) => ({name: `Option ${index + 1}`, item: item}))}
+                    showDialogCancel={false}
+                    itemUI={
+                        (item: {index: number, content?: XSelectboxItem}) => ({
+                            onComplete : (item: {index: number, content: XSelectboxItem | null}) => {
+                                if (item.content) {
+                                    Reflect.set(this.items, item.index, item.content);
+                                } else {
+                                    this.items.splice(item.index, 1);
+                                }
+                                this.controlUpdate();
+                            },
+                            onCancel: () => {
+                                delete item.content;
+                                // this.designerUpdate();
+                            },
+                            ui: (
+                                item.content && 
+                                (<div>
+                                    <PropertyEditorText
+                                        editObject={item.content}
+                                        label="Label"
+                                        propertyName="label"
+                                        updateCallback={this.controlUpdate}
+                                    />
+                                    <PropertyEditorText
+                                        editObject={item.content}
+                                        label="Value"
+                                        propertyName="value"
+                                        updateCallback={this.controlUpdate}
+                                    />
+                                </div>)
+                            )
+                        })
+                    }
+                    prototype={() => ({label: '', value: ''})}
+                />
                 {this.renderTextStyleSelectionEditor()}
 
             </>

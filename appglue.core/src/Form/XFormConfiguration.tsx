@@ -3,7 +3,7 @@ import {Droppable, DroppableProvided, DroppableStateSnapshot} from "react-beauti
 import styled from "styled-components";
 import {Collapse, Divider, IconButton, Typography} from "@material-ui/core";
 import {IConfigStorage} from "../Common/IConfigStorage";
-import {DataUtilities} from "../Common/DataUtilities";
+import {cloneWithoutReact, spreadData} from "../Common/DataUtilities";
 import {XBaseControl} from "./Controls/XBaseControl";
 import {XBaseContainer} from "./Containers/XBaseContainer";
 import {BorderStyle, FormDesignConstants, FormMode, TextControlSize, TextControlStyle} from "./FormDesignConstants";
@@ -19,10 +19,10 @@ import {
 	PropertyEditorTextSizeSelection,
 	PropertyEditorTextStyleSelection
 } from "../CommonUI/PropertyEditing/TextSelectionButtonGroups";
+import {FormContext} from "./Utilities/FormContext";
 import { PinIcon } from "../CommonUI/Icon/PinIcon";
 import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 import {XContainerDesignWrapper} from "./Utilities/XContainerDesignWrapper";
-import {FormContext} from "./Utilities/FormContext";
 import {ElementFactory} from "../CommonUI/ElementFactory";
 
 export const PinnedNotifyDiv = styled("div")<{
@@ -161,14 +161,10 @@ export class XFormConfiguration
 
 	}
 
-	remove(control: XBaseControl): void {
-		const index = (this.containers as XBaseControl[]).indexOf(control, 0);
+	remove(control: XBaseContainer): void {
+		const index = this.containers.indexOf(control, 0);
 		if (index > -1) {
-			this.containers.splice(index, 1);
-		} else {
-			for (let cont of this.containers) {	
-				cont.remove(control);
-			}	
+		this.containers.splice(index, 1);
 		}
 	}
 
@@ -516,13 +512,13 @@ export class XFormConfiguration
 		return null;
 
 		for (let cont of this.containers) {
-			if (cont.id === id)
-				return cont;
+		if (cont.id === id)
+			return cont;
 
-			let res = cont.find(id);
+		let res = cont.find(id);
 
-			if (res)
-				return res;
+		if (res)
+			return res;
 		}
 
 		return null;
@@ -541,7 +537,7 @@ export class XFormConfiguration
 
 
 	getStorageData(): object {
-		let retData = DataUtilities.cloneWithoutReact(this, ['containers', 'host', '_formContext', '_formRuntimeContext']);
+		let retData = cloneWithoutReact(this, ['containers', 'host', '_formContext', '_formRuntimeContext']);
 		let containers = [];
 
 		for (let container of this.containers) {
@@ -554,7 +550,7 @@ export class XFormConfiguration
 	}
 
 	setStorageData(data: object): void {
-		DataUtilities.spreadData(this, data, ['__containers']);
+		spreadData(this, data, ['__containers']);
 
 		this.containers = [];
 		let containerArray = Reflect.get(data, '__containers');

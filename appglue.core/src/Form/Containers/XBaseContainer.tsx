@@ -46,7 +46,7 @@ export abstract class XBaseContainer
     abstract find(id: string): XBaseControl | null  ;
     abstract setOrder(id: string, order: number): void ;
     abstract add(control: XBaseControl, index?: number): void;
-    abstract getControls() : XBaseControl[];
+    abstract getControls() : XBaseControl[] ;
 
     getDesignValidationIssues(): ValidationIssue[] {
         return [];

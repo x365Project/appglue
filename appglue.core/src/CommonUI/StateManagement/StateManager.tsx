@@ -59,61 +59,38 @@ export class StateManager {
         }
     }
 
-    static isListening(listeningToProperties: string[], changedProperties : string[]) : boolean {
-        for (let prop of listeningToProperties) {
-            if (changedProperties.indexOf(prop) !== -1)
-                return true;
-        }
 
-        return  false;
-    }
-
-
-    static internalTriggerUpdate(observable: object, forProperties: string[] | undefined = undefined) {
+    static internalTriggerUpdate(observable: object, forProperty: string|undefined = undefined) {
         let observers = Reflect.get(observable, this.OBSERVERS_VALUE_NAME) as ListenerRegistration;
 
         if (observers) {
             for (let l of observers.components) {
-                // checking property listeners.
-                if (forProperties && l.properties && l.properties.length !== 0 &&  this.isListening(l.properties, forProperties))
+             //   console.log('forcing update', l)
+                if (forProperty && l.properties?.indexOf(forProperty) !== -1)
                     l.component.forceUpdate();
 
-                // call general observers, always.
-                if (!l.properties || l.properties.length === 0)
+                if (!forProperty && (!l.properties || l.properties.length === 0))
                     l.component.forceUpdate();
             }
 
             for (let l of observers.functions) {
-                // checking property listeners.
-                if (forProperties && l.properties && l.properties.length !== 0 &&  this.isListening(l.properties, forProperties))
+                //   console.log('forcing update', l)
+                if (forProperty && l.properties?.indexOf(forProperty) !== -1)
                     l.function();
 
-                // call general observers, always.
-                if (!l.properties || l.properties.length === 0)
+                if (!forProperty && (!l.properties || l.properties.length === 0))
                     l.function();
             }
         }
 
     }
 
-    static isChanged(observable: object) : boolean {
-        return true;
-    }
-
     static changed(observable: object) {
-        if (this.isChanged(observable))
-            StateManager.internalTriggerUpdate(observable);
+        StateManager.internalTriggerUpdate(observable);
     }
 
     static propertyChanged(observable: object, property: string) {
-        if (this.isChanged(observable))
-            StateManager.internalTriggerUpdate(observable, [property]);
-    }
-
-    static propertiesChanged(observable: object, properties: string[]) {
-        if (this.isChanged(observable)){
-            StateManager.internalTriggerUpdate(observable, properties);
-        }
+        StateManager.internalTriggerUpdate(observable, property);
     }
 }
 

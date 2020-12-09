@@ -1,6 +1,6 @@
-import React from "react";
+import React, {JSXElementConstructor, ReactElement} from "react";
 import {IConfigStorage} from "../../Common/IConfigStorage";
-import {DataUtilities} from "../../Common/DataUtilities";
+import {cloneWithoutReact, generateUniqueId, spreadData} from "../../Common/DataUtilities";
 import {IEditable} from "../../CommonUI/IEditable";
 import {UserFormData} from "../UserFormData";
 import {IFormDataAccessor} from "../Utilities/IFormDataAccessor";
@@ -39,7 +39,7 @@ export abstract class XBaseControl
         super({});
 
         // generates ID to be a guid
-        this.id = DataUtilities.generateUniqueId();
+        this.id = generateUniqueId();
 
     }
 
@@ -68,11 +68,11 @@ export abstract class XBaseControl
     }
 
     getStorageData(): object {
-        return DataUtilities.cloneWithoutReact(this, ['owner', '_formContext', '_formRuntimeContext']);
+        return cloneWithoutReact(this, ['owner', '_formContext', '_formRuntimeContext']);
     }
 
     setStorageData(data: object): void {
-        DataUtilities.spreadData(this, data, []);
+        spreadData(this, data, []);
     }
 
 

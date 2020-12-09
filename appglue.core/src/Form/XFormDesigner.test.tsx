@@ -216,17 +216,10 @@ describe("XFormDesigner", () => {
 
         const {getByTestId} = render(<XFormDesigner form={form} />);
 
-        let copyBtn = getByTestId('btn-topbar-copy');
-        expect(copyBtn).toBeInTheDocument();
-
-        let deleteBtn = getByTestId('btn-topbar-delete');
-        expect(deleteBtn).toBeInTheDocument();
-
-        let cutBtn = getByTestId('btn-topbar-cut');
-        expect(cutBtn).toBeInTheDocument();
-
-        let pasteBtn = getByTestId('btn-topbar-paste');
-        expect(pasteBtn).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-delete')).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-cut')).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-copy')).toBeInTheDocument();
+        expect(getByTestId('btn-topbar-paste')).toBeInTheDocument();
 
         expect(errorList).toHaveLength(0);
     });
@@ -371,5 +364,4 @@ describe("XFormDesigner", () => {
         // height should be unset.
         expect((formWrapper.children[0] as any).style.height).toEqual("");
     });
-
 });

@@ -1,7 +1,7 @@
 import React from "react";
 import {AutoBind} from "../../Common/AutoBind";
+import {generateUniqueId} from "../../Common/DataUtilities";
 import {StateManager} from "./StateManager";
-import {DataUtilities} from "../../Common/DataUtilities";
 
 /**
  <ObserveState
@@ -41,7 +41,7 @@ export class ObserveState extends React.Component<{ listenTo: object | null | un
 
     @AutoBind
     update() {
-        this.setState({key: DataUtilities.generateUniqueId()})
+        this.setState({key: generateUniqueId()})
         this.forceUpdate();
     }
 }

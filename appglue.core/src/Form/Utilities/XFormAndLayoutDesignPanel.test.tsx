@@ -123,10 +123,16 @@ describe("InternalUserFormDesignPanel", () => {
         form.setFormContext(ui);
 
         const ref = React.createRef<XFormAndLayoutDesignPanel>()
+
+        // hook to the update
+        ui.onDesignerUpdate = () => {
+            ref.current?.forceUpdate();
+        }
+
         const { getByTestId, container, getByText } = render(<XFormAndLayoutDesignPanel editContext={ui} ref={ref} />);
 
-        let overlayDiv = getByTestId('firstName').closest('div[data-testid="control-wrapper"]')!.querySelector('div[data-testid="control-click-div"]')!;
-
+        let overlayDiv = getByTestId('firstName').parentElement!.querySelector('div[data-testid="control-click-div"]')!;
+        
         expect(overlayDiv).toBeInTheDocument();
 
         fireEvent.click(overlayDiv);
@@ -192,7 +198,7 @@ describe("InternalUserFormDesignPanel", () => {
                 return breaks;
             }
         }
-        ui.computeDesignValidationIssues();
+        
 
         const {getByTestId} = render(<XFormAndLayoutDesignPanel editContext={ui} />);
         const errorNotification = getByTestId('error-notification');
