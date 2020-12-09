@@ -218,33 +218,9 @@ export function getFormConfig(): XFormConfiguration {
   hstack.add(button);
   hstack.add(button2);
 
-  let tabContainer = new XTabContainer();
-
-  let tabContainerTab = new XTabContainerTab();
-  tabContainerTab.value = 'test1';
-  let tabContainerTabContent = new XTabContainerTabContent();
-  let tabContainerTabHeader = new XTabContainerTabHeader();
 
 
-//   let tabContentStackContainer = new XStackContainer();
-//   tabContainerTabContent.add(tabContentStackContainer);
-
-  tabContainerTabHeader.title = 'Test 1';
-  tabContainerTab.setContent(tabContainerTabContent);
-  tabContainerTab.setHeader(tabContainerTabHeader);
-  
-  let tabContainerTab2 = new XTabContainerTab();
-  tabContainerTab2.value = 'test2';
-  let tabContainerTabContent2 = new XTabContainerTabContent();
-  let tabContainerTabHeader2 = new XTabContainerTabHeader();
-  tabContainerTabHeader2.title = 'Test 2';
-  tabContainerTab2.setContent(tabContainerTabContent2);
-  tabContainerTab2.setHeader(tabContainerTabHeader2);
-
-  tabContainer.addTab(tabContainerTab);
-  tabContainer.addTab(tabContainerTab2);
-
-  let ui = new XFormConfiguration([headingContainer, container, colContainer, tabContainer, hstack]);
+  let ui = new XFormConfiguration([headingContainer, container, colContainer, hstack]);
   // todo: come back here
   //ui.setFormData(formData);
 

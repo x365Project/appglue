@@ -18,6 +18,7 @@ export const EmptyContainer = styled("div")<{
 	position: absolute;
 	flex-wrap: wrap;
 	padding: 2px 20px;
+	min-height: 75px;
 `;
 
 export const ControlDiv = styled.div`

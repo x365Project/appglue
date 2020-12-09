@@ -26,6 +26,7 @@ import { DefaultOnOff } from "../Utilities/DefaultOnOff";
 import { PropertyEditorList } from "../../CommonUI/PropertyEditing/PropertyEditorList";
 import { PropertyEditorBoolean } from "../../CommonUI/PropertyEditing/PropertyEditorBoolean";
 import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEditorText";
+import { PropertyEditorOptionWithButtonGroup } from "../../CommonUI/PropertyEditing/PropertyEditorOptionWithButtonGroup";
 
 const StyledTab = styled(Tab)`
     && {
@@ -104,6 +105,15 @@ export class XTabContainerTabHeader {
 export class XTabContainerTabContent extends XBaseStackContainer {
 
     tab?: XTabContainerTab;
+
+    contentBorderType?: string;
+    contentBorderRadius?: number;
+    contentBorderWidth?: number;
+    contentBorderStyle?: BorderStyle;
+
+    contentBorderColor? : string;
+    contentBackgroundColor? : string;
+
     setFormContext(value: FormContext | undefined) : void {
         if (!value)
             throw 'cannot set edit context to null (base control)';
@@ -127,13 +137,49 @@ export class XTabContainerTabContent extends XBaseStackContainer {
 	}
 	
 	getInnerControlSpacing(): number | undefined {
-		return this.tab!.container!.interControlSpacing
+		return this.getContainer()!.interControlSpacing
 	}
+
+	getContainer(): XTabContainer | undefined{
+		return this.tab!.container
+	}
+
+    hasOwnBorder(): boolean | undefined {
+        return this.overrideFormBorderSettings === DefaultOnOff.On
+    }
+
+    hasBorder(): boolean | undefined {
+        return this.hasOwnBorder() || (this.overrideFormBorderSettings === DefaultOnOff.DEFAULT && this.getContainer()!.defaultShowContentBorder)
+    }
+
+    borderColor(): string | undefined {
+        return (this.hasOwnBorder() && this.contentBorderColor) || this.getContainer()!.defaultContentBorderColor
+    }
+
+    borderStyle(): BorderStyle | undefined {
+        return (this.hasOwnBorder() && this.contentBorderStyle) || this.getContainer()!.defaultContentBorderStyle
+    }
+
+    borderWidth(): number | undefined {
+        return (this.hasOwnBorder() && this.contentBorderWidth) || this.getContainer()!.defaultContentBorderWidth
+    }
+
+    borderRadius(): number | undefined {
+        return (this.hasOwnBorder() && this.contentBorderRadius) || this.getContainer()!.defaultContentBorderRadius
+    }
+
+    backgroundColor(): string | undefined | null {
+        return this.contentBackgroundColor || this.getContainer()!.defaultTabContentBackground
+    }
+
+    getInnerMargin(): number | undefined {
+        return this.innerMargin || this.getContainer()!.defaultTabContentInnerMargin
+    }
 
 
     render() {
-        let mode = this.getFormContext()?.mode ?? FormMode.Runtime;
-
+		let mode = this.getFormContext()?.mode ?? FormMode.Runtime;
+		
         if (mode === FormMode.FormDesign) {
             return (
                 <Droppable
@@ -274,8 +320,8 @@ export class XTabContainerTab extends XBaseControl {
         return this.content!.find(id);
     }
 
-    add(container: XBaseContainer, index?: number) {
-        this.content!.add(container, index);
+    add(control: XBaseControl, index?: number) {
+        this.content!.add(control, index);
     }
 
     getContainer() : XTabContainer | undefined {
@@ -327,8 +373,18 @@ export class XTabContainer
     defaultTabContentHeight: number | null = null;
 	defaultTabContentWidth: number | null = null;
 
-	defultTabContentColor: string = '#fff';
+	defaultTabContentBackground: string = '#fff';
+	defaultTabContentInnerMargin: number = 30;
 
+	defaultTabHeaderBackground: string = '#fff';
+
+	defaultShowContentBorder: boolean = false;
+	defaultContentBorderColor?: string = 'lightGray';
+    defaultContentBorderRadius?: number = 10;
+    defaultContentBorderWidth?: number = 2;
+    defaultContentBorderStyle?: BorderStyle;
+
+	
     setOrder(id: string, order: number): void {
     }
 
@@ -380,7 +436,7 @@ export class XTabContainer
             } else {
                 this.tabs.splice(index, 0, tab)
             }
-        } else if (control instanceof XBaseContainer) {
+        } else {
             this.getCurrentTab()!.add(control, index);
         }
 
@@ -445,7 +501,7 @@ export class XTabContainer
 
 
     render() {
-        let mode: FormMode | string = FormMode.Runtime;
+		let mode: FormMode | string = FormMode.Runtime;
         let editContext = this.getFormContext();
         if (editContext)
             mode = editContext.mode;
@@ -541,7 +597,13 @@ export class XTabContainer
                     label={"Inner Margin For Tab Header"}
                     propertyName="innerMarginTabHeader"
                     updateCallback={this.controlUpdate}
-                    // parentDefaultValue={FormDesignConstants.GAP_BETWEEN_tabs}
+                />
+
+                <PropertyEditorInteger  
+                    editObject={this}
+                    label={"Inner Margin For Tab Content"}
+                    propertyName="defaultTabContentInnerMargin"
+                    updateCallback={this.controlUpdate}
                 />
                 
                 <PropertyEditorInteger
@@ -570,14 +632,50 @@ export class XTabContainer
                 <PropertyEditorColor
                     editObject={this}
                     label="Default Tab Content Color"
-                    propertyName="defultTabContentColor"
+                    propertyName="defaultTabContentBackground"
                     updateCallback={this.controlUpdate}
                 />
+				<PropertyEditorBoolean
+                    editObject={this}
+                    label="Show Content Border"
+                    propertyName="defaultShowContentBorder"
+                    updateCallback={this.controlUpdate}
+                />
+
+                <Collapse in={this.defaultShowContentBorder}>
+                    <ChildFullWidthDiv>
+                        <PropertyEditorInteger
+                            editObject={this}
+                            label="Content Border Width"
+                            propertyName="defaultContentBorderWidth"
+                            updateCallback={this.controlUpdate}
+                        />
+                        <PropertyEditorInteger
+                            editObject={this}
+                            label="Content Border Radius"
+                            propertyName="defaultContentBorderRadius"
+                            updateCallback={this.controlUpdate}
+                        />
+                        <PropertyEditorColor
+                            editObject={this}
+                            label="Content Border Color"
+                            propertyName="defaultContentBorderColor"
+                            updateCallback={this.controlUpdate}
+                        />
+                        <PropertyEditorSelect
+                            editObject={this}
+                            label="Content Border Style"
+                            propertyName="defaultContentBorderStyle"
+                            updateCallback={this.controlUpdate}
+                            options={FormDesignConstants.BORDER_STYLES}
+                        />
+                    </ChildFullWidthDiv>
+                    
+                </Collapse>
 
                 {
                     this.renderBorderConfigUI()
                 }
-
 
                 <PropertyEditorList
                     label="Tabs"
@@ -610,7 +708,60 @@ export class XTabContainer
 										propertyName="value"
 										updateCallback={this.controlUpdate}
 										label="Tab Value"
-									/>
+                                    />
+
+                                    <PropertyEditorInteger
+                                        editObject={item.content.content!}
+                                        label="Inner Margin"
+                                        propertyName="innerMargin"
+                                        updateCallback={this.controlUpdate}
+                                    />
+                                    
+                                    <PropertyEditorOptionWithButtonGroup
+                                        editObject={item.content.content!}
+                                        label="Override Border Settings"
+                                        propertyName="overrideFormBorderSettings"
+                                        updateCallback={this.controlUpdate}
+                                    />
+
+                                    <Collapse in={item.content.content!.overrideFormBorderSettings === DefaultOnOff.On}>
+                                        <ChildFullWidthDiv>
+                                            <PropertyEditorInteger
+                                                editObject={item.content.content!}
+                                                label="Border Width"
+                                                propertyName="containerBorderWidth"
+                                                updateCallback={this.controlUpdate}
+                                            />
+                                            <PropertyEditorInteger
+                                                editObject={item.content.content!}
+                                                label="Border Radius"
+                                                propertyName="containerBorderRadius"
+                                                updateCallback={this.controlUpdate}
+                                            />
+                                            
+                                            <PropertyEditorColor
+                                                editObject={item.content.content!}
+                                                label="Border Color"
+                                                propertyName="containerBorderColor"
+                                                updateCallback={this.controlUpdate}
+                                            />
+                                            <PropertyEditorSelect
+                                                editObject={item.content}
+                                                label="Border Style"
+                                                propertyName="containerBorderStyle"
+                                                updateCallback={this.controlUpdate}
+                                                options={FormDesignConstants.BORDER_STYLES}
+                                            />
+                                        </ChildFullWidthDiv>
+                                    </Collapse>
+
+                                    <PropertyEditorColor
+                                        editObject={item.content.content!}
+                                        label="Column Background Color"
+                                        propertyName="containerBackgroundColor"
+                                        updateCallback={this.controlUpdate}
+                                    />
+
 								</>
 							}
                             
