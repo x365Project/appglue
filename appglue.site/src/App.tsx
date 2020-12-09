@@ -5,6 +5,7 @@ import {NavFrame} from "./NavFrame/NavFrame";
 import {FrameOptions, getFrameOptions} from "./NavFrame/FrameOptions";
 
 function App() {
+
   return (
     <div className="App">
       <NavFrame layoutOptions={getFrameOptions()}/>
