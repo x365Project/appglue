@@ -13,10 +13,10 @@ import {BaseTextEntryControl} from "./BaseTextEntryControl";
 import {TextControlStyle} from "../FormDesignConstants";
 import {SelectBoxIcon} from "../../CommonUI/Icon/SelectBoxIcon";
 import { StyledInputLabel, StyledFormHelperText } from "./XCommonStyled";
-import {IssueData} from "../Utilities/ControlRenderContext";
 import TextField from "@material-ui/core/TextField";
 import RemoveIcon from "@material-ui/icons/Remove";
 import {ValidationIssue} from "../../Common/IDesignValidationProvider";
+import {IssueData} from "../Utilities/ControlRenderContext";
 
 interface XSelectboxItem {
     value: string,
