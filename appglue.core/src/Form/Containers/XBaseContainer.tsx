@@ -1,6 +1,5 @@
 import React from "react";
 import {XBaseControl} from "../Controls/XBaseControl";
-import styled from "styled-components";
 import {IFormDataAccessor} from "../Utilities/IFormDataAccessor";
 import {BorderStyle, FormDesignConstants} from "../FormDesignConstants";
 import { PropertyEditorInteger } from "../../CommonUI/PropertyEditing/PropertyEditorInteger";
@@ -13,17 +12,7 @@ import { PropertyEditorOptionWithButtonGroup } from "../../CommonUI/PropertyEdit
 import { EmptyContainer, ControlDiv } from "../Components/EmptyContainer";
 import {FormContext} from "../Utilities/FormContext";
 import { MovingIcon } from "../../CommonUI/Icon/MovingIcon";
-
-const ChildFullWidthDiv = styled.div`
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-
-    >* {
-        width: 100%; 
-        margin-bottom: 10px !important;
-    }
-`;
+import { ChildFullWidthDiv } from "../Controls/XCommonStyled";
 
 
 export abstract class XBaseContainer

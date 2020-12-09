@@ -156,6 +156,11 @@ export class FormDesignConstants {
         BorderStyle.Groove
     ]
 
+    public static TAB_ORIENTATION: string[] = [
+        TabOrientation.Horizontal,        
+        TabOrientation.Veritical
+    ];
+
 
 }
 

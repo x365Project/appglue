@@ -18,6 +18,7 @@ import {PropertyEditorSelect} from "../../CommonUI/PropertyEditing/PropertyEdito
 import {DefaultOnOff} from "../Utilities/DefaultOnOff";
 import {PropertyEditorOptionWithButtonGroup} from "../../CommonUI/PropertyEditing/PropertyEditorOptionWithButtonGroup";
 import { ColumnIcon } from "../../CommonUI/Icon/ColumnIcon";
+import { ChildFullWidthDiv } from "../Controls/XCommonStyled";
 
 
 const ContainerDiv = styled("div")<{
@@ -105,16 +106,6 @@ const ColumnDivider = styled("div")<{
     height: ${props => props.orientation === Orientation.Horizontal ? `${props.lineWidthBetweenColumns}px` : 'auto'};
 `;
 
-const ChildFullWidthDiv = styled.div`
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-
-    >* {
-        width: 100%;
-        margin-bottom: 10px !important;
-    }
-`;
 
 export class XColumnContainerColumn extends XBaseStackContainer {
     minSizePx? : number;

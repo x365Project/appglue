@@ -78,3 +78,15 @@ export const StyledTextField = styled(TextField)`
         padding-right: 0px;
     }
 `   as React.ComponentType<TextFieldProps>
+
+
+export const ChildFullWidthDiv = styled.div`
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+
+    >* {
+        width: 100%;
+        margin-bottom: 10px !important;
+    }
+`;

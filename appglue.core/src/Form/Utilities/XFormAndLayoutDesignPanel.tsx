@@ -283,6 +283,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
         if (!result.destination)
             return;
 
+
         let control : XBaseControl | null;
         if (Object.keys(UIControlRegistration).indexOf(result.draggableId) !== -1) {
             // @ts-ignore
@@ -312,17 +313,6 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                 }
             }
 
-        } else if (result.destination.droppableId.startsWith('tab___')) {
-            let droppableIds = result.destination.droppableId.split('___');
-            if (droppableIds.length > 2) {
-
-                let fromContainer = this.props.editContext.form.find(result.source.droppableId) as XBaseContainer;
-                let toContainer = this.props.editContext.form.find(result.destination!.droppableId) as XBaseContainer;
-
-                if (result.source.droppableId === FormDesignConstants.LAYOUT_FORM_KEY_NAME) {
-
-                }
-            }
         } else {
 
             let fromContainer = this.props.editContext.form.find(result.source.droppableId) as XBaseContainer;
