@@ -31,7 +31,7 @@ export const PinnedNotifyDiv = styled("div")<{
 	borderWidth?: number;
 }>`
 	position: absolute;
-	right: calc(100% + ${props => props.moveRightPX ? props.moveRightPX + 10 : 10}px);
+	right: calc(100% + ${props => props.moveRightPX ? props.moveRightPX + 34 : 34}px);
 	border-right: solid ${props => props.borderWidth || 2}px ${props => props.color || '#1873B9'};
 	display: flex;
 	align-items: center;

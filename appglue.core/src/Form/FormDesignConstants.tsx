@@ -61,7 +61,7 @@ export class FormDesignConstants {
 
     public static DESIGN_AREA_BACKGROUND_COLOR = '#DCDCDC';
 
-    public static DESIGN_WIDTH: number = 800;
+    public static DESIGN_WIDTH: number = 1336;
     public static RUNTIME_WIDTH: number | null = null;
     public static GAP_BETWEEN_CONTAINERS: number = 10;
     public static GAP_BETWEEN_COLUMNS: number = 10;
@@ -84,11 +84,7 @@ export class FormDesignConstants {
     public static CONTAINER_BACKGROUND_COLOR : string | null = null;
 
     public static FORM_BACKGROUND_MODE_GRAY: string = 'Gray';
-    public static FORM_BACKGROUND_MODE_PAPER: string = 'Paper';
-    public static FORM_BACKGROUND_MODE_OUTLINE: string = 'Outline';
-    public static FORM_BACKGROUND_MODE_NONE: string = 'None';
-    public static FORM_BACKGROUND_MODE_DEVICE: string = 'Device';
-    public static FORM_BACKGROUND_MODE_WEBPAGE: string = 'Web Page';
+    public static FORM_BACKGROUND_MODE_WHITE: string = 'None';
     //'Defined Size', 'Tablet (Horizontal)', 'Tablet (Vertical)', 'Phone (Horizontal)', 'Phone (Vertical)'
     public static FORM_SIZE_MODE_DEFINED: string = 'Defined Size';
     public static FORM_SIZE_MODE_TABLET_HORIZONTAL: string = 'Tablet (Horizontal)';
@@ -116,9 +112,7 @@ export class FormDesignConstants {
 
     public static BACKGROUND_MODE: string[] = [
         FormDesignConstants.FORM_BACKGROUND_MODE_GRAY,
-        FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
-        FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE,
-        FormDesignConstants.FORM_BACKGROUND_MODE_NONE,
+        FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
         // add device
         // add web page
     ];
