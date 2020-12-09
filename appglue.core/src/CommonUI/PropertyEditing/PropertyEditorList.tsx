@@ -86,7 +86,7 @@ export const PropertyEditorList : React.FC<IPropertyEditorList> = (props: IPrope
             <List>
                 {
                     list.map((item, idx) => (
-                        <ListItem>
+                        <ListItem key={idx}>
                             <ListItemText>
                                 {`${item.name || `rows ${idx + 1}`} `}
                             </ListItemText>

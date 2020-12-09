@@ -24,6 +24,7 @@ import { ScrollIcon } from "../CommonUI/Icon/ScrollIcon";
 import {XContainerDesignWrapper} from "./Utilities/XContainerDesignWrapper";
 import {FormContext} from "./Utilities/FormContext";
 import {ElementFactory} from "../CommonUI/ElementFactory";
+import { RowDiv, ContainerDiv, ContainerDivider } from "../CommonUI/CommonStyles";
 
 export const PinnedNotifyDiv = styled("div")<{
 	color?: string;
@@ -42,32 +43,6 @@ export const ContainerSectionDiv = styled("div")<{
 	pinned?: boolean;
 }>`
 	position: ${props => props.pinned ? 'relative' : 'static'};
-`;
-
-
-export const ContainerDiv = styled("div")<{
-	colGap: number;
-}>`
-	margin: ${props => props.colGap || 0}px 0;
-`;
-
-export const RowDiv = styled("div")<{
-	colGap: number;
-	hasOverflow?: boolean;
-}>`
-	margin: ${props => -1 * (props.colGap || 0)}px 0;
-	overflow: ${props => props.hasOverflow ? 'auto': 'initial'};
-`
-
-const ContainerDivider = styled("div")<{
-	lineColorBetweenContainers: string;
-	lineWidthBetweenContainers: number;
-	lineStyleBetweenContrainers: BorderStyle;
-	colGap: number;
-}>`
-	border: ${props => `${props.lineWidthBetweenContainers}px ${props.lineStyleBetweenContrainers} ${props.lineColorBetweenContainers}`};
-	width: 100%;
-	display: flex;
 `;
 
 

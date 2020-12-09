@@ -66,7 +66,7 @@ export class XStackContainer
                                 hasBorder={snapshot.isDraggingOver || this.hasBorder()}
                                 borderColor={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_COLOR) || this.borderColor()}
                                 borderStyle={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_STYLE) || this.borderStyle()}
-                                borderWidth={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_WIDTH) ||this.borderWidth()}
+                                borderWidth={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_WIDTH) || this.borderWidth()}
                                 borderRadius={(snapshot.isDraggingOver && FormDesignConstants.DROPPABLE_BORDER_RADIUS) || this.borderRadius()}
                                 backgroundColor={this.backgroundColor()}
                                 ref={provided.innerRef}

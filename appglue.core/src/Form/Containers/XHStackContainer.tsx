@@ -156,7 +156,7 @@ export class XHStackContainer
                     <HStackRowDiv
                         colGap={this.interControlSpacing || this.getFormContext()?.form?.defaultInterControlSpacing}
                         align={alignment}
-                        verticalAlign={verticalAlign}    
+                        verticalAlign={verticalAlign}
                     >
                     {this.controls.map((control, index) => {
                         return (

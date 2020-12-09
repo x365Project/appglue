@@ -8,10 +8,19 @@ import {XLabel} from "../Controls/XLabel";
 import {XButton} from "../Controls/XButton";
 import {XSwitch} from "../Controls/XSwitch";
 import {XCheckboxList} from "../Controls/XCheckboxList";
-import {XColumnContainer, XColumnContainerColumn} from "../Containers/XColumnContainer";
+
+import {
+  XColumnContainer, 
+  XColumnContainerColumn,
+  XStackContainer,
+  XHStackContainer,
+  XTabContainer,
+	XTabContainerTab,
+	XTabContainerTabContent,
+	XTabContainerTabHeader
+} from "../Containers";
+
 import {XRadioGroup} from '../Controls/XRadioGroup';
-import {XStackContainer} from "../Containers/XStackContainer";
-import {XHStackContainer} from "../Containers/XHStackContainer";
 import {XFormConfiguration} from "../XFormConfiguration";
 import {XDatePicker} from '../Controls/XDatePicker';
 import {XTimePicker} from '../Controls/XTimePicker';
@@ -187,6 +196,8 @@ export function getFormConfig(): XFormConfiguration {
   let hstack = new XHStackContainer();
   hstack.add(button);
   hstack.add(button2);
+
+
 
   let ui = new XFormConfiguration([headingContainer, container, colContainer, hstack]);
   // todo: come back here

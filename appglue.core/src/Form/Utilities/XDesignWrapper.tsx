@@ -89,13 +89,18 @@ export class XDesignWrapper extends React.Component<XDraggableData, {open: boole
         this.setState({open: true})
     }
 
+
+    isNotRequiredOverlap = () => {
+        return !this.props.editContext ||
+        this.props.editContext.mode === FormMode.Runtime ||
+        this.props.editContext.mode === FormMode.LayoutDesign
+    }
+
     render() {
 
         const validationIssues: IssueData | null = this.props.editContext.getControlContext(this.props.innerComponent).getDesignIssueData();
 
-        if (!this.props.editContext ||
-            this.props.editContext.mode === FormMode.Runtime ||
-            this.props.editContext.mode === FormMode.LayoutDesign) {
+        if (this.isNotRequiredOverlap()) {
             return (
                 this.props.innerComponent.render()
             );

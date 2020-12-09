@@ -283,6 +283,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
         if (!result.destination)
             return;
 
+
         let control : XBaseControl | null;
         if (Object.keys(UIControlRegistration).indexOf(result.draggableId) !== -1) {
             // @ts-ignore

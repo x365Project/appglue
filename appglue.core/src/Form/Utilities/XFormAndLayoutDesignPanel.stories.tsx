@@ -11,6 +11,8 @@ import { ValidationIssue, ValidationLevel } from "../../Common/IDesignValidation
 import { XHStackContainer } from "../Containers/XHStackContainer";
 import { XColumnContainer, XColumnContainerColumn } from "../Containers/XColumnContainer";
 import {FormContext} from "./FormContext";
+import { XTabContainer, XTabContainerTabContent, XTabContainerTabHeader, XTabContainerTab } from "../Containers/XTabContainer";
+import { DefaultOnOff } from "./DefaultOnOff";
 
 export default {
     title: "Form Designer/Designer/Pieces",
@@ -161,3 +163,36 @@ ui.mode = FormMode.LayoutDesign;
 form.setFormContext(ui);
 
 export const DesignPanelWithLineBetweenWithOverlap = Template.bind({}, {editContext: ui});
+
+let tabContainer = new XTabContainer();
+
+let tabContainerTab = new XTabContainerTab();
+
+tabContainer.overrideFormBorderSettings = DefaultOnOff.On;
+
+tabContainerTab.value = 'test1';
+let tabContainerTabContent = new XTabContainerTabContent();
+let tabContainerTabHeader = new XTabContainerTabHeader();
+
+tabContainerTabHeader.title = 'Test 1';
+tabContainerTab.setContent(tabContainerTabContent);
+tabContainerTab.setHeader(tabContainerTabHeader);
+
+let tabContainerTab2 = new XTabContainerTab();
+tabContainerTab2.value = 'test2';
+let tabContainerTabContent2 = new XTabContainerTabContent();
+let tabContainerTabHeader2 = new XTabContainerTabHeader();
+tabContainerTabHeader2.title = 'Test 2';
+tabContainerTab2.setContent(tabContainerTabContent2);
+tabContainerTab2.setHeader(tabContainerTabHeader2);
+
+tabContainer.addTab(tabContainerTab);
+tabContainer.addTab(tabContainerTab2);
+
+form.add(tabContainer);
+
+ui = new FormContext(form);
+ui.mode = FormMode.LayoutDesign;
+form.setFormContext(ui);
+
+export const DesignPanelWithTabContainer = Template.bind({}, {editContext: ui});

@@ -169,7 +169,7 @@ describe("XUserForm", () => {
         expect(getByTestId('otherdata3_2')).toBeInTheDocument();
         expect(getByTestId('otherdata3_3')).toBeInTheDocument();
 
-        expect(queryAllByTestId('line-between-containers')).toHaveLength(3);
+        expect(queryAllByTestId('line-between-containers')).toHaveLength(form.getContainers().length - 1);
         expect(queryAllByTestId('line-between-columns')).toHaveLength(2);
     });
 

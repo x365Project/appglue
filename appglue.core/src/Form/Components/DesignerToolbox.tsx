@@ -293,7 +293,6 @@ export class DesignerToolBox extends React.Component<DesignerToolBoxPropsInterfa
 											return obj;
 										}, {})
 									).map(([category, controls]) => {
-
 										const doms = controls.map((control, index : number) => {
 											const data = control.data
 											const name = control.name
