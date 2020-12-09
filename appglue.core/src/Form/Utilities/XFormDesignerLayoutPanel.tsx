@@ -98,10 +98,10 @@ const FormContent = styled("div")<{
 
 const Form = styled("div")<{
     hasScroll: boolean;
-    height: boolean;
+    fullHeight: boolean;
 }>`
     overflow-y: ${props => props.hasScroll ? 'auto': 'inherit'};
-    height: ${props => props.hasScroll || props.height ? '100%' : 'auto'};
+    height: ${props => props.hasScroll || props.fullHeight ? '100%' : 'auto'};
 `;
 
 export class XFormDesignerLayoutPanel extends React.Component<{ editContext: FormContext, height?: number}> {
@@ -151,9 +151,10 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
         return (
             <FormWrapper
                 background={this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? FormDesignConstants.DESIGN_AREA_BACKGROUND_COLOR : undefined}
+                data-testid="form-wrapper"
             >
-                <FormContent width={width} height={height}>
-                    <Form hasScroll={hasScroll} height={this.props.editContext.mode === FormMode.Runtime}>
+                <FormContent width={width} height={height} marginLeft={hasPinned ? 83 : undefined} data-testid={this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? 'background-gray': 'background-white'}>
+                    <Form hasScroll={hasScroll} fullHeight={this.props.editContext.mode === FormMode.Runtime}>
                         {this.props.editContext.form.render()}
                     </Form>
                 </FormContent>
