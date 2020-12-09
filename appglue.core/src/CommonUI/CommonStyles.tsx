@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu} from "@material-ui/core";
+import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu, IconButton} from "@material-ui/core";
 import MovementIcon from "../assets/images/icons/movement.svg";
 
 export const EditLayerConfigArea = styled.div`
@@ -20,6 +20,7 @@ export const EditLayerStyledTypography = styled(Typography)`
     && {
         width: 100%;
         padding: 20px 0;
+        display: flex;
         &:hover {
             cursor: url(${MovementIcon}), auto;
         }
@@ -41,9 +42,19 @@ export const EditLayerStyledAccordion = styled(Accordion)`
     }
 `;
 
+export const EditLayerCloseButton = styled(IconButton)`
+    && {
+        position: absolute;
+        right: 0px;
+        top: 17px;
+        height: 34px;
+    }
+`;
+
 
 export const EditLayerStyledAccordionSummary = styled(AccordionSummary)`
     && {
+        padding-right: 40px;
         &.Mui-expanded {
             border-bottom: 1px solid #E6E9ED;
         }

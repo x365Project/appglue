@@ -9,7 +9,8 @@ import {
     DialogActions,
     Dialog,
     Menu,
-    MenuItem
+    MenuItem,
+    IconButton
 } from "@material-ui/core";
 
 
@@ -33,12 +34,14 @@ import {
     EditLayerStyledTypography,
     EditLayerConfigArea, 
     EditLayerStyledAccordion,
+    EditLayerCloseButton,
     ContextMenuForControl
 } from "../../CommonUI/CommonStyles";
 
 
 import {FormDesignConstants, FormMode} from "../FormDesignConstants";
 import { ExpandIcon } from "../../CommonUI/Icon/ExpandIcon";
+import { CloseIcon} from "../../CommonUI/Icon/CloseIcon";
 import { CopyWhiteIcon } from "../../CommonUI/Icon/CopyWhiteIcon";
 import { CutWhiteIcon } from "../../CommonUI/Icon/CutWhiteIcon";
 import { DeleteWhiteIcon } from "../../CommonUI/Icon/DeleteWhiteIcon";
@@ -200,6 +203,9 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                             <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
                                 <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
                                     Edit: {selectedControl?.toString() || 'Form Config'}
+                                    <EditLayerCloseButton onClick={() => this.props.editContext.unSelectControl()}>
+                                        <CloseIcon />
+                                    </EditLayerCloseButton>
                                 </EditLayerStyledTypography>
                             </EditLayerStyledAccordionSummary>
                             <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
@@ -211,8 +217,6 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
                                         );
                                     }}
                                 />
-
-
                             </EditLayerStyledAccordionDetails>
                         </EditLayerStyledAccordion>
                     </EditLayerConfigArea>
