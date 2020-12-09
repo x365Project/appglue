@@ -262,8 +262,6 @@ export class XTabContainerTab extends XBaseControl {
     content?: XTabContainerTabContent;
     container?: XTabContainer;
 
-    value: string = '';
-
     getStorageData(): object {
         let resData = DataUtilities.cloneWithoutReact(this, ['_formContext', '_formRuntimeContext', 'header', 'content', 'container'])
         
@@ -412,7 +410,7 @@ export class XTabContainer
 
     getCurrentTab(): XTabContainerTab | undefined {
         for (let t of this.tabs) {
-            if (t.value === this.selectedValue) {
+            if (t.header!.title === this.selectedValue) {
                 return t;
             }
         }
@@ -421,7 +419,7 @@ export class XTabContainer
 
     addTab(tab: XTabContainerTab) {
         if (this.tabs.length === 0) {
-            this.selectedValue = tab.value;
+            this.selectedValue = tab.header!.title;
         }
         this.add(tab);
     }
@@ -437,7 +435,7 @@ export class XTabContainer
                 this.tabs.splice(index, 0, tab)
             }
         } else {
-            this.getCurrentTab()!.add(control, index);
+            this.getCurrentTab()?.add(control, index);
         }
 
         if (this.getFormContext())
@@ -501,12 +499,27 @@ export class XTabContainer
 
 
     render() {
-		let mode: FormMode | string = FormMode.Runtime;
-        let editContext = this.getFormContext();
-        if (editContext)
-            mode = editContext.mode;
-
         let styles: {[key: string]: any} = {};
+
+        if (this.tabs.length === 0) {
+            let tab = new XTabContainerTab();
+            let tabHeader = new XTabContainerTabHeader();
+            tabHeader.title = 'test 1';
+            let tabContent = new XTabContainerTabContent();
+            tab.setHeader(tabHeader);
+            tab.setContent(tabContent);
+
+            let tab2 = new XTabContainerTab();
+            let tabHeader2 = new XTabContainerTabHeader();
+            tabHeader2.title = 'test 2';
+            let tabContent2 = new XTabContainerTabContent();
+            tab2.setHeader(tabHeader2);
+            tab2.setContent(tabContent2);
+
+
+            this.addTab(tab);
+            this.addTab(tab2);
+        }
 
         if (this.orientation === TabOrientation.Horizontal) {
             styles.height = this.defaultTabContentHeight;
@@ -540,7 +553,7 @@ export class XTabContainer
                             >
                                 {
                                     this.tabs.map((t) => {
-                                        return <StyledTab value={t.value || t.header!.title} key={t.id} label={
+                                        return <StyledTab value={t.header!.title} key={t.id} label={
                                             <TabHeaderWrapper padding={this.innerMarginTabHeader}>
                                                 {t.header!.title}
                                             </TabHeaderWrapper>
@@ -551,7 +564,7 @@ export class XTabContainer
                             <div style={styles}>
                                 {
                                     this.tabs.map((t) => {
-                                        return <StyledTabPanel value={t.value|| t.header!.title} key={t.id}>
+                                        return <StyledTabPanel value={t.header!.title} key={t.id}>
                                             {
                                                 t.content!.render()
                                             }
@@ -684,6 +697,7 @@ export class XTabContainer
                     itemUI={(item: {index: number, content?: XTabContainerTab | null}) => ({
                       onComplete : (item: {index: number, content: XTabContainerTab | null}) => {
                         if (item.content) {
+                            item.content.setContainer(this);
                             Reflect.set(this.tabs, item.index, item.content);
                         } else {
                             this.tabs.splice(item.index, 1);
@@ -703,12 +717,6 @@ export class XTabContainer
 										updateCallback={this.controlUpdate}
 										label="Tab Title"
 									/>
-									<PropertyEditorText
-										editObject={item.content}
-										propertyName="value"
-										updateCallback={this.controlUpdate}
-										label="Tab Value"
-                                    />
 
                                     <PropertyEditorInteger
                                         editObject={item.content.content!}
@@ -757,7 +765,7 @@ export class XTabContainer
 
                                     <PropertyEditorColor
                                         editObject={item.content.content!}
-                                        label="Column Background Color"
+                                        label="Tab Content Background Color"
                                         propertyName="containerBackgroundColor"
                                         updateCallback={this.controlUpdate}
                                     />
