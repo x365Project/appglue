@@ -268,20 +268,10 @@ describe("XFormDesigner", () => {
         expect(formWrapper.children[0]).toHaveStyle('height: 667px');
 
 
-        const backgroundPaper = getByTestId('btn-topbar-background-paper');
-        expect(backgroundPaper).toBeInTheDocument();
-        expect(getByTestId('background-paper')).toBeInTheDocument();
-
         const backgroundGray = getByTestId('btn-topbar-background-gray');
         expect(backgroundGray).toBeInTheDocument();
         fireEvent.click(backgroundGray);
         expect(getByTestId('background-gray')).toBeInTheDocument();
-
-        const backgrondOutline = getByTestId('btn-topbar-background-outline');
-        expect(backgrondOutline).toBeInTheDocument();
-        fireEvent.click(backgrondOutline);
-        expect(getByTestId('background-outline')).toBeInTheDocument();
-
 
         const backgroundWhite = getByTestId('btn-topbar-background-white');
         expect(backgroundWhite).toBeInTheDocument();

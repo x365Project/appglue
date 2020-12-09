@@ -281,13 +281,13 @@ export class XFormDesigner extends React.Component<{
     onDelete() {};
 
     designConfig: IDesignPanelConfig = {
-        background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+        background: FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
         data: FormDesignConstants.FORM_DATA_MODE_CURRENT,
         size: FormDesignConstants.FORM_SIZE_MODE_DEFINED
     }
 
     runtimeConfig: IDesignPanelConfig = {
-        background: FormDesignConstants.FORM_BACKGROUND_MODE_PAPER,
+        background: FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
         data: FormDesignConstants.FORM_DATA_MODE_CURRENT,
         size: FormDesignConstants.FORM_SIZE_MODE_DEFINED
     }

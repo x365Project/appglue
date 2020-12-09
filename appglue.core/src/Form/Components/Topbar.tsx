@@ -546,38 +546,15 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 										<BrushIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_GRAY} />
 									</TopbarIconButton>
 								</Tooltip>
-								<Tooltip title="Paper">
-									<TopbarIconButton
-										data-testid="btn-topbar-background-paper"
-										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_PAPER ? 'TopbarIconButton-selected' : undefined 
-										}}
-										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_PAPER)}
-									>
-										<PaperIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_PAPER} />
-									</TopbarIconButton>
-								</Tooltip>
-
-								<Tooltip title="Outline">
-									<TopbarIconButton
-										data-testid="btn-topbar-background-outline"
-										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE ? 'TopbarIconButton-selected' : undefined 
-										}}
-										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE)}
-									>
-										<OutlineIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_OUTLINE} />
-									</TopbarIconButton>
-								</Tooltip>
 								<Tooltip title="White">
 									<TopbarIconButton
 										data-testid="btn-topbar-background-white"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_NONE ? 'TopbarIconButton-selected' : undefined 
+											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_WHITE ? 'TopbarIconButton-selected' : undefined 
 										}}
-										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_NONE)}
+										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_WHITE)}
 									>
-										<NoneIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_NONE} />
+										<NoneIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_WHITE} />
 									</TopbarIconButton>
 								</Tooltip>
 							</ButtonGroup>
