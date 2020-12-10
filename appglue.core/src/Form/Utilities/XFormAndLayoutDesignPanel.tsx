@@ -305,7 +305,7 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
             if (control) {
                 if (result.destination.droppableId === result.source.droppableId) {
                     // changing order
-                    this.props.editContext.form.setOrder(control.id, result.destination.index)
+                    this.props.editContext.form.setOrder(control.id, result.destination.index);
                 } else {
                     // adding new
                     this.props.editContext.form.add(control as XBaseContainer);
@@ -335,9 +335,9 @@ export class XFormAndLayoutDesignPanel extends React.Component<IDesignPanelPrope
             }
         }
 
-        if (control) {
-            if (this.props.editContext)
-                this.props.editContext.selectControl(control.id);
+        if (control && this.props.editContext) {
+            console.log(control);
+            this.props.editContext.selectControl(control.id);
         }
         // this.dragPlaceholder = null;
         this.updateUI();

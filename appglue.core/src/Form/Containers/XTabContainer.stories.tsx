@@ -21,12 +21,6 @@ export default {
 
 const Template: Story<XFormDesignerProps> = (args) => <XUserForm {...args} />;
 
-const MissingTemplate: Story<{}> = () => (
-    <div>
-        Missing
-    </div>
-);
-
 function getUI() : {form: XFormConfiguration, container: XTabContainer} {
     let ui = new XFormConfiguration();
     let tabContainer = new XTabContainer();
@@ -35,7 +29,6 @@ function getUI() : {form: XFormConfiguration, container: XTabContainer} {
 
     tabContainer.overrideFormBorderSettings = DefaultOnOff.On;
 
-    tabContainerTab.value = 'test1';
     let tabContainerTabContent = new XTabContainerTabContent();
     let tabContainerTabHeader = new XTabContainerTabHeader();
 
@@ -44,7 +37,6 @@ function getUI() : {form: XFormConfiguration, container: XTabContainer} {
     tabContainerTab.setHeader(tabContainerTabHeader);
 
     let tabContainerTab2 = new XTabContainerTab();
-    tabContainerTab2.value = 'test2';
     let tabContainerTabContent2 = new XTabContainerTabContent();
     let tabContainerTabHeader2 = new XTabContainerTabHeader();
     tabContainerTabHeader2.title = 'Test 2';
@@ -154,3 +146,9 @@ ui.container.defaultShowContentBorder = true;
 ui.container.tabs[0].content!.innerMargin = 30;
 
 export const OverrideContentInnerMargin = Template.bind({}, {form: ui.form});
+
+ui = getUI();
+ui.container.defaultTabContentBackground = 'gray';
+ui.container.tabs[0].content!.contentBackgroundColor = 'lightgray';
+
+export const OverrideContentBackground = Template.bind({}, {form: ui.form});

@@ -330,7 +330,6 @@ export class FormContext {
         }
 
         this.selectedId = null;
-        this.expandedConfigPanel = false;
 
         StateManager.changed(this);
     }
