@@ -16,6 +16,9 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
             let val = parseInt(event.target.value, 10);
+
+            console.log(props.parentDefaultValue, val);
+
             if (props.parentDefaultValue && props.parentDefaultValue === val) {
                 Reflect.set(props.editObject, props.propertyName, null);
             } else {
@@ -26,13 +29,17 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
         
     }
 
-    const value = Reflect.get(props.editObject, props.propertyName) ?? props.parentDefaultValue;
+    let value = Reflect.get(props.editObject, props.propertyName) ?? props.parentDefaultValue;
+
+    if (!value && value !== 0) {
+        value = ''
+    }
 
     return (
         <>
             {
                 props.label && (
-                    <TextField variant="outlined" value={value || ''}
+                    <TextField variant="outlined" value={value}
                         type="number"
                         label={props.label}
                         onChange={onChange}
@@ -42,7 +49,7 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
             }
             {
                 !props.label && (
-                    <Input value={value || ''}
+                    <Input value={value}
                         type="number"
                         onChange={onChange}
                     />
