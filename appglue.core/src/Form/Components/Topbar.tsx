@@ -467,7 +467,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 							>
 								<Tooltip title="Paper">
 									<TopbarIconButton
-										data-testid="btn-topbar-background-paper"
+										data-testid="btn-mode-paper"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PAPER ? 'TopbarIconButton-selected' : undefined 
 										}}
@@ -478,7 +478,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title="Gray">
 									<TopbarIconButton
-										data-testid="btn-topbar-background-gray"
+										data-testid="btn-mode-gray"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_GRAY ? 'TopbarIconButton-selected' : undefined
 										}}
@@ -489,7 +489,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title="Outline">
 									<TopbarIconButton
-										data-testid="btn-topbar-background-outline"
+										data-testid="btn-mode-outline"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_OUTLINE ? 'TopbarIconButton-selected' : undefined 
 										}}
@@ -500,7 +500,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title="White">
 									<TopbarIconButton
-										data-testid="btn-topbar-background-white"
+										data-testid="btn-mode-white"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_WHITE ? 'TopbarIconButton-selected' : undefined 
 										}}
@@ -511,7 +511,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL}>
 									<TopbarIconButton
-										data-testid="btn-topbar-size-tablet-horizontal"
+										data-testid="btn-mode-tablet-horizontal"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL ? 'TopbarIconButton-selected': undefined
 										}}
@@ -522,7 +522,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_MODE_TABLET_VERTICAL}>
 									<TopbarIconButton
-										data-testid="btn-topbar-size-tablet-vertical"
+										data-testid="btn-mode-tablet-vertical"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_TABLET_VERTICAL ? 'TopbarIconButton-selected': undefined
 										}}
@@ -533,7 +533,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL}>
 									<TopbarIconButton
-										data-testid="btn-topbar-size-phone-horizontal"
+										data-testid="btn-mode-phone-horizontal"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL ? 'TopbarIconButton-selected': undefined
 										}}
@@ -544,7 +544,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_MODE_PHONE_VERTICAL}>
 									<TopbarIconButton
-										data-testid="btn-topbar-size-phone-vertical"
+										data-testid="btn-mode-phone-vertical"
 										classes={{
 											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PHONE_VERTICAL ? 'TopbarIconButton-selected': undefined
 										}}

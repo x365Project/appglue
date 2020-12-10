@@ -240,40 +240,37 @@ describe("XFormDesigner", () => {
 
         expect(formWrapper).toBeInTheDocument();
 
-        const sizeDefined = getByTestId('btn-topbar-size-defined');
-        expect(sizeDefined).toBeInTheDocument();
-
-        const sizeTabletHorizontal = getByTestId('btn-topbar-size-tablet-horizontal');
+        const sizeTabletHorizontal = getByTestId('btn-mode-tablet-horizontal');
         expect(sizeTabletHorizontal).toBeInTheDocument();
         fireEvent.click(sizeTabletHorizontal);
         expect(formWrapper.children[0]).toHaveStyle('width: 1024px');
         expect(formWrapper.children[0]).toHaveStyle('height: 768px');
 
-        const sizeTabletVertical = getByTestId('btn-topbar-size-tablet-vertical');
+        const sizeTabletVertical = getByTestId('btn-mode-tablet-vertical');
         expect(sizeTabletVertical).toBeInTheDocument();
         fireEvent.click(sizeTabletVertical);
         expect(formWrapper.children[0]).toHaveStyle('width: 768px');
         expect(formWrapper.children[0]).toHaveStyle('height: 1024px');
 
-        const sizePhoneHorizontal = getByTestId('btn-topbar-size-phone-horizontal');
+        const sizePhoneHorizontal = getByTestId('btn-mode-phone-horizontal');
         expect(sizePhoneHorizontal).toBeInTheDocument();
         fireEvent.click(sizePhoneHorizontal);
         expect(formWrapper.children[0]).toHaveStyle('width: 667px');
         expect(formWrapper.children[0]).toHaveStyle('height: 375px');
 
-        const sizePhoneVertical = getByTestId('btn-topbar-size-phone-vertical');
+        const sizePhoneVertical = getByTestId('btn-mode-phone-vertical');
         expect(sizePhoneVertical).toBeInTheDocument();
         fireEvent.click(sizePhoneVertical);
         expect(formWrapper.children[0]).toHaveStyle('width: 375px');
         expect(formWrapper.children[0]).toHaveStyle('height: 667px');
 
 
-        const backgroundGray = getByTestId('btn-topbar-background-gray');
+        const backgroundGray = getByTestId('btn-mode-gray');
         expect(backgroundGray).toBeInTheDocument();
         fireEvent.click(backgroundGray);
         expect(getByTestId('background-gray')).toBeInTheDocument();
 
-        const backgroundWhite = getByTestId('btn-topbar-background-white');
+        const backgroundWhite = getByTestId('btn-mode-white');
         expect(backgroundWhite).toBeInTheDocument();
         fireEvent.click(backgroundWhite);
         expect(getByTestId('background-white')).toBeInTheDocument();
@@ -295,9 +292,9 @@ describe("XFormDesigner", () => {
         let formWrapper = getByTestId('form-wrapper');
         expect(formWrapper).toBeInTheDocument();
 
-        const sizeDefined = getByTestId('btn-topbar-size-defined');
-        expect(sizeDefined).toBeInTheDocument();
-        fireEvent.click(sizeDefined);
+        const modePaper = getByTestId('btn-mode-paper');
+        expect(modePaper).toBeInTheDocument();
+        fireEvent.click(modePaper);
         expect(getByTestId('no-pinned-section')).toBeInTheDocument();
     });
 
@@ -313,13 +310,13 @@ describe("XFormDesigner", () => {
         let formWrapper = getByTestId('form-wrapper');
         expect(formWrapper).toBeInTheDocument();
         
-        const sizeTabletHorizontal = getByTestId('btn-topbar-size-tablet-horizontal');
+        const sizeTabletHorizontal = getByTestId('btn-mode-tablet-horizontal');
         expect(sizeTabletHorizontal).toBeInTheDocument();
         fireEvent.click(sizeTabletHorizontal);
 
-        const sizeDefined = getByTestId('btn-topbar-size-defined');
-        expect(sizeDefined).toBeInTheDocument();
-        fireEvent.click(sizeDefined);
+        const modePaper = getByTestId('btn-mode-paper');
+        expect(modePaper).toBeInTheDocument();
+        fireEvent.click(modePaper);
         expect(queryByTestId('no-pinned-section')).not.toBeInTheDocument();
 
         // height should be unset.
