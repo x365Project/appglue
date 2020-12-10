@@ -13,7 +13,7 @@ import { TabPanel, TabContext, TabList } from "@material-ui/lab";
 import { FormContext } from "../Utilities/FormContext";
 import { AutoBind } from "../../Common/AutoBind";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
-import { TextIcon } from "../../CommonUI/TextIcon";
+import { TabIcon } from "../../CommonUI/Icon/TabIcon";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 import { DataUtilities } from "../../Common/DataUtilities";
 import { XBaseStackContainer } from "./XBaseStackContainer";
@@ -349,7 +349,7 @@ export class XTabContainerTab extends XBaseControl {
 }
 
 
-@RegisterUIControl('Material Controls', 'Tab Container', ControlType.Container, <TextIcon name="T" />)
+@RegisterUIControl('Material Controls', 'Tab Container', ControlType.Container, <TabIcon alt="Tab Container" />)
 export class XTabContainer
     extends XBaseContainer {
 
