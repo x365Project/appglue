@@ -465,15 +465,48 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									root: 'TopbarButtonGroup-root'
 								}}
 							>
-								<Tooltip title={FormDesignConstants.FORM_MODE_DEFINED}>
+								<Tooltip title="Paper">
 									<TopbarIconButton
-										data-testid="btn-topbar-size-defined"
+										data-testid="btn-topbar-background-paper"
 										classes={{
-											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_DEFINED ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PAPER ? 'TopbarIconButton-selected' : undefined 
 										}}
-										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_DEFINED)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_PAPER)}
 									>
-										<DefinedIcon alt={FormDesignConstants.FORM_MODE_DEFINED} />
+										<PaperIcon alt={FormDesignConstants.FORM_MODE_PAPER} />
+									</TopbarIconButton>
+								</Tooltip>
+								<Tooltip title="Gray">
+									<TopbarIconButton
+										data-testid="btn-topbar-background-gray"
+										classes={{
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_GRAY ? 'TopbarIconButton-selected' : undefined
+										}}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_GRAY)}
+									>
+										<BrushIcon alt={FormDesignConstants.FORM_MODE_GRAY} />
+									</TopbarIconButton>
+								</Tooltip>
+								<Tooltip title="Outline">
+									<TopbarIconButton
+										data-testid="btn-topbar-background-outline"
+										classes={{
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_OUTLINE ? 'TopbarIconButton-selected' : undefined 
+										}}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_OUTLINE)}
+									>
+										<OutlineIcon alt={FormDesignConstants.FORM_MODE_OUTLINE} />
+									</TopbarIconButton>
+								</Tooltip>
+								<Tooltip title="White">
+									<TopbarIconButton
+										data-testid="btn-topbar-background-white"
+										classes={{
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_WHITE ? 'TopbarIconButton-selected' : undefined 
+										}}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_WHITE)}
+									>
+										<NoneIcon alt={FormDesignConstants.FORM_MODE_WHITE} />
 									</TopbarIconButton>
 								</Tooltip>
 								<Tooltip title={FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL}>
@@ -520,52 +553,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 										<CellphoneVerticalIcon alt={FormDesignConstants.FORM_MODE_PHONE_VERTICAL} />
 									</TopbarIconButton>
 								</Tooltip>
-
-								<Tooltip title="Gray">
-									<TopbarIconButton
-										data-testid="btn-topbar-background-gray"
-										classes={{
-											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_GRAY ? 'TopbarIconButton-selected' : undefined
-										}}
-										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_GRAY)}
-									>
-										<BrushIcon alt={FormDesignConstants.FORM_MODE_GRAY} />
-									</TopbarIconButton>
-								</Tooltip>
-								<Tooltip title="Paper">
-									<TopbarIconButton
-										data-testid="btn-topbar-background-paper"
-										classes={{
-											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PAPER ? 'TopbarIconButton-selected' : undefined 
-										}}
-										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_PAPER)}
-									>
-										<PaperIcon alt={FormDesignConstants.FORM_MODE_PAPER} />
-									</TopbarIconButton>
-								</Tooltip>
-
-								<Tooltip title="Outline">
-									<TopbarIconButton
-										data-testid="btn-topbar-background-outline"
-										classes={{
-											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_OUTLINE ? 'TopbarIconButton-selected' : undefined 
-										}}
-										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_OUTLINE)}
-									>
-										<OutlineIcon alt={FormDesignConstants.FORM_MODE_OUTLINE} />
-									</TopbarIconButton>
-								</Tooltip>
-								<Tooltip title="White">
-									<TopbarIconButton
-										data-testid="btn-topbar-background-white"
-										classes={{
-											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_WHITE ? 'TopbarIconButton-selected' : undefined 
-										}}
-										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_WHITE)}
-									>
-										<NoneIcon alt={FormDesignConstants.FORM_MODE_WHITE} />
-									</TopbarIconButton>
-								</Tooltip>
+								
 							</ButtonGroup>
 						</ThemeProvider>
 					</TopbarItemDiv>

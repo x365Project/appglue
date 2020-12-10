@@ -284,12 +284,12 @@ export class XFormDesigner extends React.Component<{
 
     designConfig: IDesignPanelConfig = {
         data: FormDesignConstants.FORM_DATA_MODE_CURRENT,
-        mode: FormDesignConstants.FORM_MODE_DEFINED
+        mode: FormDesignConstants.FORM_MODE_PAPER
     }
 
     runtimeConfig: IDesignPanelConfig = {
         data: FormDesignConstants.FORM_DATA_MODE_CURRENT,
-        mode: FormDesignConstants.FORM_MODE_DEFINED
+        mode: FormDesignConstants.FORM_MODE_PAPER
     }
 
 

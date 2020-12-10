@@ -129,7 +129,7 @@ export class XFormDesignerLayoutPanel extends React.Component<{ editContext: For
         if (
             this.props.editContext.mode === FormMode.Runtime && (
                 this.props.editContext.form.doNotScrollLastContainerOnForm || this.props.editContext.form.doNotScrollFirstContainerOnForm
-            ) && this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_DEFINED
+            ) && !isDevice
         ) {
             height = this.props.height ? `${this.props.height}px` : 'calc(100% - 30px)';
         }
