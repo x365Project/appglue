@@ -61,7 +61,7 @@ export class FormDesignConstants {
 
     public static DESIGN_AREA_BACKGROUND_COLOR = '#DCDCDC';
 
-    public static DESIGN_WIDTH: number = 1336;
+    public static DESIGN_WIDTH: number = 800;
     public static RUNTIME_WIDTH: number | null = null;
     public static GAP_BETWEEN_CONTAINERS: number = 10;
     public static GAP_BETWEEN_COLUMNS: number = 10;
@@ -83,14 +83,16 @@ export class FormDesignConstants {
     public static FORM_BACKGROUND_COLOR: string | null = null;
     public static CONTAINER_BACKGROUND_COLOR : string | null = null;
 
-    public static FORM_BACKGROUND_MODE_GRAY: string = 'Gray';
-    public static FORM_BACKGROUND_MODE_WHITE: string = 'None';
+    public static FORM_MODE_GRAY: string = 'Gray';
+    public static FORM_MODE_WHITE: string = 'None';
+    public static FORM_MODE_PAPER: string = 'Paper';
+    public static FORM_MODE_OUTLINE: string = 'Outline';
     //'Defined Size', 'Tablet (Horizontal)', 'Tablet (Vertical)', 'Phone (Horizontal)', 'Phone (Vertical)'
-    public static FORM_SIZE_MODE_DEFINED: string = 'Defined Size';
-    public static FORM_SIZE_MODE_TABLET_HORIZONTAL: string = 'Tablet (Horizontal)';
-    public static FORM_SIZE_MODE_TABLET_VERTICAL: string = 'Tablet (Vertical)';
-    public static FORM_SIZE_MODE_PHONE_HORIZONTAL: string = 'Phone (Horizontal)';
-    public static FORM_SIZE_MODE_PHONE_VERTICAL: string = 'Phone (Vertical)';
+    public static FORM_MODE_DEFINED: string = 'Defined Size';
+    public static FORM_MODE_TABLET_HORIZONTAL: string = 'Tablet (Horizontal)';
+    public static FORM_MODE_TABLET_VERTICAL: string = 'Tablet (Vertical)';
+    public static FORM_MODE_PHONE_HORIZONTAL: string = 'Phone (Horizontal)';
+    public static FORM_MODE_PHONE_VERTICAL: string = 'Phone (Vertical)';
 
     //['(Current)', 'None', 'Sample 1', 'Sample 2']
     public static FORM_DATA_MODE_CURRENT: string = 'Current';
@@ -110,19 +112,16 @@ export class FormDesignConstants {
     public static DEFAULT_TEXT_STYLE : TextControlStyle = TextControlStyle.LABELED;
     public static DEFAULT_TEXT_SIZE : TextControlSize = TextControlSize.STANDARD;
 
-    public static BACKGROUND_MODE: string[] = [
-        FormDesignConstants.FORM_BACKGROUND_MODE_GRAY,
-        FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
-        // add device
-        // add web page
-    ];
-
-    public static FORM_SIZE_MODE: string[] = [
-        FormDesignConstants.FORM_SIZE_MODE_DEFINED,
-        FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL,
-        FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL,
-        FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL,
-        FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL,
+    public static FORM_MODE: string[] = [
+        FormDesignConstants.FORM_MODE_DEFINED,
+        FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL,
+        FormDesignConstants.FORM_MODE_TABLET_VERTICAL,
+        FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL,
+        FormDesignConstants.FORM_MODE_PHONE_VERTICAL,
+        FormDesignConstants.FORM_MODE_GRAY,
+        FormDesignConstants.FORM_MODE_WHITE,
+        FormDesignConstants.FORM_MODE_PAPER,
+        FormDesignConstants.FORM_MODE_OUTLINE
     ];
 
     public static FORM_DATA_MODE: string[] = [
@@ -146,8 +145,7 @@ export class FormDesignConstants {
 
 // TODO:  WHAT IS THIS FOR
 export interface IDesignPanelConfig {
-    background: string;
-    size: string;
+    mode: string;
 	data: string;
 }
 

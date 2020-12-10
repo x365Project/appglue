@@ -453,7 +453,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 							</SelectDiv>
 						</ThemeProvider>
 					</TopbarItemDiv>
-					<TopbarItemDiv>
+					<TopbarItemDiv style={{marginRight: this.props.editContext.mode !== FormMode.Runtime ? 'auto' : 0 }}>
 						<ThemeProvider theme={theme}>
 							<Topbarlabel>
 								Display Format
@@ -465,96 +465,105 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 									root: 'TopbarButtonGroup-root'
 								}}
 							>
-								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_DEFINED}>
+								<Tooltip title={FormDesignConstants.FORM_MODE_DEFINED}>
 									<TopbarIconButton
 										data-testid="btn-topbar-size-defined"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_DEFINED ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_DEFINED ? 'TopbarIconButton-selected': undefined
 										}}
-										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_DEFINED)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_DEFINED)}
 									>
-										<DefinedIcon alt={FormDesignConstants.FORM_SIZE_MODE_DEFINED} />
+										<DefinedIcon alt={FormDesignConstants.FORM_MODE_DEFINED} />
 									</TopbarIconButton>
 								</Tooltip>
-								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL}>
+								<Tooltip title={FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL}>
 									<TopbarIconButton
 										data-testid="btn-topbar-size-tablet-horizontal"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL ? 'TopbarIconButton-selected': undefined
 										}}
-										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL)}
 									>
-										<TabletHorizontalIcon alt={FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL} />
+										<TabletHorizontalIcon alt={FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL} />
 									</TopbarIconButton>
 								</Tooltip>
-								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL}>
+								<Tooltip title={FormDesignConstants.FORM_MODE_TABLET_VERTICAL}>
 									<TopbarIconButton
 										data-testid="btn-topbar-size-tablet-vertical"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_TABLET_VERTICAL ? 'TopbarIconButton-selected': undefined
 										}}
-										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_TABLET_VERTICAL)}
 									>
-										<TabletVerticalIcon alt={FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL}/>
+										<TabletVerticalIcon alt={FormDesignConstants.FORM_MODE_TABLET_VERTICAL}/>
 									</TopbarIconButton>
 								</Tooltip>
-								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL}>
+								<Tooltip title={FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL}>
 									<TopbarIconButton
 										data-testid="btn-topbar-size-phone-horizontal"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL ? 'TopbarIconButton-selected': undefined
 										}}
-										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL)}
 									>
-										<CellphoneHorizontalIcon alt={FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL} />
+										<CellphoneHorizontalIcon alt={FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL} />
 									</TopbarIconButton>
 								</Tooltip>
-								<Tooltip title={FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL}>
+								<Tooltip title={FormDesignConstants.FORM_MODE_PHONE_VERTICAL}>
 									<TopbarIconButton
 										data-testid="btn-topbar-size-phone-vertical"
 										classes={{
-											root: this.props.editContext.designConfig?.size === FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL ? 'TopbarIconButton-selected': undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PHONE_VERTICAL ? 'TopbarIconButton-selected': undefined
 										}}
-										onClick={() => this.onClickConfigOption('size', FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_PHONE_VERTICAL)}
 									>
-										<CellphoneVerticalIcon alt={FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL} />
+										<CellphoneVerticalIcon alt={FormDesignConstants.FORM_MODE_PHONE_VERTICAL} />
 									</TopbarIconButton>
 								</Tooltip>
-							</ButtonGroup>
-						</ThemeProvider>
-					</TopbarItemDiv>
-					<TopbarItemDiv style={{marginRight: this.props.editContext.mode === FormMode.Runtime ? 'auto' : 0}}>
-						<ThemeProvider theme={theme}>	
-							<Topbarlabel>
-								Background
-							</Topbarlabel>
-							<ButtonGroup
-								variant="outlined"
-								size="small"
-								classes={{
-									root: 'TopbarButtonGroup-root TopbarBackgroundButtonGroup-root'
-								}}
-							>
+
 								<Tooltip title="Gray">
 									<TopbarIconButton
 										data-testid="btn-topbar-background-gray"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_GRAY ? 'TopbarIconButton-selected' : undefined
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_GRAY ? 'TopbarIconButton-selected' : undefined
 										}}
-										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_GRAY)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_GRAY)}
 									>
-										<BrushIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_GRAY} />
+										<BrushIcon alt={FormDesignConstants.FORM_MODE_GRAY} />
+									</TopbarIconButton>
+								</Tooltip>
+								<Tooltip title="Paper">
+									<TopbarIconButton
+										data-testid="btn-topbar-background-paper"
+										classes={{
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_PAPER ? 'TopbarIconButton-selected' : undefined 
+										}}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_PAPER)}
+									>
+										<PaperIcon alt={FormDesignConstants.FORM_MODE_PAPER} />
+									</TopbarIconButton>
+								</Tooltip>
+
+								<Tooltip title="Outline">
+									<TopbarIconButton
+										data-testid="btn-topbar-background-outline"
+										classes={{
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_OUTLINE ? 'TopbarIconButton-selected' : undefined 
+										}}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_OUTLINE)}
+									>
+										<OutlineIcon alt={FormDesignConstants.FORM_MODE_OUTLINE} />
 									</TopbarIconButton>
 								</Tooltip>
 								<Tooltip title="White">
 									<TopbarIconButton
 										data-testid="btn-topbar-background-white"
 										classes={{
-											root: this.props.editContext.designConfig?.background === FormDesignConstants.FORM_BACKGROUND_MODE_WHITE ? 'TopbarIconButton-selected' : undefined 
+											root: this.props.editContext.designConfig?.mode === FormDesignConstants.FORM_MODE_WHITE ? 'TopbarIconButton-selected' : undefined 
 										}}
-										onClick={() => this.onClickConfigOption('background', FormDesignConstants.FORM_BACKGROUND_MODE_WHITE)}
+										onClick={() => this.onClickConfigOption('mode', FormDesignConstants.FORM_MODE_WHITE)}
 									>
-										<NoneIcon alt={FormDesignConstants.FORM_BACKGROUND_MODE_WHITE} />
+										<NoneIcon alt={FormDesignConstants.FORM_MODE_WHITE} />
 									</TopbarIconButton>
 								</Tooltip>
 							</ButtonGroup>

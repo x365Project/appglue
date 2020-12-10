@@ -137,8 +137,8 @@ describe("XUserFormTester", () => {
         ui.mode = FormMode.Runtime;
         ui.form.setFormContext(ui);
         ui.designConfig = {
-            size: FormDesignConstants.FORM_SIZE_MODE_TABLET_HORIZONTAL,
-            background: FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
+            size: FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL,
+            background: FormDesignConstants.FORM_MODE_WHITE,
             data: FormDesignConstants.FORM_DATA_MODE_NONE
         }
 
@@ -165,8 +165,8 @@ describe("XUserFormTester", () => {
         ui.mode = FormMode.Runtime;
         ui.form.setFormContext(ui);
         ui.designConfig = {
-            size: FormDesignConstants.FORM_SIZE_MODE_TABLET_VERTICAL,
-            background: FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
+            size: FormDesignConstants.FORM_MODE_TABLET_VERTICAL,
+            background: FormDesignConstants.FORM_MODE_WHITE,
             data: FormDesignConstants.FORM_DATA_MODE_NONE
         }
 
@@ -194,8 +194,8 @@ describe("XUserFormTester", () => {
         ui.mode = FormMode.Runtime;
         ui.form.setFormContext(ui);
         ui.designConfig = {
-            size: FormDesignConstants.FORM_SIZE_MODE_PHONE_HORIZONTAL,
-            background: FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
+            size: FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL,
+            background: FormDesignConstants.FORM_MODE_WHITE,
             data: FormDesignConstants.FORM_DATA_MODE_NONE
         }
 
@@ -223,8 +223,8 @@ describe("XUserFormTester", () => {
         ui.mode = FormMode.Runtime;
         ui.form.setFormContext(ui);
         ui.designConfig = {
-            size: FormDesignConstants.FORM_SIZE_MODE_PHONE_VERTICAL,
-            background: FormDesignConstants.FORM_BACKGROUND_MODE_WHITE,
+            size: FormDesignConstants.FORM_MODE_PHONE_VERTICAL,
+            background: FormDesignConstants.FORM_MODE_WHITE,
             data: FormDesignConstants.FORM_DATA_MODE_NONE
         }
 

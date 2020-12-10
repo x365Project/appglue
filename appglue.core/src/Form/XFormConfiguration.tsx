@@ -205,6 +205,15 @@ export class XFormConfiguration
 		return formWidth - (2 * this.formMargin);
 	}
 
+	isDevice(): boolean {
+		return [
+			FormDesignConstants.FORM_MODE_TABLET_VERTICAL,
+			FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL,
+			FormDesignConstants.FORM_MODE_PHONE_VERTICAL,
+			FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL
+		].indexOf((this.getFormContext()?.designConfig?.mode || '')) >= 0
+	}
+
 	render() {
 		// if there are no containers, ensure we have at least one (stack)
 		if (this.containers.length === 0) {
@@ -343,7 +352,7 @@ export class XFormConfiguration
 				</div>
 			);
 		} else if (
-			mode === FormMode.Runtime
+			this.isDevice()
 			&& ( this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm )
 			&& this.containers.length > 0
 		) {
@@ -362,7 +371,8 @@ export class XFormConfiguration
 								/>
 							</ContainerDiv>
 						}
-						<div style={{flex: 1, overflowY: 'auto', overflowX: 'hidden'}} data-testid="no-pinned-section">
+						<div style={{flex: 1, overflowY: 'auto', overflowX: 'hidden', position: pinned ? 'relative' : 'static'}} data-testid="no-pinned-section">
+
 							{
 								scrollableContrainers.map((c, i) => {
 									return (
