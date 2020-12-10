@@ -352,7 +352,7 @@ export class XFormConfiguration
 				</div>
 			);
 		} else if (
-			this.isDevice()
+			(this.isDevice() || mode === FormMode.Runtime )
 			&& ( this.doNotScrollLastContainerOnForm || this.doNotScrollFirstContainerOnForm )
 			&& this.containers.length > 0
 		) {
