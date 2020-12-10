@@ -372,7 +372,7 @@ export class XTabContainer
 	defaultTabContentWidth: number | null = null;
 
 	defaultTabContentBackground: string = '#fff';
-	defaultTabContentInnerMargin: number = 30;
+	defaultTabContentInnerMargin: number = 0;
 
 	defaultTabHeaderBackground: string = '#fff';
 
