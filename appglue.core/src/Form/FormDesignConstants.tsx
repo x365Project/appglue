@@ -98,7 +98,6 @@ export class FormDesignConstants {
     public static FORM_MODE_PAPER: string = 'Paper';
     public static FORM_MODE_OUTLINE: string = 'Outline';
     //'Defined Size', 'Tablet (Horizontal)', 'Tablet (Vertical)', 'Phone (Horizontal)', 'Phone (Vertical)'
-    public static FORM_MODE_DEFINED: string = 'Defined Size';
     public static FORM_MODE_TABLET_HORIZONTAL: string = 'Tablet (Horizontal)';
     public static FORM_MODE_TABLET_VERTICAL: string = 'Tablet (Vertical)';
     public static FORM_MODE_PHONE_HORIZONTAL: string = 'Phone (Horizontal)';
@@ -123,7 +122,6 @@ export class FormDesignConstants {
     public static DEFAULT_TEXT_SIZE : TextControlSize = TextControlSize.STANDARD;
 
     public static FORM_MODE: string[] = [
-        FormDesignConstants.FORM_MODE_DEFINED,
         FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL,
         FormDesignConstants.FORM_MODE_TABLET_VERTICAL,
         FormDesignConstants.FORM_MODE_PHONE_HORIZONTAL,
