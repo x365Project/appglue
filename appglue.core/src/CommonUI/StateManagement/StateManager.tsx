@@ -1,5 +1,4 @@
 import React from "react";
-import {listeners} from "cluster";
 
 
 class ListenerRegistration {
@@ -60,6 +59,7 @@ export class StateManager {
     }
 
     static isListening(listeningToProperties: string[], changedProperties : string[]) : boolean {
+
         for (let prop of listeningToProperties) {
             if (changedProperties.indexOf(prop) !== -1)
                 return true;

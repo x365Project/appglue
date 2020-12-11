@@ -4,6 +4,7 @@ import {BaseExpression} from "./BaseExpression";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";
 import {DataUtilities} from "../Common/DataUtilities";
+import { StateManager } from "../CommonUI/StateManagement/StateManager";
 
 export class ExpressionValue
     implements IBaseExpressionElement {
@@ -85,6 +86,7 @@ export class ExpressionValue
     }
 
     set valueType(value: ExpressionValueType) {
+        StateManager.propertyChanged(this, 'valueTypeValue');
         this.valueTypeValue = value;
     }
 

@@ -4,6 +4,7 @@ import {IBaseExpressionElement} from "./IBaseExpressionElement";
 import {XExpressionEditor} from "../XExpressionEditor";
 import {XExpressionDefinition} from "../XExpressionDefinition";
 import {AutoBind} from "../../Common/AutoBind";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 
 export class ExpressionEditContext {
     private ownership: {[id: string] :  {owned: IBaseExpressionElement, owner : IBaseExpressionElement} }  = {};
@@ -16,12 +17,13 @@ export class ExpressionEditContext {
 
     clearSelection() : void {
         this.selected = undefined;
-        this.refresh();
+        StateManager.propertyChanged(this, 'selected');
+        // this.refresh();
     }
 
     setSelection(id: string): void {
         this.selected = id;
-        this.refresh();
+        StateManager.propertyChanged(this, 'selected');
         if (this.onSelection) {
             this.onSelection(this.selected);
         }
@@ -80,7 +82,7 @@ export class ExpressionEditContext {
 
     @AutoBind
     refresh() {
-        this.expressionEditor?.forceUpdate();
+        StateManager.changed(this);
     }
 
     getParentExpressionValue(id: string) : ExpressionValue | null {

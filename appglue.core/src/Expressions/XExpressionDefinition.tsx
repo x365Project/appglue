@@ -1,6 +1,6 @@
+import React from "react";
 import {ExpressionExpectedType} from "./ExpressionExpectedType";
 import {BaseExpression} from "./BaseExpression";
-import React from "react";
 import {ExpressionValueType} from "./ExpressionValueType";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";

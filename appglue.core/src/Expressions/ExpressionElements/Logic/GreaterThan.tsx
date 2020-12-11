@@ -5,10 +5,9 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {CallMadeOutlined} from "@material-ui/icons";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {GreaterThanIcon} from "../../../CommonUI/Icon/GreaterThanIcon";
 
-@RegisterExpression('Logic', 'Greater Than', <TextIcon name={'>'}/> )
+@RegisterExpression('Logic', 'Greater Than', <GreaterThanIcon /> )
 export class GreaterThanExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

@@ -5,9 +5,9 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {FunctionsOutlined} from "@material-ui/icons";
+import {SumIcon} from "../../../CommonUI/Icon/SumIcon"
 
-@RegisterExpression('Math', 'Sum', <FunctionsOutlined fontSize={'small'}/>, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Sum', <SumIcon />, ExpressionExpectedType.NUMBER)
 export class SumExpression extends BaseExpression {
     value1: ExpressionValue;
 

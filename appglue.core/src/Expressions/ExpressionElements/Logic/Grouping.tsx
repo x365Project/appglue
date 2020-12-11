@@ -7,23 +7,46 @@ import styled from "styled-components";
 import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import {ExpressionLineDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {IconButton} from "@material-ui/core";
-import {AddBoxOutlined, DeleteOutlined, GroupOutlined, LowPriorityOutlined, ReorderOutlined} from "@material-ui/icons";
 import {AutoBind} from "../../../Common/AutoBind";
 import {InlineOptionSelect} from "../../../CommonUI/InlineOptionSelect";
 import {ExpressionEditContext} from "../../Utilities/ExpressionEditContext";
 import {IBaseExpressionElement} from "../../Utilities/IBaseExpressionElement";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import { PlusIcon } from "../../../CommonUI/Icon/PlusIcon";
+import { DeleteIcon } from "../../../CommonUI/Icon/DeleteIcon";
+import { AndIcon } from "../../../CommonUI/Icon/AndIcon";
+import { OrIcon } from "../../../CommonUI/Icon/OrIcon";
 
 const BracketedDiv = styled.div`
-    border-left: 1px solid darkgray;
-    border-right: 1px solid darkgray;
-    border-radius: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    margin-left: 10px;
+    position: relative;
+    padding: 2px 4px;
+    margin-left: 6px;
     margin-right: 10px;
+
+    &::before {
+        content: '';
+        width: 4px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        border: 1px solid #93A9BF;
+        border-right: none;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
+    &::after {
+        content: '';
+        width: 4px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        border: 1px solid #93A9BF;
+        border-left: none;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
 `;
 
 export enum GroupingType {
@@ -31,7 +54,7 @@ export enum GroupingType {
     OR = 'or'
 }
 
-@RegisterExpression('Logic', 'And Group',  <TextIcon name={'AND'}/> ,ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Logic', 'And Group',  <AndIcon /> ,ExpressionExpectedType.BOOLEAN)
 export class Grouping
     extends BaseExpression {
 
@@ -86,7 +109,7 @@ export class Grouping
             return (
                 <ExpressionPiece>
                     <IconButton size={'small'} onClick={this.addToFromAction}>
-                        <AddBoxOutlined fontSize="small"/>
+                        <PlusIcon />
                     </IconButton>
                 </ExpressionPiece>
 
@@ -102,7 +125,7 @@ export class Grouping
                 <ExpressionPiece>
                     <InlineOptionSelect text={this.typeOfGroup} options={[GroupingType.AND, GroupingType.OR]} onEdit={this.onGroupTypeSelect}/>
                     <IconButton size={'small'} aria-label="delete" >
-                        <DeleteOutlined fontSize="small" />
+                        <DeleteIcon />
                     </IconButton>
                 </ExpressionPiece>
             );
@@ -110,10 +133,10 @@ export class Grouping
             return (
                 <ExpressionPiece>
                     <IconButton size={'small'} onClick={this.addToFromAction}>
-                        <AddBoxOutlined fontSize="small"/>
+                        <PlusIcon />
                     </IconButton>
                     <IconButton size={'small'} aria-label="delete" >
-                        <DeleteOutlined fontSize="small" />
+                        <DeleteIcon />
                     </IconButton>
                 </ExpressionPiece>
             );
@@ -133,7 +156,7 @@ export class Grouping
     }
 }
 
-@RegisterExpression('Logic', 'Or Group', <TextIcon name={'OR'}/>, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Logic', 'Or Group', <OrIcon />, ExpressionExpectedType.BOOLEAN)
 export class OrGroup extends Grouping {
 
     constructor() {
