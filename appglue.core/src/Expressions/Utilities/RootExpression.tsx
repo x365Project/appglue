@@ -17,11 +17,7 @@ export class RootExpression extends BaseExpression {
     }
 
     render() {
-        return (
-            <>
-                <ExpressionValueRenderer el={this.expressionRoot!}/>
-            </>
-        );
+        return <ExpressionValueRenderer el={this.expressionRoot!}/>
     }
 
     setEditContext(selection: ExpressionEditContext, owner: IBaseExpressionElement): void {

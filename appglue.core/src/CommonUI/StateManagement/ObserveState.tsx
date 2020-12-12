@@ -16,12 +16,7 @@ import {DataUtilities} from "../../Common/DataUtilities";
 
  **/
 
-export class ObserveState extends React.Component<{ listenTo: object | null | undefined, control: () => JSX.Element | React.ReactNode }> {
-
-
-    constructor(props: { listenTo: object | null | undefined; control: () => JSX.Element }) {
-        super(props);
-    }
+export class ObserveState extends React.Component<{ listenTo: object | null | undefined, control: () => JSX.Element | React.ReactNode, properties?: string[] }> {
 
     render() {
         return (
@@ -31,7 +26,7 @@ export class ObserveState extends React.Component<{ listenTo: object | null | un
 
     componentDidMount() {
         if (this.props.listenTo)
-            StateManager.addObserver(this.props.listenTo, this);
+            StateManager.addObserver(this.props.listenTo, this, this.props.properties || []);
     }
 
     componentWillUnmount() {

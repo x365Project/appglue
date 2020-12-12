@@ -5,10 +5,9 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {FormatSizeOutlined} from "@material-ui/icons";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {TextLengthIcon} from "../../../CommonUI/Icon/TextLengthIcon";
 
-@RegisterExpression('Text', 'Text Length', <TextIcon name={'\'a\'.1'}/>, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Text', 'Text Length', <TextLengthIcon />, ExpressionExpectedType.BOOLEAN)
 export class StringLengthExpression extends BaseExpression {
     value1: ExpressionValue;
 

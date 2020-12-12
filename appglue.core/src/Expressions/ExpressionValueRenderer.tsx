@@ -4,22 +4,18 @@ import {ExpressionValueType} from "./ExpressionValueType";
 import styled from "styled-components";
 import {AutoBind} from "../Common/AutoBind";
 import {ExpressionValueDialog} from "./Utilities/ExpressionValueDialog";
+import { ObserveState } from "../CommonUI/StateManagement/ObserveState";
 
 
 const SelectedElement = styled.span`
-  float: left;
-  display: flex;
-  align-items: center;
-  border: 1px solid #15466B;
-  box-sizing: border-box;
-  border-radius: 3px;
-  background-color: #DCEAF5;
-  padding-top: 3px;
-  padding-right: 3px;
-  padding-bottom: 3px;
-  padding-left: 3px;
-  margin-right: 5px;
-  margin-left: 5px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #15466B;
+    box-sizing: border-box;
+    border-radius: 3px;
+    background-color: #DCEAF5;
+    margin-right: 5px;
+    margin-left: 5px;
 `;
 
 const SelectedExpression = styled.span`
@@ -29,93 +25,114 @@ const SelectedExpression = styled.span`
   box-sizing: border-box;
   border-radius: 3px;
   background-color: #DCEAF5;
-  padding-top: 8px;
-  padding-right: 0px;
-  padding-bottom: 8px;
-  padding-left: 0px;
+
   margin-right: 0px;
   margin-left: 0px;
   position: relative;
   overflow: visible;
 `;
 
-const SelectedExpressionWrapperDiv = styled.div`
+const ExpressionValueWrapper = styled.div`
     position: relative;
     overflow: visible;
 `;
 
 const ValueElement = styled.div`
-  float: left;
-  display: flex;
-  align-items: center;
-  border: 2px solid white;
-  border-radius: 5px;
-  background-color: #e9e9ed;
-  padding-top: 3px;
-  padding-right: 3px;
-  padding-bottom: 3px;
-  padding-left: 3px;
-  display: inline;
-  margin-right: 5px;
-  margin-left: 5px;
-   &:hover {
-      border: 2px solid #1873B9;
-      border-radius: 5px;
-      background-color: white;
-  }
+    display: flex;
+    align-items: center;
+    border: 2px solid white;
+    border-radius: 4px;
+    background-color: #D8E4EE;
+    color: #4B6080;
+    margin-right: 5px;
+    margin-left: 5px;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    transition: all .3s;
+
+    &:hover {
+        border: 2px solid #D8E4EE;
+        border-radius: 5px;
+        background-color: white;
+    }
 `;
 
 const VariableElement = styled.div`
-  float: left;
-  display: flex;
-  align-items: center;
-  border-bottom: 3px dashed darkgray;
-  padding-top: 3px;
-  padding-right: 3px;
-  padding-bottom: 1px;
-  padding-left: 3px;
-  display: inline;
-  margin-right: 5px;
-  margin-left: 5px;
-   &:hover {
-      border-bottom: 2px solid #1873B9;
-  }
+    display: flex;
+    align-items: center;                                                                         
+    padding: 3px 0;
+    display: flex;
+    margin-right: 4px;
+    margin-left: 4px;
+    height: 40px;
+    cursor: pointer;
+
+    > i {
+        font-size: 14px;
+        line-height: 24px;
+        display: block;
+        border-bottom: dotted 1px #93A9BF; 
+    }
+
+    &:hover {
+        > i {
+            border-bottom: solid 2px #93A9BF; 
+        }
+    }
 `;
 
 const InnerValueDiv = styled.div`
-  padding-left: 5px;
-  padding-right: 5px;
-  float: left;
-  display: flex;
+    padding: 4px 8px;
+    display: flex;
 `;
 
 
 const MissingElement = styled.span`
-  float: left;
-  display: flex;
-  align-items: center;
-  border: 1px solid #E6E9ED;
-  box-sizing: border-box;
-  border-radius: 3px;  
-  padding-top: 3px;
-  padding-right: 3px;
-  padding-bottom: 3px;
-  padding-left: 3px;
-  margin-right: 5px;
-  margin-left: 5px;
-  &:hover {
-      border: 1px solid #1873B9;
-      border-radius: 5px;
-      background-color: white;
-  }
+    display: flex;
+    align-items: center;
+    border: 1px solid #E6E9ED;
+    box-sizing: border-box;
+    border-radius: 3px;  
+    
+    margin-right: 5px;
+    margin-left: 5px;
+    &:hover {
+        border: 1px solid #1873B9;
+        border-radius: 5px;
+        background-color: white;
+    }
 `;
 
 const MissingTextDiv = styled.div`
-    color: red;
-    padding-left: 20px;
-    padding-right: 20px;
+    color: #1D6295;
+    padding: 4px 12px;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: 0.05em;
+    background: #fff;
+    border: 1px solid #1D6295;
+    box-sizing: border-box;
+    border-radius: 4px;
+    transition: all .3s;
+    cursor: pointer;
+
+    &:hover {
+        background: #1D6295;
+        border-color: #fff;
+        color: #fff;
+    }
 `;
 
+
+const TextDiv = styled.div`
+    padding: 4px 8px;
+`;
 
 export class ExpressionValueRenderer extends React.Component<{ el: ExpressionValue }> {
 
@@ -123,12 +140,12 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
 
     @AutoBind
     handleClick() {
+
         this.props.el.editContext?.setSelection(this.props.el._id);
     }
 
 
     render() {
-        let el = this.props.el;
 
         let selected = false;
 
@@ -136,74 +153,24 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
             selected = this.props.el.editContext?.getSelection() === this.props.el._id;
         }
 
-        if (!selected) {
-            if (this.props.el.valueType === ExpressionValueType.VARIABLE) {
-                return <VariableElement
-                    onClick={this.handleClick}
-                >
-                    <i>
-                        {el.variableName ?? this.renderMissingElement()}
-                    </i>
-                </VariableElement>
-            } else if (el.valueType === ExpressionValueType.VALUE) {
-                return <ValueElement
-                    onClick={this.handleClick}
-                >
-                    {!el.value ? this.renderMissingElement() : <InnerValueDiv>{el.value}</InnerValueDiv>}
-                </ValueElement>
-            } else if (this.props.el.valueType === ExpressionValueType.SUBEXPRESSION) {
-                return <>{this.props.el.subExpression?.render()}</>
-            } else {
-                // FOR: this.props.el.valueType === ExpressionValueType.UNSET
-                return <MissingElement
-                    onClick={this.handleClick}>
-                    <>{this.renderMissingElement()}</>
-                </MissingElement>
-            }
-
-        } else {
-            if (this.props.el.valueType === ExpressionValueType.VARIABLE) {
-                return ( <SelectedExpressionWrapperDiv>
-                    <SelectedElement
-                        onClick={this.handleClick}
-                    >
-                        {el.variableName ?? this.renderMissingElement()}
-                    </SelectedElement>
+        return (
+            <ObserveState listenTo={this.props.el.editContext} properties={['selected']} control={() => (
+                <ExpressionValueWrapper>
+                    <ObserveState
+                        listenTo={this.props.el}
+                        control={
+                            () => (<>{
+                                selected
+                                    ? this.renderSelectedElements()
+                                    : this.renderUnselectedElements()
+                            }</>)
+                        }
+                        properties={['valueTypeValue']}
+                    />
                     <ExpressionValueDialog expressionValue={this.props.el}/>
-                </SelectedExpressionWrapperDiv>
-                );
-            } else if (el.valueType === ExpressionValueType.VALUE) {
-                return ( <SelectedExpressionWrapperDiv>
-                    <SelectedElement
-                        onClick={this.handleClick}
-                    >
-                        {el.value ?? this.renderMissingElement()}
-                    </SelectedElement>
-                    <ExpressionValueDialog expressionValue={this.props.el}/>
-                </SelectedExpressionWrapperDiv>
-                );
-            } else if (this.props.el.valueType === ExpressionValueType.SUBEXPRESSION) {
-                return (
-                    <SelectedExpression>
-                        {this.props.el.subExpression?.render() ?? this.renderMissingElement()}
-                        <ExpressionValueDialog expressionValue={this.props.el}/>
-                    </SelectedExpression>
-                );
-            } else {
-                // FOR: this.props.el.valueType === ExpressionValueType.UNSET
-                return(
-                    <SelectedExpressionWrapperDiv>
-                        <SelectedElement
-                            onClick={this.handleClick}>
-                            <>{this.renderMissingElement()}</>
-                        </SelectedElement>
-                        <ExpressionValueDialog expressionValue={this.props.el}/>
-                    </SelectedExpressionWrapperDiv>
-                );
-            }
-
-        }
-
+                </ExpressionValueWrapper>
+            )} />
+        )
 
     }
 
@@ -224,6 +191,75 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
         return (
             <MissingTextDiv>{text}</MissingTextDiv>
         );
+    }
+
+    renderSelectedElements () {
+
+        if (this.props.el.valueType === ExpressionValueType.VARIABLE) {
+            return (
+                <SelectedElement
+                    onClick={this.handleClick}
+                >
+                    {
+                        this.props.el.variableName
+                        ? <TextDiv>{this.props.el.variableName}</TextDiv>
+                        : this.renderMissingElement()
+                    }
+                </SelectedElement>
+            );
+        } else if (this.props.el.valueType === ExpressionValueType.VALUE) {
+            return ( <SelectedElement
+                    onClick={this.handleClick}
+                >
+                    {
+                        this.props.el.value
+                        ? <TextDiv>{this.props.el.value}</TextDiv>
+                        : this.renderMissingElement()
+                    }
+                </SelectedElement>
+            );
+        } else if (this.props.el.valueType === ExpressionValueType.SUBEXPRESSION) {
+            return (
+                <SelectedExpression>
+                    {this.props.el.subExpression?.render() ?? this.renderMissingElement()}
+                </SelectedExpression>
+            );
+        } else {
+            // FOR: this.props.el.valueType === ExpressionValueType.UNSET
+            return(
+                <SelectedElement
+                    onClick={this.handleClick}>
+                    <>{this.renderMissingElement()}</>
+                </SelectedElement>
+            );
+        }
+    }
+
+    renderUnselectedElements() {
+
+        if (this.props.el.valueType === ExpressionValueType.VARIABLE) {
+            return <VariableElement
+                onClick={this.handleClick}
+            >
+                <i>
+                    {this.props.el.variableName ?? this.renderMissingElement()}
+                </i>
+            </VariableElement>
+        } else if (this.props.el.valueType === ExpressionValueType.VALUE) {
+            return <ValueElement
+                onClick={this.handleClick}
+            >
+                {!this.props.el.value ? this.renderMissingElement() : <InnerValueDiv>{this.props.el.value}</InnerValueDiv>}
+            </ValueElement>
+        } else if (this.props.el.valueType === ExpressionValueType.SUBEXPRESSION) {
+            return <>{this.props.el.subExpression?.render()}</>
+        } else {
+            // FOR: this.props.el.valueType === ExpressionValueType.UNSET
+            return <MissingElement
+                onClick={this.handleClick}>
+                <>{this.renderMissingElement()}</>
+            </MissingElement>
+        }
     }
 }
 

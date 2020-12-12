@@ -6,8 +6,7 @@ import styled from "styled-components";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {ExpressionExpectedType} from "../../ExpressionExpectedType";
 import {ExpressionPiece} from "../../ExpressionStyles";
-import {Filter1Outlined} from "@material-ui/icons";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {DevideIcon} from "../../../CommonUI/Icon/DevideIcon";
 
 const DivisionDiv = styled.div`
     font-size:      18px;
@@ -45,7 +44,7 @@ const BottomDiv = styled.div`
   justify-content: center;
 `;
 
-@RegisterExpression('Math', 'Divide', <TextIcon name={'2/3'}/>, ExpressionExpectedType.NUMBER, true)
+@RegisterExpression('Math', 'Divide', <DevideIcon />, ExpressionExpectedType.NUMBER)
 export class DivideExpression extends BaseExpression {
     divideValue: ExpressionValue;
     divideBy: ExpressionValue;

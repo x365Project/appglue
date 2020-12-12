@@ -5,9 +5,9 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {ExpressionExpectedType} from "../../ExpressionExpectedType";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {MultiplyIcon} from "../../../CommonUI/Icon/MultiplyIcon";
 
-@RegisterExpression('Math', 'Multiply', <TextIcon name={'*'}/>, ExpressionExpectedType.NUMBER, true)
+@RegisterExpression('Math', 'Multiply', <MultiplyIcon />, ExpressionExpectedType.NUMBER)
 export class MultiplyExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

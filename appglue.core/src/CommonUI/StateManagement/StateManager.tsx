@@ -62,6 +62,7 @@ export class StateManager {
     }
 
     static isListening(listeningToProperties: string[], changedProperties : string[]) : boolean {
+
         for (let prop of listeningToProperties) {
             if (changedProperties.indexOf(prop) !== -1)
                 return true;
@@ -114,14 +115,7 @@ export class StateManager {
     }
 
     static isChanged(observable: object) : boolean {
-        let oldStates = Reflect.get(observable, this.OLD_STATES_VALUE_NAME) as object[] ;
-
-        if (!oldStates || oldStates.length === 0) {
-            return true;
-        }
-
-        return DataUtilities.compare(oldStates[oldStates.length -1], observable);
-
+        
         return true;
     }
 

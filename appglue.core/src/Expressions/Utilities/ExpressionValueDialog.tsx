@@ -1,6 +1,22 @@
 import React, {useState, useCallback, useEffect} from "react";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import {
+    Button,
+    ClickAwayListener,
+    DialogActions,
+    List,
+    ListItem,
+    ListItemText,
+    TextField,
+    Tab,
+    InputAdornment,
+    Input,
+    FormControlLabel,
+    Checkbox,
+    InputLabel,
+    FormControl
+} from "@material-ui/core";
 import {ExpressionValue} from "../ExpressionValue";
-import {Button, ClickAwayListener, DialogActions, List, ListItem, ListItemText, TextField} from "@material-ui/core";
 import {ExpressionValueType} from "../ExpressionValueType";
 import {ExpressionRegistration, RegistrationData} from "./RegisterExpression";
 import {ExpressionExpectedType} from "../ExpressionExpectedType";
@@ -13,19 +29,23 @@ import {CloseSharp, SearchOutlined} from "@material-ui/icons";
 import {FloatRight} from "../ExpressionElements/Logic/IfThenExpression";
 import {ExpressionLineDiv, ExpressionPiece} from "../ExpressionStyles";
 import {ExpressionEditContext} from "./ExpressionEditContext";
+import {SearchIcon} from "../../CommonUI/Icon/SearchIcon";
+import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 
 const ExpressionValueSlotEditor = styled.div`
-  font-family: Mulish;
-  font-size: 16px;
-  position: absolute;
-  border: 2px solid gray;
-  border-radius: 4px;
-  background: #fff;
-  width: 650px;
-  z-index: 101;
-  top: 30px;
-  left: -50px;
-  max-height: none;
+    font-family: Mulish;
+    font-size: 16px;
+    position: absolute;
+    background: #FFFFFF;
+    box-shadow: 4px 4px 4px rgba(21, 84, 115, 0.05), 8px 8px 40px rgba(147, 169, 191, 0.28);
+    border-radius: 4px;
+    background: #fff;
+    width: 650px;
+    z-index: 101;
+    top: 30px;
+    left: -50px;
+    max-height: none;
+    padding: 20px;
 `;
 // position: relative;
 // overflow: auto;
@@ -33,70 +53,94 @@ const ExpressionValueSlotEditor = styled.div`
 
 
 const Header = styled.div`
-  font-family: Mulish;
-  font-size: 20px;
-  display: flex;
-  float: left;
-  padding-left: 15px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  width: 100%;
-  margin-bottom: 20px;
-  margin-bottom: 10px;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+    width: 100%;
+    display: flex;
+    color: #33486B;
 `;
 
 const HeaderFloatRight = styled.div`
-  display: flex;
-  margin-left: auto;
-  justify-content: flex-end;
-  padding-right: 15px;
+    display: flex;
+    margin-left: auto;
+    justify-content: flex-end;
+    padding-right: 15px;
+    align-items: center;
+`;
+
+const ExpressionHeaderButton = styled(Button)`
+    && {
+        padding: 4px 12px;
+        background: #EBF4FA;
+        border-radius: 4px;
+        border: solid 2px #fff;
+
+        transition: all .3s;
+
+        &:hover {
+            background: #fff;
+            border: solid 2px #EBF4FA;          
+        }
+
+        .MuiButton-label {
+            font-family: Mulish;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 24px;
+            color: #4B6080;
+        }
+
+
+    }
 `;
 
 const NoSelectionColDiv = styled.div`
-  float: left;
-  background-color : #D3D3D3;
-  width : 30%;
-  height : 250px;
-  padding-top: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  margin-right: 5px;
-  margin-left: 5px;
+    background-color : #D3D3D3;
+    width : 30%;
+    height : 250px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
 `;
 
 const ExpressionColContainer = styled.div`
-  display: flex;
-  float: left;
-  width : 100%;
-  height : 250px;
-  padding-top: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  clear: both;
+    display: flex;
+    width : 100%;
+    height : 250px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    clear: both;
 `;
 
 const ExpressionViewPanel = styled.div`
-  margin-top: 50px;
-  width : 100%;
-  height : 250px;
-  padding-top: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  clear: both;
+    margin-top: 50px;
+    width : 100%;
+    max-height : 376px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    clear: both;
+    display: flex;
+    flex-direction: column;
 `;
 
 const ExpressionViewPanelLine = styled.div`
-  width : 100%;
-  justify-content: flex-start;
-  clear: both;
-  padding-top: 20px;
-  padding-bottom: 30px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-
+    width : 100%;
+    justify-content: flex-start;
+    clear: both;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    padding-bottom: 15px;
 `;
 
 const ExpressionViewPanelLineBottom = styled.div`
@@ -115,10 +159,12 @@ const ExpressionViewPanelLineCenter = styled.div`
   justify-content: center;
   align-items: center;
   clear: both;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 15px;
   border: 1px solid lightgray;
   border-radius: 5px;
+  flex: 1;
+  overflow: auto;
+  width: 100%;
 `;
 
 
@@ -133,10 +179,13 @@ const VariableOrValColumn = styled.div`
 `;
 
 const ExpressionColumn = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 33%;
+`;
+
+const ExpressionColumnRow = styled.div`
+    margin: -4px;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const VariableOrValContentPanel = styled.div`
@@ -154,21 +203,27 @@ const ToolboxPage = styled.div`
     float : left;
     width: 100%;
     flex-wrap: wrap;
-    padding-left: 10px;
-    padding-right: 10px;
-    height : 250px;
+    padding: 16px 0;
+    max-height: 376px;
     align-content: flex-start;
 `;
 
-const ToolboxItem = styled.div`
-   display: flex;
-   float : left;
-   border: 1px solid gray;
-   margin: 5px;
-   padding: 5px;
-   width: calc(25% - 10px);
+const ToolboxItem = styled("div")<{hideLabel: boolean;}>`
+    display: flex;
+    float : left;
+    border: 1px solid #1D6295;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 8px;
+    margin: ${props => props.hideLabel ? '6px' : '4px'};
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 20px;
+    align-items: center;
+    cursor: pointer;
 `;
-//   width: calc(25% - 10px);
 
 const ToolboxItemText = styled.div`
    display: flex;
@@ -176,6 +231,54 @@ const ToolboxItemText = styled.div`
    margin-left: 13px;
    font-family: Mulish;
    font-size: 14px;
+`;
+
+const CompleteButton = styled(Button)`
+    && {
+        padding: 4px 12px;
+        color: #fff;
+        background: #1D6295;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 24px;
+        border: solid 2px white;
+
+        &:hover {
+            background: #fff;
+            color: #1D6295;
+            border: solid 2px #1D6295;
+        }
+    }
+`;
+
+
+const VariableInput = styled.div`
+    .MuiInput-root {
+        border: 1px solid #D8E4EE;
+        box-sizing: border-box;
+        border-radius: 4px;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        color: #677C95;
+        padding: 6px 12px;
+    }
+
+    > label {
+        display: block;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 9px;
+        line-height: 16px;
+
+        color: #677C95;
+        margin-bottom: 4px;
+    }
 `;
 
 export class ExpressionValueDialog extends React.Component<{ expressionValue: ExpressionValue }, {inserting : boolean}> {
@@ -191,33 +294,38 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
 
     render() {
         return (
-             (
-                this.props.expressionValue.editContext?.getSelection() && (
-                    <ClickAwayListener
-                        onClickAway={this.handleClose} >
-                        <ReactDraggable
-                            handle=".config-form-header"
-                        >
+            this.props.expressionValue.editContext?.getSelection() === this.props.expressionValue._id
+            ? (
+                <ClickAwayListener
+                    onClickAway={this.handleClose} >
+                    <ReactDraggable
+                        handle=".config-form-header"
+                    >
 
-                            <ExpressionValueSlotEditor >
-                                {this.renderHeader()}
-                                {!this.state.inserting && this.renderPage()}
-                                {this.state.inserting && <InsertExpressionPage
-                                    expressionValue={this.props.expressionValue}
-                                    onComplete={() => {
-                                        this.setState({inserting: false});
-                                    }}
-                                />}
-                                <DialogActions>
-                                    <Button onClick={this.handleClose} color="primary">
-                                        Complete
-                                    </Button>
-                                </DialogActions>
-                            </ExpressionValueSlotEditor>
-                        </ReactDraggable>
-                    </ClickAwayListener>
-                )
+                        <ExpressionValueSlotEditor>
+                            <ObserveState listenTo={this.props.expressionValue} properties={['valueTypeValue']} control={() => (
+                                <>
+                                    {this.renderHeader()}
+                                    {!this.state.inserting && this.renderPage()}
+                                    {this.state.inserting && <InsertExpressionPage
+                                        expressionValue={this.props.expressionValue}
+                                        onComplete={() => {
+                                            this.setState({inserting: false});
+                                        }}
+                                    />}
+                                </>
+                            )} />
+                            
+                            <DialogActions>
+                                <CompleteButton onClick={this.handleClose}>
+                                    Complete
+                                </CompleteButton>
+                            </DialogActions>
+                        </ExpressionValueSlotEditor>
+                    </ReactDraggable>
+                </ClickAwayListener>
             )
+            : <></>
         );
     }
 
@@ -225,35 +333,31 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
         return (
 
             <Header className="config-form-header">
-                Edit Expression Value
+                <span>
+                    Edit Expression Value
+                </span>
                 <HeaderFloatRight>
                     {
                         (this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id) && !this.state.inserting) &&
-                            <Button variant={"outlined"} onClick={() => {
+                            <ExpressionHeaderButton onClick={() => {
                                 let parent = this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id)
                                 if (parent) {
                                     this.props.expressionValue.editContext?.setSelection(parent._id);
-                                    this.props.expressionValue.editContext?.refresh();
                                 }
                             }}>
                                 Select Parent
-                            </Button>
+                            </ExpressionHeaderButton>
                     }
                     {
                         (!this.state.inserting && this.props.expressionValue.valueType !== ExpressionValueType.UNSET) &&
-                            <Button
-                                variant={"outlined"}
+                            <ExpressionHeaderButton
                                 onClick={() => {
                                     this.setState({inserting: true})
                                 }}
                             >
                                 Insert Expression
-                            </Button>
+                            </ExpressionHeaderButton>
                     }
-                    <CloseSharp onClick={() => {
-                        this.props.expressionValue.editContext?.clearSelection();
-                        this.props.expressionValue.editContext?.refresh();
-                    }} />
                 </HeaderFloatRight>
             </Header>
         );
@@ -293,8 +397,17 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     <>
                         <ModeButtons value={this.props.expressionValue}/>
                         <VariableOrValContentPanel>
-                            <TextField autoFocus label={'variable name'} variant={'outlined'} value={this.props.expressionValue.variableName}
-                                       onChange={this.variableNameChange}/>
+                            <VariableInput>
+                                <label>
+                                    Variable Name
+                                </label>
+                                <Input
+                                    autoFocus
+                                    disableUnderline
+                                    value={this.props.expressionValue.variableName}
+                                    onChange={this.variableNameChange}
+                                />
+                            </VariableInput>
                         </VariableOrValContentPanel>
                     </>
                 );
@@ -313,13 +426,21 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                         <ModeButtons value={this.props.expressionValue}/>
                         <ExpressionColContainer>
                             <ExpressionColumn>
-                                <Button
-                                    variant={"outlined"}
-                                    startIcon={<SearchOutlined fontSize={'small'} />}
-                                    onClick={() => {
-                                    this.props.expressionValue.valueType = ExpressionValueType.SUBEXPRESSION;
-                                    this.props.expressionValue.editContext?.refresh();
-                                }}>Add Expression</Button>
+                                <ExpressionColumnRow>
+                                    {
+                                        Object.entries(ExpressionRegistration.registrations).map(([key, expression]) => (
+                                            <AddExpressionButton
+                                                expression={this.props.expressionValue}
+                                                registration={expression}
+                                                hideLabel={true}
+                                                key={key}
+                                                onClick={() => {
+                                                    this.props.expressionValue.valueType = ExpressionValueType.SUBEXPRESSION;
+                                                }}
+                                            />
+                                        ))
+                                    }
+                                </ExpressionColumnRow>
                             </ExpressionColumn>
                             <VariableOrValColumn>
                                 <TextField label={'variable'} helperText={'Enter Variable Name'} variant={"standard"}
@@ -348,11 +469,15 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     <Switch/>
                 );
             case ExpressionExpectedType.NUMBER:
-                return <TextField autoFocus label={'value'} value={this.props.expressionValue.value} onChange={this.valueChange}
-                                  variant={'outlined'} inputMode={'decimal'}/>
+                return <VariableInput>
+                    <label>Value</label>
+                    <Input autoFocus value={this.props.expressionValue.value} onChange={this.valueChange} disableUnderline inputMode="decimal" />
+                </VariableInput>
             case ExpressionExpectedType.STRING:
-                return <TextField autoFocus label={'value'} value={this.props.expressionValue.value} onChange={this.valueChange}
-                                  variant={'outlined'}/>
+                return <VariableInput>
+                    <label>Value</label>
+                    <Input autoFocus value={this.props.expressionValue.value} onChange={this.valueChange} disableUnderline />
+                </VariableInput>
         }
         return (
             <>todo</>
@@ -423,23 +548,214 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
 }
 
 
+const ToolboxPanelSideBar = styled.div`
+    width: 132px;
+
+    > * {
+        margin-bottom: 4px;
+    }
+`;
+
+const ToolboxPanelContent = styled.div`
+    flex: 1;
+`;
+
+const ToolboxPanelSearchInput = styled(Input)`
+    && {
+        padding: 8px 14px;
+        background: #F7FBFD;
+        border: 1px solid #EBF4FA;
+        border-radius: 4px;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        color: #93A9BF;
+
+        &::before {
+            content: '';
+            display: none;
+        }
+
+        .MuiInputBase-input {
+            padding: 0;
+        }
+    }
+
+`;
+
+const ToolboxPanelHideLabels = styled(FormControlLabel)`
+    && {
+        margin-left: 0;
+        margin-right: 0;
+        .MuiTypography-root {
+            font-family: Mulish;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 20px;
+            color: #1D6295;
+        }
+        .MuiButtonBase-root {
+            padding: 0;
+
+        }
+
+        .MuiSvgIcon-root {
+            width: 16px;
+            height: 16px;
+            color: #D8E4EE;
+        }
+    }
+`;
+
+const ToolboxTabPanel = styled(TabPanel)`
+    && {
+        padding: 0;
+    }
+`;
+
+const ToolboxTabs = styled.div`
+    border: 1px solid #EBF4FA;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 4px 0 0;
+
+    > label {
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 9px;
+        line-height: 16px;
+        color: #93A9BF;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 8px 16px;
+        display: block;
+    }
+
+    .MuiTabs-indicator {
+        display: none;
+    }
+
+    .MuiButtonBase-root {
+        min-width: auto;
+        width: 100%;
+        padding: 8px 16px;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        text-transform: unset;
+        
+        display: flex;
+        align-items: center;
+        color: #677C95;
+        &.Mui-selected {
+            background: #D8E4EE;
+            color: #4B6080;
+        }
+
+        .MuiTab-wrapper {
+            display: block;
+            text-align: left;
+        }
+    }
+
+`;
+
+const ExpressionRow = styled("div")<{hideLabels: boolean}>`
+    margin: ${props => props.hideLabels ? '-6px 0 -6px 8px' : '-4px 0 -4px 8px'} ;
+`;
+
 const ToolboxPanel = function (props : {
         large: boolean,
         expressionValue: ExpressionValue,
         onExpressionSelected : (registration: RegistrationData) => void}) {
 
+    const [selectedCategory, setSelectedCategory] = useState<string>('Logic');
+    const [search, setSearch] = useState<string>('');
+    const [hideLabels, setHideLabels] = useState<boolean>(false);
+
+    const onChangeTab = (_event: any, newValue: string) => {
+        setSelectedCategory(newValue);
+    }
+
+    const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+    }
+
+    const onChangeHideLabels = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setHideLabels(event.target.checked);
+    }
+
+    let expressionCategories = ExpressionRegistration.getCategories();
+
     return (
-        <ToolboxPage >
-            {Object.values(ExpressionRegistration.registrations).map((value: RegistrationData, index: number) => {
-                return <AddExpressionButton
-                    expression={props.expressionValue}
-                    registration={value}
-                    key={"regitem" + index}
-                    onClick={(registration: RegistrationData) => {
-                        props.onExpressionSelected(registration);
+        <ToolboxPage>
+            <TabContext value={selectedCategory}>
+                <ToolboxPanelSideBar>
+                    <ToolboxPanelSearchInput
+                        value={search}
+                        disableUnderline
+                        onChange={onChangeSearch}
+                        placeholder="Search"
+                        startAdornment={(
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        )}
+                    />
+
+                    <ToolboxPanelHideLabels
+                        control={<Checkbox checked={hideLabels} onChange={onChangeHideLabels} name="label" color="primary" />}
+                        label="Hide Labels"
+                    />
+
+                    <ToolboxTabs>
+                        <label>
+                            Categories
+                        </label>
+                        <TabList
+                            orientation={'vertical'}
+                            onChange={onChangeTab}
+                        >
+                            {
+                                expressionCategories.map((category) => {
+                                    return <Tab value={category} key={category} label={category} />
+                                })
+                            }
+                        </TabList>
+                    </ToolboxTabs>
+
+                </ToolboxPanelSideBar>
+                <ToolboxPanelContent>
+                    {
+                        expressionCategories.map((category) => {
+                            let c = ExpressionRegistration.getExpressionsByCategory(category);
+                            return <ToolboxTabPanel value={category} key={category}>
+                                <ExpressionRow hideLabels={hideLabels}>
+                                    {
+                                        c.map((value: RegistrationData, index: number) => (
+                                            <AddExpressionButton
+                                                expression={props.expressionValue}
+                                                registration={value}
+                                                hideLabel={hideLabels}
+                                                key={"regitem" + index}
+                                                onClick={(registration: RegistrationData) => {
+                                                    props.onExpressionSelected(registration);
+                                                }
+                                            }/>
+                                        ))
+                                    }
+                                </ExpressionRow>
+                            </ToolboxTabPanel>
+                        })
                     }
-                    }/>
-            })}
+                </ToolboxPanelContent>
+            </TabContext>
         </ToolboxPage>
     );
 }
@@ -528,41 +844,66 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
     }
 }
 
-const AddExpressionButton = function (props: {registration: RegistrationData, expression: ExpressionValue, onClick : (registration: RegistrationData) => void}) {
+const AddExpressionButton = function (props: {registration: RegistrationData, expression: ExpressionValue, onClick : (registration: RegistrationData) => void, hideLabel: boolean}) {
 
     return (
-        <ToolboxItem onClick={() => {
+        <ToolboxItem hideLabel={props.hideLabel} onClick={() => {
             props.onClick(props.registration)
         }}>
             {props.registration.icon}
-            <ToolboxItemText>
-                {props.registration.name}
-            </ToolboxItemText>
+            {
+                !props.hideLabel && <ToolboxItemText>
+                    {props.registration.name}
+                </ToolboxItemText>
+            }
         </ToolboxItem>
     );
 }
 
 const Buttons = styled.div`
     display: flex;
-    float: left;
     width: 100%;
     padding-right: 10px;
     padding-left: 10px;
 `;
 
 const SelectedButton = styled.div`
-    border-bottom: 2px solid blue;
+    border-bottom: 2px solid #1D6295;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 33%;
+
+    .MuiButtonBase-root {
+        width: 100%;
+        padding: 12px 0;
+        color: #1D6295;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 24px;
+    }
 `;
 
 const NotSelectedButton = styled.div`
     display: flex;
-      justify-content: center;
-      align-items: center;
+    justify-content: center;
+    align-items: center;
     width: 33%;
+    color: #677C95;
+    border-bottom: 2px solid #EBF4FA;
+
+    .MuiButtonBase-root {
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 24px;
+        padding: 12px 0;
+        color: #677C95;
+        width: 100%;
+    }
 `;
 
 
@@ -580,7 +921,7 @@ const ModeButtons = function (props: {value: ExpressionValue}) {
 const ExpressionButton = function (props: {value: ExpressionValue}) {
     function handleClick() {
         props.value.valueType = ExpressionValueType.SUBEXPRESSION;
-        props.value.editContext?.refresh();
+        // props.value.editContext?.refresh();
     }
 
     if (props.value.valueType === ExpressionValueType.SUBEXPRESSION) {
@@ -602,7 +943,7 @@ const ExpressionButton = function (props: {value: ExpressionValue}) {
 const VariableButton = function (props: {value: ExpressionValue}) {
     function handleClick() {
         props.value.valueType = ExpressionValueType.VARIABLE;
-        props.value.editContext?.refresh();
+        // props.value.editContext?.refresh();
     }
 
     if (props.value.valueType === ExpressionValueType.VARIABLE) {

@@ -45,7 +45,6 @@ const FlowMainSectionDiv = styled.div`
     display: flex;
     flexDirection: column;
     height: 100vh;
-    float: left;
 `;
 
 export class FlowEditContext {

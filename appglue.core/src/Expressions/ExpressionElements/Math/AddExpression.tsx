@@ -5,10 +5,10 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {ExpressionExpectedType} from "../../ExpressionExpectedType";
 import {BracketedDiv, ExpressionDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {AddOutlined} from "@material-ui/icons";
+import {PlusOutlineIcon} from "../../../CommonUI/Icon/PlusOutlineIcon"
 
 
-@RegisterExpression('Math', 'Add', <AddOutlined fontSize={'small'}/>, ExpressionExpectedType.NUMBER, true)
+@RegisterExpression('Math', 'Add', <PlusOutlineIcon />, ExpressionExpectedType.NUMBER)
 export class AddExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

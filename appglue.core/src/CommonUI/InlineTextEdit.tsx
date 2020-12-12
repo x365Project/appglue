@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import {Label} from "mdi-material-ui";
-import {Input, InputLabel, TextField, ClickAwayListener} from "@material-ui/core";
+import {Input, ClickAwayListener} from "@material-ui/core";
 import styled from "styled-components";
 
 export interface InlineInputProps {
@@ -9,12 +8,31 @@ export interface InlineInputProps {
 }
 
 export const InheritLabel = styled.label`
-    font: inherit;
+    border-bottom: 2px solid transparent;
     &:hover {
-      border-bottom: 2px solid darkgray;
+      border-bottom: 2px solid #93A9BF;
       background-color: white;
     }
+`;
 
+export const EditInput = styled(Input)`
+    && {
+        .MuiInputBase-input {
+            border: 1px solid #93A9BF;
+            box-sizing: border-box;
+            border-radius: 4px;
+            height: auto;
+    
+            font-family: Mulish;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 20px;
+            color: #677C95;
+    
+            padding: 6px 12px;
+        }
+    }
 `;
 
 export function InlineTextEdit(props: InlineInputProps) {
@@ -30,10 +48,9 @@ export function InlineTextEdit(props: InlineInputProps) {
     function renderInput() {
         return (
             <ClickAwayListener onClickAway={clickAway}>
-                <TextField
-                    size={'small'}
+                <EditInput
                     value={props.text}
-                    variant={'outlined'}
+                    disableUnderline
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                        // props.text = event.target.value;
                         if (props.onEdit){
@@ -46,8 +63,7 @@ export function InlineTextEdit(props: InlineInputProps) {
                             clickAway();
                         }
                     }}
-
-                ></TextField>
+                />
             </ClickAwayListener>
         );
     }
