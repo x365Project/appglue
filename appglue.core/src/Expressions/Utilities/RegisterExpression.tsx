@@ -5,11 +5,11 @@
 
 import {ExpressionExpectedType} from "../ExpressionExpectedType";
 
-export function RegisterExpression(category: string, name: string,  icon: JSX.Element, valueType?:  ExpressionExpectedType) {
+export function RegisterExpression(category: string, name: string,  icon: JSX.Element, valueType?:  ExpressionExpectedType, common: boolean = false) {
     return function<T extends {new(...any: any[]): object}> (constructorFunction: T) {
 
         constructorFunction.prototype.__type = constructorFunction.name;
-        ExpressionRegistration.registrations[name] = new RegistrationData(constructorFunction, category, name,  icon, valueType);
+        ExpressionRegistration.registrations[name] = new RegistrationData(constructorFunction, category, name,  icon, valueType, common);
 
         return class extends constructorFunction {
             constructor(...any: any[]) {
@@ -26,14 +26,22 @@ export class RegistrationData {
     icon: JSX.Element;
     valueType? : ExpressionExpectedType;
     prototype: any;
+    common: boolean;
 
-    constructor(constructorFunction: Function, category: string, name: string, icon: JSX.Element, valueType?: ExpressionExpectedType ) {
+    constructor(
+            constructorFunction: Function,
+            category: string,
+            name: string,
+            icon: JSX.Element,
+            valueType?: ExpressionExpectedType,
+            common: boolean = false) {
         this.constructorFunction = constructorFunction;
         this.prototype = constructorFunction.prototype;
         this.category = category;
         this.name = name;
         this.icon = icon;
         this.valueType = valueType;
+        this.common = common;
     }
 }
 
@@ -57,7 +65,9 @@ export class ExpressionRegistrationClass {
     }
 
     getCommonExpressions() : RegistrationData[] {
-        return [];
+        return Object.values(this.registrations).filter((value: RegistrationData) => {
+            return value.common;
+        });
     }
 
     getRegistrationByName(name: string) : RegistrationData | null {
