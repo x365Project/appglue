@@ -1,5 +1,6 @@
 import React from "react";
 import {listeners} from "cluster";
+import {DataUtilities} from "../../Common/DataUtilities";
 
 
 class ListenerRegistration {
@@ -11,6 +12,7 @@ class ListenerRegistration {
 export class StateManager {
 
     static readonly OBSERVERS_VALUE_NAME = '_____observers';
+    static readonly OLD_STATES_VALUE_NAME: string = '_____oldstates';
 
     static addObserver(
             observable: object,
@@ -69,8 +71,23 @@ export class StateManager {
     }
 
 
+    // todo.  stop double forcing.
+
     static internalTriggerUpdate(observable: object, forProperties: string[] | undefined = undefined) {
         let observers = Reflect.get(observable, this.OBSERVERS_VALUE_NAME) as ListenerRegistration;
+
+        let oldStates = Reflect.get(observable, this.OLD_STATES_VALUE_NAME) as object[] ;
+
+        if (!oldStates) {
+            oldStates = [];
+            Reflect.set(observable, this.OLD_STATES_VALUE_NAME, oldStates);
+        }
+
+        oldStates.push(DataUtilities.clone(observable));
+
+        // keep only last 20
+        if (oldStates.length > 20)
+            oldStates.shift();
 
         if (observers) {
             for (let l of observers.components) {
@@ -97,7 +114,19 @@ export class StateManager {
     }
 
     static isChanged(observable: object) : boolean {
+        let oldStates = Reflect.get(observable, this.OLD_STATES_VALUE_NAME) as object[] ;
+
+        if (!oldStates || oldStates.length === 0) {
+            return true;
+        }
+
+        return DataUtilities.compare(oldStates[oldStates.length -1], observable);
+
         return true;
+    }
+
+    static forceChange(observable: object) {
+        StateManager.internalTriggerUpdate(observable);
     }
 
     static changed(observable: object) {

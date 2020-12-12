@@ -1,5 +1,5 @@
 import React from "react";
-import { FrameOptions } from "./FrameOptions";
+import { FrameProps } from "./FrameProps";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -116,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function TopBarNav(props: { layoutOptions: FrameOptions }) {
+export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);

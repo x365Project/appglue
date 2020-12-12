@@ -1,5 +1,5 @@
 import React from "react";
-import { FrameOptions, LayoutWidth, SideBarType } from "./FrameOptions";
+import { FrameProps, LayoutWidth, SideBarType } from "./FrameProps";
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -172,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
 
 const drawerWidth = 240;
 
-export default function TopBar(props: { layoutOptions: FrameOptions }) {
+export default function TopBar(props: { layoutOptions: FrameProps }) {
   // if vertical, collapse top bar hamburg
   // search
   // -- on right
