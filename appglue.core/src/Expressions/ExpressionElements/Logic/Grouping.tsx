@@ -32,7 +32,7 @@ export enum GroupingType {
 }
 
 @RegisterExpression('Logic', 'And Group',  <TextIcon name={'AND'}/> ,ExpressionExpectedType.BOOLEAN)
-export class Grouping
+export class AndGroup
     extends BaseExpression {
 
     typeOfGroup : GroupingType = GroupingType.AND;
@@ -134,7 +134,7 @@ export class Grouping
 }
 
 @RegisterExpression('Logic', 'Or Group', <TextIcon name={'OR'}/>, ExpressionExpectedType.BOOLEAN)
-export class OrGroup extends Grouping {
+export class OrGroup extends AndGroup {
 
     constructor() {
         super();

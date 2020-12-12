@@ -19,7 +19,7 @@ import {
 } from "@material-ui/icons";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import {ExpressionLineDiv} from "../../ExpressionStyles";
-import {Grouping} from "./Grouping";
+import {AndGroup} from "./Grouping";
 import {TextIcon} from "../../../CommonUI/TextIcon";
 import {DataUtilities} from "../../../Common/DataUtilities";
 
@@ -83,7 +83,7 @@ export enum IfThenStyle {
 class IfThenPair implements IBaseExpressionElement{
     readonly canSelect: boolean = false;
 
-    ifExpression: Grouping = new Grouping();
+    ifExpression: AndGroup = new AndGroup();
     thenExpression: ExpressionValue = new ExpressionValue();
     _id: string = DataUtilities.generateUniqueId();
 
