@@ -19,8 +19,8 @@ import {
 } from "@material-ui/icons";
 import {ToggleButton} from "@material-ui/lab";
 import {ExpressionLineDiv, RuleChangeToggleButtonGroup} from "../../ExpressionStyles";
-import {Grouping} from "./Grouping";
 import {IfThenIcon} from "../../../CommonUI/Icon/IfThenIcon";
+import {AndGroup} from "./Grouping";
 import {DataUtilities} from "../../../Common/DataUtilities";
 import { DeleteIcon } from "../../../CommonUI/Icon/DeleteIcon";
 import { StateManager } from "../../../CommonUI/StateManagement/StateManager";
@@ -139,7 +139,7 @@ export enum IfThenStyle {
 class IfThenPair implements IBaseExpressionElement{
     readonly canSelect: boolean = false;
 
-    ifExpression: Grouping = new Grouping();
+    ifExpression: AndGroup = new AndGroup();
     thenExpression: ExpressionValue = new ExpressionValue();
     _id: string = DataUtilities.generateUniqueId();
 

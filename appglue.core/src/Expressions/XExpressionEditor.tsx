@@ -1,6 +1,7 @@
 import React from "react";
 import {XExpressionDefinition} from "./XExpressionDefinition";
 import styled from "styled-components";
+import {doRegister} from "./registerElements";
 
 const WholeExpression = styled.div`
     font-family:    Mulish;
@@ -35,6 +36,9 @@ export class XExpressionEditor extends React.Component<{expression: XExpressionD
     constructor(props: { expression: XExpressionDefinition }) {
         super(props);
         props.expression.editContext!.expressionEditor = this;
+
+        // ensure first registration
+        doRegister();
     }
 
     render() {
