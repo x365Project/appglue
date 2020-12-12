@@ -4,10 +4,11 @@ import {BaseExpression} from "./BaseExpression";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";
 import {DataUtilities} from "../Common/DataUtilities";
-import { StateManager } from "../CommonUI/StateManagement/StateManager";
+import {StateManager} from "../CommonUI/StateManagement/StateManager";
+import {ValidationIssue} from "../Common/IDesignValidationProvider";
 
 export class ExpressionValue
-    implements IBaseExpressionElement {
+    implements IBaseExpressionElement{
 
     _id : string = DataUtilities.generateUniqueId();
     name?: string;
@@ -101,5 +102,28 @@ export class ExpressionValue
     static isExpressionValue(item: any): item is ExpressionValue {
         return item instanceof ExpressionValue;
     }
+
+    getValidationIssues(): ValidationIssue[] {
+        // check type
+        // check to see if unset
+
+        let issues : ValidationIssue[] = [];
+
+        if (this.valueTypeValue === ExpressionValueType.UNSET)
+            issues.push(new ValidationIssue('Expression Value is Required', undefined, this._id));
+
+        if (this.valueTypeValue === ExpressionValueType.VARIABLE && !this.variableName)
+            issues.push(new ValidationIssue('Variable Name is Required', undefined, this._id));
+
+        if (this.valueTypeValue === ExpressionValueType.VALUE && !this.value)
+            issues.push(new ValidationIssue('Value is Required', undefined, this._id));
+
+        if (this.valueTypeValue === ExpressionValueType.SUBEXPRESSION && !this.subExpression)
+            issues.push(new ValidationIssue('Expression is Required', undefined, this._id));
+
+        return issues;
+    }
+
+
 
 }
