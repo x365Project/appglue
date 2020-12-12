@@ -85,8 +85,8 @@ const VariableElement = styled.div`
 `;
 
 const InnerValueDiv = styled.div`
-  padding: 4px 8px;
-  display: flex;
+    padding: 4px 8px;
+    display: flex;
 `;
 
 

@@ -15,6 +15,8 @@ import { PlusIcon } from "../../../CommonUI/Icon/PlusIcon";
 import { DeleteIcon } from "../../../CommonUI/Icon/DeleteIcon";
 import { AndIcon } from "../../../CommonUI/Icon/AndIcon";
 import { OrIcon } from "../../../CommonUI/Icon/OrIcon";
+import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
+import { StateManager } from "../../../CommonUI/StateManagement/StateManager";
 
 const BracketedDiv = styled.div`
     position: relative;
@@ -77,6 +79,12 @@ export class Grouping
 
         e.expectedType = ExpressionExpectedType.BOOLEAN;
         this.elements.push(e);
+        StateManager.changed(this);
+    }
+
+    delete(index: number) {
+        this.elements.splice(index);
+        StateManager.changed(this);
     }
 
     setEditContext(editContext: ExpressionEditContext, owner: IBaseExpressionElement): void {
@@ -89,7 +97,7 @@ export class Grouping
 
     render() {
         return (
-            <BracketedDiv>
+            <ObserveState listenTo={this} control={() => <BracketedDiv>
                 {this.elements.map((g: ExpressionValue, i: number) => {
                     return (
                         <ExpressionLineDiv>
@@ -98,7 +106,7 @@ export class Grouping
                         </ExpressionLineDiv>
                     );
                 })}
-            </BracketedDiv>
+            </BracketedDiv>} />
         );
     }
 
@@ -124,7 +132,7 @@ export class Grouping
             return (
                 <ExpressionPiece>
                     <InlineOptionSelect text={this.typeOfGroup} options={[GroupingType.AND, GroupingType.OR]} onEdit={this.onGroupTypeSelect}/>
-                    <IconButton size={'small'} aria-label="delete" >
+                    <IconButton size={'small'} aria-label="delete" onClick={() => this.deleteToFromAction(i)}>
                         <DeleteIcon />
                     </IconButton>
                 </ExpressionPiece>
@@ -135,7 +143,7 @@ export class Grouping
                     <IconButton size={'small'} onClick={this.addToFromAction}>
                         <PlusIcon />
                     </IconButton>
-                    <IconButton size={'small'} aria-label="delete" >
+                    <IconButton size={'small'} aria-label="delete" onClick={() => this.deleteToFromAction(i)}>
                         <DeleteIcon />
                     </IconButton>
                 </ExpressionPiece>
@@ -146,13 +154,20 @@ export class Grouping
     @AutoBind
     private addToFromAction() {
         this.add();
-        this.editContext?.refresh();
     }
+
+    
+
+    @AutoBind
+    private deleteToFromAction(index: number) {
+        this.delete(index);
+    }
+
+
 
     @AutoBind
     private onGroupTypeSelect(newGroup: string) {
         this.typeOfGroup = newGroup as GroupingType;
-        this.editContext?.refresh();
     }
 }
 

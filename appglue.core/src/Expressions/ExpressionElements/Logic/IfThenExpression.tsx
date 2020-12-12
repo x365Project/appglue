@@ -23,6 +23,8 @@ import {Grouping} from "./Grouping";
 import {IfThenIcon} from "../../../CommonUI/Icon/IfThenIcon";
 import {DataUtilities} from "../../../Common/DataUtilities";
 import { DeleteIcon } from "../../../CommonUI/Icon/DeleteIcon";
+import { StateManager } from "../../../CommonUI/StateManagement/StateManager";
+import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 const AllIfDiv = styled.div`
     font-size:      18px;
@@ -197,11 +199,18 @@ export class IfThenExpression
 
         this._ifBranches.push(pair);
 
+        StateManager.changed(this);
+
         if (this.editContext) {
             pair.setEditContext(this.editContext, this);
         }
 
         return pair;
+    }
+
+    deleteIfBranch(index: number) {
+        this._ifBranches.splice(index, 1);
+        StateManager.changed(this);
     }
 
     get ifBranches() : IfThenPair[] {
@@ -219,66 +228,69 @@ export class IfThenExpression
     render() {
 
         return (
-            <AllIfDiv>
-                {
-                this._ifBranches.map((value: IfThenPair, index: number) => {
-                    if (this._ifThenStyle === IfThenStyle.BRANCH_DATA_RETURN) {
-                        if (index === 0) {
-                            return (
-                                <IfSection key={this._id + index}>
-                                    <ExpressionLineDiv>
-                                        if {value.ifExpression.render()}
-                                        <FloatRight>{this.renderRuleChange()}</FloatRight>
-                                    </ExpressionLineDiv>
-                                    <IfIndentedSection>
-                                        <ExpressionLineDiv>{this.renderThen()}</ExpressionLineDiv>
-                                        <ExpressionLineDiv>&nbsp;&nbsp;<ExpressionValueRenderer el={value.thenExpression !}/>
-                                            {this.renderBranchActions(index)}
-                                        </ExpressionLineDiv>
-                                    </IfIndentedSection>
-                                </IfSection>
-                            );
-                        } else {
-                            return (
-                                <IfSection key={this._id + index}>
-                                    <ExpressionLineDiv>
-                                        else if {value.ifExpression.render()}
-                                        {this.renderBranchActions(index)}
-                                    </ExpressionLineDiv>
-                                    <IfIndentedSection>
-                                        <ExpressionLineDiv>{this.renderThen()}</ExpressionLineDiv>
-                                        <ExpressionLineDiv>&nbsp;&nbsp;<ExpressionValueRenderer el={value.thenExpression !}/>
-                                        </ExpressionLineDiv>
-                                    </IfIndentedSection>
-                                </IfSection>
-                            )
-                        }
-                    } else {
-                        if (index === 0) {
-                            return (
-                                <IfSection>
-                                    <ExpressionLineDiv>
-                                        if {value.ifExpression.render()}
-                                        {this.renderBranchActions(index, true)}
-                                    </ExpressionLineDiv>
-                                </IfSection>
-                            );
-                        } else {
-                            return (
-                                <IfSection>
-                                    <ExpressionLineDiv>
-                                        else if {value.ifExpression.render()}
-                                        {this.renderBranchActions(index)}
-                                    </ExpressionLineDiv>
-                                </IfSection>
-                            )
-                        }
-                    }
+            <ObserveState listenTo={this} control={() => (
+                <AllIfDiv>
+                    {
+                        this._ifBranches.map((value: IfThenPair, index: number) => {
+                            if (this._ifThenStyle === IfThenStyle.BRANCH_DATA_RETURN) {
+                                if (index === 0) {
+                                    return (
+                                        <IfSection key={this._id + index}>
+                                            <ExpressionLineDiv>
+                                                if {value.ifExpression.render()}
+                                                <FloatRight>{this.renderRuleChange()}</FloatRight>
+                                            </ExpressionLineDiv>
+                                            <IfIndentedSection>
+                                                <ExpressionLineDiv>{this.renderThen()}</ExpressionLineDiv>
+                                                <ExpressionLineDiv>&nbsp;&nbsp;<ExpressionValueRenderer el={value.thenExpression !}/>
+                                                    {this.renderBranchActions(index)}
+                                                </ExpressionLineDiv>
+                                            </IfIndentedSection>
+                                        </IfSection>
+                                    );
+                                } else {
+                                    return (
+                                        <IfSection key={this._id + index}>
+                                            <ExpressionLineDiv>
+                                                else if {value.ifExpression.render()}
+                                                {this.renderBranchActions(index)}
+                                            </ExpressionLineDiv>
+                                            <IfIndentedSection>
+                                                <ExpressionLineDiv>{this.renderThen()}</ExpressionLineDiv>
+                                                <ExpressionLineDiv>&nbsp;&nbsp;<ExpressionValueRenderer el={value.thenExpression !}/>
+                                                </ExpressionLineDiv>
+                                            </IfIndentedSection>
+                                        </IfSection>
+                                    )
+                                }
+                            } else {
+                                if (index === 0) {
+                                    return (
+                                        <IfSection>
+                                            <ExpressionLineDiv>
+                                                if {value.ifExpression.render()}
+                                                {this.renderBranchActions(index, true)}
+                                            </ExpressionLineDiv>
+                                        </IfSection>
+                                    );
+                                } else {
+                                    return (
+                                        <IfSection>
+                                            <ExpressionLineDiv>
+                                                else if {value.ifExpression.render()}
+                                                {this.renderBranchActions(index)}
+                                            </ExpressionLineDiv>
+                                        </IfSection>
+                                    )
+                                }
+                            }
 
-                })
-                }
-                {this.renderEnd()}
-            </AllIfDiv>
+                        })
+                    }
+                    {this.renderEnd()}
+                </AllIfDiv>
+            )} />
+            
         )
     }
 
@@ -319,7 +331,7 @@ export class IfThenExpression
             } else {
                 return (
                     <ActionButtons>
-                        <IconButton size={'small'} aria-label="delete" >
+                        <IconButton size={'small'} aria-label="delete" onClick={() => this.deleteIfBranchFromAction(index)}>
                             <DeleteIcon />
                         </IconButton>
                         <IconButton size={'small'} onClick={this.addIfBranchFromAction}>
@@ -406,7 +418,11 @@ export class IfThenExpression
     @AutoBind
     private addIfBranchFromAction() {
         this.addIfBranch();
-        this.editContext?.refresh();
+    }
+
+    @AutoBind
+    private deleteIfBranchFromAction(index: number) {
+        this.deleteIfBranch(index);
     }
 
     private renderRuleChange() {

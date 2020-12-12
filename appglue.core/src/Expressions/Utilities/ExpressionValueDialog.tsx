@@ -179,10 +179,13 @@ const VariableOrValColumn = styled.div`
 `;
 
 const ExpressionColumn = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 33%;
+`;
+
+const ExpressionColumnRow = styled.div`
+    margin: -4px;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const VariableOrValContentPanel = styled.div`
@@ -340,7 +343,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 let parent = this.props.expressionValue.editContext?.getParentExpressionValue(this.props.expressionValue._id)
                                 if (parent) {
                                     this.props.expressionValue.editContext?.setSelection(parent._id);
-                                    // this.props.expressionValue.editContext?.refresh();
                                 }
                             }}>
                                 Select Parent
@@ -424,13 +426,21 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                         <ModeButtons value={this.props.expressionValue}/>
                         <ExpressionColContainer>
                             <ExpressionColumn>
-                                <Button
-                                    variant={"outlined"}
-                                    startIcon={<SearchOutlined fontSize={'small'} />}
-                                    onClick={() => {
-                                    this.props.expressionValue.valueType = ExpressionValueType.SUBEXPRESSION;
-                                    this.props.expressionValue.editContext?.refresh();
-                                }}>Add Expression</Button>
+                                <ExpressionColumnRow>
+                                    {
+                                        Object.entries(ExpressionRegistration).map(([key, expression]) => (
+                                            <AddExpressionButton
+                                                expression={this.props.expressionValue}
+                                                registration={expression}
+                                                hideLabel={true}
+                                                key={key}
+                                                onClick={() => {
+                                                    this.props.expressionValue.valueType = ExpressionValueType.SUBEXPRESSION;
+                                                }}
+                                            />
+                                        ))
+                                    }
+                                </ExpressionColumnRow>
                             </ExpressionColumn>
                             <VariableOrValColumn>
                                 <TextField label={'variable'} helperText={'Enter Variable Name'} variant={"standard"}
