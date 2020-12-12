@@ -9,7 +9,7 @@ export function RegisterExpression(category: string, name: string,  icon: JSX.El
     return function<T extends {new(...any: any[]): object}> (constructorFunction: T) {
 
         constructorFunction.prototype.__type = constructorFunction.name;
-        ExpressionRegistration[name] = new RegistrationData(constructorFunction, category, name,  icon, valueType);
+        ExpressionRegistration.registrations[name] = new RegistrationData(constructorFunction, category, name,  icon, valueType);
 
         return class extends constructorFunction {
             constructor(...any: any[]) {
@@ -38,7 +38,32 @@ export class RegistrationData {
 }
 
 export class ExpressionRegistrationClass {
-    [key: string]: RegistrationData;
+     registrations : {[key: string]: RegistrationData} = {};
+
+    getCategories() : string[] {
+        let categories : string[] = [];
+
+        for (let reg of Object.values(this.registrations)) {
+            if (categories.indexOf(reg.category) === -1)
+                categories.push(reg.category);
+        }
+        return categories;
+    }
+
+    getExpressionsByCategory(category: string) : RegistrationData[] {
+        return Object.values(this.registrations).filter((value: RegistrationData) => {
+            return value.category === category;
+        });
+    }
+
+    getCommonExpressions() : RegistrationData[] {
+        return [];
+    }
+
+    getRegistrationByName(name: string) : RegistrationData | null {
+        return this.registrations[name];
+    }
+
 }
 
 export const ExpressionRegistration = new ExpressionRegistrationClass();

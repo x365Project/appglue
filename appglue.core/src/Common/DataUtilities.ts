@@ -7,18 +7,24 @@ export class DataUtilities {
     static reactProperties = Object.getOwnPropertyNames(new React.Component({}));
 
     static compare(v1: object, v2: object) : boolean {
-        return util.isDeepStrictEqual(v1, v2);
 
-        return true;
-    }
+        // we are cloning to get rid of stuff we do not want to compare
+        return util.isDeepStrictEqual(this.clone(v1) , this.clone(v2));
+   }
 
     static clone(value: object): object {
-        //todo: deep clone
-        //todo: skip data members that should not be cloned
-        //todo: check for recursion
-        //todo: skip properties that should not be cloned
+        let output = {};
 
-        let output = {...value};
+        for (var i in value) {
+            if (this.reactProperties.indexOf(i) !== -1) continue;
+
+            if (i === 'isReactComponent') continue;
+
+            // these are special properties we do not want in output
+            if (!i.startsWith('_____'))
+                Reflect.set(output, i, Reflect.get(value, i));
+
+        }
 
         return output;
     }

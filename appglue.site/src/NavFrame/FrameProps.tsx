@@ -1,8 +1,5 @@
 import React from "react";
 
-export function getFrameOptions(): FrameOptions {
-    return new FrameOptions();
-}
 
 export enum SideBarType {
     DEFAULT = 'default',
@@ -47,14 +44,17 @@ export enum Preloader {
     OFF = 'off'
 }
 
+
 // these will be fetched from tenant then from user settings
-export class FrameOptions {
+export class FrameProps {
     icon: JSX.Element | undefined;
-    tenantName: string = 'AppGlue';
+    teamName: string = 'AppGlue';
+    allTeams: string[] = ['AppGlue', 'OtherTeam', 'YetAnotherTeam']
+
     color: string = '#203156;';
     colorGradientEnd?: string; // gradients have 2 colors...
 
-    layout: Layout = Layout.HORIZONTAL;
+    layout: Layout = Layout.VERTICAL;
     sideBarType: SideBarType = SideBarType.DEFAULT;
     frameSize: FrameSize = FrameSize.STANDARD;
     layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
@@ -66,3 +66,7 @@ export class FrameOptions {
 
 }
 
+export const CurrentFrameProps = new FrameProps();
+export function getFrameOptions(): FrameProps {
+    return CurrentFrameProps;
+}

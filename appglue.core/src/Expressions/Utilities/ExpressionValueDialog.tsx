@@ -428,7 +428,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                             <ExpressionColumn>
                                 <ExpressionColumnRow>
                                     {
-                                        Object.entries(ExpressionRegistration).map(([key, expression]) => (
+                                        Object.entries(ExpressionRegistration.registrations).map(([key, expression]) => (
                                             <AddExpressionButton
                                                 expression={this.props.expressionValue}
                                                 registration={expression}
@@ -691,13 +691,7 @@ const ToolboxPanel = function (props : {
         setHideLabels(event.target.checked);
     }
 
-    const expressionsByCategory = Object.values(ExpressionRegistration).reduce((obj : {[key: string]: RegistrationData[]}, current) => {
-        if (!obj[current.category]) {
-            obj[current.category] = [];
-        }
-        obj[current.category].push(current);
-        return obj
-    }, {});
+    let expressionCategories = ExpressionRegistration.getCategories();
 
     return (
         <ToolboxPage>
@@ -729,7 +723,7 @@ const ToolboxPanel = function (props : {
                             onChange={onChangeTab}
                         >
                             {
-                                Object.keys(expressionsByCategory).map((category) => {
+                                expressionCategories.map((category) => {
                                     return <Tab value={category} key={category} label={category} />
                                 })
                             }
@@ -739,7 +733,8 @@ const ToolboxPanel = function (props : {
                 </ToolboxPanelSideBar>
                 <ToolboxPanelContent>
                     {
-                        Object.entries(expressionsByCategory).map(([category, c]) => {
+                        expressionCategories.map((category) => {
+                            let c = ExpressionRegistration.getExpressionsByCategory(category);
                             return <ToolboxTabPanel value={category} key={category}>
                                 <ExpressionRow hideLabels={hideLabels}>
                                     {

@@ -1,5 +1,5 @@
 import React from "react";
-import { FrameOptions, Layout } from "./FrameOptions";
+import { FrameProps, Layout } from "./FrameProps";
 import TopBar from './TopBar';
 import TopBarNav from './TopNavBar';
 
@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import FormDialog from '../Modal/ThemeModal';
 import { ThemeProvider } from "@material-ui/core";
 import { createTheme } from '../utils/Theme';
-export function NavFrame(props: { layoutOptions: FrameOptions }) {
+export function NavFrame(props: { layoutOptions: FrameProps }) {
     // top bar
     // either side bar nav or top bar nav
     // render content
