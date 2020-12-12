@@ -430,7 +430,7 @@ const ToolboxPanel = function (props : {
 
     return (
         <ToolboxPage >
-            {Object.values(ExpressionRegistration).map((value: RegistrationData, index: number) => {
+            {Object.values(ExpressionRegistration.registrations).map((value: RegistrationData, index: number) => {
                 return <AddExpressionButton
                     expression={props.expressionValue}
                     registration={value}
