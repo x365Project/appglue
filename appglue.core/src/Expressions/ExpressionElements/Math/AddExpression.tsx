@@ -8,7 +8,7 @@ import {BracketedDiv, ExpressionDiv, ExpressionPiece} from "../../ExpressionStyl
 import {AddOutlined} from "@material-ui/icons";
 
 
-@RegisterExpression('Math', 'Add', <AddOutlined fontSize={'small'}/>, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Add', <AddOutlined fontSize={'small'}/>, ExpressionExpectedType.NUMBER, true)
 export class AddExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;
