@@ -620,7 +620,10 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                         <ExpressionViewPanelLineBottom>
                             <FloatRight>
                                 <ExpressionClearButton
-                                    onClick={() => this.props.expressionValue.subExpression = undefined}
+                                    onClick={() => {
+                                        this.props.expressionValue.subExpression = undefined;
+                                        this.props.expressionValue.valueType = ExpressionValueType.UNSET;
+                                    }}
                                 >
                                     Clear Expression
                                 </ExpressionClearButton>
