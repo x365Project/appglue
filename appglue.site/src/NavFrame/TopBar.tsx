@@ -90,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
+    height: '73px',
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
@@ -170,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const drawerWidth = 240;
+const drawerWidth = 296;
 
 export default function TopBar(props: { layoutOptions: FrameProps }) {
   // if vertical, collapse top bar hamburg
@@ -281,7 +282,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   return (
     <div className={clsx(classes.grow, props.layoutOptions.layoutWidth === LayoutWidth.BOXED && classes.borderGrow)}>
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
