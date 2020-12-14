@@ -4,6 +4,7 @@ import {ExpressionValue} from "./ExpressionValue";
 import {IBaseExpressionElement} from "./Utilities/IBaseExpressionElement";
 import {ExpressionEditContext} from "./Utilities/ExpressionEditContext";
 import {DataUtilities} from "../Common/DataUtilities";
+import {ValidationIssue} from "../Common/IDesignValidationProvider";
 
 export abstract class BaseExpression
     extends React.Component<{}, {}>
@@ -72,5 +73,4 @@ export abstract class BaseExpression
             expressionValue.setEditContext(this.editContext, this);
         }
     }
-
 }
