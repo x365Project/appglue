@@ -51,7 +51,7 @@ export class FrameProps {
     teamName: string = 'AppGlue';
     allTeams: string[] = ['AppGlue', 'OtherTeam', 'YetAnotherTeam']
 
-    color: string = '#203156;';
+    color: string = '#203156';
     colorGradientEnd?: string; // gradients have 2 colors...
 
     layout: Layout = Layout.VERTICAL;
