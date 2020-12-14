@@ -30,7 +30,9 @@ import {FloatRight} from "../ExpressionElements/Logic/IfThenExpression";
 import {ExpressionLineDiv, ExpressionPiece} from "../ExpressionStyles";
 import {ExpressionEditContext} from "./ExpressionEditContext";
 import {SearchIcon} from "../../CommonUI/Icon/SearchIcon";
+import {BackIcon} from "../../CommonUI/Icon/BackIcon";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
+import { DeleteIcon } from "../../CommonUI/Icon/DeleteIcon";
 
 const ExpressionValueSlotEditor = styled.div`
     font-family: Mulish;
@@ -98,6 +100,33 @@ const ExpressionHeaderButton = styled(Button)`
     }
 `;
 
+const ExpressionClearButton = styled(Button)`
+    && {
+        padding: 4px 12px;
+        background: #EBF4FA;
+        border-radius: 4px;
+        border: solid 2px #fff;
+
+        transition: all .3s;
+
+        &:hover {
+            background: #fff;
+            border: solid 2px #EBF4FA;          
+        }
+
+        .MuiButton-label {
+            font-family: Mulish;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 24px;
+            color: #4B6080;
+        }
+
+
+    }
+`;
+
 const NoSelectionColDiv = styled.div`
     background-color : #D3D3D3;
     width : 30%;
@@ -122,9 +151,9 @@ const ExpressionColContainer = styled.div`
 `;
 
 const ExpressionViewPanel = styled.div`
-    margin-top: 50px;
     width : 100%;
     max-height : 376px;
+    min-height: 96px;
     padding-top: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
@@ -138,38 +167,54 @@ const ExpressionViewPanelLine = styled.div`
     width : 100%;
     justify-content: flex-start;
     clear: both;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
     padding-bottom: 15px;
+
+    .MuiButton-label {
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        color: #4B6080;
+        text-transform: none;
+    }
 `;
 
 const ExpressionViewPanelLineBottom = styled.div`
-  width : 100%;
-  justify-content: flex-start;
-  margin: auto;
-  clear: both;
-  padding-top: 15px;
-  padding-bottom: 5px;
-  
+    width : 100%;
+    justify-content: flex-start;
+    margin: auto;
+    clear: both;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    .MuiButton-outlined {
+        border: solid 1px #4B6080;
+        .MuiButton-label {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 20px;
+            color: #4B6080;
+        }
+    }
 `;
 
 const ExpressionViewPanelLineCenter = styled.div`
-  display: flex;
-  margin-left: auto;
-  justify-content: center;
-  align-items: center;
-  clear: both;
-  padding: 15px;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  flex: 1;
-  overflow: auto;
-  width: 100%;
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    align-items: center;
+    clear: both;
+    padding: 15px;
+    border-radius: 5px;
+    flex: 1;
+    overflow: auto;
+    width: 100%;
 `;
 
 
 const VariableOrValColumn = styled.div`
-    border-left: 1px solid gray;
+    border-left: 2px solid #EBF4FA;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -186,6 +231,11 @@ const ExpressionColumnRow = styled.div`
     margin: -4px;
     display: flex;
     flex-wrap: wrap;
+    padding-right: 12px;
+
+    > div {
+        width: 25%;
+    }
 `;
 
 const VariableOrValContentPanel = styled.div`
@@ -429,31 +479,52 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 <ExpressionColumnRow>
                                     {
                                         Object.entries(ExpressionRegistration.registrations).map(([key, expression]) => (
-                                            <AddExpressionButton
-                                                expression={this.props.expressionValue}
-                                                registration={expression}
-                                                hideLabel={true}
-                                                key={key}
-                                                onClick={() => {
-                                                    this.props.expressionValue.valueType = ExpressionValueType.SUBEXPRESSION;
-                                                }}
-                                            />
+                                            <div>
+                                                <AddExpressionButton
+                                                    expression={this.props.expressionValue}
+                                                    hideLabel={true}
+                                                    key={key}
+                                                    registration={expression}
+                                                    onClick={() => {
+                                                        let exp = new expression.prototype.constructor() as BaseExpression;
+                                                        this.props.expressionValue.subExpression = exp;
+                                                    }}
+                                                />
+                                            </div>
                                         ))
                                     }
                                 </ExpressionColumnRow>
                             </ExpressionColumn>
                             <VariableOrValColumn>
-                                <TextField label={'variable'} helperText={'Enter Variable Name'} variant={"standard"}
-                                           onFocus={() => {
-                                               this.props.expressionValue.valueType = ExpressionValueType.VARIABLE;
-                                               this.props.expressionValue.editContext?.refresh();
-                                           }}/>
+
+                                    <VariableInput>
+                                        <label>
+                                            Variable Name
+                                        </label>
+                                        <Input
+                                            autoFocus
+                                            disableUnderline
+                                            value={this.props.expressionValue.variableName}
+                                            onFocus={() => {
+                                                this.props.expressionValue.valueType = ExpressionValueType.VARIABLE;
+                                            }}
+                                        />
+                                    </VariableInput>
                             </VariableOrValColumn>
                             <VariableOrValColumn>
-                                <TextField label={'value'} variant={"outlined"} helperText={'Enter Value'} onFocus={() => {
-                                    this.props.expressionValue.valueType = ExpressionValueType.VALUE;
-                                    this.props.expressionValue.editContext?.refresh();
-                                }}/>
+                                <VariableInput>
+                                    <label>
+                                        Variable Name
+                                    </label>
+                                    <Input
+                                        autoFocus
+                                        disableUnderline
+                                        value={this.props.expressionValue.value}
+                                        onFocus={() => {
+                                            this.props.expressionValue.valueType = ExpressionValueType.VALUE;
+                                        }}
+                                    />
+                                </VariableInput>
                             </VariableOrValColumn>
                         </ExpressionColContainer>
                     </>
@@ -532,16 +603,35 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
     }
 
     private renderExpressionPanel() {
+        let type = Reflect.get(Reflect.get(this.props.expressionValue.subExpression!, '__proto__'), '__type');
         return (
-            <ExpressionViewPanel>
-                <ExpressionViewPanelLine>Edit Expression:</ExpressionViewPanelLine>
-                <ExpressionViewPanelLineCenter>
-                    {this.props.expressionValue.subExpression?.render()}
-                </ExpressionViewPanelLineCenter>
-                <ExpressionViewPanelLineBottom>
-                    <FloatRight><Button variant={'outlined'}>Clear Expression</Button></FloatRight>
-                </ExpressionViewPanelLineBottom>
-            </ExpressionViewPanel>
+            <>
+                {
+                    this.props.expressionValue.subExpression
+                    ? <ExpressionViewPanel>
+                        <ExpressionViewPanelLine>
+                            <Button
+                                startIcon={<BackIcon />}
+                                onClick={() => this.props.expressionValue.subExpression = undefined}
+                            >{ExpressionRegistration.getExpressionByType(type)?.name}</Button>
+                        </ExpressionViewPanelLine>
+                        <ExpressionViewPanelLineCenter>
+                            {this.props.expressionValue.subExpression?.render()}
+                        </ExpressionViewPanelLineCenter>
+                        <ExpressionViewPanelLineBottom>
+                            <FloatRight>
+                                <ExpressionClearButton
+                                    onClick={() => this.props.expressionValue.subExpression = undefined}
+                                >
+                                    Clear Expression
+                                </ExpressionClearButton>
+                            </FloatRight>
+                        </ExpressionViewPanelLineBottom>
+                    </ExpressionViewPanel>
+                    : <></>
+                }
+            </>
+            
         );
     }
 

@@ -11,12 +11,13 @@ import {IconButton} from "@material-ui/core";
 import {AutoBind} from "../../../Common/AutoBind";
 import {InlineTextEdit} from "../../../CommonUI/InlineTextEdit";
 import {PlusIcon} from "../../../CommonUI/Icon/PlusIcon";
+import {LeftAlignIcon} from "../../../CommonUI/Icon/LeftAlignIcon";
+import {ActiveLeftAlignIcon} from "../../../CommonUI/Icon/ActiveLeftAlignIcon";
+import {RightAlignIcon} from "../../../CommonUI/Icon/RightAlignIcon";
+import {ActiveRightAlignIcon} from "../../../CommonUI/Icon/ActiveRightAlignIcon";
+import {LogicalIcon} from "../../../CommonUI/Icon/LogicalIcon";
+import {ActiveLogicalIcon} from "../../../CommonUI/Icon/ActiveLogicalIcon";
 
-import {
-    CheckBoxOutlined,
-    DynamicFeedOutlined,
-    LowPriorityOutlined
-} from "@material-ui/icons";
 import {ToggleButton} from "@material-ui/lab";
 import {ExpressionLineDiv, RuleChangeToggleButtonGroup} from "../../ExpressionStyles";
 import {IfThenIcon} from "../../../CommonUI/Icon/IfThenIcon";
@@ -435,11 +436,15 @@ export class IfThenExpression
                         aria-label="rule style"
                         size="small"
                     >
-                        <ToggleButton size={'small'} value={IfThenStyle.DATA_RETURN} aria-label="left aligned">
-                            <LowPriorityOutlined fontSize={'small'}/>
+                        <ToggleButton  value={IfThenStyle.DATA_RETURN} aria-label="Data Return">
+                            {
+                                this._ifThenStyle !== IfThenStyle.DATA_RETURN ? <LeftAlignIcon alt="Data Return" /> : <ActiveLeftAlignIcon alt="Data Return" />
+                            }
                         </ToggleButton>
-                        <ToggleButton size={'small'} value={IfThenStyle.BRANCH_DATA_RETURN} aria-label="centered">
-                            <DynamicFeedOutlined fontSize={'small'} />
+                        <ToggleButton value={IfThenStyle.BRANCH_DATA_RETURN} aria-label="Branch Data Return">
+                            {
+                                this._ifThenStyle !== IfThenStyle.BRANCH_DATA_RETURN ? <RightAlignIcon alt="Branch Data Return" /> : <ActiveRightAlignIcon alt="Branch Data Return" />
+                            }
                         </ToggleButton>
                     </RuleChangeToggleButtonGroup>
             );
@@ -452,14 +457,20 @@ export class IfThenExpression
                         aria-label="rule style"
                         size="small"
                     >
-                        <ToggleButton  value={IfThenStyle.DATA_RETURN} aria-label="left aligned">
-                            <LowPriorityOutlined fontSize={'small'}/>
+                        <ToggleButton  value={IfThenStyle.DATA_RETURN} aria-label="Data Return">
+                            {
+                                this._ifThenStyle !== IfThenStyle.DATA_RETURN ? <LeftAlignIcon alt="Data Return" /> : <ActiveLeftAlignIcon alt="Data Return" />
+                            }
                         </ToggleButton>
-                        <ToggleButton value={IfThenStyle.BRANCH_DATA_RETURN} aria-label="centered">
-                            <DynamicFeedOutlined fontSize={'small'}/>
+                        <ToggleButton value={IfThenStyle.BRANCH_DATA_RETURN} aria-label="Branch Data Return">
+                            {
+                                this._ifThenStyle !== IfThenStyle.BRANCH_DATA_RETURN ? <RightAlignIcon alt="Branch Data Return" /> : <ActiveRightAlignIcon alt="Branch Data Return" />
+                            }
                         </ToggleButton>
-                        <ToggleButton value={IfThenStyle.LOGICAL_RETURN} aria-label="centered">
-                            <CheckBoxOutlined fontSize={'small'} />
+                        <ToggleButton value={IfThenStyle.LOGICAL_RETURN} aria-label="Logical Return">
+                            {
+                                this._ifThenStyle !== IfThenStyle.LOGICAL_RETURN ? <LogicalIcon alt="Logical Return" /> : <ActiveLogicalIcon alt="Logical Return" />
+                            }
                         </ToggleButton>
                     </RuleChangeToggleButtonGroup>
             );
@@ -470,7 +481,7 @@ export class IfThenExpression
     @AutoBind
     private changeStyle(event: any, value: IfThenStyle) {
         this.ifThenStyle = value;
-        this.editContext?.refresh();
+        StateManager.changed(this);
     }
 
 

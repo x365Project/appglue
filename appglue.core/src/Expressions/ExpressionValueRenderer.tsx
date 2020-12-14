@@ -38,7 +38,7 @@ const ExpressionValueWrapper = styled.div`
 `;
 
 const ValueElement = styled.div`
-    display: flex;
+    display: inline-flex;
     align-items: center;
     border: 2px solid white;
     border-radius: 4px;
@@ -75,6 +75,7 @@ const VariableElement = styled.div`
         line-height: 24px;
         display: block;
         border-bottom: dotted 1px #93A9BF; 
+        color: #677C95;
     }
 
     &:hover {
@@ -93,17 +94,11 @@ const InnerValueDiv = styled.div`
 const MissingElement = styled.span`
     display: flex;
     align-items: center;
-    border: 1px solid #E6E9ED;
     box-sizing: border-box;
     border-radius: 3px;  
     
     margin-right: 5px;
     margin-left: 5px;
-    &:hover {
-        border: 1px solid #1873B9;
-        border-radius: 5px;
-        background-color: white;
-    }
 `;
 
 const MissingTextDiv = styled.div`
