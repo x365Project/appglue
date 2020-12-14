@@ -19,8 +19,6 @@ export default {
     component: NavFrame,
 } as Meta;
 
-
-
 const Template: Story<FrameProps> = (args) => <NavFrame layoutOptions={args} />;
 
 let frameOptions = new FrameProps();
@@ -28,28 +26,28 @@ frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.BOXED;
 frameOptions.layout = Layout.HORIZONTAL;
 
-export const BoxedLayoutHorizontal = Template.bind(frameOptions);
+export const BoxedLayoutHorizontal = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.BOXED;
 frameOptions.layout = Layout.HORIZONTAL;
 
-export const BoxedLayoutVertical = Template.bind(frameOptions);
+export const BoxedLayoutVertical = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 
-export const FullWidthLayoutHorizontal = Template.bind(frameOptions);
+export const FullWidthLayoutHorizontal = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 
-export const FullWidthLayoutVertical = Template.bind(frameOptions);
+export const FullWidthLayoutVertical = Template.bind(null, frameOptions);
 
 // *********** Vertical theme ******
 
@@ -60,7 +58,7 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 
-export const DarkTopBar = Template.bind(frameOptions);
+export const DarkTopBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -68,16 +66,16 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.topBarTheme = TopBarTheme.LIGHT;
 
-export const LightTopBar = Template.bind(frameOptions);
+export const LightTopBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.color = 'red';
+frameOptions.color = '#ff0000';
 
-export const ColoredTopBar = Template.bind(frameOptions);
+export const ColoredTopBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -85,7 +83,7 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.navBarTheme = NavBarTheme.DARK;
 
-export const DarkNavBar = Template.bind(frameOptions);
+export const DarkNavBar = Template.bind(null, frameOptions);
 
 
 frameOptions = new FrameProps();
@@ -94,16 +92,16 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.navBarTheme = NavBarTheme.LIGHT;
 
-export const LightNavBar = Template.bind(frameOptions);
+export const LightNavBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.color = 'red';
+frameOptions.color = '#ff0000';
 
-export const ColoredNavBar = Template.bind(frameOptions);
+export const ColoredNavBar = Template.bind(null, frameOptions);
 
 
 frameOptions = new FrameProps();
@@ -114,7 +112,7 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
-export const DarkTheme = Template.bind(frameOptions);
+export const DarkTheme = Template.bind(null, frameOptions);
 
 // *********** Horizontal theme ******
 
@@ -124,7 +122,7 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 
-export const HDarkTopBar = Template.bind(frameOptions);
+export const HDarkTopBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -132,16 +130,16 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 frameOptions.topBarTheme = TopBarTheme.LIGHT;
 
-export const HLightTopBar = Template.bind(frameOptions);
+export const HLightTopBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.color = 'red';
+frameOptions.color = '#ff0000';
 
-export const HColoredTopBar = Template.bind(frameOptions);
+export const HColoredTopBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -149,7 +147,7 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 frameOptions.navBarTheme = NavBarTheme.DARK;
 
-export const HDarkNavBar = Template.bind(frameOptions);
+export const HDarkNavBar = Template.bind(null, frameOptions);
 
 
 frameOptions = new FrameProps();
@@ -158,16 +156,16 @@ frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 frameOptions.navBarTheme = NavBarTheme.LIGHT;
 
-export const HLightNavBar = Template.bind(frameOptions);
+export const HLightNavBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
 frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.color = 'red';
+frameOptions.color = '#ff0000';
 
-export const HColoredNavBar = Template.bind(frameOptions);
+export const HColoredNavBar = Template.bind(null, frameOptions);
 
 
 frameOptions = new FrameProps();
@@ -178,7 +176,7 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
-export const HDarkTheme = Template.bind(frameOptions);
+export const HDarkTheme = Template.bind(null, frameOptions);
 
 
 
@@ -191,7 +189,7 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
-export const FullNavBar = Template.bind(frameOptions);
+export const FullNavBar = Template.bind(null, frameOptions);
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -202,7 +200,7 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
-export const CompactNavBar = Template.bind(frameOptions);
+export const CompactNavBar = Template.bind(null, frameOptions);
 
 
 frameOptions = new FrameProps();
@@ -214,4 +212,4 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
-export const IconNavBar = Template.bind(frameOptions);
+export const IconNavBar = Template.bind(null, frameOptions);

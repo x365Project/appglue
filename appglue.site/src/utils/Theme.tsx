@@ -8,7 +8,7 @@ export const createTheme = ({ color, colorGradientEnd, contentTheme, ...layoutOp
         palette: {
             type: contentTheme,
             primary: {
-                main: color ? color : '#203156',
+                main: color ? color : '#203156;',
                 light: '#dceaf5',
                 dark: '#15466b'
             },
@@ -49,7 +49,11 @@ export const createTheme = ({ color, colorGradientEnd, contentTheme, ...layoutOp
                 label: {
                     color: '#677C95',
                 },
+            },
+            MuiToolbar: {
+                root: {
+                    minHeight: '73px',
+                }
             }
         }
     });
-    
