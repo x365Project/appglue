@@ -1,9 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { FrameProps } from '../NavFrame/FrameProps';
 
-export const createTheme = ({ color, colorGradientEnd, contentTheme, ...layoutOptions }: FrameProps) => {
-    console.log(color)
-    return createMuiTheme({
+export const createTheme = ({ color, colorGradientEnd, contentTheme, ...layoutOptions }: FrameProps) => createMuiTheme({
         typography: {
             fontFamily: 'Mulish',
         },
@@ -54,4 +52,4 @@ export const createTheme = ({ color, colorGradientEnd, contentTheme, ...layoutOp
             }
         }
     });
-}
+    
