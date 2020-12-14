@@ -811,6 +811,7 @@ const ToolboxPanel = function (props : {
                             orientation={'vertical'}
                             onChange={onChangeTab}
                         >
+                            <Tab value={"common"} label={"Common"} />
                             {
                                 expressionCategories.map((category) => {
                                     return <Tab value={category} key={category} label={category} />
@@ -821,6 +822,23 @@ const ToolboxPanel = function (props : {
 
                 </ToolboxPanelSideBar>
                 <ToolboxPanelContent>
+                    <ToolboxTabPanel value={"common"}>
+                        <ExpressionRow hideLabels={hideLabels}>
+                            {
+                                ExpressionRegistration.getCommonExpressions().map((value: RegistrationData, index: number) => (
+                                    <AddExpressionButton
+                                        expression={props.expressionValue}
+                                        registration={value}
+                                        hideLabel={hideLabels}
+                                        key={"regitem" + index}
+                                        onClick={(registration: RegistrationData) => {
+                                            props.onExpressionSelected(registration);
+                                        }
+                                    }/>
+                                ))
+                            }
+                        </ExpressionRow>
+                    </ToolboxTabPanel>
                     {
                         expressionCategories.map((category) => {
                             let c = ExpressionRegistration.getExpressionsByCategory(category);
