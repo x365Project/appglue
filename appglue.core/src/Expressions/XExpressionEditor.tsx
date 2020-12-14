@@ -6,6 +6,7 @@ import {doRegister} from "./registerElements";
 const WholeExpression = styled.div`
     font-family:    Mulish;
     font-size:      28px;
+    color: #677C95;
 `;
 
 const Expression = styled.div`

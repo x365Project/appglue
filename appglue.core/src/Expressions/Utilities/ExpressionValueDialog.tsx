@@ -281,6 +281,7 @@ const ToolboxItemText = styled.div`
    margin-left: 13px;
    font-family: Mulish;
    font-size: 14px;
+   color: #1D6295;
 `;
 
 const CompleteButton = styled(Button)`
@@ -502,7 +503,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                             Variable Name
                                         </label>
                                         <Input
-                                            autoFocus
                                             disableUnderline
                                             value={this.props.expressionValue.variableName}
                                             onFocus={() => {
@@ -517,7 +517,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                         Variable Name
                                     </label>
                                     <Input
-                                        autoFocus
                                         disableUnderline
                                         value={this.props.expressionValue.value}
                                         onFocus={() => {
