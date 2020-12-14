@@ -24,7 +24,7 @@ const DivisionDiv = styled.div`
 
 
 const TopDiv = styled.div`
-  border-bottom: 3px solid black;
+  border-bottom: 3px solid #677C95;
   margin-top: 5px;
   margin-bottom: 5px;
   margin-left: 5px;

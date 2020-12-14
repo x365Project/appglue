@@ -38,7 +38,7 @@ const ExpressionValueWrapper = styled.div`
 `;
 
 const ValueElement = styled.div`
-    display: flex;
+    display: inline-flex;
     align-items: center;
     border: 2px solid white;
     border-radius: 4px;
@@ -75,6 +75,7 @@ const VariableElement = styled.div`
         line-height: 24px;
         display: block;
         border-bottom: dotted 1px #93A9BF; 
+        color: #677C95;
     }
 
     &:hover {
@@ -93,21 +94,15 @@ const InnerValueDiv = styled.div`
 const MissingElement = styled.span`
     display: flex;
     align-items: center;
-    border: 1px solid #E6E9ED;
     box-sizing: border-box;
     border-radius: 3px;  
     
     margin-right: 5px;
     margin-left: 5px;
-    &:hover {
-        border: 1px solid #1873B9;
-        border-radius: 5px;
-        background-color: white;
-    }
 `;
 
-const MissingTextDiv = styled.div`
-    color: #1D6295;
+const MissingTextDiv = styled("div")<{error?: boolean}>`
+    color: ${props => props.error ? 'red' : '#1D6295'};
     padding: 4px 12px;
     font-family: Mulish;
     font-style: normal;
@@ -130,8 +125,14 @@ const MissingTextDiv = styled.div`
 `;
 
 
-const TextDiv = styled.div`
+const TextDiv = styled("div")<{error?: boolean}>`
     padding: 4px 8px;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: ${props => props.error ? 'red' : '#4B6080'};
 `;
 
 export class ExpressionValueRenderer extends React.Component<{ el: ExpressionValue }> {
@@ -142,6 +143,11 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
     handleClick() {
 
         this.props.el.editContext?.setSelection(this.props.el._id);
+    }
+
+    hasError() {
+        let issues = this.props.el.getValidationIssues();
+        return issues.length > 0;
     }
 
 
@@ -188,8 +194,9 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                 break;
         }
 
+
         return (
-            <MissingTextDiv>{text}</MissingTextDiv>
+            <MissingTextDiv error={this.hasError()}>{text}</MissingTextDiv>
         );
     }
 
@@ -202,7 +209,7 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                 >
                     {
                         this.props.el.variableName
-                        ? <TextDiv>{this.props.el.variableName}</TextDiv>
+                        ? <TextDiv error={this.hasError()}>{this.props.el.variableName}</TextDiv>
                         : this.renderMissingElement()
                     }
                 </SelectedElement>
@@ -213,7 +220,7 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                 >
                     {
                         this.props.el.value
-                        ? <TextDiv>{this.props.el.value}</TextDiv>
+                        ? <TextDiv error={this.hasError()}>{this.props.el.value}</TextDiv>
                         : this.renderMissingElement()
                     }
                 </SelectedElement>

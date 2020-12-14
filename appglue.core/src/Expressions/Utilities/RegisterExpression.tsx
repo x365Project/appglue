@@ -58,6 +58,16 @@ export class ExpressionRegistrationClass {
         return categories;
     }
 
+    getExpressionByType(type: string) : RegistrationData | undefined {
+
+        for (let r of Object.values(this.registrations)) {
+            if (type === Reflect.get(r.prototype, '__type')) {
+                return r;
+            }
+        }
+        return undefined;
+    }
+
     getExpressionsByCategory(category: string) : RegistrationData[] {
         return Object.values(this.registrations).filter((value: RegistrationData) => {
             return value.category === category;

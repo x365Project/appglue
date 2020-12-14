@@ -168,6 +168,8 @@ export class AndGroup
     @AutoBind
     private onGroupTypeSelect(newGroup: string) {
         this.typeOfGroup = newGroup as GroupingType;
+
+        StateManager.changed(this);
     }
 }
 
