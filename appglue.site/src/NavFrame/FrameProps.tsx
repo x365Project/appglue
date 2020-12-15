@@ -7,10 +7,6 @@ export enum SideBarType {
     ICON = 'icon'
 }
 
-export enum TopBarType {
-    DEFAULT = 'default',
-}
-
 export enum FrameSize {
     STANDARD = 'standard',
     FULLSCREEN = 'fullscreen'
@@ -60,7 +56,6 @@ export class FrameProps {
 
     layout: Layout = Layout.HORIZONTAL;
     sideBarType: SideBarType = SideBarType.DEFAULT;
-    topBarType: TopBarType = TopBarType.DEFAULT;
     frameSize: FrameSize = FrameSize.STANDARD;
     layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
     topBarTheme: TopBarTheme = TopBarTheme.DARK;

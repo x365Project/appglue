@@ -47,7 +47,15 @@ const useStyles = makeStyles((theme) => ({
   },
   LogoText: {
     paddingLeft: '10px',
-
+    [theme.breakpoints.between('xs', 'sm')]: {
+      paddingLeft: '0'
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      visibility: 'hidden '
+    },
+    [theme.breakpoints.up('md')]: {
+      visibility: 'visible',
+    }
   },
   logo: {
     padding: '15px 20px 25px',

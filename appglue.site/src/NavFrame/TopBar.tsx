@@ -112,12 +112,16 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.between('xs', 'sm')]: {
       left: `${drawerShiftWidth - 31}px`,
       width: `calc(100% - ${drawerWidth}px + 224px)`,
+    },
+    [theme.breakpoints.up('sm')]: {
+      left: `${drawerShiftWidth - 31}px`,
+      width: `calc(100% - ${drawerShiftWidth}px + 32px)`
     }
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    left: '0',
+    left: '1px',
     transition: theme.transitions.create(['width', 'margin', 'left'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -132,6 +136,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.between('sm', 'md')]: {
       left: `${105 - drawerWidth}px`,
       width: `calc(100% - ${drawerWidth}px + 193px)`,
+    },
+    [theme.breakpoints.up('md')]: {
+      left: '1px',
+      width: `calc(100% - ${drawerWidth}px)`
     }
   },
   menuButton: {
@@ -171,8 +179,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.between('sm', 'md')]: {
       width: theme.spacing(13),
     },
-    [theme.breakpoints.between('md', 'lg')]: {
-
+    [theme.breakpoints.up('md')]: {
+      width: theme.spacing(37),
     }
   },
   drawerPaperClose: {
