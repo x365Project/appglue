@@ -571,7 +571,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     this.props.expressionValue.valueType = ExpressionValueType.UNSET;
                 break;
             case (ExpressionValueType.VALUE) :
-                if (!this.props.expressionValue.value)
+                if (this.props.expressionValue.value === null || this.props.expressionValue.value === undefined)
                     this.props.expressionValue.valueType = ExpressionValueType.UNSET;
                 break;
             case (ExpressionValueType.SUBEXPRESSION) :

@@ -115,7 +115,7 @@ export class ExpressionValue
         if (this.valueTypeValue === ExpressionValueType.VARIABLE && !this.variableName)
             issues.push(new ValidationIssue('Variable Name is Required', undefined, this._id));
 
-        if (this.valueTypeValue === ExpressionValueType.VALUE && !this.value)
+        if (this.valueTypeValue === ExpressionValueType.VALUE && (this.value === null || this.value === undefined))
             issues.push(new ValidationIssue('Value is Required', undefined, this._id));
 
         if (this.valueTypeValue === ExpressionValueType.SUBEXPRESSION && !this.subExpression)
