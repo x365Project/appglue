@@ -163,11 +163,18 @@ const ExpressionViewPanel = styled.div`
     flex-direction: column;
 `;
 
-const ExpressionViewPanelLine = styled.div`
+const ExpressionViewPanelLine = styled("div")<{noPadding?: boolean}>`
     width : 100%;
     justify-content: flex-start;
     clear: both;
-    padding-bottom: 15px;
+    padding-bottom: ${props => props.noPadding ? '0px' : '15px'};
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4B6080;
+    text-transform: none;
 
     .MuiButton-label {
         font-family: Mulish;
@@ -926,8 +933,8 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
 
     if (!step2) {
         return (
-            <>
-                Insert Expression - step 1, select expression
+            <ExpressionViewPanel>
+                <ExpressionViewPanelLine noPadding>Insert Expression - step 1, select expression</ExpressionViewPanelLine>
                 {
                     <ToolboxPanel
                         large={false}
@@ -935,20 +942,20 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
                         onExpressionSelected={handleButtonClick}
                     />
                 }
-            </>
+            </ExpressionViewPanel>
         );
     } else {
 
         return (
             <div>
-                <div>
-                    Insert Expression - step 2, pick slot
-                </div>
-
-                <div>
-                    {selectedExpression!.render()}
-                </div>
-
+                <ExpressionViewPanel>
+                    <ExpressionViewPanelLine>
+                        Insert Expression - step 2, pick slot
+                    </ExpressionViewPanelLine>
+                    <ExpressionViewPanelLineCenter>
+                        {selectedExpression!.render()}
+                    </ExpressionViewPanelLineCenter>
+                </ExpressionViewPanel>
             </div>
         );
     }

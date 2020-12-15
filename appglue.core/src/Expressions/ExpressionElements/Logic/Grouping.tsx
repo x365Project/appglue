@@ -83,7 +83,7 @@ export class AndGroup
     }
 
     delete(index: number) {
-        this.elements.splice(index);
+        this.elements.splice(index, 1);
         StateManager.changed(this);
     }
 
