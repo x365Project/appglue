@@ -1,7 +1,7 @@
 
 
 // logic
-import * as IfthenExpression from "./Logic/IfThenExpression";
+import {IfThenExpression, IfThenStyle, IfSection} from "./Logic/IfThenExpression";
 import {ExistsExpression} from "./Logic/Exists";
 import {GreaterThanExpression} from "./Logic/GreaterThan";
 import {GreaterThanEqualToExpression} from "./Logic/GreaterThanEqualTo";
@@ -24,7 +24,9 @@ import {StringLengthExpression} from "./String/StringLengthExpression";
 
 
 export {
-	...IfthenExpression,
+	IfThenExpression,
+	IfThenStyle,
+	IfSection,
 	ExistsExpression,
 	GreaterThanExpression,
 	GreaterThanEqualToExpression,
