@@ -19,23 +19,27 @@ const SelectedElement = styled.span`
 `;
 
 const SelectedExpression = styled.span`
-  display: flex;
-  align-items: center;
-  border: 1px solid #15466B;
-  box-sizing: border-box;
-  border-radius: 3px;
-  background-color: #DCEAF5;
+    display: flex;
+    align-items: center;
+    border: 1px solid #15466B;
+    box-sizing: border-box;
+    border-radius: 3px;
+    background-color: #DCEAF5;
 
-  margin-right: 0px;
-  margin-left: 0px;
-  position: relative;
-  overflow: visible;
+    margin-right: 0px;
+    margin-left: 0px;
+    position: relative;
+    overflow: visible;
+    flex: 1;
 `;
 
 const ExpressionValueWrapper = styled.div`
     position: relative;
     overflow: visible;
     flex: 1;
+    padding-right: 8px;
+    padding-left: 4px;
+    display: flex;
 `;
 
 const ValueElement = styled.div`

@@ -6,6 +6,7 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {SumIcon} from "../../../CommonUI/Icon/SumIcon"
+import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 @RegisterExpression('Math', 'Sum', <SumIcon />, ExpressionExpectedType.NUMBER)
 export class SumExpression extends BaseExpression {
@@ -20,14 +21,14 @@ export class SumExpression extends BaseExpression {
 
     render() {
         return (
-            <>
-                <ExpressionPiece>
+            <ObserveState listenTo={this.value1!} control={() => (
+                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
                     sum
-                    <BracketedDiv>
+                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
                         <ExpressionValueRenderer el={this.value1!}/>
                     </BracketedDiv>
                 </ExpressionPiece>
-            </>
+            )} />
         );
     }
 }
