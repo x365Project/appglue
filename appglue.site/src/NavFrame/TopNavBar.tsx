@@ -47,14 +47,15 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(235,244,250,0.2)',
     },
     marginRight: theme.spacing(2),
-    width: '100%',
+    width: '240px',
+    marginLeft: theme.spacing(6),
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: '240px',
     },
   },
   searchIcon: {
-    padding: theme.spacing(1, 2, 0),
+    padding: theme.spacing(1, 1, 0),
     float: 'right',
     display: 'inline-block',
     color: '#fff',
@@ -72,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBar: {
+    height: '72px',
     zIndex: theme.zIndex.drawer + 2,
     // width: `calc(100% - 73px)`,
     background: 'linear-gradient(90.16deg, #49A0D5 -0.48%, #00D1C1 102.05%)',
@@ -83,6 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Iconbutton: {
     color: '#777',
+    marginLeft: '44px'
   },
   sectionDesktop: {
     display: 'none',
@@ -105,6 +108,12 @@ const useStyles = makeStyles((theme) => ({
   MenuIcon: {
     color: '#00D1C1',
     minWidth: '38px',
+  },
+  LogoBlock: {
+    margin: ' 12px 33px',
+    [theme.breakpoints.up('sm')]: {
+      margin: ' 4px 33px'    
+    }
   },
   LogoIcon: {
     paddingRight: '10px',
@@ -212,7 +221,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
     <>
       <div className={classes.grow}>
         <AppBar position="static" className={classes.appBar}>
-          <Toolbar>
+          <Toolbar className={classes.LogoBlock}>
             <img src={LogoIocn} className={classes.LogoIcon} />
             <Typography>AppGlue</Typography>
             <IconButton className={classes.Iconbutton}
