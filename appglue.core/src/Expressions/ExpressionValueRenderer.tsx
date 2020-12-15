@@ -35,6 +35,7 @@ const SelectedExpression = styled.span`
 const ExpressionValueWrapper = styled.div`
     position: relative;
     overflow: visible;
+    flex: 1;
 `;
 
 const ValueElement = styled.div`
