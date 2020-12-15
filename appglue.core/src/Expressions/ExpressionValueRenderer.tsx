@@ -141,7 +141,6 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
 
     @AutoBind
     handleClick() {
-
         this.props.el.editContext?.setSelection(this.props.el._id);
     }
 
@@ -219,7 +218,7 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                     onClick={this.handleClick}
                 >
                     {
-                        this.props.el.value
+                        (this.props.el.value !== null && this.props.el.value !== undefined )
                         ? <TextDiv error={this.hasError()}>{this.props.el.value}</TextDiv>
                         : this.renderMissingElement()
                     }
@@ -256,7 +255,7 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
             return <ValueElement
                 onClick={this.handleClick}
             >
-                {!this.props.el.value ? this.renderMissingElement() : <InnerValueDiv>{this.props.el.value}</InnerValueDiv>}
+                {(this.props.el.value !== undefined && this.props.el.value !== null) ? <InnerValueDiv>{this.props.el.value}</InnerValueDiv> : this.renderMissingElement()}
             </ValueElement>
         } else if (this.props.el.valueType === ExpressionValueType.SUBEXPRESSION) {
             return <>{this.props.el.subExpression?.render()}</>
