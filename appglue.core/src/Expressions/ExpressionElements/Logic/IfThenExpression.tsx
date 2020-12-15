@@ -345,7 +345,7 @@ export class IfThenExpression
         } else if (index !== 0) {
             return (
                 <ActionButtons>
-                    <IconButton size={'small'} aria-label="delete" >
+                    <IconButton size={'small'} aria-label="delete"  onClick={() => this.deleteIfBranchFromAction(index)}>
                         <DeleteIcon  />
                     </IconButton>
                 </ActionButtons>);
