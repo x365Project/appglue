@@ -17,6 +17,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SettingsIcon from '@material-ui/icons/Settings';
+import TopNavbar from './TopNavBar';
 import SideBarNav from './SideNavBar';
 import { Drawer } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -99,21 +100,43 @@ const useStyles = makeStyles((theme) => ({
     // width: `calc(100% - 73px)`,
     background: '#fff',
     position: 'relative',
-    transition: theme.transitions.create(['width', 'margin'], {
+    left: `${drawerShiftWidth}px`,
+    transition: theme.transitions.create(['width', 'margin', 'left'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    [theme.breakpoints.down('xs')]: {
+      left: `${drawerShiftWidth - 46}px`,
+      width: `calc(100% - ${drawerWidth}px + 238px)`,
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      left: `${drawerShiftWidth - 31}px`,
+      width: `calc(100% - ${drawerWidth}px + 224px)`,
+    }
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    left: '0',
+    transition: theme.transitions.create(['width', 'margin', 'left'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    [theme.breakpoints.down('xs')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      left: `${181 - drawerWidth}px`,
+      width: `calc(100% - ${drawerWidth}px + 116px)`,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      left: `${105 - drawerWidth}px`,
+      width: `calc(100% - ${drawerWidth}px + 193px)`,
+    }
   },
   menuButton: {
     marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
   },
   menuButtonHidden: {
     display: 'none',
@@ -129,6 +152,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     float: 'left',
     position: 'relative',
+    top:'-73px',
     whiteSpace: 'nowrap',
     width: drawerWidth,
     height: '100vh',
@@ -138,6 +162,18 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    [theme.breakpoints.down('xs')]: {
+      width: theme.spacing(37),
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      width: theme.spacing(22) + 4,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: theme.spacing(13),
+    },
+    [theme.breakpoints.between('md', 'lg')]: {
+
+    }
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -147,7 +183,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('xs')]: {
       width: theme.spacing(9),
     },
   },
@@ -172,6 +208,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const drawerWidth = 296;
+const drawerShiftWidth = 104;
 
 export default function TopBar(props: { layoutOptions: FrameProps }) {
   // if vertical, collapse top bar hamburg

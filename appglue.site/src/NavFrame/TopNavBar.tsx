@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer + 2,
     // width: `calc(100% - 73px)`,
     background: 'linear-gradient(90.16deg, #49A0D5 -0.48%, #00D1C1 102.05%)',
     color: theme.palette.common.white,

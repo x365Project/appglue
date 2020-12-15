@@ -11,7 +11,8 @@ import {
     LayoutWidth,
     NavBarTheme,
     SideBarType,
-    TopBarTheme
+    TopBarTheme,
+    TopBarType
 } from './FrameProps';
 
 export default {
@@ -185,6 +186,7 @@ frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.sideBarType = SideBarType.DEFAULT;
+frameOptions.topBarType = TopBarType.DEFAULT;
 frameOptions.navBarTheme = NavBarTheme.DARK;
 frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;

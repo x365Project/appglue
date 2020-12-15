@@ -8,7 +8,7 @@ import { List, Typography, Divider, SvgIcon } from '@material-ui/core';
 import TopMenu from './NavBarData'
 import LogoIocn from '../assets/logo.svg';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   VersionText: {
     position: 'absolute',
     bottom: 0,
@@ -18,10 +18,20 @@ const useStyles = makeStyles(() => ({
     color: '#fff',
     minWidth: '45px',
     paddingLeft: '10px',
+    [theme.breakpoints.between('xs', 'sm')]: {
+      marginBottom: '5px',
+      marginLeft: '10px'
+    }
   },
   MenuText: {
     fontSize: '14px',
     fontWeight: 700,
+    [theme.breakpoints.between('sm', 'md')]: {
+      display: 'none'
+    },
+    [theme.breakpoints.between('md', 'lg')]: {
+      display: 'flex'
+    }
   },
   divider: {
     background: '#fff',
@@ -29,7 +39,11 @@ const useStyles = makeStyles(() => ({
   },
   listItem: {
     padding: '5px 16px ',
-    marginBottom: '10px'
+    marginBottom: '10px',
+    [theme.breakpoints.between('xs', 'sm')]: {
+      flexDirection: 'column',
+      marginBottom: '12px',
+    }
   },
   LogoText: {
     paddingLeft: '10px',
@@ -37,7 +51,10 @@ const useStyles = makeStyles(() => ({
   },
   logo: {
     padding: '15px 20px 25px',
-
+    [theme.breakpoints.between('xs', 'sm')]: {
+      padding: '15px 20px 5px',
+      flexDirection: 'column',  
+    }
   }
 }));
 

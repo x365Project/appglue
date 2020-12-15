@@ -55,5 +55,14 @@ export const createTheme = ({ color, colorGradientEnd, contentTheme, ...layoutOp
                     minHeight: '73px',
                 }
             }
+        },
+        breakpoints: {
+            values: {
+                xs: 1144,
+                sm: 1260,
+                md: 1336,
+                lg: 1440,
+                xl: 1624,
+            }
         }
     });
