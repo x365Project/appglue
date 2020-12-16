@@ -9,6 +9,9 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import Popper from '@material-ui/core/Popper';
+import Grow from '@material-ui/core/Grow';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -19,7 +22,7 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TopNavbar from './TopNavBar';
 import SideBarNav from './SideNavBar';
-import { Drawer } from '@material-ui/core';
+import { Drawer, MenuList, Paper } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 
@@ -236,6 +239,9 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [isOpenProfileMenu, setOpenProfileMenu] = React.useState(false);
+  const [isOpenNotifications, setOpenNotifications] = React.useState(false);
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -252,6 +258,45 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+
+  const handleToggleProfileMenu = (): void => {
+    setOpenProfileMenu(prevState => !prevState);
+  }
+  
+  const handleToggleNotifications = (): void => {
+    setOpenNotifications(prevState => !prevState);
+  }
+
+  const handleProfileMenuClose = (e: React.MouseEvent<EventTarget>): boolean | undefined => {
+    if (anchorRef.current && anchorRef.current.contains(e.target as HTMLElement)) {
+      return true;
+    }
+    setOpenProfileMenu(false);
+  }
+
+  function handleListKeyDown(e: React.KeyboardEvent): void {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      setOpenProfileMenu(false);
+      setOpenNotifications(false);
+    }
+  }
+
+  const prevState = React.useRef(isOpenProfileMenu);
+  const prevStateNotification = React.useRef(isOpenNotifications);
+
+  React.useEffect(() => {
+    if (prevState.current === true && isOpenProfileMenu === false) {
+      anchorRef.current?.focus();
+    }
+    if (prevStateNotification.current === true && isOpenNotifications === false) {
+      anchorRef.current?.focus();
+    }
+    prevState.current = isOpenProfileMenu;
+    prevStateNotification.current = isOpenNotifications;
+  }, [isOpenProfileMenu, isOpenNotifications])
+
+
 
   // const handleMobileMenuOpen = (e) => {
   //   setMobileMoreAnchorEl(e.currentTarget);
@@ -364,20 +409,82 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
                 <ChatBubbleOutlineIcon />
               </Badge>
             </IconButton>
-            <IconButton className={classes.Iconbutton} aria-label="show 17 new notifications" color="inherit">
+            <IconButton
+              className={classes.Iconbutton}
+              aria-label="show 17 new notifications"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              color="inherit"
+              ref={anchorRef}
+              onClick={handleToggleNotifications}
+            >
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <Popper
+              open={isOpenNotifications}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => {
+                <Grow
+                  { ...TransitionProps }
+                  style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={handleProfileMenuClose}>
+                      <MenuList
+                        autoFocusItem={isOpenNotifications}
+                        onKeyDown={handleListKeyDown}
+                      >
+                        <MenuItem onClick={handleProfileMenuClose}>Qwa</MenuItem>
+                        <MenuItem onClick={handleProfileMenuClose}>Puk</MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              }}
+            </Popper>
             <IconButton className={classes.Iconbutton}
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
               color="inherit"
+              ref={anchorRef}
+              onClick={handleToggleProfileMenu}
             >
-              <AccountCircle />
+              <AccountCircle/>
             </IconButton>
+            <Popper
+              open={isOpenProfileMenu}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  { ...TransitionProps }
+                  style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={handleProfileMenuClose}>
+                      <MenuList
+                        autoFocusItem={isOpenProfileMenu}
+                        onKeyDown={handleListKeyDown}
+                      >
+                        <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
+                        <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
             <Typography className={classes.userName}>John Doe</Typography>
           </div>
 
