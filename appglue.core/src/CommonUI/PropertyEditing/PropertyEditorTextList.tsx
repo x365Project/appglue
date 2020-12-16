@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input, InputLabel, ClickAwayListener } from "@material-ui/core";
 
 import styled from "styled-components";
+import { CarConnected } from "mdi-material-ui";
 
 const StyledTextList = styled("div")<{
     active: boolean;
@@ -86,6 +87,13 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
             }
             setSelectedLine(selectedLine + 1);
         }
+        if (event.keyCode === 8 && values[selectedLine] === '' && selectedLine > 0) {
+            let newline = selectedLine - 1;
+            console.log('newline', newline, selectedLine);
+            setSelectedLine(selectedLine - 1);
+            // values.splice(newline + 1, 1);
+            // update(values);
+        }
     }
 
     const onFocus = (index: number) => {
@@ -95,6 +103,8 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
     const onClickAway = () => {
         setSelectedLine(-1);
     }
+
+    console.log('selectedLine:', selectedLine);
 
     return (
         <ClickAwayListener onClickAway={onClickAway}>
