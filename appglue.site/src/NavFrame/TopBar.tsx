@@ -242,6 +242,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   const [isOpenProfileMenu, setOpenProfileMenu] = React.useState(false);
   const [isOpenNotifications, setOpenNotifications] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const anchorRefNotification = React.useRef<HTMLButtonElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -269,16 +270,18 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
 
   const handleProfileMenuClose = (e: React.MouseEvent<EventTarget>): boolean | undefined => {
     if (anchorRef.current && anchorRef.current.contains(e.target as HTMLElement)) {
-      return true;
+      return;
+    } else if (anchorRefNotification.current && anchorRefNotification.current.contains(e.target as HTMLElement)) {
+      return;
     }
     setOpenProfileMenu(false);
+    setOpenNotifications(false);
   }
 
   function handleListKeyDown(e: React.KeyboardEvent): void {
     if (e.key === 'Tab') {
       e.preventDefault();
       setOpenProfileMenu(false);
-      setOpenNotifications(false);
     }
   }
 
@@ -412,10 +415,10 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
             <IconButton
               className={classes.Iconbutton}
               aria-label="show 17 new notifications"
-              aria-controls={menuId}
+              aria-controls={isOpenNotifications ? 'notification-menu' : undefined}
               aria-haspopup="true"
               color="inherit"
-              ref={anchorRef}
+              ref={anchorRefNotification}
               onClick={handleToggleNotifications}
             >
               <Badge badgeContent={1} color="secondary">
@@ -424,7 +427,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
             </IconButton>
             <Popper
               open={isOpenNotifications}
-              anchorEl={anchorRef.current}
+              anchorEl={anchorRefNotification.current}
               role={undefined}
               transition
               disablePortal
@@ -437,8 +440,9 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
                   <Paper>
                     <ClickAwayListener onClickAway={handleProfileMenuClose}>
                       <MenuList
-                        autoFocusItem={isOpenNotifications}
-                        onKeyDown={handleListKeyDown}
+                        // autoFocusItem={isOpenNotifications}
+                        // onKeyDown={handleListKeyDown}
+                        id='notification-menu'
                       >
                         <MenuItem onClick={handleProfileMenuClose}>Qwa</MenuItem>
                         <MenuItem onClick={handleProfileMenuClose}>Puk</MenuItem>
@@ -451,7 +455,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
             <IconButton className={classes.Iconbutton}
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
+              aria-controls={isOpenProfileMenu ? 'profile-menu' : undefined}
               aria-haspopup="true"
               color="inherit"
               ref={anchorRef}
@@ -476,6 +480,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
                       <MenuList
                         autoFocusItem={isOpenProfileMenu}
                         onKeyDown={handleListKeyDown}
+                        id='profile-menu'
                       >
                         <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
                         <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
