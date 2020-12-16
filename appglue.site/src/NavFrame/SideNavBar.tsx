@@ -75,7 +75,7 @@ export default function SideBarNav(props: { variant: string, color: string }) {
 
 
   return (
-    <div>
+    <div style={{ background: props.color }}>
       <List>
         <ListItem className={classes.logo}>
           <img src={LogoIocn} />

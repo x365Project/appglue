@@ -212,6 +212,10 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
+  userName: {
+    color: '#93A9BF',
+    padding: '14px 8px'
+  }
 }));
 
 const drawerWidth = 296;
@@ -374,15 +378,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
             >
               <AccountCircle />
             </IconButton>
-            <IconButton className={classes.Iconbutton}
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <SettingsIcon />
-            </IconButton>
+            <Typography className={classes.userName}>John Doe</Typography>
           </div>
 
           <div className={classes.sectionMobile}>
@@ -399,7 +395,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       </AppBar>
       <Drawer
         variant="permanent"
-        style={{ background: props.layoutOptions.color }}
+        style={{ background: props.layoutOptions.colorGradientEnd }}
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}

@@ -130,6 +130,9 @@ const useStyles = makeStyles((theme) => ({
     lexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+  },
+  userName: {
+    padding: '13px 0 0 10px'
   }
 }));
 
@@ -229,7 +232,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   return (
     <>
       <div className={classes.grow}>
-        <AppBar position="static" className={classes.appBar}>
+        <AppBar position="static" className={classes.appBar} style={{ background: props.layoutOptions.color }}>
           <Toolbar className={classes.LogoBlock}>
             <img src={LogoIocn} className={classes.LogoIcon} />
             <Typography>AppGlue</Typography>
@@ -280,15 +283,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
               >
                 <AccountCircle className={classes.LogoMenuIcon} />
               </IconButton>
-              <IconButton className={classes.Iconbutton}
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                color="inherit"
-              >
-                <SettingsIcon className={classes.LogoMenuIcon} />
-              </IconButton>
+              <Typography className={classes.userName}>John Doe</Typography>
 
             </div>
             <div className={classes.sectionMobile}>
