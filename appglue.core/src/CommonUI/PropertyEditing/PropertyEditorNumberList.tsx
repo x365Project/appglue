@@ -3,14 +3,14 @@ import { Input, InputLabel, ClickAwayListener } from "@material-ui/core";
 
 import styled from "styled-components";
 
-const StyledTextList = styled("div")<{
+const StyledNumberList = styled("div")<{
     active: boolean;
     label?: string;
     empty: boolean;
 }>`
     width: 100%;
 
-    .TextList-TextBox {
+    .NumberList-TextBox {
         display: flex;
         flex-direction: column;
         border: solid 1px ${props => props.active ? '#93A9BF' :'#D8E4EE'};
@@ -31,7 +31,7 @@ const StyledTextList = styled("div")<{
         }
     }
 
-    .TextList-Label {
+    .NumberList-Label {
         color: #677C95;
         font-family: Mulish;
         font-style: normal;
@@ -45,7 +45,7 @@ const StyledTextList = styled("div")<{
 
 `;
 
-export interface PropertyEditorTextListInterface{
+export interface PropertyEditorNumberListInterface{
     editObject: object,
     propertyName: string | number,
     label?: string,
@@ -53,7 +53,7 @@ export interface PropertyEditorTextListInterface{
 }
 
 
-export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> = (props: PropertyEditorTextListInterface) => {
+export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterface> = (props: PropertyEditorNumberListInterface) => {
 
     const [selectedLine, setSelectedLine] = useState<number>(-1);
     const values = Reflect.get(props.editObject, props.propertyName) || [];
@@ -88,8 +88,10 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
             update(values);
             setSelectedLine(selectedLine - 1);
         } else if (event.keyCode === 38 && selectedLine > 0) {
+            event.preventDefault();
             setSelectedLine(selectedLine - 1);
         } else if (event.keyCode === 40 && selectedLine < values.length - 1) {
+            event.preventDefault();
             setSelectedLine(selectedLine + 1);
         }
     }
@@ -104,13 +106,13 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
 
     return (
         <ClickAwayListener onClickAway={onClickAway}>
-            <StyledTextList className="TextList-Wrapper" active={selectedLine !== -1} label={props.label} empty={values.length === 1 && values[0] === ''}>
+            <StyledNumberList className="NumberList-Wrapper" active={selectedLine !== -1} label={props.label} empty={values.length === 1 && values[0] === ''}>
                 {
                     props.label && (
-                        <InputLabel classes={{root: 'TextList-Label'}}>{props.label}</InputLabel>
+                        <InputLabel classes={{root: 'NumberList-Label'}}>{props.label}</InputLabel>
                     )
                 }
-                <div className="TextList-TextBox">
+                <div className="NumberList-TextBox">
                 {
                     values && values.map((val: string, idx: number) => (
                         <Input
@@ -120,6 +122,7 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                             disableUnderline
                             onFocus={() => onFocus(idx)}
                             onKeyDown={onKeyDown}
+                            type="number"
                             inputProps={
                                 {
                                     ref: (element: HTMLInputElement) => {
@@ -137,7 +140,7 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                     ))
                 }
                 </div>
-            </StyledTextList>
+            </StyledNumberList>
         </ClickAwayListener>
     );
 }
