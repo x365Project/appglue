@@ -9,9 +9,8 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import Popper from '@material-ui/core/Popper';
-import Grow from '@material-ui/core/Grow';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -22,11 +21,12 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TopNavbar from './TopNavBar';
 import SideBarNav from './SideNavBar';
-import { Drawer, MenuList, Paper } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 
 import ScanIcon from '../assets/Scan.svg';
+import NotificationsList from './ToBarNotifications';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -218,6 +218,18 @@ const useStyles = makeStyles((theme) => ({
   userName: {
     color: '#93A9BF',
     padding: '14px 8px'
+  },
+  NotificationMenu: {
+  
+  },
+  NotificationIcon: {
+
+  },
+  NotificationText: {
+    fontSize: '14px'
+  },
+  NotificationReceiveDate: {
+    fontSize: '10px !important'
   }
 }));
 
@@ -239,10 +251,8 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [isOpenProfileMenu, setOpenProfileMenu] = React.useState(false);
-  const [isOpenNotifications, setOpenNotifications] = React.useState(false);
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
-  const anchorRefNotification = React.useRef<HTMLButtonElement>(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [profileAnchorEl, setProfileAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -260,46 +270,21 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     handleMobileMenuClose();
   };
 
-  const handleToggleProfileMenu = (): void => {
-    setOpenProfileMenu(prevState => !prevState);
+  const handleNotificationClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationAnchorEl(e.currentTarget);
+  }
+
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
   }
   
-  const handleToggleNotifications = (): void => {
-    setOpenNotifications(prevState => !prevState);
+  const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileAnchorEl(e.currentTarget);
   }
 
-  const handleProfileMenuClose = (e: React.MouseEvent<EventTarget>): boolean | undefined => {
-    if (anchorRef.current && anchorRef.current.contains(e.target as HTMLElement)) {
-      return;
-    } else if (anchorRefNotification.current && anchorRefNotification.current.contains(e.target as HTMLElement)) {
-      return;
-    }
-    setOpenProfileMenu(false);
-    setOpenNotifications(false);
+  const handleProfileClose = () => {
+    setProfileAnchorEl(null);
   }
-
-  function handleListKeyDown(e: React.KeyboardEvent): void {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      setOpenProfileMenu(false);
-    }
-  }
-
-  const prevState = React.useRef(isOpenProfileMenu);
-  const prevStateNotification = React.useRef(isOpenNotifications);
-
-  React.useEffect(() => {
-    if (prevState.current === true && isOpenProfileMenu === false) {
-      anchorRef.current?.focus();
-    }
-    if (prevStateNotification.current === true && isOpenNotifications === false) {
-      anchorRef.current?.focus();
-    }
-    prevState.current = isOpenProfileMenu;
-    prevStateNotification.current = isOpenNotifications;
-  }, [isOpenProfileMenu, isOpenNotifications])
-
-
 
   // const handleMobileMenuOpen = (e) => {
   //   setMobileMoreAnchorEl(e.currentTarget);
@@ -415,81 +400,58 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
             <IconButton
               className={classes.Iconbutton}
               aria-label="show 17 new notifications"
-              aria-controls={isOpenNotifications ? 'notification-menu' : undefined}
               aria-haspopup="true"
+              aria-controls="notification-menu"
               color="inherit"
-              ref={anchorRefNotification}
-              onClick={handleToggleNotifications}
+              onClick={handleNotificationClick}
             >
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <Popper
-              open={isOpenNotifications}
-              anchorEl={anchorRefNotification.current}
-              role={undefined}
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => {
-                <Grow
-                  { ...TransitionProps }
-                  style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={handleProfileMenuClose}>
-                      <MenuList
-                        autoFocusItem={isOpenNotifications}
-                        onKeyDown={handleListKeyDown}
-                        id='notification-menu'
-                      >
-                        <MenuItem onClick={handleProfileMenuClose}>Qwa</MenuItem>
-                        <MenuItem onClick={handleProfileMenuClose}>Puk</MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
+            <Menu
+              id="notification-menu"
+              anchorEl={notificationAnchorEl}
+              keepMounted
+              open={Boolean(notificationAnchorEl)}
+              onClose={handleNotificationClose}
+              elevation={0}
+              getContentAnchorEl={null}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center'
               }}
-            </Popper>
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center'
+              }}
+              PaperProps={{
+                style: {
+                  maxHeight: 268,
+                  width: '286px'
+                }
+              }}
+            >
+              {NotificationsList.map(item => (
+                <MenuItem onClick={handleNotificationClose} key={item.id} className={classes.NotificationMenu}>
+                  <div>
+                    <ListItemIcon className={classes.NotificationIcon}>{<item.icon/>}</ListItemIcon>
+                  </div>
+                  <div>
+                    <ListItemText className={classes.NotificationText}>{item.text}</ListItemText>
+                    <ListItemText className={classes.NotificationReceiveDate}>{item.dateOfReceiving}</ListItemText>
+                  </div>
+                </MenuItem>
+              ))}
+            </Menu>
             <IconButton className={classes.Iconbutton}
               edge="end"
               aria-label="account of current user"
-              aria-controls={isOpenProfileMenu ? 'profile-menu' : undefined}
               aria-haspopup="true"
               color="inherit"
-              ref={anchorRef}
-              onClick={handleToggleProfileMenu}
             >
               <AccountCircle/>
             </IconButton>
-            <Popper
-              open={isOpenProfileMenu}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  { ...TransitionProps }
-                  style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={handleProfileMenuClose}>
-                      <MenuList
-                        autoFocusItem={isOpenProfileMenu}
-                        onKeyDown={handleListKeyDown}
-                        id='profile-menu'
-                      >
-                        <MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>
-                        <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
             <Typography className={classes.userName}>John Doe</Typography>
           </div>
 
