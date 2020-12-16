@@ -147,7 +147,7 @@ const ExpressionColContainer = styled.div`
     padding-right: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
-    clear: both;
+    flex-wrap: wrap;
 `;
 
 const ExpressionViewPanel = styled.div`
@@ -232,6 +232,30 @@ const VariableOrValColumn = styled.div`
 
 const ExpressionColumn = styled.div`
     width: 33%;
+`;
+
+const ExpressionColumnShowMoreButton = styled(Button)`
+    && {
+        margin-top: 8px;
+        
+        background: #EBF4FA;
+        border-radius: 4px;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 24px;
+
+        text-align: center;
+        letter-spacing: 0.05em;
+        width: 100%;
+        color: #4B6080;
+
+        &:hover {
+            background: #D8E4EE;
+            color: #33486B;
+        }
+    }
 `;
 
 const ExpressionColumnRow = styled.div`
@@ -536,6 +560,15 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                     }}
                                 />
                             </VariableOrValColumn>
+                            <ExpressionColumn>
+                                <ExpressionColumnShowMoreButton
+                                    onClick={() => {
+                                        this.props.expressionValue.valueType = ExpressionValueType.SUBEXPRESSION;
+                                    }}
+                                >
+                                    Show More
+                                </ExpressionColumnShowMoreButton>
+                            </ExpressionColumn>
                         </ExpressionColContainer>
                     </>
                 );
@@ -786,7 +819,7 @@ const ToolboxPanel = function (props : {
         expressionValue: ExpressionValue,
         onExpressionSelected : (registration: RegistrationData) => void}) {
 
-    const [selectedCategory, setSelectedCategory] = useState<string>('Logic');
+    const [selectedCategory, setSelectedCategory] = useState<string>('Common');
     const [search, setSearch] = useState<string>('');
     const [hideLabels, setHideLabels] = useState<boolean>(false);
 
@@ -833,7 +866,7 @@ const ToolboxPanel = function (props : {
                             orientation={'vertical'}
                             onChange={onChangeTab}
                         >
-                            <Tab value={"common"} label={"Common"} />
+                            <Tab value={"Common"} label={"Common"} />
                             {
                                 expressionCategories.map((category) => {
                                     return <Tab value={category} key={category} label={category} />
@@ -844,7 +877,7 @@ const ToolboxPanel = function (props : {
 
                 </ToolboxPanelSideBar>
                 <ToolboxPanelContent>
-                    <ToolboxTabPanel value={"common"}>
+                    <ToolboxTabPanel value={"Common"}>
                         <ExpressionRow hideLabels={hideLabels}>
                             {
                                 ExpressionRegistration.getCommonExpressions().map((value: RegistrationData, index: number) => (

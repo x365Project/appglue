@@ -23,9 +23,9 @@ export class ObserveMultiState extends React.Component<{ listenTo: (object | nul
 
     render() {
         return (
-            <div key={DataUtilities.generateUniqueId()}>
+            <React.Fragment key={DataUtilities.generateUniqueId()}>
                 {this.props.control()}
-            </div>
+            </React.Fragment>
         );
     }
 
