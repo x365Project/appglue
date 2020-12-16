@@ -13,13 +13,17 @@ export const ExpressionDiv = styled.div`
      
 `;
 
-export const ExpressionPiece = styled.div`
+export const ExpressionPiece = styled("div")<{hasChild?: boolean}>`
 	display: flex;
 	align-items: center;
 	padding-top: 4px;
 	padding-right: 4px;
 	padding-bottom: 4px;
 	padding-left: 4px;
+
+	${props => props.hasChild && `
+		flex: 1;
+	`};
 `;
 
 export const ExpressionLineDiv = styled.div`
@@ -36,13 +40,17 @@ export const ExpressionLineDiv = styled.div`
 	color: #677C95;
 `;
 
-export const BracketedDiv = styled.div`
+export const BracketedDiv = styled("div")<{hasChild?: boolean;}>`
 	display: flex;
 	align-items: center;
 	padding: 2px 4px;
     margin-left: 6px;
     margin-right: 10px;
 	position: relative;
+
+	${props => props.hasChild && `
+		flex: 1;
+	`}
 
     &::before {
         content: '';
