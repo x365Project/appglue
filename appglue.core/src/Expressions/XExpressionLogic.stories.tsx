@@ -3,10 +3,15 @@ import React from "react";
 import {Meta, Story} from "@storybook/react/types-6-0";
 import {XExpressionDefinition} from "./XExpressionDefinition";
 import {ExpressionExpectedType} from "./ExpressionExpectedType";
-import {IfThenExpression, IfThenStyle} from "./ExpressionElements/Logic/IfThenExpression";
-import {MultiplyExpression} from "./ExpressionElements/Math/MultiplyExpression";
-import {GreaterThanExpression} from "./ExpressionElements/Logic/GreaterThan";
-import {StringLengthExpression} from "./ExpressionElements/String/StringLengthExpression";
+import {
+    GreaterThanExpression,
+    IfThenExpression,
+    IfThenStyle,
+
+    StringLengthExpression,
+    MultiplyExpression,
+} from "./ExpressionElements";
+
 import {XExpressionEditor} from "./XExpressionEditor";
 import {XExpressionEditorProps} from "./XExpressionEditor.stories";
 

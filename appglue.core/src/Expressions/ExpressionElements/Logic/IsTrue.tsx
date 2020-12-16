@@ -6,6 +6,7 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {TextIcon} from "../../../CommonUI/TextIcon";
+import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 @RegisterExpression('Logic', 'Is True', <TextIcon name={'T'}/>, ExpressionExpectedType.BOOLEAN, true )
 export class IsTrueExpression extends BaseExpression {
@@ -19,12 +20,14 @@ export class IsTrueExpression extends BaseExpression {
 
     render() {
         return (
-            <BracketedDiv>
-                <ExpressionPiece>
-                    <ExpressionValueRenderer el={this.value1!}/>
-                </ExpressionPiece>
-                <ExpressionPiece> {' is true'} </ExpressionPiece>
-            </BracketedDiv>
+            <ObserveState listenTo={this.value1!} control={() => (
+                <BracketedDiv hasChild={!!this.value1!.subExpression}>
+                    <ExpressionPiece hasChild={!!this.value1!.subExpression}>
+                        <ExpressionValueRenderer el={this.value1!}/>
+                    </ExpressionPiece>
+                    <ExpressionPiece> {' is true'} </ExpressionPiece>
+                </BracketedDiv>
+            )} />
         );
     }
 }
