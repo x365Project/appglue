@@ -781,7 +781,7 @@ const ToolboxPanel = function (props : {
         expressionValue: ExpressionValue,
         onExpressionSelected : (registration: RegistrationData) => void}) {
 
-    const [selectedCategory, setSelectedCategory] = useState<string>('Logic');
+    const [selectedCategory, setSelectedCategory] = useState<string>('Common');
     const [search, setSearch] = useState<string>('');
     const [hideLabels, setHideLabels] = useState<boolean>(false);
 
@@ -828,7 +828,7 @@ const ToolboxPanel = function (props : {
                             orientation={'vertical'}
                             onChange={onChangeTab}
                         >
-                            <Tab value={"common"} label={"Common"} />
+                            <Tab value={"Common"} label={"Common"} />
                             {
                                 expressionCategories.map((category) => {
                                     return <Tab value={category} key={category} label={category} />
@@ -839,7 +839,7 @@ const ToolboxPanel = function (props : {
 
                 </ToolboxPanelSideBar>
                 <ToolboxPanelContent>
-                    <ToolboxTabPanel value={"common"}>
+                    <ToolboxTabPanel value={"Common"}>
                         <ExpressionRow hideLabels={hideLabels}>
                             {
                                 ExpressionRegistration.getCommonExpressions().map((value: RegistrationData, index: number) => (
