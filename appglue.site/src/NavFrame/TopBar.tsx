@@ -440,8 +440,8 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
                   <Paper>
                     <ClickAwayListener onClickAway={handleProfileMenuClose}>
                       <MenuList
-                        // autoFocusItem={isOpenNotifications}
-                        // onKeyDown={handleListKeyDown}
+                        autoFocusItem={isOpenNotifications}
+                        onKeyDown={handleListKeyDown}
                         id='notification-menu'
                       >
                         <MenuItem onClick={handleProfileMenuClose}>Qwa</MenuItem>
