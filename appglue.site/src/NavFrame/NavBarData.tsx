@@ -1,10 +1,10 @@
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import PollIcon from '@material-ui/icons/Poll';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import TableChartIcon from '@material-ui/icons/TableChart';
-import TimelineIcon from '@material-ui/icons/Timeline';
+import FormatListBulletedOutlinedIcon from '@material-ui/icons/FormatListBulletedOutlined';
+import PollOutlinedIcon from '@material-ui/icons/PollOutlined';
+import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
+import TableChartOutlinedIcon from '@material-ui/icons/TableChartOutlined';
+import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 
 const TopMenu = [
   {
@@ -43,27 +43,27 @@ const TopMenu = [
   },
   {
     label: 'Task Page',
-    icon: FormatListBulletedIcon,
+    icon: FormatListBulletedOutlinedIcon,
     //   url: '/users'
   },
   {
     label: 'Trello Like List',
-    icon: PollIcon,
+    icon: PollOutlinedIcon,
     //   url: '/roles',
   },
   {
     label: 'My Forms',
-    icon: TableChartIcon,
+    icon: TableChartOutlinedIcon,
     //   url: '/purchases',
   },
   {
     label: 'My Flows',
-    icon: TimelineIcon,
+    icon: TimelineOutlinedIcon,
     //   url: '/settings',
   },
   {
     label: 'My Rules',
-    icon: DashboardIcon,
+    icon: DashboardOutlinedIcon,
     //   url: '/invoicing',
   },
 ];

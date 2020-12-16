@@ -203,6 +203,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+    backgroundColor: '#f7fbfd'
   },
 
   paper: {
@@ -211,8 +212,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
-
-
 }));
 
 const drawerWidth = 296;
@@ -326,7 +325,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
 
   return (
     <div className={clsx(classes.grow, props.layoutOptions.layoutWidth === LayoutWidth.BOXED && classes.borderGrow)}>
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)} elevation={0}>
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"

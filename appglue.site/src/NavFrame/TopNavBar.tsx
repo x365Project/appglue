@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   Iconbutton: {
-    color: '#777',
+    color: '#ffffff',
     marginLeft: '44px'
   },
   sectionDesktop: {
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     color: '#677C95',
     background: '#fff',
-
+    height: '40px',
   },
   MenuIcon: {
     color: '#00D1C1',
@@ -121,6 +121,15 @@ const useStyles = makeStyles((theme) => ({
   ButtonMenu: {
     padding: '0',
     margin: '0 0 0 24px'
+  },
+  LogoMenuIcon: {
+    color: '#ffffff'
+  },
+  content: {
+    backgroundColor: '#f7fbfd',
+    lexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
   }
 }));
 
@@ -250,16 +259,16 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             <div className={classes.sectionDesktop}>
 
               <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
-                <FullscreenIcon style={{ fontSize: '30px' }} />
+                <FullscreenIcon style={{ fontSize: '30px' }} className={classes.LogoMenuIcon} />
               </IconButton>
               <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={10} color="secondary">
-                  <ChatBubbleOutlineIcon />
+                  <ChatBubbleOutlineIcon className={classes.LogoMenuIcon} />
                 </Badge>
               </IconButton>
               <IconButton className={classes.Iconbutton} aria-label="show 17 new notifications" color="inherit">
                 <Badge badgeContent={1} color="secondary">
-                  <NotificationsIcon />
+                  <NotificationsIcon className={classes.LogoMenuIcon} />
                 </Badge>
               </IconButton>
               <IconButton className={classes.Iconbutton}
@@ -269,7 +278,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
                 aria-haspopup="true"
                 color="inherit"
               >
-                <AccountCircle />
+                <AccountCircle className={classes.LogoMenuIcon} />
               </IconButton>
               <IconButton className={classes.Iconbutton}
                 edge="end"
@@ -278,7 +287,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
                 aria-haspopup="true"
                 color="inherit"
               >
-                <SettingsIcon />
+                <SettingsIcon className={classes.LogoMenuIcon} />
               </IconButton>
 
             </div>
@@ -289,7 +298,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
                 aria-haspopup="true"
                 color="inherit"
               >
-                <MoreIcon />
+                <MoreIcon className={classes.LogoMenuIcon} />
               </IconButton>
             </div>
           </Toolbar>
@@ -312,7 +321,9 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             })
           }
         </List>
-      </div>
+      </div><main className={classes.content}>
+        <Typography>hello AppGluer</Typography>
+      </main>
     </>
   )
 }
