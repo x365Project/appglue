@@ -312,8 +312,8 @@ const CompleteButton = styled(Button)`
 `;
 
 
-const VariableInput = styled.div`
-    .MuiInput-root {
+const VariableInput = styled(TextField)`
+    && {
         border: 1px solid #D8E4EE;
         box-sizing: border-box;
         border-radius: 4px;
@@ -323,19 +323,33 @@ const VariableInput = styled.div`
         font-size: 14px;
         line-height: 20px;
         color: #677C95;
-        padding: 6px 12px;
-    }
+        
+        .MuiOutlinedInput-input  {
+            padding: 6px 12px;
+        }
+        
+        .MuiFormLabel-root {
+            display: block;
+            font-family: Mulish;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 20px;
+            color: #677C95;
+        }
 
-    > label {
-        display: block;
-        font-family: Mulish;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 9px;
-        line-height: 16px;
+        .MuiInputBase-input {
+            color: #677C95;
+            line-height: 20px;
+        }
 
-        color: #677C95;
-        margin-bottom: 4px;
+        .MuiInputLabel-formControl {
+            transform: translate(12px, 6px) scale(1);
+
+            &.MuiInputLabel-shrink {
+                transform: translate(12px, -8px) scale(0.75);
+            }
+        }
     }
 `;
 
@@ -455,17 +469,13 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     <>
                         <ModeButtons value={this.props.expressionValue}/>
                         <VariableOrValContentPanel>
-                            <VariableInput>
-                                <label>
-                                    Variable Name
-                                </label>
-                                <Input
-                                    autoFocus
-                                    disableUnderline
-                                    value={this.props.expressionValue.variableName}
-                                    onChange={this.variableNameChange}
-                                />
-                            </VariableInput>
+                            
+                            <VariableInput
+                                label="Variable Name"
+                                value={this.props.expressionValue.variableName}
+                                onChange={this.variableNameChange}
+                                variant="outlined"
+                            />
                         </VariableOrValContentPanel>
                     </>
                 );
@@ -504,33 +514,22 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 </ExpressionColumnRow>
                             </ExpressionColumn>
                             <VariableOrValColumn>
-
-                                    <VariableInput>
-                                        <label>
-                                            Variable Name
-                                        </label>
-                                        <Input
-                                            disableUnderline
-                                            value={this.props.expressionValue.variableName}
-                                            onFocus={() => {
-                                                this.props.expressionValue.valueType = ExpressionValueType.VARIABLE;
-                                            }}
-                                        />
-                                    </VariableInput>
+                                <VariableInput
+                                    value={this.props.expressionValue.variableName}
+                                    label="Variable Name"
+                                    onFocus={() => {
+                                        this.props.expressionValue.valueType = ExpressionValueType.VARIABLE;
+                                    }}
+                                />
                             </VariableOrValColumn>
                             <VariableOrValColumn>
-                                <VariableInput>
-                                    <label>
-                                        Variable Name
-                                    </label>
-                                    <Input
-                                        disableUnderline
-                                        value={this.props.expressionValue.value}
-                                        onFocus={() => {
-                                            this.props.expressionValue.valueType = ExpressionValueType.VALUE;
-                                        }}
-                                    />
-                                </VariableInput>
+                                <VariableInput
+                                    value={this.props.expressionValue.value}
+                                    label="Value"
+                                    onFocus={() => {
+                                        this.props.expressionValue.valueType = ExpressionValueType.VALUE;
+                                    }}
+                                />
                             </VariableOrValColumn>
                         </ExpressionColContainer>
                     </>
@@ -546,15 +545,23 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     <Switch/>
                 );
             case ExpressionExpectedType.NUMBER:
-                return <VariableInput>
-                    <label>Value</label>
-                    <Input autoFocus value={this.props.expressionValue.value} onChange={this.valueChange} disableUnderline inputMode="decimal" />
-                </VariableInput>
+                return <VariableInput
+                    label="Value"
+                    autoFocus
+                    value={this.props.expressionValue.value}
+                    onChange={this.valueChange}
+                    variant="outlined"
+                    inputMode="decimal"
+                />
+                
             case ExpressionExpectedType.STRING:
-                return <VariableInput>
-                    <label>Value</label>
-                    <Input autoFocus value={this.props.expressionValue.value} onChange={this.valueChange} disableUnderline />
-                </VariableInput>
+                return <VariableInput
+                    label="Value"
+                    autoFocus
+                    value={this.props.expressionValue.value}
+                    onChange={this.valueChange}
+                    variant="outlined"
+                />
         }
         return (
             <>todo</>
