@@ -5,10 +5,10 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {IsTrueIcon} from "../../../CommonUI/Icon/IsTrueIcon";
 import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
-@RegisterExpression('Logic', 'Is True', <TextIcon name={'T'}/>, ExpressionExpectedType.BOOLEAN, true )
+@RegisterExpression('Logic', 'Is True', <IsTrueIcon />, ExpressionExpectedType.BOOLEAN, true )
 export class IsTrueExpression extends BaseExpression {
     value1: ExpressionValue;
 
