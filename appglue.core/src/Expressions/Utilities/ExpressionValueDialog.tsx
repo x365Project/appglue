@@ -163,11 +163,11 @@ const ExpressionViewPanel = styled.div`
     flex-direction: column;
 `;
 
-const ExpressionViewPanelLine = styled("div")<{noPadding?: boolean}>`
+const ExpressionViewPanelLine = styled.div`
     width : 100%;
     justify-content: flex-start;
     clear: both;
-    padding-bottom: ${props => props.noPadding ? '0px' : '15px'};
+    padding-bottom: 15px;
     font-family: Mulish;
     font-style: normal;
     font-weight: 600;
@@ -186,6 +186,8 @@ const ExpressionViewPanelLine = styled("div")<{noPadding?: boolean}>`
         text-transform: none;
     }
 `;
+
+
 
 const ExpressionViewPanelLineBottom = styled.div`
     width : 100%;
@@ -216,6 +218,47 @@ const ExpressionViewPanelLineCenter = styled.div`
     flex: 1;
     overflow: auto;
     width: 100%;
+`;
+
+
+const InsertExpressionViewPanelLineCenter = styled.div`
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    padding: 15px;
+    border-radius: 5px;
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+`;
+
+const InsertExpressionViewPanel = styled.div`
+    width : 100%;
+    max-height : 376px;
+    min-height: 96px;
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-bottom: 15px;
+    padding-left: 10px;
+    clear: both;
+    display: flex;
+    flex-direction: column;
+`;
+
+const InsertExpressionViewPanelLine = styled.div`
+    width : 100%;
+    justify-content: flex-start;
+    clear: both;
+    padding: 10px 0;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4B6080;
+    text-transform: none;
 `;
 
 
@@ -973,8 +1016,8 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
 
     if (!step2) {
         return (
-            <ExpressionViewPanel>
-                <ExpressionViewPanelLine noPadding>Insert Expression - step 1, select expression</ExpressionViewPanelLine>
+            <InsertExpressionViewPanel>
+                <InsertExpressionViewPanelLine>Insert Expression - step 1, select expression</InsertExpressionViewPanelLine>
                 {
                     <ToolboxPanel
                         large={false}
@@ -982,21 +1025,19 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
                         onExpressionSelected={handleButtonClick}
                     />
                 }
-            </ExpressionViewPanel>
+            </InsertExpressionViewPanel>
         );
     } else {
 
         return (
-            <div>
-                <ExpressionViewPanel>
-                    <ExpressionViewPanelLine>
-                        Insert Expression - step 2, pick slot
-                    </ExpressionViewPanelLine>
-                    <ExpressionViewPanelLineCenter>
-                        {selectedExpression!.render()}
-                    </ExpressionViewPanelLineCenter>
-                </ExpressionViewPanel>
-            </div>
+            <InsertExpressionViewPanel>
+                <InsertExpressionViewPanelLine>
+                    Insert Expression - step 2, pick slot
+                </InsertExpressionViewPanelLine>
+                <InsertExpressionViewPanelLineCenter>
+                    {selectedExpression!.render()}
+                </InsertExpressionViewPanelLineCenter>
+            </InsertExpressionViewPanel>
         );
     }
 }
