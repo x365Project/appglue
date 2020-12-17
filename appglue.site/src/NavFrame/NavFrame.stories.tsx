@@ -11,7 +11,7 @@ import {
     LayoutWidth,
     NavBarTheme,
     SideBarType,
-    TopBarTheme
+    TopBarTheme,
 } from './FrameProps';
 
 export default {
