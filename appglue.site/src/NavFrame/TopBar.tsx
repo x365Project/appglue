@@ -9,6 +9,8 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -17,12 +19,14 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SettingsIcon from '@material-ui/icons/Settings';
+import TopNavbar from './TopNavBar';
 import SideBarNav from './SideNavBar';
 import { Drawer } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 
 import ScanIcon from '../assets/Scan.svg';
+import NotificationsList from './ToBarNotifications';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -99,21 +103,51 @@ const useStyles = makeStyles((theme) => ({
     // width: `calc(100% - 73px)`,
     background: '#fff',
     position: 'relative',
-    transition: theme.transitions.create(['width', 'margin'], {
+    left: `${drawerShiftWidth}px`,
+    transition: theme.transitions.create(['width', 'margin', 'left'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    [theme.breakpoints.down('xs')]: {
+      left: `${drawerShiftWidth - 46}px`,
+      width: `calc(100% - ${drawerWidth}px + 238px)`,
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      left: `${drawerShiftWidth - 31}px`,
+      width: `calc(100% - ${drawerWidth}px + 224px)`,
+    },
+    [theme.breakpoints.up('sm')]: {
+      left: `${drawerShiftWidth - 31}px`,
+      width: `calc(100% - ${drawerShiftWidth}px + 32px)`
+    }
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    left: '1px',
+    transition: theme.transitions.create(['width', 'margin', 'left'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    [theme.breakpoints.down('xs')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      left: `${181 - drawerWidth}px`,
+      width: `calc(100% - ${drawerWidth}px + 116px)`,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      left: `${105 - drawerWidth}px`,
+      width: `calc(100% - ${drawerWidth}px + 193px)`,
+    },
+    [theme.breakpoints.up('md')]: {
+      left: '1px',
+      width: `calc(100% - ${drawerWidth}px)`
+    }
   },
   menuButton: {
     marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
   },
   menuButtonHidden: {
     display: 'none',
@@ -129,6 +163,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     float: 'left',
     position: 'relative',
+    top:'-73px',
     whiteSpace: 'nowrap',
     width: drawerWidth,
     height: '100vh',
@@ -138,6 +173,18 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    [theme.breakpoints.down('xs')]: {
+      width: theme.spacing(37),
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      width: theme.spacing(22) + 4,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: theme.spacing(13),
+    },
+    [theme.breakpoints.up('md')]: {
+      width: theme.spacing(37),
+    }
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -147,7 +194,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('xs')]: {
       width: theme.spacing(9),
     },
   },
@@ -159,6 +206,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+    backgroundColor: '#f7fbfd'
   },
 
   paper: {
@@ -167,11 +215,26 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
+  userName: {
+    color: '#93A9BF',
+    padding: '14px 8px'
+  },
+  NotificationMenu: {
+  
+  },
+  NotificationIcon: {
 
-
+  },
+  NotificationText: {
+    fontSize: '14px'
+  },
+  NotificationReceiveDate: {
+    fontSize: '10px !important'
+  }
 }));
 
 const drawerWidth = 296;
+const drawerShiftWidth = 104;
 
 export default function TopBar(props: { layoutOptions: FrameProps }) {
   // if vertical, collapse top bar hamburg
@@ -188,6 +251,8 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [profileAnchorEl, setProfileAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -204,6 +269,22 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+
+  const handleNotificationClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationAnchorEl(e.currentTarget);
+  }
+
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
+  }
+  
+  const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileAnchorEl(e.currentTarget);
+  }
+
+  const handleProfileClose = () => {
+    setProfileAnchorEl(null);
+  }
 
   // const handleMobileMenuOpen = (e) => {
   //   setMobileMoreAnchorEl(e.currentTarget);
@@ -281,7 +362,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
 
   return (
     <div className={clsx(classes.grow, props.layoutOptions.layoutWidth === LayoutWidth.BOXED && classes.borderGrow)}>
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)} elevation={0}>
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
@@ -316,29 +397,62 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
                 <ChatBubbleOutlineIcon />
               </Badge>
             </IconButton>
-            <IconButton className={classes.Iconbutton} aria-label="show 17 new notifications" color="inherit">
+            <IconButton
+              className={classes.Iconbutton}
+              aria-label="show 17 new notifications"
+              aria-haspopup="true"
+              aria-controls="notification-menu"
+              color="inherit"
+              onClick={handleNotificationClick}
+            >
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <Menu
+              id="notification-menu"
+              anchorEl={notificationAnchorEl}
+              keepMounted
+              open={Boolean(notificationAnchorEl)}
+              onClose={handleNotificationClose}
+              elevation={0}
+              getContentAnchorEl={null}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center'
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center'
+              }}
+              PaperProps={{
+                style: {
+                  maxHeight: 268,
+                  width: '286px'
+                }
+              }}
+            >
+              {NotificationsList.map(item => (
+                <MenuItem onClick={handleNotificationClose} key={item.id} className={classes.NotificationMenu}>
+                  <div>
+                    <ListItemIcon className={classes.NotificationIcon}>{<item.icon/>}</ListItemIcon>
+                  </div>
+                  <div>
+                    <ListItemText className={classes.NotificationText}>{item.text}</ListItemText>
+                    <ListItemText className={classes.NotificationReceiveDate}>{item.dateOfReceiving}</ListItemText>
+                  </div>
+                </MenuItem>
+              ))}
+            </Menu>
             <IconButton className={classes.Iconbutton}
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
               aria-haspopup="true"
               color="inherit"
             >
-              <AccountCircle />
+              <AccountCircle/>
             </IconButton>
-            <IconButton className={classes.Iconbutton}
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <SettingsIcon />
-            </IconButton>
+            <Typography className={classes.userName}>John Doe</Typography>
           </div>
 
           <div className={classes.sectionMobile}>
@@ -355,7 +469,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       </AppBar>
       <Drawer
         variant="permanent"
-        style={{ background: props.layoutOptions.color }}
+        style={{ background: props.layoutOptions.colorGradientEnd }}
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}

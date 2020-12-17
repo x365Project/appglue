@@ -47,14 +47,15 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(235,244,250,0.2)',
     },
     marginRight: theme.spacing(2),
-    width: '100%',
+    width: '240px',
+    marginLeft: theme.spacing(6),
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: '240px',
     },
   },
   searchIcon: {
-    padding: theme.spacing(1, 2, 0),
+    padding: theme.spacing(1, 1, 0),
     float: 'right',
     display: 'inline-block',
     color: '#fff',
@@ -72,7 +73,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    height: '72px',
+    zIndex: theme.zIndex.drawer + 2,
     // width: `calc(100% - 73px)`,
     background: 'linear-gradient(90.16deg, #49A0D5 -0.48%, #00D1C1 102.05%)',
     color: theme.palette.common.white,
@@ -82,7 +84,8 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   Iconbutton: {
-    color: '#777',
+    color: '#ffffff',
+    marginLeft: '44px'
   },
   sectionDesktop: {
     display: 'none',
@@ -100,11 +103,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     color: '#677C95',
     background: '#fff',
-
+    height: '40px',
   },
   MenuIcon: {
     color: '#00D1C1',
     minWidth: '38px',
+  },
+  LogoBlock: {
+    margin: ' 12px 33px',
+    [theme.breakpoints.up('sm')]: {
+      margin: ' 4px 33px'    
+    }
   },
   LogoIcon: {
     paddingRight: '10px',
@@ -112,6 +121,18 @@ const useStyles = makeStyles((theme) => ({
   ButtonMenu: {
     padding: '0',
     margin: '0 0 0 24px'
+  },
+  LogoMenuIcon: {
+    color: '#ffffff'
+  },
+  content: {
+    backgroundColor: '#f7fbfd',
+    lexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  userName: {
+    padding: '13px 0 0 10px'
   }
 }));
 
@@ -211,8 +232,8 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   return (
     <>
       <div className={classes.grow}>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar>
+        <AppBar position="static" className={classes.appBar} style={{ background: props.layoutOptions.color }}>
+          <Toolbar className={classes.LogoBlock}>
             <img src={LogoIocn} className={classes.LogoIcon} />
             <Typography>AppGlue</Typography>
             <IconButton className={classes.Iconbutton}
@@ -241,16 +262,16 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             <div className={classes.sectionDesktop}>
 
               <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
-                <FullscreenIcon style={{ fontSize: '30px' }} />
+                <FullscreenIcon style={{ fontSize: '30px' }} className={classes.LogoMenuIcon} />
               </IconButton>
               <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={10} color="secondary">
-                  <ChatBubbleOutlineIcon />
+                  <ChatBubbleOutlineIcon className={classes.LogoMenuIcon} />
                 </Badge>
               </IconButton>
               <IconButton className={classes.Iconbutton} aria-label="show 17 new notifications" color="inherit">
                 <Badge badgeContent={1} color="secondary">
-                  <NotificationsIcon />
+                  <NotificationsIcon className={classes.LogoMenuIcon} />
                 </Badge>
               </IconButton>
               <IconButton className={classes.Iconbutton}
@@ -260,17 +281,9 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
                 aria-haspopup="true"
                 color="inherit"
               >
-                <AccountCircle />
+                <AccountCircle className={classes.LogoMenuIcon} />
               </IconButton>
-              <IconButton className={classes.Iconbutton}
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                color="inherit"
-              >
-                <SettingsIcon />
-              </IconButton>
+              <Typography className={classes.userName}>John Doe</Typography>
 
             </div>
             <div className={classes.sectionMobile}>
@@ -280,7 +293,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
                 aria-haspopup="true"
                 color="inherit"
               >
-                <MoreIcon />
+                <MoreIcon className={classes.LogoMenuIcon} />
               </IconButton>
             </div>
           </Toolbar>
@@ -303,7 +316,9 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             })
           }
         </List>
-      </div>
+      </div><main className={classes.content}>
+        <Typography>hello AppGluer</Typography>
+      </main>
     </>
   )
 }

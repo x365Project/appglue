@@ -52,7 +52,7 @@ export class FrameProps {
     allTeams: string[] = ['AppGlue', 'OtherTeam', 'YetAnotherTeam']
 
     color: string = '#203156';
-    colorGradientEnd?: string; // gradients have 2 colors...
+    colorGradientEnd: string = 'linear-gradient(160.55deg, #49A0D5 1.59%, #00D1C1 94.21%)'; // gradients have 2 colors...
 
     layout: Layout = Layout.VERTICAL;
     sideBarType: SideBarType = SideBarType.DEFAULT;
