@@ -22,17 +22,15 @@ export class EqualExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveMultiState listenTo={[this.value1!, this.value2!]} control={() => (
-                <BracketedDiv hasChild={!!this.value1!.subExpression || !!this.value2!.subExpression}>
-                    <ExpressionPiece hasChild={!!this.value1!.subExpression}>
+                <BracketedDiv>
+                    <ExpressionPiece>
                         <ExpressionValueRenderer el={this.value1!}/>
                     </ExpressionPiece>
                     <ExpressionPiece> = </ExpressionPiece>
-                    <ExpressionPiece hasChild={!!this.value2!.subExpression}>
+                    <ExpressionPiece>
                         <ExpressionValueRenderer el={this.value2 !}/>
                     </ExpressionPiece>
                 </BracketedDiv>
-            ) }/>
         );
     }
 }

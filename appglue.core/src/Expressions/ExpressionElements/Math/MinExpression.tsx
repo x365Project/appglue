@@ -21,14 +21,12 @@ export class MinExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    min
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                min
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }
