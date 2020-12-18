@@ -21,14 +21,12 @@ export class ModExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    mod
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                mod
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }

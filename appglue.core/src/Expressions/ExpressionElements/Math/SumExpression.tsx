@@ -21,14 +21,12 @@ export class SumExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    sum
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                sum
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }

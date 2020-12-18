@@ -20,14 +20,12 @@ export class NotExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    not
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                not
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }

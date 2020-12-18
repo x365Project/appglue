@@ -6,7 +6,6 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {MaxIcon} from "../../../CommonUI/Icon/MaxIcon"
-import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 @RegisterExpression('Math', 'Max', <MaxIcon />, ExpressionExpectedType.NUMBER)
 export class MaxExpression extends BaseExpression {
@@ -21,14 +20,12 @@ export class MaxExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    Max
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                Max
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }
