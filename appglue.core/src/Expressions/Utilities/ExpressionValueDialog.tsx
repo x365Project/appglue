@@ -384,10 +384,11 @@ const VariableInput = styled(TextField)`
         font-style: normal;
         font-weight: 600;
         font-size: 14px;
-        line-height: 20px;
+        line-height: 24px;
         color: #677C95;
         
-        .MuiOutlinedInput-input  {
+        .MuiOutlinedInput-input,
+        .MuiInput-underline .MuiInputBase-input  {
             padding: 6px 12px;
         }
         
@@ -397,13 +398,14 @@ const VariableInput = styled(TextField)`
             font-style: normal;
             font-weight: bold;
             font-size: 14px;
-            line-height: 20px;
+            line-height: 24px;
             color: #677C95;
         }
 
         .MuiInputBase-input {
             color: #677C95;
-            line-height: 20px;
+            line-height: 24px;
+            height: auto;
         }
 
         .MuiInputLabel-formControl {
@@ -416,6 +418,14 @@ const VariableInput = styled(TextField)`
 
         .MuiOutlinedInput-notchedOutline {
             display: none;
+        }
+
+        label + .MuiInput-formControl {
+            margin-top: 0;
+        }
+
+        .MuiInput-underline:after {
+            border: 2px solid #1D6295;
         }
     }
 `;
@@ -532,7 +542,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     </>
                 );
             case ExpressionValueType.VARIABLE:
-                console.log('this.props.expressionValue.variableName:', this.props.expressionValue.variableName);
                 return (
                     <>
                         <ModeButtons value={this.props.expressionValue}/>
@@ -542,7 +551,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 label="Variable Name"
                                 value={this.props.expressionValue.variableName || ''}
                                 onChange={this.variableNameChange}
-                                variant="outlined"
                             />
                         </VariableOrValContentPanel>
                     </>
@@ -585,7 +593,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 <VariableInput
                                     value={this.props.expressionValue.variableName || ''}
                                     label="Variable Name"
-                                    variant="outlined"
                                     onFocus={() => {
                                         this.props.expressionValue.valueType = ExpressionValueType.VARIABLE;
                                     }}
