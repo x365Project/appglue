@@ -568,7 +568,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                             <ExpressionColumn>
                                 <ExpressionColumnRow>
                                     {
-                                        Object.entries(ExpressionRegistration.registrations).map(([key, expression]) => (
+                                        ExpressionRegistration.getCommonExpressions().map((expression, key) => (
                                             <div>
                                                 <AddExpressionButton
                                                     expression={this.props.expressionValue}
@@ -802,6 +802,8 @@ const ToolboxPanelHideLabels = styled(FormControlLabel)`
 const ToolboxTabPanel = styled(TabPanel)`
     && {
         padding: 0;
+        height: 340px;
+        overflow: auto;
     }
 `;
 

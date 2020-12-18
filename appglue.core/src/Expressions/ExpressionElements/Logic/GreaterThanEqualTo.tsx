@@ -5,10 +5,10 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {GreaterThanEqualIcon} from "../../../CommonUI/Icon/GreaterThanEqualIcon";
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
-@RegisterExpression('Logic', 'Greater Than-Equal To', <TextIcon name={'>='}/>, ExpressionExpectedType.BOOLEAN, true )
+@RegisterExpression('Logic', 'Greater Than-Equal To', <GreaterThanEqualIcon />, ExpressionExpectedType.BOOLEAN, true )
 export class GreaterThanEqualToExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

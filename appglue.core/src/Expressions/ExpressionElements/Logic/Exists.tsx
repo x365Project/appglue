@@ -5,10 +5,10 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {ExistsIcon} from "../../../CommonUI/Icon/ExistsIcon";
 import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
-@RegisterExpression('Logic', 'Exists', <TextIcon name={'[-]'}/>, ExpressionExpectedType.BOOLEAN, true )
+@RegisterExpression('Logic', 'Exists', <ExistsIcon />, ExpressionExpectedType.BOOLEAN, true )
 export class ExistsExpression extends BaseExpression {
     value1: ExpressionValue;
 
