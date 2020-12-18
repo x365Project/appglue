@@ -6,7 +6,6 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {AbsoluteIcon} from "../../../CommonUI/Icon/AbsoluteIcon"
-import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 @RegisterExpression('Math', 'Absolute', <AbsoluteIcon />, ExpressionExpectedType.NUMBER)
 export class AbsoluteExpression extends BaseExpression {
@@ -21,14 +20,12 @@ export class AbsoluteExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    absolute
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                absolute
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }

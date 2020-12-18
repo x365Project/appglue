@@ -21,14 +21,12 @@ export class AsCurrencyExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
+                <ExpressionPiece>
                     as currency
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
+                    <BracketedDiv>
                         <ExpressionValueRenderer el={this.value1!}/>
                     </BracketedDiv>
                 </ExpressionPiece>
-            )} />
         );
     }
 }

@@ -6,7 +6,6 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {RoundIcon} from "../../../CommonUI/Icon/RoundIcon"
-import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 @RegisterExpression('Math', 'Round', <RoundIcon />, ExpressionExpectedType.NUMBER)
 export class RoundExpression extends BaseExpression {
@@ -21,14 +20,12 @@ export class RoundExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                    round
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </BracketedDiv>
-                </ExpressionPiece>
-            )} />
+            <ExpressionPiece>
+                round
+                <BracketedDiv>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </BracketedDiv>
+            </ExpressionPiece>
         );
     }
 }

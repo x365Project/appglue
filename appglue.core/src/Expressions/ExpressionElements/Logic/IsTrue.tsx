@@ -20,14 +20,12 @@ export class IsTrueExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <BracketedDiv hasChild={!!this.value1!.subExpression}>
-                    <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </ExpressionPiece>
-                    <ExpressionPiece> {' is true'} </ExpressionPiece>
-                </BracketedDiv>
-            )} />
+            <BracketedDiv>
+                <ExpressionPiece>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </ExpressionPiece>
+                <ExpressionPiece> {' is true'} </ExpressionPiece>
+            </BracketedDiv>
         );
     }
 }

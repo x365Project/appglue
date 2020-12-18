@@ -6,7 +6,6 @@ import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {ExpressionExpectedType} from "../../ExpressionExpectedType";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {CombineIcon} from "../../../CommonUI/Icon/CombineIcon"
-import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
 @RegisterExpression('Text', 'String Combine', <CombineIcon />, ExpressionExpectedType.STRING)
@@ -22,17 +21,15 @@ export class StringCombineExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveMultiState listenTo={[this.value1!, this.value2!]} control={() => (
-                <BracketedDiv hasChild={!!this.value1!.subExpression || !!this.value2!.subExpression}>
-                    <ExpressionPiece hasChild={!!this.value1!.subExpression}>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </ExpressionPiece>
-                    <ExpressionPiece> combine </ExpressionPiece>
-                    <ExpressionPiece hasChild={!!this.value2!.subExpression}>
-                        <ExpressionValueRenderer el={this.value2 !}/>
-                    </ExpressionPiece>
-                </BracketedDiv>
-            ) }/>
+            <BracketedDiv>
+                <ExpressionPiece>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </ExpressionPiece>
+                <ExpressionPiece> combine </ExpressionPiece>
+                <ExpressionPiece>
+                    <ExpressionValueRenderer el={this.value2 !}/>
+                </ExpressionPiece>
+            </BracketedDiv>
         );
     }
 }

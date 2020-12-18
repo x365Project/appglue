@@ -6,7 +6,6 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {AverageIcon} from "../../../CommonUI/Icon/AverageIcon"
-import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
 @RegisterExpression('Math', 'Average', <AverageIcon />, ExpressionExpectedType.NUMBER, true)
 export class AverageExpression extends BaseExpression {
@@ -21,14 +20,12 @@ export class AverageExpression extends BaseExpression {
 
     render() {
         return (
-            <ObserveState listenTo={this.value1!} control={() => (
-                <ExpressionPiece hasChild={!!this.value1!.subExpression}>
+                <ExpressionPiece>
                     average
-                    <BracketedDiv hasChild={!!this.value1!.subExpression}>
+                    <BracketedDiv>
                         <ExpressionValueRenderer el={this.value1!}/>
                     </BracketedDiv>
                 </ExpressionPiece>
-            )} />
         );
     }
 }
