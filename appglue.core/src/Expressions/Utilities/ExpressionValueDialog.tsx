@@ -564,7 +564,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                             <ExpressionColumn>
                                 <ExpressionColumnRow>
                                     {
-                                        Object.entries(ExpressionRegistration.registrations).splice(0, 20).map(([key, expression]) => (
+                                        ExpressionRegistration.getCommonExpressions().splice(0, 20).map((expression, key) => (
                                             <div>
                                                 <AddExpressionButton
                                                     expression={this.props.expressionValue}
