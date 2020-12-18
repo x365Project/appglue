@@ -551,7 +551,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 label="Variable Name"
                                 value={this.props.expressionValue.variableName || ''}
                                 onChange={this.variableNameChange}
-                                // variant="outlined"
                             />
                         </VariableOrValContentPanel>
                     </>
@@ -594,7 +593,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 <VariableInput
                                     value={this.props.expressionValue.variableName || ''}
                                     label="Variable Name"
-                                    // variant="outlined"
                                     onFocus={() => {
                                         this.props.expressionValue.valueType = ExpressionValueType.VARIABLE;
                                     }}
