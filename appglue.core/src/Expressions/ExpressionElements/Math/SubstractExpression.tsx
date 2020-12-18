@@ -9,7 +9,7 @@ import {SubstractIcon} from "../../../CommonUI/Icon/SubstractIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Math', 'Substract', <SubstractIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Substract', <SubstractIcon />, ExpressionExpectedType.NUMBER, true)
 export class SubstractExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

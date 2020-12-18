@@ -9,7 +9,7 @@ import {DateEqualToIcon} from "../../../CommonUI/Icon/DateEqualToIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Date', 'Date Equal To', <DateEqualToIcon />, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Date', 'Date Equal To', <DateEqualToIcon />, ExpressionExpectedType.BOOLEAN, true)
 export class DateEqualToExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

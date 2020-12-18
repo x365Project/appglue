@@ -8,7 +8,7 @@ import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {AverageIcon} from "../../../CommonUI/Icon/AverageIcon"
 import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
-@RegisterExpression('Math', 'Average', <AverageIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Average', <AverageIcon />, ExpressionExpectedType.NUMBER, true)
 export class AverageExpression extends BaseExpression {
     value1: ExpressionValue;
 

@@ -9,7 +9,7 @@ import {StartWithIcon} from "../../../CommonUI/Icon/StartWithIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Text', 'String Start With', <StartWithIcon />, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Text', 'String Start With', <StartWithIcon />, ExpressionExpectedType.BOOLEAN, true)
 export class StringStartWithExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

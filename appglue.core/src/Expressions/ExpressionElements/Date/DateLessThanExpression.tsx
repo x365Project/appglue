@@ -9,7 +9,7 @@ import {DateLessThanIcon} from "../../../CommonUI/Icon/DateLessThanIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Date', 'Date Less Than', <DateLessThanIcon />, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Date', 'Date Less Than', <DateLessThanIcon />, ExpressionExpectedType.BOOLEAN, true)
 export class DateLessThanExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

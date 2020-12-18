@@ -44,7 +44,7 @@ const BottomDiv = styled.div`
   justify-content: center;
 `;
 
-@RegisterExpression('Math', 'Divide', <DevideIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Divide', <DevideIcon />, ExpressionExpectedType.NUMBER, true)
 export class DivideExpression extends BaseExpression {
     divideValue: ExpressionValue;
     divideBy: ExpressionValue;

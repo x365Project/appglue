@@ -8,7 +8,7 @@ import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {MultiplyIcon} from "../../../CommonUI/Icon/MultiplyIcon";
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
-@RegisterExpression('Math', 'Multiply', <MultiplyIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Multiply', <MultiplyIcon />, ExpressionExpectedType.NUMBER, true)
 export class MultiplyExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

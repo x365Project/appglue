@@ -23,9 +23,9 @@ import {ExpressionLineDiv, RuleChangeToggleButtonGroup} from "../../ExpressionSt
 import {IfThenIcon} from "../../../CommonUI/Icon/IfThenIcon";
 import {AndGroup} from "./Grouping";
 import {DataUtilities} from "../../../Common/DataUtilities";
-import { DeleteIcon } from "../../../CommonUI/Icon/DeleteIcon";
-import { StateManager } from "../../../CommonUI/StateManagement/StateManager";
-import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
+import {DeleteIcon} from "../../../CommonUI/Icon/DeleteIcon";
+import {StateManager} from "../../../CommonUI/StateManagement/StateManager";
+import {ObserveState} from "../../../CommonUI/StateManagement/ObserveState";
 
 const AllIfDiv = styled.div`
     font-size:      18px;
@@ -160,7 +160,8 @@ class IfThenPair implements IBaseExpressionElement{
 }
 
 
-@RegisterExpression('Logic', 'If/Then', <IfThenIcon /> )
+// todo.  this is one where we can change output
+@RegisterExpression('Logic', 'If/Then', <IfThenIcon />, ExpressionExpectedType.BOOLEAN, true )
 export class IfThenExpression
         extends BaseExpression{
 

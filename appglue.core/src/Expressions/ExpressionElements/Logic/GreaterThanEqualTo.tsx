@@ -8,7 +8,7 @@ import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {GreaterThanEqualIcon} from "../../../CommonUI/Icon/GreaterThanEqualIcon";
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
-@RegisterExpression('Logic', 'Greater Than-Equal To', <GreaterThanEqualIcon />, ExpressionExpectedType.BOOLEAN, true )
+@RegisterExpression('Logic', 'Greater Than-Equal To', <GreaterThanEqualIcon />, ExpressionExpectedType.BOOLEAN )
 export class GreaterThanEqualToExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

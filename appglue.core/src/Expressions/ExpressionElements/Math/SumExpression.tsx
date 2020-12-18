@@ -8,7 +8,7 @@ import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {SumIcon} from "../../../CommonUI/Icon/SumIcon"
 import { ObserveState } from "../../../CommonUI/StateManagement/ObserveState";
 
-@RegisterExpression('Math', 'Sum', <SumIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Sum', <SumIcon />, ExpressionExpectedType.NUMBER, true)
 export class SumExpression extends BaseExpression {
     value1: ExpressionValue;
 

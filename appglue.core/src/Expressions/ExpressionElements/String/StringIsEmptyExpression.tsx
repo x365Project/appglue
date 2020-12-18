@@ -7,7 +7,7 @@ import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {TextEmptyIcon} from "../../../CommonUI/Icon/TextEmptyIcon";
 
-@RegisterExpression('Text', 'String Is Empty', <TextEmptyIcon />, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Text', 'String Is Empty', <TextEmptyIcon />, ExpressionExpectedType.BOOLEAN, true)
 export class StringIsEmptyExpression extends BaseExpression {
     value1: ExpressionValue;
 

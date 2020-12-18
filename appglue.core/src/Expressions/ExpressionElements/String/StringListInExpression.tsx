@@ -9,7 +9,7 @@ import {TextContainsIcon} from "../../../CommonUI/Icon/TextContainsIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Text', 'String Is In List', <TextContainsIcon />, ExpressionExpectedType.BOOLEAN)
+@RegisterExpression('Text', 'String Is In List', <TextContainsIcon />, ExpressionExpectedType.BOOLEAN, true)
 export class StringListInExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

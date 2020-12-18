@@ -8,7 +8,7 @@ import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {LessThanEqualIcon} from "../../../CommonUI/Icon/LessThanEqualIcon";
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
-@RegisterExpression('Logic', 'Less Than-Equal To', <LessThanEqualIcon />, ExpressionExpectedType.BOOLEAN, true )
+@RegisterExpression('Logic', 'Less Than-Equal To', <LessThanEqualIcon />, ExpressionExpectedType.BOOLEAN)
 export class LessThanEqualToExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

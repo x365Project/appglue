@@ -9,7 +9,7 @@ import {PlusOutlineIcon} from "../../../CommonUI/Icon/PlusOutlineIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Math', 'Add', <PlusOutlineIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Add', <PlusOutlineIcon />, ExpressionExpectedType.NUMBER, true)
 export class AddExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

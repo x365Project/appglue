@@ -6,9 +6,9 @@ import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {GreaterThanIcon} from "../../../CommonUI/Icon/GreaterThanIcon";
-import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
+import {ObserveMultiState} from "../../../CommonUI/StateManagement/ObserveMultiState";
 
-@RegisterExpression('Logic', 'Greater Than', <GreaterThanIcon /> )
+@RegisterExpression('Logic', 'Greater Than', <GreaterThanIcon />, ExpressionExpectedType.BOOLEAN, true )
 export class GreaterThanExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

@@ -9,7 +9,7 @@ import {EqualIcon} from "../../../CommonUI/Icon/EqualIcon"
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
-@RegisterExpression('Math', 'Equal', <EqualIcon />, ExpressionExpectedType.NUMBER)
+@RegisterExpression('Math', 'Equal', <EqualIcon />, ExpressionExpectedType.NUMBER, true)
 export class EqualExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;
