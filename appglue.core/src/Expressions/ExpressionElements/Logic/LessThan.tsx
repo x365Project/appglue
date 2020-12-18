@@ -5,10 +5,10 @@ import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import React from "react";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
-import {TextIcon} from "../../../CommonUI/TextIcon";
+import {LessThanIcon} from "../../../CommonUI/Icon/LessThanIcon";
 import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
-@RegisterExpression('Logic', 'Less Than', <TextIcon name={'<'}/>, ExpressionExpectedType.BOOLEAN, true )
+@RegisterExpression('Logic', 'Less Than', <LessThanIcon />, ExpressionExpectedType.BOOLEAN, true )
 export class LessThanExpression extends BaseExpression {
     value1: ExpressionValue;
     value2: ExpressionValue;

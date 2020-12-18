@@ -24,6 +24,6 @@
 
   },
   "include": [
-    "src"
+    "src", "src/Expressions/ExpressionElements/String/.tsx"
   ]
 }

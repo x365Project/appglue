@@ -564,7 +564,11 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                             <ExpressionColumn>
                                 <ExpressionColumnRow>
                                     {
+<<<<<<< HEAD
                                         Object.entries(ExpressionRegistration.registrations).splice(0, 20).map(([key, expression]) => (
+=======
+                                        ExpressionRegistration.getCommonExpressions().map((expression, key) => (
+>>>>>>> 9ea4a93c5c88ed22b36ac244f557e5ccc248c2bb
                                             <div>
                                                 <AddExpressionButton
                                                     expression={this.props.expressionValue}
@@ -798,6 +802,8 @@ const ToolboxPanelHideLabels = styled(FormControlLabel)`
 const ToolboxTabPanel = styled(TabPanel)`
     && {
         padding: 0;
+        height: 340px;
+        overflow: auto;
     }
 `;
 
