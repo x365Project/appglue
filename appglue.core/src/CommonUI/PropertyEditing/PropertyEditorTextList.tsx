@@ -6,7 +6,6 @@ import styled from "styled-components";
 const StyledTextList = styled("div")<{
     active: boolean;
     label?: string;
-    empty: boolean;
 }>`
     width: 100%;
 
@@ -19,6 +18,8 @@ const StyledTextList = styled("div")<{
         padding: 6px 12px;
     
         transition: all .3s;
+
+        min-height: 100px;
 
         .MuiInputBase-input {
             color: ${props => props.active ? '#677C95': '#93A9BF'};
@@ -38,9 +39,15 @@ const StyledTextList = styled("div")<{
         font-weight: 600;
         font-size: 14px;
         line-height: 20px;
-        ${props => props.empty && `
-            transform: translate(10px, 24px);
-        `}
+    }
+
+    .TextList-hint {
+        color: #677C95;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 18px;
     }
 
 `;
@@ -48,7 +55,9 @@ const StyledTextList = styled("div")<{
 export interface PropertyEditorTextListInterface{
     editObject: object,
     propertyName: string | number,
+    placeholder?: string;
     label?: string,
+    hint?: string,
     updateCallback : () => void,
 }
 
@@ -102,6 +111,15 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
         setSelectedLine(-1);
     }
 
+    const onClickWrapper = () => {
+        setSelectedLine(values.length - 1);
+    }
+
+    const onClickInput = (event: React.MouseEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     return (
         <ClickAwayListener onClickAway={onClickAway}>
             <StyledTextList className="TextList-Wrapper" active={selectedLine !== -1} label={props.label} empty={values.length === 1 && values[0] === ''}>
@@ -110,7 +128,7 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                         <InputLabel classes={{root: 'TextList-Label'}}>{props.label}</InputLabel>
                     )
                 }
-                <div className="TextList-TextBox">
+                <div className="TextList-TextBox" onClick={onClickWrapper}>
                 {
                     values && values.map((val: string, idx: number) => (
                         <Input
@@ -120,6 +138,10 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                             disableUnderline
                             onFocus={() => onFocus(idx)}
                             onKeyDown={onKeyDown}
+                            placeholder={
+                                idx === 0 ? props.placeholder || 'items...' : ''
+                            }
+                            onClick={onClickInput}
                             inputProps={
                                 {
                                     ref: (element: HTMLInputElement) => {
@@ -137,9 +159,11 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                     ))
                 }
                 </div>
+                {
+                    props.hint && <span className="TextList-hint">{props.hint}</span>
+                }
             </StyledTextList>
         </ClickAwayListener>
     );
 }
-
 
