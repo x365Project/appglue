@@ -41,6 +41,15 @@ const StyledTextList = styled("div")<{
         line-height: 20px;
     }
 
+    .TextList-hint {
+        color: #677C95;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 18px;
+    }
+
 `;
 
 export interface PropertyEditorTextListInterface{
@@ -48,6 +57,7 @@ export interface PropertyEditorTextListInterface{
     propertyName: string | number,
     placeholder?: string;
     label?: string,
+    hint?: string,
     updateCallback : () => void,
 }
 
@@ -149,6 +159,9 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                     ))
                 }
                 </div>
+                {
+                    props.hint && <span className="TextList-hint">{props.hint}</span>
+                }
             </StyledTextList>
         </ClickAwayListener>
     );

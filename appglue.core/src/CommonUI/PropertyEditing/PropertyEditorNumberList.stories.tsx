@@ -25,6 +25,7 @@ class NumberListData implements PropertyEditorNumberListInterface {
     editObject: object = {};
     label: string = 'Number List';
     propertyName: string = 'NumberList';
+    hint: string = 'NumberList';
 
     updateCallback: () => void = () => {
         StateManager.propertyChanged(this, this.propertyName)

@@ -41,6 +41,16 @@ const StyledNumberList = styled("div")<{
         line-height: 20px;
     }
 
+    .NumberList-hint {
+        color: #677C95;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+
 `;
 
 export interface PropertyEditorNumberListInterface{
@@ -48,6 +58,7 @@ export interface PropertyEditorNumberListInterface{
     propertyName: string,
     label?: string,
     placeholder?: string;
+    hint?: string;
     updateCallback : () => void,
 }
 
@@ -152,6 +163,9 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
                     ))
                 }
                 </div>
+                {
+                    props.hint && <span className="NumberList-hint">{props.hint}</span>
+                }
             </StyledNumberList>
         </ClickAwayListener>
     );
