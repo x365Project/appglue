@@ -19,6 +19,7 @@ const StyledNumberList = styled("div")<{
         padding: 6px 12px;
     
         transition: all .3s;
+        min-height: 100px;
 
         .MuiInputBase-input {
             color: ${props => props.active ? '#677C95': '#93A9BF'};
@@ -38,17 +39,26 @@ const StyledNumberList = styled("div")<{
         font-weight: 600;
         font-size: 14px;
         line-height: 20px;
-        ${props => props.empty && `
-            transform: translate(10px, 24px);
-        `}
     }
+
+    .NumberList-hint {
+        color: #677C95;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 18px;
+    }
+
 
 `;
 
 export interface PropertyEditorNumberListInterface{
     editObject: object,
-    propertyName: string | number,
+    propertyName: string,
     label?: string,
+    placeholder?: string;
+    hint?: string;
     updateCallback : () => void,
 }
 
@@ -104,6 +114,15 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
         setSelectedLine(-1);
     }
 
+    const onClickWrapper = () => {
+        setSelectedLine(values.length - 1);
+    }
+
+    const onClickInput = (event: React.MouseEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     return (
         <ClickAwayListener onClickAway={onClickAway}>
             <StyledNumberList className="NumberList-Wrapper" active={selectedLine !== -1} label={props.label} empty={values.length === 1 && values[0] === ''}>
@@ -112,7 +131,7 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
                         <InputLabel classes={{root: 'NumberList-Label'}}>{props.label}</InputLabel>
                     )
                 }
-                <div className="NumberList-TextBox">
+                <div className="NumberList-TextBox" onClick={onClickWrapper}>
                 {
                     values && values.map((val: string, idx: number) => (
                         <Input
@@ -123,6 +142,10 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
                             onFocus={() => onFocus(idx)}
                             onKeyDown={onKeyDown}
                             type="number"
+                            onClick={onClickInput}
+                            placeholder={
+                                idx === 0 ? props.placeholder || 'Numbers...' : ''
+                            }
                             inputProps={
                                 {
                                     ref: (element: HTMLInputElement) => {
@@ -140,6 +163,9 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
                     ))
                 }
                 </div>
+                {
+                    props.hint && <span className="NumberList-hint">{props.hint}</span>
+                }
             </StyledNumberList>
         </ClickAwayListener>
     );

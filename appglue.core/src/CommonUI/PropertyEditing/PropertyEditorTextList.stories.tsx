@@ -25,6 +25,7 @@ class TextListData implements PropertyEditorTextListInterface {
     editObject: object = {};
     label: string = 'TextEditor';
     propertyName: string = 'textList';
+    hint: string = 'Please input multiline text';
 
     updateCallback: () => void = () => {
         StateManager.propertyChanged(this, this.propertyName)
