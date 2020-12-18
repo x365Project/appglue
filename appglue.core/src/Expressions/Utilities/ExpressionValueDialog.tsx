@@ -4,17 +4,13 @@ import {
     Button,
     ClickAwayListener,
     DialogActions,
-    List,
-    ListItem,
-    ListItemText,
     TextField,
     Tab,
     InputAdornment,
     Input,
     FormControlLabel,
     Checkbox,
-    InputLabel,
-    FormControl
+    Tooltip
 } from "@material-ui/core";
 import {ExpressionValue} from "../ExpressionValue";
 import {ExpressionValueType} from "../ExpressionValueType";
@@ -568,7 +564,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                             <ExpressionColumn>
                                 <ExpressionColumnRow>
                                     {
-                                        ExpressionRegistration.getCommonExpressions().map((expression, key) => (
+                                        Object.entries(ExpressionRegistration.registrations).splice(0, 20).map(([key, expression]) => (
                                             <div>
                                                 <AddExpressionButton
                                                     expression={this.props.expressionValue}
@@ -1054,16 +1050,18 @@ const InsertExpressionPage = function (props: {expressionValue: ExpressionValue,
 const AddExpressionButton = function (props: {registration: RegistrationData, expression: ExpressionValue, onClick : (registration: RegistrationData) => void, hideLabel: boolean}) {
 
     return (
-        <ToolboxItem hideLabel={props.hideLabel} onClick={() => {
-            props.onClick(props.registration)
-        }}>
-            {props.registration.icon}
-            {
-                !props.hideLabel && <ToolboxItemText>
-                    {props.registration.name}
-                </ToolboxItemText>
-            }
-        </ToolboxItem>
+        <Tooltip title={props.registration.name}>
+            <ToolboxItem hideLabel={props.hideLabel} onClick={() => {
+                props.onClick(props.registration)
+            }}>
+                {props.registration.icon}
+                {
+                    !props.hideLabel && <ToolboxItemText>
+                        {props.registration.name}
+                    </ToolboxItemText>
+                }
+            </ToolboxItem>
+        </Tooltip>
     );
 }
 
