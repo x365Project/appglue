@@ -73,4 +73,8 @@ export abstract class BaseExpression
             expressionValue.setEditContext(this.editContext, this);
         }
     }
+
+    evaluate(data: object) : any {
+
+    }
 }

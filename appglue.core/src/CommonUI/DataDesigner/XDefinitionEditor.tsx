@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {
     BooleanDataDefinition,
-    DataDefinition,
+    XDataDefinition,
     DateDataDefinition,
     FileDataDefinition,
     IDataDefinition,
@@ -10,7 +10,7 @@ import {
     StringDataDefinition,
     UndefinedDataDefinition,
     XDataTypes
-} from "./DataDefinition";
+} from "../../Common/Data/XDataDefinition";
 import {Button, IconButton, Select, TextField} from "@material-ui/core";
 import {Pencil, Switch} from "mdi-material-ui";
 import styled from "styled-components";
@@ -67,7 +67,7 @@ class DataEditorFactory {
 }
 
 export interface IDefinitionEditorParms {
-    definition: DataDefinition;
+    definition: XDataDefinition;
 }
 
 
