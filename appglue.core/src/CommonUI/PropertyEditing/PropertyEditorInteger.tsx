@@ -1,14 +1,16 @@
-import {Input, TextField} from "@material-ui/core"
 import React from "react";
+import { StyledTextField, TextFieldDisplayType } from "./PropertyEditorStyles";
 
-export interface PropertyEditorIntegerInterface{
+export interface PropertyEditorIntegerInterface {
     editObject: object,
     propertyName: string | number,
     label?: string,
     decimal?: number;
     hint?: string,
     updateCallback : CallableFunction,
-    parentDefaultValue? : number | null
+    parentDefaultValue? : number | null,
+    type?: TextFieldDisplayType,
+    autoFocus?: boolean
 }
 
 export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = (props: PropertyEditorIntegerInterface) => {
@@ -16,8 +18,6 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
             let val = parseInt(event.target.value, 10);
-
-            console.log(props.parentDefaultValue, val);
 
             if (props.parentDefaultValue && props.parentDefaultValue === val) {
                 Reflect.set(props.editObject, props.propertyName, null);
@@ -36,27 +36,16 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
     }
 
     return (
-        <>
-            {
-                props.label && (
-                    <TextField variant="outlined" value={value}
-                        type="number"
-                        label={props.label}
-                        onChange={onChange}
-                        helperText={props.hint}
-                    />
-                )
-            }
-            {
-                !props.label && (
-                    <Input value={value}
-                        type="number"
-                        onChange={onChange}
-                    />
-                )
-            }
+        <StyledTextField
+            value={value}
+            type="number"
+            label={props.label}
+            onChange={onChange}
+            helperText={props.hint}
+            displayType={props.type || TextFieldDisplayType.Default}
+            autoFocus={props.autoFocus}
+        />
             
-        </>
     );
 }
 

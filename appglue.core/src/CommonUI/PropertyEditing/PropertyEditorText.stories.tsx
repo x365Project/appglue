@@ -3,7 +3,9 @@ import React from "react";
 import {Meta, Story} from "@storybook/react/types-6-0";
 import {XFormDesigner} from "../../Form/XFormDesigner";
 import {PropertyEditorText, PropertyEditorTextInterface} from "./PropertyEditorText";
-
+import { ObserveState } from "../StateManagement/ObserveState";
+import { StateManager } from "../StateManagement/StateManager";
+import { TextFieldDisplayType } from "./PropertyEditorStyles";
 
 
 export default {
@@ -18,20 +20,33 @@ const MissingTemplate: Story<{}> = () => (
     </div>
 );
 
-
 class TextData implements PropertyEditorTextInterface {
+
     editObject: object = {};
     hint: string = 'hint';
     label: string = 'TextEditor';
     parentDefaultValue: string | null = null;
     propertyName: string | number = 'textValue';
     requiredText: string = 'required text';
+    type?: TextFieldDisplayType = TextFieldDisplayType.Default;
 
-    updateCallback() {
+    updateCallback = () => {
+        StateManager.changed(this);
     }
 
 }
 
-const TextTemplate: Story<PropertyEditorTextInterface> = (args) => <PropertyEditorText {...args} />;
+const TextTemplate: Story<PropertyEditorTextInterface> = (args) => <ObserveState listenTo={args} control={() => <PropertyEditorText {...args} />} />;
 
-export const TextEditor = TextTemplate.bind({}, new TextData());
+export const DefaultTextEditor = TextTemplate.bind({}, new TextData());
+
+let errorTestData = new TextData();
+errorTestData.type = TextFieldDisplayType.Error;
+
+export const ErrorTextEditor = TextTemplate.bind({}, errorTestData);
+
+
+let successTestData = new TextData();
+successTestData.type = TextFieldDisplayType.Success;
+
+export const SuccessTextEditor = TextTemplate.bind({}, successTestData);

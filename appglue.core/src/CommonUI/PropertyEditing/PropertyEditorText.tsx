@@ -1,15 +1,18 @@
-import TextField from "@material-ui/core/TextField"
 import React from "react";
-import { Input } from "@material-ui/core";
 
-export interface PropertyEditorTextInterface{
+import {StyledTextField, TextFieldDisplayType} from "./PropertyEditorStyles";
+
+
+export interface PropertyEditorTextInterface {
     editObject: object,
     label?: string,
     propertyName: string | number,
     hint?: string,
     requiredText? : string,
     updateCallback : CallableFunction,
-    parentDefaultValue? : string | null
+    parentDefaultValue? : string | null,
+    type?: TextFieldDisplayType,
+    autoFocus?: boolean
 }
 
 export const PropertyEditorText : React.FC<PropertyEditorTextInterface> = (props: PropertyEditorTextInterface) => {
@@ -24,18 +27,7 @@ export const PropertyEditorText : React.FC<PropertyEditorTextInterface> = (props
     }
     const value = Reflect.get(props.editObject, props.propertyName) ?? props.parentDefaultValue;
     return (
-        <>
-            {
-                props.label && (
-                    <TextField variant="outlined" value={value || ''} label={props.label} onChange={onChange} helperText={props.hint} />
-                )
-            }
-            {
-                !props.label && (
-                    <Input value={value || ''} onChange={onChange} />
-                )
-            }
-        </>
+        <StyledTextField value={value || ''} label={props.label} onChange={onChange} helperText={props.hint} displayType={props.type || TextFieldDisplayType.Default} autoFocus={props.autoFocus} />
     );
 }
 

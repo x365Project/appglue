@@ -17,7 +17,7 @@ const StyledNumberList = styled("div")<{
         border-radius: 4px;
         font-family: Mulish;
         padding: 6px 12px;
-    
+
         transition: all .3s;
         min-height: 100px;
 
@@ -49,7 +49,6 @@ const StyledNumberList = styled("div")<{
         font-size: 12px;
         line-height: 18px;
     }
-
 
 `;
 
