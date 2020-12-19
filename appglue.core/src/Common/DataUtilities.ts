@@ -2,6 +2,7 @@
 import React from "react";
 import { Guid } from "guid-typescript";
 import * as util from "util";
+import {FileData} from "./FileData";
 
 export class DataUtilities {
     static reactProperties = Object.getOwnPropertyNames(new React.Component({}));
@@ -69,6 +70,29 @@ export class DataUtilities {
     static generateUniqueId() : string {
         return Guid.create().toString();
     }
+
+    static isValidDate(possibleDate: object) : boolean {
+        return this.compareObjectStructure(possibleDate, new Date());
+    }
+
+    static isValidFile(possibleFile: object) : boolean {
+        return this.compareObjectStructure(possibleFile, new FileData());
+    }
+
+    // ensure object has all the values and functions that matchesObject has
+    static compareObjectStructure(object: object, matchesObject: object) : boolean {
+        const keys1 = Object.keys(object);
+        const keys2 = Object.keys(matchesObject);
+
+        for (let key of keys2) {
+            if (keys1.indexOf(key) === -1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }
 
 

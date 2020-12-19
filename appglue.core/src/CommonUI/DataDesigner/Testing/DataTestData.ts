@@ -1,17 +1,17 @@
 import {
     BooleanDataDefinition,
-    DataDefinition,
+    XDataDefinition,
     IDataDefinition,
     ObjectDataDefinitionElement,
     StringDataDefinition
-} from "../DataDefinition";
+} from "../../../Common/Data/XDataDefinition";
 
 export function getEmptyDataDefinition() {
-    return new DataDefinition();
+    return new XDataDefinition();
 }
 
 export function getFilledDataDefinition() {
-    let def = new DataDefinition();
+    let def = new XDataDefinition();
 
     let fdef : IDataDefinition;
     fdef = new StringDataDefinition();
