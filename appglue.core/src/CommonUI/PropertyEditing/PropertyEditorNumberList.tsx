@@ -6,7 +6,6 @@ import styled from "styled-components";
 const StyledNumberList = styled("div")<{
     active: boolean;
     label?: string;
-    empty: boolean;
 }>`
     width: 100%;
 
@@ -125,7 +124,7 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
 
     return (
         <ClickAwayListener onClickAway={onClickAway}>
-            <StyledNumberList className="NumberList-Wrapper" active={selectedLine !== -1} label={props.label} empty={values.length === 1 && values[0] === ''}>
+            <StyledNumberList className="NumberList-Wrapper" active={selectedLine !== -1} label={props.label}>
                 {
                     props.label && (
                         <InputLabel classes={{root: 'NumberList-Label'}}>{props.label}</InputLabel>
