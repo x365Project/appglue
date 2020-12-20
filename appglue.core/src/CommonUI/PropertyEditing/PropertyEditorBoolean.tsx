@@ -4,7 +4,7 @@ import React from "react";
 import {StyledFormControlForSwitch, StyledSwitch} from "./PropertyEditorStyles";
 
 
-export interface PropertyEditorBooleanInterface{
+export interface PropertyEditorBooleanInterface {
     editObject: object,
     propertyName: string | number,
     label?: string,

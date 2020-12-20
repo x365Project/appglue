@@ -224,7 +224,13 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                 >
                     {
                         (this.props.el.value !== null && this.props.el.value !== undefined )
-                        ? <TextDiv error={this.hasError()}>{this.props.el.value}</TextDiv>
+                        ? <TextDiv error={this.hasError()}>{
+                            typeof this.props.el.value === 'boolean'
+                            ? (
+                                this.props.el.value ? 'True' : 'False'
+                            )
+                            : this.props.el.value
+                        }</TextDiv>
                         : this.renderMissingElement()
                     }
                 </SelectedElement>
@@ -260,7 +266,19 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
             return <ValueElement
                 onClick={this.handleClick}
             >
-                {(this.props.el.value !== undefined && this.props.el.value !== null) ? <InnerValueDiv>{this.props.el.value}</InnerValueDiv> : this.renderMissingElement()}
+            {
+                (this.props.el.value !== undefined && this.props.el.value !== null)
+                ? <InnerValueDiv>
+                    {
+                        typeof this.props.el.value === 'boolean'
+                        ? (
+                            this.props.el.value ? 'True' : 'False'
+                        )
+                        : this.props.el.value
+                    }
+                </InnerValueDiv> 
+                : this.renderMissingElement()
+            }
             </ValueElement>
         } else if (this.props.el.valueType === ExpressionValueType.SUBEXPRESSION) {
             return <>{this.props.el.subExpression?.render()}</>

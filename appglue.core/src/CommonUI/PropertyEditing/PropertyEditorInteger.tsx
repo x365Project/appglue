@@ -5,12 +5,14 @@ export interface PropertyEditorIntegerInterface {
     editObject: object,
     propertyName: string | number,
     label?: string,
-    decimal?: number;
+    decimal?: number,
     hint?: string,
     updateCallback : CallableFunction,
     parentDefaultValue? : number | null,
     type?: TextFieldDisplayType,
-    autoFocus?: boolean
+    autoFocus?: boolean,
+    disableUnderline?: boolean,
+    variant?: 'filled' | 'outlined' | 'standard'
 }
 
 export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = (props: PropertyEditorIntegerInterface) => {
@@ -44,8 +46,11 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
             helperText={props.hint}
             displayType={props.type || TextFieldDisplayType.Default}
             autoFocus={props.autoFocus}
+            InputProps={{
+                disableUnderline: props.disableUnderline
+            }}
+            variant={props.variant}
         />
-            
     );
 }
 
