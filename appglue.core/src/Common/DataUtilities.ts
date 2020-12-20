@@ -72,7 +72,8 @@ export class DataUtilities {
     }
 
     static isValidDate(possibleDate: object) : boolean {
-        return this.compareObjectStructure(possibleDate, new Date());
+        // todo: might need to do more here
+        return possibleDate instanceof Date;
     }
 
     static isValidFile(possibleFile: object) : boolean {
@@ -91,6 +92,16 @@ export class DataUtilities {
         }
 
         return true;
+    }
+
+    static isDateString(checkVal: string) : boolean {
+        const dateFormat = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+
+        return dateFormat.test(checkVal);
+    }
+
+    static getDateFromString(s: string) : Date {
+        return new Date(Date.parse(s));
     }
 
 }

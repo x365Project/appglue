@@ -1,5 +1,6 @@
 import {FileData} from "../FileData";
 import {XDataTreeValue} from "./XDataTreeValue";
+import {DataUtilities} from "../DataUtilities";
 
 export class XDataDefinition {
     fields : IDataDefinition[] = [];
@@ -52,17 +53,31 @@ export class XDataDefinition {
                 checkVal = val[0];
             }
 
-            if (isArray)
-                console.log(val);
-
             let def : IDataDefinition | null = null;
             if (typeof checkVal === 'string') {
-                let sdef = oldFieldsMap[name] as StringDataDefinition ?? new StringDataDefinition();
-                sdef.name = name;
-                sdef.value = val;
-                sdef.list = isArray;
+                // see if it is a date string
+                if (DataUtilities.isDateString(checkVal)) {
+                    let sdef = oldFieldsMap[name] as DateDataDefinition ?? new DateDataDefinition();
+                    sdef.name = name;
 
-                def = sdef;
+                    if (isArray) {
+                        //todo: handle date array
+                    } else {
+                        sdef.value = DataUtilities.getDateFromString(val);
+                    }
+                    sdef.list = isArray;
+
+                    def = sdef;
+
+                } else {
+                    let sdef = oldFieldsMap[name] as StringDataDefinition ?? new StringDataDefinition();
+                    sdef.name = name;
+                    sdef.value = val;
+                    sdef.list = isArray;
+
+                    def = sdef;
+                }
+
             } else if (typeof checkVal === 'number') {
                 let sdef = oldFieldsMap[name] as NumberDataDefinition ?? new NumberDataDefinition();
                 sdef.name = name;
@@ -78,7 +93,7 @@ export class XDataDefinition {
 
                 def = sdef;
             } else {
-                throw 'could not parse ' + name;
+                def = ObjectDataDefinitionElement.parseDefinition(checkVal, val, isArray, name, oldFieldsMap[name]);
             }
 
             if (def && def.name) {
@@ -263,8 +278,17 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition{
     getValue(): any {
     }
 
-    static parseDefinition(data: object) : IDataDefinition | null {
+    static parseDefinition(checkVal: object, data: object, isList: boolean, name: string, currentDefinition: IDataDefinition) : IDataDefinition | null {
         // check if date
+        if (DataUtilities.isValidDate(checkVal)) {
+            let dateDef = currentDefinition as DateDataDefinition ?? new DateDataDefinition();
+
+            dateDef.name = name;
+            dateDef.list = isList;
+            dateDef.value = data as Date;
+
+            return dateDef;
+        }
 
         // check if file
 
