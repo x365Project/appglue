@@ -31,6 +31,17 @@ export class XDataDefinition {
 
     // updates data definition with values from object
     mergeObject(data: object,  removeItemsNotInSchema: boolean = false, reorderElementsToMatch: boolean = true) {
+        let newFieldsMap : {[fieldName: string] : IDataDefinition} = {};
+        let newFieldList : IDataDefinition[] = [];
+
+        let oldFieldsMap : {[fieldName: string] : IDataDefinition} = {};
+
+        for (let oField of this.fields) {
+            if (oField.name) {
+                oldFieldsMap[oField.name] = oField;
+            }
+        }
+
         for (let name in data) {
             let val = Reflect.get(data, name);
             let checkVal = val;
@@ -41,23 +52,26 @@ export class XDataDefinition {
                 checkVal = val[0];
             }
 
+            if (isArray)
+                console.log(val);
+
             let def : IDataDefinition | null = null;
             if (typeof checkVal === 'string') {
-                let sdef = new StringDataDefinition();
+                let sdef = oldFieldsMap[name] as StringDataDefinition ?? new StringDataDefinition();
                 sdef.name = name;
                 sdef.value = val;
                 sdef.list = isArray;
 
                 def = sdef;
             } else if (typeof checkVal === 'number') {
-                let sdef = new NumberDataDefinition();
+                let sdef = oldFieldsMap[name] as NumberDataDefinition ?? new NumberDataDefinition();
                 sdef.name = name;
                 sdef.value = val;
                 sdef.list = isArray;
 
                 def = sdef;
             } else if (typeof checkVal === 'boolean') {
-                let sdef = new BooleanDataDefinition();
+                let sdef = oldFieldsMap[name] as BooleanDataDefinition ?? new BooleanDataDefinition();
                 sdef.name = name;
                 sdef.value = val;
                 sdef.list = isArray;
@@ -67,8 +81,48 @@ export class XDataDefinition {
                 throw 'could not parse ' + name;
             }
 
-            if (def)
-                this.fields.push(def);
+            if (def && def.name) {
+                newFieldsMap[def.name] = def;
+                newFieldList.push(def);
+            }
+        }
+
+        if (removeItemsNotInSchema && reorderElementsToMatch) {
+            this.fields = newFieldList;
+        } else if (reorderElementsToMatch && !removeItemsNotInSchema) {
+            for (let oldField of this.fields) {
+                if (oldField.name && !newFieldsMap[oldField.name]) {
+                    newFieldList.push(oldField);
+                }
+            }
+            this.fields = newFieldList;
+        } else if (!reorderElementsToMatch && !removeItemsNotInSchema) {
+            let toSet : IDataDefinition[] = [];
+
+            for (let oldField of this.fields) {
+                if (oldField.name) {
+                    if (!newFieldsMap[oldField.name]) {
+                        toSet.push(oldField);
+                    } else {
+                        toSet.push(newFieldsMap[oldField.name])
+                    }
+                }
+            }
+            this.fields = toSet;
+        } else if (!reorderElementsToMatch && removeItemsNotInSchema) {
+            let toSet : IDataDefinition[] = [];
+
+            for (let oldField of this.fields) {
+                if (oldField.name) {
+                    if (!newFieldsMap[oldField.name]) {
+                        // this field is being removed
+                    } else {
+                        toSet.push(newFieldsMap[oldField.name])
+                    }
+                }
+            }
+
+            this.fields = toSet;
         }
     }
 
@@ -176,7 +230,7 @@ export class DateDataDefinition extends BaseDataDefinition{
 }
 
 export class NumberDataDefinition extends BaseDataDefinition{
-    readonly type: XDataTypes = XDataTypes.STRING;
+    readonly type: XDataTypes = XDataTypes.NUMBER;
 
     value?: number | number[];
 
