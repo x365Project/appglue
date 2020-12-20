@@ -4,7 +4,6 @@ import {
     Button,
     ClickAwayListener,
     DialogActions,
-    TextField,
     Tab,
     InputAdornment,
     Input,
@@ -16,7 +15,6 @@ import {ExpressionValue} from "../ExpressionValue";
 import {ExpressionValueType} from "../ExpressionValueType";
 import {ExpressionRegistration, RegistrationData} from "./RegisterExpression";
 import {ExpressionExpectedType} from "../ExpressionExpectedType";
-import {Switch} from "mdi-material-ui";
 import {AutoBind} from "../../Common/AutoBind";
 import styled from "styled-components";
 import {BaseExpression} from "../BaseExpression";
@@ -33,6 +31,7 @@ import { PropertyEditorBoolean } from "../../CommonUI/PropertyEditing/PropertyEd
 import { PropertyEditorTextList } from "../../CommonUI/PropertyEditing/PropertyEditorTextList";
 import { PropertyEditorNumberList } from "../../CommonUI/PropertyEditing/PropertyEditorNumberList";
 import { PropertyEditorDate } from "../../CommonUI/PropertyEditing/PropertyEditorDate";
+import { PropertyEditorDateList } from "../../CommonUI/PropertyEditing/PropertyEditorDateList";
 
 const ExpressionValueSlotEditor = styled.div`
     font-family: Mulish;
@@ -576,6 +575,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                         updateCallback={this.valueChange}
                     />
                 );
+
             case ExpressionExpectedType.NUMBER:
                 return <PropertyEditorInteger
                     label="Value"
@@ -584,7 +584,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     updateCallback={this.valueChange}
                     autoFocus
                 />
-            
+
             case ExpressionExpectedType.NUMBER_LIST:
                 return <PropertyEditorNumberList
                     label="Value"
@@ -616,6 +616,16 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     editObject={this.props.expressionValue}
                     propertyName="value"
                     updateCallback={this.valueChange}
+
+                />
+
+            case ExpressionExpectedType.DATE_LIST:
+                return <PropertyEditorDateList 
+                    label="Value"
+                    editObject={this.props.expressionValue}
+                    propertyName="value"
+                    updateCallback={this.valueChange}
+
                 />
         }
         return (

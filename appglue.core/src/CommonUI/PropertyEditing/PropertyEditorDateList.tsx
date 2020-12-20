@@ -2,18 +2,21 @@ import React from "react";
 import { InputLabel, IconButton } from "@material-ui/core";
 
 import styled from "styled-components";
+import { StyledTextField } from "./PropertyEditorStyles";
 import { PlusWhiteIcon } from "../Icon/PlusWhiteIcon";
-import {StyledSwitch} from "./PropertyEditorStyles";
 
-const StyledBooleanList = styled.div`
+const StyledDateList = styled.div`
     width: 100%;
 
-    .BooleanList {
+    .DateList {
         display: flex;
         flex-direction: column;
-        max-width: 50px;
+
+        > * {
+            margin-top: 10px;
+        }
     }
-    .BooleanList-Label {
+    .DateList-Label {
         color: #677C95;
         font-family: Mulish;
         font-style: normal;
@@ -22,7 +25,7 @@ const StyledBooleanList = styled.div`
         line-height: 20px;
     }
 
-    .BooleanList-header {
+    .DateList-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -46,7 +49,7 @@ const StyledBooleanList = styled.div`
 
 `;
 
-export interface PropertyEditorBooleanListInterface{
+export interface PropertyEditorDateListInterface{
     editObject: object,
     propertyName: string | number,
     label?: string,
@@ -54,7 +57,7 @@ export interface PropertyEditorBooleanListInterface{
 }
 
 
-export const PropertyEditorBooleanList : React.FC<PropertyEditorBooleanListInterface> = (props: PropertyEditorBooleanListInterface) => {
+export const PropertyEditorDateList : React.FC<PropertyEditorDateListInterface> = (props: PropertyEditorDateListInterface) => {
 
     const values = Reflect.get(props.editObject, props.propertyName) || [];
 
@@ -66,7 +69,7 @@ export const PropertyEditorBooleanList : React.FC<PropertyEditorBooleanListInter
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>, selectedLine: number) => {
         if (selectedLine >= 0) {
-            values[selectedLine] = event.target.checked;
+            values[selectedLine] = event.target.value;
             update(values);
         }
     }
@@ -77,21 +80,26 @@ export const PropertyEditorBooleanList : React.FC<PropertyEditorBooleanListInter
     }
 
     return (
-        <StyledBooleanList className="BooleanList-Wrapper">
-            <div className="BooleanList-header">
+        <StyledDateList className="DateList-Wrapper">
+            <div className="DateList-header">
                 {
-                    props.label && <InputLabel classes={{root: 'BooleanList-Label'}}>{props.label}</InputLabel>
+                    props.label && <InputLabel classes={{root: 'DateList-Label'}}>{props.label}</InputLabel>
                 }
                 <IconButton onClick={add}><PlusWhiteIcon /></IconButton>
             </div>
-            <div className="BooleanList">
+            <div className="DateList">
             {
                 values && values.map((val: boolean, idx: number) => (
-                    <StyledSwitch value={val} key={idx} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e, idx)} />
+                    <StyledTextField
+                        value={val}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e, idx)}
+                        type="date"
+                        key={idx}
+                    />
                 ))
             }
             </div>
-        </StyledBooleanList>
+        </StyledDateList>
     );
 }
 
