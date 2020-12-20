@@ -20,8 +20,6 @@ const MissingTemplate: Story<{}> = () => (
 class MyData {
     value1: string = 'first value';
     value2: string = 'second value';
-
-
 }
 
 class ListData implements IPropertyEditorList {

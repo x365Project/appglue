@@ -21,14 +21,18 @@ import {AutoBind} from "../../Common/AutoBind";
 import styled from "styled-components";
 import {BaseExpression} from "../BaseExpression";
 import ReactDraggable from "react-draggable";
-import {CloseSharp, SearchOutlined} from "@material-ui/icons";
 import {FloatRight} from "../ExpressionElements/Logic/IfThenExpression";
-import {ExpressionLineDiv, ExpressionPiece} from "../ExpressionStyles";
 import {ExpressionEditContext} from "./ExpressionEditContext";
 import {SearchIcon} from "../../CommonUI/Icon/SearchIcon";
 import {BackIcon} from "../../CommonUI/Icon/BackIcon";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
-import { DeleteIcon } from "../../CommonUI/Icon/DeleteIcon";
+import { StyledTextField } from "../../CommonUI/PropertyEditing/PropertyEditorStyles";
+import { PropertyEditorInteger } from "../../CommonUI/PropertyEditing/PropertyEditorInteger";
+import { PropertyEditorText } from "../../CommonUI/PropertyEditing/PropertyEditorText";
+import { PropertyEditorBoolean } from "../../CommonUI/PropertyEditing/PropertyEditorBoolean";
+import { PropertyEditorTextList } from "../../CommonUI/PropertyEditing/PropertyEditorTextList";
+import { PropertyEditorNumberList } from "../../CommonUI/PropertyEditing/PropertyEditorNumberList";
+import { PropertyEditorDate } from "../../CommonUI/PropertyEditing/PropertyEditorDate";
 
 const ExpressionValueSlotEditor = styled.div`
     font-family: Mulish;
@@ -45,9 +49,6 @@ const ExpressionValueSlotEditor = styled.div`
     max-height: none;
     padding: 20px;
 `;
-// position: relative;
-// overflow: auto;
-//  overflow: auto;
 
 
 const Header = styled.div`
@@ -182,8 +183,6 @@ const ExpressionViewPanelLine = styled.div`
         text-transform: none;
     }
 `;
-
-
 
 const ExpressionViewPanelLineBottom = styled.div`
     width : 100%;
@@ -374,62 +373,6 @@ const CompleteButton = styled(Button)`
     }
 `;
 
-
-const VariableInput = styled(TextField)`
-    && {
-        border: 1px solid #D8E4EE;
-        box-sizing: border-box;
-        border-radius: 4px;
-        font-family: Mulish;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 24px;
-        color: #677C95;
-        
-        .MuiOutlinedInput-input,
-        .MuiInput-underline .MuiInputBase-input  {
-            padding: 6px 12px;
-        }
-        
-        .MuiFormLabel-root {
-            display: block;
-            font-family: Mulish;
-            font-style: normal;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 24px;
-            color: #677C95;
-        }
-
-        .MuiInputBase-input {
-            color: #677C95;
-            line-height: 24px;
-            height: auto;
-        }
-
-        .MuiInputLabel-formControl {
-            transform: translate(12px, 5px) scale(1);
-
-            &.MuiInputLabel-shrink {
-                transform: translate(0,-18px) scale(0.75);
-            }
-        }
-
-        .MuiOutlinedInput-notchedOutline {
-            display: none;
-        }
-
-        label + .MuiInput-formControl {
-            margin-top: 0;
-        }
-
-        .MuiInput-underline:after {
-            border: 2px solid #1D6295;
-        }
-    }
-`;
-
 export class ExpressionValueDialog extends React.Component<{ expressionValue: ExpressionValue }, {inserting : boolean}> {
 
 
@@ -546,8 +489,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     <>
                         <ModeButtons value={this.props.expressionValue}/>
                         <VariableOrValContentPanel>
-                            
-                            <VariableInput
+                            <StyledTextField
                                 label="Variable Name"
                                 value={this.props.expressionValue.variableName || ''}
                                 onChange={this.variableNameChange}
@@ -591,7 +533,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 </ExpressionColumnRow>
                             </ExpressionColumn>
                             <VariableOrValColumn>
-                                <VariableInput
+                                <StyledTextField
                                     value={this.props.expressionValue.variableName || ''}
                                     label="Variable Name"
                                     onFocus={() => {
@@ -600,7 +542,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 />
                             </VariableOrValColumn>
                             <VariableOrValColumn>
-                                <VariableInput
+                                <StyledTextField
                                     value={this.props.expressionValue.value || ''}
                                     label="Value"
                                     onFocus={() => {
@@ -628,23 +570,52 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
         switch (this.props.expressionValue.expectedType) {
             case ExpressionExpectedType.BOOLEAN:
                 return (
-                    <Switch/>
+                    <PropertyEditorBoolean
+                        editObject={this.props.expressionValue}
+                        propertyName="value"
+                        updateCallback={this.valueChange}
+                    />
                 );
             case ExpressionExpectedType.NUMBER:
-                return <VariableInput
+                return <PropertyEditorInteger
                     label="Value"
+                    editObject={this.props.expressionValue}
+                    propertyName="value"
+                    updateCallback={this.valueChange}
                     autoFocus
-                    value={this.props.expressionValue.value || ''}
-                    onChange={this.valueChange}
-                    inputMode="decimal"
                 />
-                
-            case ExpressionExpectedType.STRING:
-                return <VariableInput
+            
+            case ExpressionExpectedType.NUMBER_LIST:
+                return <PropertyEditorNumberList
                     label="Value"
+                    editObject={this.props.expressionValue}
+                    propertyName="value"
+                    updateCallback={this.valueChange}
+                />
+
+            case ExpressionExpectedType.STRING:
+                return <PropertyEditorText
+                    label="Value"
+                    editObject={this.props.expressionValue}
+                    propertyName="value"
+                    updateCallback={this.valueChange}
                     autoFocus
-                    value={this.props.expressionValue.value || ''}
-                    onChange={this.valueChange}
+                />
+
+            case ExpressionExpectedType.STRING_LIST:
+                return <PropertyEditorTextList
+                    label="Value"
+                    editObject={this.props.expressionValue}
+                    propertyName="value"
+                    updateCallback={this.valueChange}
+                />
+
+            case ExpressionExpectedType.DATE:
+                return <PropertyEditorDate 
+                    label="Value"
+                    editObject={this.props.expressionValue}
+                    propertyName="value"
+                    updateCallback={this.valueChange}
                 />
         }
         return (
@@ -694,8 +665,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
     }
 
     @AutoBind
-    private valueChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.props.expressionValue.value = event.target.value;
+    private valueChange() {
         this.forceUpdate();
     }
 
