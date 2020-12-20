@@ -122,7 +122,7 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
 
     return (
         <ClickAwayListener onClickAway={onClickAway}>
-            <StyledTextList className="TextList-Wrapper" active={selectedLine !== -1} label={props.label} empty={values.length === 1 && values[0] === ''}>
+            <StyledTextList className="TextList-Wrapper" active={selectedLine !== -1} label={props.label}>
                 {
                     props.label && (
                         <InputLabel classes={{root: 'TextList-Label'}}>{props.label}</InputLabel>
