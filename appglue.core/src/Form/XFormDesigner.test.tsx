@@ -91,7 +91,7 @@ describe("XFormDesigner", () => {
     it("Renders XFormDesigner", () => {
         let form: XFormConfiguration = getFormConfig();
     
-        const { getByTestId, getByText, getAllByText } = render(<XFormDesigner form={form} />);
+        const { getByTestId, getByText } = render(<XFormDesigner form={form} />);
 
         const formeditdefaults = getByTestId('edit-form-defaults');
 
@@ -100,7 +100,7 @@ describe("XFormDesigner", () => {
         expect(getByText(/Form Config/i)).toBeInTheDocument();
         expect(getByText(/Pin First Container/i)).toBeInTheDocument();
         expect(getByText(/Pin Last Container/i)).toBeInTheDocument();
-        expect(getAllByText(/^Runtime Width$/g)).toHaveLength(2);
+        expect(getByText(/^Runtime Width$/g)).toBeInTheDocument();
 
         expect(errorList).toHaveLength(0);
 

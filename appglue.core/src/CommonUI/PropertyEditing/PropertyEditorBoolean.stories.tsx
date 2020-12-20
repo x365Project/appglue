@@ -3,6 +3,8 @@ import React from "react";
 import {Meta, Story} from "@storybook/react/types-6-0";
 import {XFormDesigner} from "../../Form/XFormDesigner";
 import {PropertyEditorBooleanInterface, PropertyEditorBoolean} from "./PropertyEditorBoolean";
+import { ObserveState } from "../StateManagement/ObserveState";
+import { StateManager } from "../StateManagement/StateManager";
 
 export default {
     title: "Shared/Property Editors",
@@ -25,11 +27,12 @@ class TextData implements PropertyEditorBooleanInterface {
     propertyName: string | number = 'textValue';
     requiredText: string = 'required text';
 
-    updateCallback() {
+    updateCallback = () => {
+        StateManager.changed(this);
     }
 
 }
 
-const TextTemplate: Story<PropertyEditorBooleanInterface> = (args) => <PropertyEditorBoolean {...args} />;
+const TextTemplate: Story<PropertyEditorBooleanInterface> = (args) => <ObserveState listenTo={args} control={() => <PropertyEditorBoolean {...args} />} />;
 
 export const BooleanEditor = TextTemplate.bind({}, new TextData());
