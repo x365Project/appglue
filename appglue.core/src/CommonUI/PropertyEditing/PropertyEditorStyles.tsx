@@ -26,10 +26,9 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 			margin-top: 20px;
 		`}
 
-
 		${props => (!props.displayType || props.displayType === TextFieldDisplayType.Default) && `
 			color: #677C95;    
-			.MuiInputBase-root {
+			.MuiOutlinedInput-root {
 				border: 1px solid #D8E4EE;
 
 				&.Mui-focused {
@@ -49,7 +48,8 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 
 		${props => props.displayType === TextFieldDisplayType.Success && `
 			color: #4CAF50;
-			.MuiInputBase-root {
+
+			.MuiOutlinedInput-root {
 				border: 1px solid #4CAF50;
 			}
 
@@ -65,7 +65,8 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 
 		${props => props.displayType === TextFieldDisplayType.Error && `
 			color: #F98784;
-			.MuiInputBase-root {
+
+			.MuiOutlinedInput-root {
 				border: 1px solid #F98784;
 			}
 
@@ -79,7 +80,7 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 			}
 		`}
 
-		.MuiInputBase-root {
+		.MuiOutlinedInput-root {
 			box-sizing: border-box;
 			border-radius: 4px;
 		}
