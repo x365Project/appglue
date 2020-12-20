@@ -616,6 +616,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     editObject={this.props.expressionValue}
                     propertyName="value"
                     updateCallback={this.valueChange}
+
                 />
 
             case ExpressionExpectedType.DATE_LIST:
@@ -624,6 +625,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     editObject={this.props.expressionValue}
                     propertyName="value"
                     updateCallback={this.valueChange}
+
                 />
         }
         return (

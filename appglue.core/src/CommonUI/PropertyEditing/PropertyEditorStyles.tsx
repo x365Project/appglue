@@ -2,7 +2,9 @@ import React from "react";
 import TextField, {TextFieldProps} from "@material-ui/core/TextField"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import styled from "styled-components";
+
 import { Switch } from "@material-ui/core";
+
 
 export enum TextFieldDisplayType {
 	Error = 'error',
@@ -23,6 +25,7 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 		${props => props.label && `
 			margin-top: 20px;
 		`}
+
 
 		${props => (!props.displayType || props.displayType === TextFieldDisplayType.Default) && `
 			color: #677C95;    
@@ -180,3 +183,4 @@ export const StyledSwitch = styled(Switch)`
 	}
 
 `;
+
