@@ -1,7 +1,6 @@
-import {FormControlLabel, Checkbox, Switch} from '@material-ui/core';
 import React from "react";
 
-import {StyledFormControlForSwitch} from "./PropertyEditorStyles";
+import {StyledFormControlForSwitch, StyledSwitch} from "./PropertyEditorStyles";
 
 export interface PropertyEditorBooleanInterface{
     editObject: object,
@@ -24,7 +23,7 @@ export const PropertyEditorBoolean : React.FC<PropertyEditorBooleanInterface> = 
                 props.label &&
                 <StyledFormControlForSwitch
                     control={
-                        <Switch
+                        <StyledSwitch
                             name={props.name || 'test'}
                             color={props.color || 'primary'}
                             checked={Reflect.get(props.editObject, props.propertyName) || false}
@@ -36,7 +35,7 @@ export const PropertyEditorBoolean : React.FC<PropertyEditorBooleanInterface> = 
             }
             {
                 !props.label && 
-                <Checkbox
+                <StyledSwitch
                     name={props.name || 'test'}
                     color={props.color || 'primary'}
                     checked={Reflect.get(props.editObject, props.propertyName) || false}

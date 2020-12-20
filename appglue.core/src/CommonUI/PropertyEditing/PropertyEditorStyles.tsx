@@ -2,6 +2,7 @@ import React from "react";
 import TextField, {TextFieldProps} from "@material-ui/core/TextField"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import styled from "styled-components";
+import { Switch } from "@material-ui/core";
 
 export enum TextFieldDisplayType {
 	Error = 'error',
@@ -19,7 +20,9 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 		font-size: 14px;
 		line-height: 24px;
 
-		margin-top: 20px;
+		${props => props.label && `
+			margin-top: 20px;
+		`}
 
 		${props => (!props.displayType || props.displayType === TextFieldDisplayType.Default) && `
 			color: #677C95;    
@@ -138,6 +141,15 @@ export const StyledFormControlForSwitch = styled(FormControlLabel)`
 			line-height: 24px;
 		}
 
+	}
+`
+
+export const StyledSwitch = styled(Switch)`
+	&& {
+
+		height: 48px;
+		width: 76px;
+
 		.MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
 			background: #00B2A4;
 			opacity: 0.2;
@@ -147,11 +159,6 @@ export const StyledFormControlForSwitch = styled(FormControlLabel)`
 			background-color: #EBF4FA;
 			opacity: 1;
 			border-radius: 12px;
-		}
-
-		.MuiSwitch-root {
-			height: 48px;
-			width: 76px;
 		}
 
 		.MuiSwitch-switchBase {
@@ -171,4 +178,5 @@ export const StyledFormControlForSwitch = styled(FormControlLabel)`
 			}
 		}
 	}
-`
+
+`;
