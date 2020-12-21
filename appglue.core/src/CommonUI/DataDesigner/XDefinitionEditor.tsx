@@ -8,7 +8,7 @@ import {Pencil, Switch} from "mdi-material-ui";
 import styled from "styled-components";
 import {AddBoxOutlined, ArrowDownwardOutlined, ArrowUpwardOutlined, CheckBox, DeleteOutlined} from "@material-ui/icons";
 import {ActionButtons} from "../../Expressions/ExpressionElements/Logic/IfThenExpression";
-import {ObjectDataDefinitionElement} from "../../Common/Data/Definitions/ObjectDataDefinitionElement";
+import {ObjectDataDefinition} from "../../Common/Data/Definitions/ObjectDataDefinition";
 import {FileDataDefinition} from "../../Common/Data/Definitions/FileDataDefinition";
 import {NumberDataDefinition} from "../../Common/Data/Definitions/NumberDataDefinition";
 import {DateDataDefinition} from "../../Common/Data/Definitions/DateDataDefinition";
@@ -149,8 +149,8 @@ export const XDefinitionEditor = function (props : IDefinitionEditorParms) {
                                 <div>
                                     <ObjectHeaderDiv>name: <b>{value.name}</b> is list <CheckBox></CheckBox> {renderLineButtons(value, dataFields, index)}</ObjectHeaderDiv>
                                     <ObjectDiv>
-                                        {(value as ObjectDataDefinitionElement).fields &&
-                                            getDataEditorForFields((value as ObjectDataDefinitionElement).fields)}
+                                        {(value as ObjectDataDefinition).fields &&
+                                            getDataEditorForFields((value as ObjectDataDefinition).fields)}
                                     </ObjectDiv>
                                     {index + 1 === dataFields.length &&
                                     (
@@ -199,7 +199,7 @@ export const XDefinitionEditor = function (props : IDefinitionEditorParms) {
                 def = new DateDataDefinition();
                 break;
             case XDataTypes.OBJECT:
-                def = new ObjectDataDefinitionElement();
+                def = new ObjectDataDefinition();
                 break;
             case XDataTypes.FILE:
                 def = new FileDataDefinition();

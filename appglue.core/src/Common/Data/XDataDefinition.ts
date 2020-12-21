@@ -1,7 +1,10 @@
 import {XDataTreeValue} from "./XDataTreeValue";
-import {ObjectDataDefinitionElement} from "./Definitions/ObjectDataDefinitionElement";
+import {ObjectDataDefinition} from "./Definitions/ObjectDataDefinition";
 import {IDataDefinition} from "./Definitions/IDataDefinition";
 import {IDataDefinitionOwner} from "./IDataDefinitionOwner";
+import {StringDataDefinition} from "./Definitions/StringDataDefinition";
+import {NumberDataDefinition} from "./Definitions/NumberDataDefinition";
+import {BooleanDataDefinition} from "./Definitions/BooleanDataDefinition";
 
 export class XDataDefinition implements IDataDefinitionOwner{
     fields : IDataDefinition[] = [];
@@ -15,13 +18,164 @@ export class XDataDefinition implements IDataDefinitionOwner{
     // parses json schema into the object definitions.
     // - remove items that are not in schema
     // - adds items that are in schema
-    // - ajust items that the schema changes values of
+    // - adjust items that the schema changes values of
     // ** Throw error if schema is not valid
-    mergeJSONSchema(schema: string, removeItemsNotInSchema: boolean = false,  recorderElementsToMatch: boolean = true) : void {
 
+
+    // to add:
+    //  - title
+    //  - description
+    //  - sub type on number
+    // resolve url schema
+    // resolve internal refs
+    // one of?
+    mergeJSONSchema(schema: string, removeItemsNotInSchema: boolean = false,  reorderElementsToMatchSchema: boolean = true) : void {
+        let schemaObj = JSON.parse(schema);
+
+        this.fields = XDataDefinition.parseSchemaNode(schemaObj, schemaObj, this, this.fields, removeItemsNotInSchema, reorderElementsToMatchSchema);
     }
 
-    // parses json schema into the object definitions.
+    private static parseSchemaNode(
+        fullSchema: object,
+        schemaNode : object,
+        owner: IDataDefinitionOwner,
+        existingFields: IDataDefinition[],
+        removeItemsNotInSchema: boolean,
+        reorderElementsToMatchSchema: boolean ) : IDataDefinition[] {
+
+        //https://json-schema.org/understanding-json-schema/index.html
+
+        if (Reflect.get(schemaNode, "allOf"))
+            throw 'allOf is not supported'
+        if (Reflect.get(schemaNode, "anyOf"))
+            throw 'anyOf is not supported'
+        if (Reflect.get(schemaNode, "oneOf"))
+            throw 'oneOf is not supported'
+        if (Reflect.get(schemaNode, "not"))
+            throw 'not is not supported'
+
+        let newFieldsMap: { [fieldName: string]: IDataDefinition } = {};
+        let newFieldList: IDataDefinition[] = [];
+
+        let oldFieldsMap: { [fieldName: string]: IDataDefinition } = {};
+
+        for (let oField of existingFields) {
+            if (oField.name) {
+                oldFieldsMap[oField.name] = oField;
+            }
+        }
+
+        if (Reflect.get(schemaNode, 'type') === 'array') {
+            // items
+            // additional items
+            // contains
+        } else {
+            // root might be array, not
+            let properties = Reflect.get(schemaNode, 'properties');
+
+            for (let property in properties) {
+                let propDescription = properties[property];
+
+                let def: IDataDefinition | undefined = undefined;
+                if (propDescription.type === 'array') {
+// https://json-schema.org/understanding-json-schema/reference/array.html
+
+                    // handle array
+
+                    // check items property
+
+                    // call recursively??
+                    // unique
+                    // single value
+                    // objects
+                    // tuples
+                } else {
+                    if (propDescription.type === 'string') {
+                        // todo: emum
+                        let sdef = new StringDataDefinition();
+                        sdef.name = property;
+                        sdef.list = false;
+                        sdef.owner = owner;
+                        sdef.setValue(property + ' value');
+                        def = sdef;
+                    } else if (propDescription.type === 'boolean' ) {
+                        let sdef = new BooleanDataDefinition();
+                        sdef.name = property;
+                        sdef.list = false;
+                        sdef.owner = owner;
+                        sdef.setValue(false);
+                        def = sdef;
+                    } else if (propDescription.type === 'number' || propDescription.type === 'integer') {
+                        let sdef = new NumberDataDefinition();
+                        sdef.name = property;
+                        sdef.list = false;
+                        sdef.owner = owner;
+                        sdef.setValue(10);
+                        def = sdef;
+                    } else if (propDescription.type === 'null') {
+                        // ignore
+                    } else if (propDescription.type === 'object') {
+                        // parse sub object
+                    }
+                }
+
+                if (def && def.name) {
+                    newFieldList.push(def);
+                    newFieldsMap[def.name] = def;
+                }
+            }
+        }
+
+        return XDataDefinition.reconcileFieldList(
+            removeItemsNotInSchema,
+            reorderElementsToMatchSchema,
+            newFieldList,
+            newFieldsMap,
+            existingFields)
+    }
+
+    static reconcileFieldList(removeItemsNotInSchema: boolean, reorderElementsToMatch: boolean, newFieldList: IDataDefinition[], newFieldsMap: { [p: string]: IDataDefinition }, existingFields: IDataDefinition[]) {
+        if (removeItemsNotInSchema && reorderElementsToMatch) {
+            return newFieldList;
+        } else if (reorderElementsToMatch && !removeItemsNotInSchema) {
+            for (let oldField of existingFields) {
+                if (oldField.name && !newFieldsMap[oldField.name]) {
+                    newFieldList.push(oldField);
+                }
+            }
+            return newFieldList;
+        } else if (!reorderElementsToMatch && !removeItemsNotInSchema) {
+            let toSet: IDataDefinition[] = [];
+
+            for (let oldField of existingFields) {
+                if (oldField.name) {
+                    if (!newFieldsMap[oldField.name]) {
+                        toSet.push(oldField);
+                    } else {
+                        toSet.push(newFieldsMap[oldField.name])
+                    }
+                }
+            }
+            return toSet;
+        } else { // if (!reorderElementsToMatch && removeItemsNotInSchema)
+            let toSet: IDataDefinition[] = [];
+
+            for (let oldField of existingFields) {
+                if (oldField.name) {
+                    if (!newFieldsMap[oldField.name]) {
+                        // this field is being removed
+                    } else {
+                        toSet.push(newFieldsMap[oldField.name])
+                    }
+                }
+            }
+
+            return toSet;
+        }
+    }
+
+
+// parses json schema into the object definitions.
     // ** JSON is evaluated to see to determine the type of each element **
     // - remove items that are not in schema
     // - adds items that are in schema
@@ -34,7 +188,7 @@ export class XDataDefinition implements IDataDefinitionOwner{
 
     // updates data definition with values from object
     mergeObject(data: object,  removeItemsNotInSchema: boolean = false, reorderElementsToMatch: boolean = true) {
-        this.fields = ObjectDataDefinitionElement.parseFieldsForObject(
+        this.fields = ObjectDataDefinition.parseFieldsForObject(
             this,
             data,
             this.fields,
@@ -56,6 +210,10 @@ export class XDataDefinition implements IDataDefinitionOwner{
 
     getDataValues(type: XDataTypes | {}, isList: boolean): XDataTreeValue[] {
         return [];
+    }
+
+    getValueObject(): { [p: string]: any } {
+        return this.value;
     }
 
 

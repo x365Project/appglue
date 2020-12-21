@@ -12,28 +12,25 @@ export abstract class BaseDataDefinition<T> implements IDataDefinition {
 
     getValue() : T | undefined {
         if (this.name && this.owner)
-            return this.owner.value[this.name] as T;
+            return this.owner.getValueObject()[this.name] as T;
         return ;
     }
 
     setValue(value: T) {
         if (this.name && this.owner) {
-            console.log('setting value');
-            this.owner.value[this.name] = value;
-        } else {
-            console.log('not setting value', this.name, this.owner);
+            this.owner.getValueObject()[this.name] = value;
         }
     }
 
     getListValue() : T[] | undefined {
         if (this.name && this.owner)
-            return this.owner.value[this.name] as T[];
+            return this.owner.getValueObject()[this.name] as T[];
         return ;
     }
 
     setListValue(value: T[]) {
         if (this.name && this.owner)
-            this.owner.value[this.name] = value;
+            this.owner.getValueObject()[this.name] = value;
     }
 
 }
