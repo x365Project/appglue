@@ -192,7 +192,7 @@ export class XFormConfiguration
 	render() {
 		// if there are no containers, ensure we have at least one (stack)
 		if (this.containers.length === 0) {
-			console.log('adding empty xstack')
+		//	console.log('adding empty xstack')
 			this.add(new XStackContainer());
 		}
 		let mode = this.getMode();
@@ -579,7 +579,7 @@ export class XFormConfiguration
 	}
 
 	renderEditUI(): JSX.Element | null {
-		console.log('rendering edit');
+	//	console.log('rendering edit');
 
 		return (
 		<>

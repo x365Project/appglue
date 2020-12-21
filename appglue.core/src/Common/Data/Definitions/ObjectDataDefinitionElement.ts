@@ -10,18 +10,20 @@ import {BaseDataDefinition} from "./BaseDataDefinition";
 import {IDataDefinition} from "./IDataDefinition";
 import {FileDataDefinition} from "./FileDataDefinition";
 import {FileData} from "../../FileData";
+import {IDataDefinitionOwner} from "../IDataDefinitionOwner";
 
-export class ObjectDataDefinitionElement extends BaseDataDefinition {
+export class ObjectDataDefinitionElement
+    extends BaseDataDefinition<object>
+    implements IDataDefinitionOwner{
     readonly type: XDataTypes = XDataTypes.OBJECT;
 
     keyField?: string;
     fields: IDataDefinition[] = [];
 
-    // todo: come back here
-    getValue(): any {
-    }
+    value: { [p: string]: any } = {};
 
     static parseObject(
+        owner: IDataDefinitionOwner,
         checkVal: object,
         data: object,
         isList: boolean,
@@ -34,8 +36,9 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
             let dateDef = currentDefinition as DateDataDefinition ?? new DateDataDefinition();
 
             dateDef.name = name;
+            dateDef.owner = owner;
             dateDef.list = isList;
-            dateDef.value = data as Date;
+            dateDef.setValue(data as Date);
 
             return dateDef;
         }
@@ -45,8 +48,9 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
             let dateDef = currentDefinition as FileDataDefinition ?? new FileDataDefinition();
 
             dateDef.name = name;
+            dateDef.owner = owner;
             dateDef.list = isList;
-            dateDef.value = data as FileData;
+            dateDef.setValue(data as FileData);
 
             return dateDef;
         }
@@ -55,13 +59,20 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
 
         let objectDef = currentDefinition as ObjectDataDefinitionElement ?? new ObjectDataDefinitionElement();
         objectDef.name = name;
+        objectDef.owner = owner;
+
         objectDef.list = isList;
-        objectDef.fields = this.parseFieldsForObject(checkVal, objectDef.fields, removeItemsNotInSchema, reorderElementsToMatch);
+        objectDef.fields = this.parseFieldsForObject(objectDef, checkVal, objectDef.fields, removeItemsNotInSchema, reorderElementsToMatch);
 
         return objectDef;
     }
 
-    static parseFieldsForObject(data: object, existingFields: IDataDefinition[], removeItemsNotInSchema: boolean, reorderElementsToMatch: boolean): IDataDefinition[] {
+    static parseFieldsForObject(
+        owner: IDataDefinitionOwner,
+        data: object,
+        existingFields: IDataDefinition[],
+        removeItemsNotInSchema: boolean,
+        reorderElementsToMatch: boolean): IDataDefinition[] {
         let newFieldsMap: { [fieldName: string]: IDataDefinition } = {};
         let newFieldList: IDataDefinition[] = [];
 
@@ -89,11 +100,12 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
                 if (DataUtilities.isDateString(checkVal)) {
                     let sdef = oldFieldsMap[name] as DateDataDefinition ?? new DateDataDefinition();
                     sdef.name = name;
+                    sdef.owner = owner;
 
                     if (isArray) {
                         //todo: handle date array
                     } else {
-                        sdef.value = DataUtilities.getDateFromString(val);
+                        sdef.setValue(DataUtilities.getDateFromString(val));
                     }
                     sdef.list = isArray;
 
@@ -102,7 +114,8 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
                 } else {
                     let sdef = oldFieldsMap[name] as StringDataDefinition ?? new StringDataDefinition();
                     sdef.name = name;
-                    sdef.value = val;
+                    sdef.owner = owner;
+                    sdef.setValue(val);
                     sdef.list = isArray;
 
                     def = sdef;
@@ -111,19 +124,22 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
             } else if (typeof checkVal === 'number') {
                 let sdef = oldFieldsMap[name] as NumberDataDefinition ?? new NumberDataDefinition();
                 sdef.name = name;
-                sdef.value = val;
+                sdef.owner = owner;
+                sdef.setValue(val) ;
                 sdef.list = isArray;
 
                 def = sdef;
             } else if (typeof checkVal === 'boolean') {
                 let sdef = oldFieldsMap[name] as BooleanDataDefinition ?? new BooleanDataDefinition();
                 sdef.name = name;
-                sdef.value = val;
+                sdef.owner = owner;
+                sdef.setValue(val);
                 sdef.list = isArray;
 
                 def = sdef;
             } else {
                 def = ObjectDataDefinitionElement.parseObject(
+                    owner,
                     checkVal,
                     val,
                     isArray,
@@ -177,5 +193,6 @@ export class ObjectDataDefinitionElement extends BaseDataDefinition {
             return toSet;
         }
     }
+
 
 }

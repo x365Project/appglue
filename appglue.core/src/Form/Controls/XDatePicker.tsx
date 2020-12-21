@@ -187,7 +187,7 @@ export class XDatePicker extends BaseTextEntryControl {
     }
 
     private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.currentTarget.value);
+//        console.log(event.currentTarget.value);
         if(this.valueName) {
             this.setFormDataValue(this.valueName, event.currentTarget.value);
         }

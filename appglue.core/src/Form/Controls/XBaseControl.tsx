@@ -97,7 +97,7 @@ export abstract class XBaseControl
     }
 
     selectInDesigner() : void {
-        console.log('calling select in designer')
+//        console.log('calling select in designer')
         if (this.getFormContext()) {
             this.getFormContext()!.selectControl(this.id);
         }

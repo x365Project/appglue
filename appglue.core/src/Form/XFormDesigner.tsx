@@ -218,8 +218,8 @@ export class XFormDesigner extends React.Component<{
 
         if (props.initialMode) {
             eContext.mode = props.initialMode;
-
-            console.log('mode:', eContext.mode);
+            //
+            // console.log('mode:', eContext.mode);
         }
 
         this.props.form.setFormContext(eContext) ;

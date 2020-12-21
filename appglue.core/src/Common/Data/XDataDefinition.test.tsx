@@ -299,11 +299,11 @@ describe("Data Utilities", () => {
         if (!dateField)
             throw 'should be date field'
 
-        if (!(dateField.value instanceof Date)) {
-            throw 'value should be a date'
+        if (!(dateField.getValue() instanceof Date)) {
+            throw 'value should be a date' 
         }
 
-        if ((dateField.value as Date).getFullYear() !== 1970)
+        if ((dateField.getValue() as Date).getFullYear() !== 1970)
             throw 'should be 1970'
 
     });
@@ -336,11 +336,13 @@ describe("Data Utilities", () => {
 
         let dateField = def.fields[2] as DateDataDefinition;
 
+        console.log(def);
+
         if (!dateField)
             throw 'should be date field'
 
         // check value
-        if ((dateField.value as Date).getFullYear() !== 1970)
+        if ((dateField.getValue() as Date).getFullYear() !== 1970)
             throw 'should be 1970'
 
     });

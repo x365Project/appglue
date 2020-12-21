@@ -1,8 +1,9 @@
 import {XDataTreeValue} from "./XDataTreeValue";
 import {ObjectDataDefinitionElement} from "./Definitions/ObjectDataDefinitionElement";
 import {IDataDefinition} from "./Definitions/IDataDefinition";
+import {IDataDefinitionOwner} from "./IDataDefinitionOwner";
 
-export class XDataDefinition {
+export class XDataDefinition implements IDataDefinitionOwner{
     fields : IDataDefinition[] = [];
     value : {[propertyName: string] : any} = {}
 
@@ -33,7 +34,13 @@ export class XDataDefinition {
 
     // updates data definition with values from object
     mergeObject(data: object,  removeItemsNotInSchema: boolean = false, reorderElementsToMatch: boolean = true) {
-        this.fields = ObjectDataDefinitionElement.parseFieldsForObject(data, this.fields, removeItemsNotInSchema, reorderElementsToMatch);
+        this.fields = ObjectDataDefinitionElement.parseFieldsForObject(
+            this,
+            data,
+            this.fields,
+            removeItemsNotInSchema,
+            reorderElementsToMatch);
+
     }
 
 
@@ -44,15 +51,7 @@ export class XDataDefinition {
 
     // build object from data definition
     toSampleObject(): object {
-        let sample = {};
-        for (let def of this.fields) {
-            let val = def.getValue();
-
-            if (val && def.name) {
-                Reflect.set(sample, def.name, val);
-            }
-        }
-        return sample;
+        return this.value;
     }
 
     getDataValues(type: XDataTypes | {}, isList: boolean): XDataTreeValue[] {
