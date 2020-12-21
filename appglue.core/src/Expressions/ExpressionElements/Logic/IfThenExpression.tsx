@@ -237,7 +237,7 @@ export class IfThenExpression
                             if (this._ifThenStyle === IfThenStyle.BRANCH_DATA_RETURN) {
                                 if (index === 0) {
                                     return (
-                                        <IfSection key={this._id + index}>
+                                        <IfSection key={value._id}>
                                             <ExpressionLineDiv>
                                                 if {value.ifExpression.render()}
                                                 <FloatRight>{this.renderRuleChange()}</FloatRight>
@@ -252,7 +252,7 @@ export class IfThenExpression
                                     );
                                 } else {
                                     return (
-                                        <IfSection key={this._id + index}>
+                                        <IfSection key={value._id}>
                                             <ExpressionLineDiv>
                                                 else if {value.ifExpression.render()}
                                                 {this.renderBranchActions(index)}
@@ -268,7 +268,7 @@ export class IfThenExpression
                             } else {
                                 if (index === 0) {
                                     return (
-                                        <IfSection>
+                                        <IfSection key={value._id}>
                                             <ExpressionLineDiv>
                                                 if {value.ifExpression.render()}
                                                 {this.renderBranchActions(index, true)}
@@ -277,7 +277,7 @@ export class IfThenExpression
                                     );
                                 } else {
                                     return (
-                                        <IfSection>
+                                        <IfSection key={value._id}>
                                             <ExpressionLineDiv>
                                                 else if {value.ifExpression.render()}
                                                 {this.renderBranchActions(index)}

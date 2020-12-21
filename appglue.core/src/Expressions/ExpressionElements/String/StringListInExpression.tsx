@@ -17,7 +17,7 @@ export class StringListInExpression extends BaseExpression {
     constructor() {
         super({}, {});
         this.value1 = ExpressionValue.createExpressionValue(this, 'value1', ExpressionExpectedType.STRING);
-        this.value2 = ExpressionValue.createExpressionValue(this,'value2', ExpressionExpectedType.STRING_LIST);
+        this.value2 = ExpressionValue.createExpressionValue(this, 'value2', ExpressionExpectedType.STRING_LIST);
     }
 
     render() {

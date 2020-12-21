@@ -5,6 +5,7 @@ import styled from "styled-components";
 import {AutoBind} from "../Common/AutoBind";
 import {ExpressionValueDialog} from "./Utilities/ExpressionValueDialog";
 import { ObserveState } from "../CommonUI/StateManagement/ObserveState";
+import { ExpressionExpectedType } from "./ExpressionExpectedType";
 
 
 const SelectedElement = styled.span`
@@ -204,6 +205,21 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
         );
     }
 
+    renderValue() {
+        if (this.props.el.expectedType === ExpressionExpectedType.BOOLEAN) {
+            return this.props.el.value ? 'True' : 'False';
+        } else if (
+            this.props.el.expectedType === ExpressionExpectedType.STRING_LIST
+            || this.props.el.expectedType === ExpressionExpectedType.NUMBER_LIST
+            || this.props.el.expectedType === ExpressionExpectedType.BOOLEAN_LIST
+            || this.props.el.expectedType === ExpressionExpectedType.DATE_LIST
+        ) {
+            if (Array.isArray(this.props.el.value))
+                return this.props.el.value.join(',');
+        }
+        return this.props.el.value;
+    }
+
     renderSelectedElements () {
 
         if (this.props.el.valueType === ExpressionValueType.VARIABLE) {
@@ -225,11 +241,7 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                     {
                         (this.props.el.value !== null && this.props.el.value !== undefined )
                         ? <TextDiv error={this.hasError()}>{
-                            typeof this.props.el.value === 'boolean'
-                            ? (
-                                this.props.el.value ? 'True' : 'False'
-                            )
-                            : this.props.el.value
+                            this.renderValue()
                         }</TextDiv>
                         : this.renderMissingElement()
                     }
@@ -263,18 +275,14 @@ export class ExpressionValueRenderer extends React.Component<{ el: ExpressionVal
                 </i>
             </VariableElement>
         } else if (this.props.el.valueType === ExpressionValueType.VALUE) {
-            return <ValueElement
+            return <ValueElement                                                                                                                                                                                                            
                 onClick={this.handleClick}
             >
             {
                 (this.props.el.value !== undefined && this.props.el.value !== null)
                 ? <InnerValueDiv>
                     {
-                        typeof this.props.el.value === 'boolean'
-                        ? (
-                            this.props.el.value ? 'True' : 'False'
-                        )
-                        : this.props.el.value
+                        this.renderValue()
                     }
                 </InnerValueDiv> 
                 : this.renderMissingElement()

@@ -22,7 +22,7 @@ export class StringUppercaseExpression extends BaseExpression {
         return (
             <>
                 <ExpressionPiece>
-                    text.toUpperCase
+                    text.toUppercase
                     <BracketedDiv>
                         <ExpressionValueRenderer el={this.value1!}/>
                     </BracketedDiv>

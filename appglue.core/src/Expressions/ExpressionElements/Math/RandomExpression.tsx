@@ -9,6 +9,10 @@ import {RandomIcon} from "../../../CommonUI/Icon/RandomIcon"
 @RegisterExpression('Math', 'Random Number', <RandomIcon />, ExpressionExpectedType.NUMBER)
 export class RandomExpression extends BaseExpression {
 
+    constructor() {
+        super({}, {});
+    }
+
     render() {
         return (
             <BracketedDiv>

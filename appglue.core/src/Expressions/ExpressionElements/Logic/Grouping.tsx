@@ -100,7 +100,7 @@ export class AndGroup
             <ObserveState listenTo={this} control={() => <BracketedDiv>
                 {this.elements.map((g: ExpressionValue, i: number) => {
                     return (
-                        <ExpressionLineDiv>
+                        <ExpressionLineDiv key={i}>
                             <ExpressionValueRenderer key={'g-' + i} el={g}></ExpressionValueRenderer>
                             {this.renderEndOfLine(i)}
                         </ExpressionLineDiv>
