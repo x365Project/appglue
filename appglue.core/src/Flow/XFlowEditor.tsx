@@ -19,16 +19,26 @@ import {Accordion} from "@material-ui/core";
 import {
     EditLayerConfigArea,
     EditLayerStyledAccordionDetails,
-    EditLayerStyledAccordionSummary, EditLayerStyledTypography
+	EditLayerStyledAccordionSummary,
+	EditLayerStyledTypography,
+	TitleInput, StyledButton, TopbarSaveButton, TopbarIconButton
 } from "../CommonUI/CommonStyles";
 import {BaseFlowStep} from "./Steps/BaseFlowStep";
 import {FlowStepSequence} from "./Structure/FlowStepSequence";
 import {IFlowElement} from "./Structure/IFlowElement";
 import {ExpandIcon} from "../CommonUI/Icon/ExpandIcon";
+import {ViewIcon} from "../CommonUI/Icon/ViewIcon";
+import { StateManager } from "../CommonUI/StateManagement/StateManager";
+import { ObserveState } from "../CommonUI/StateManagement/ObserveState";
+import { XData } from "../Common/Data/XData";
+import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
-
+	flowTitle?: string;
+	viewAPIUrl?: string;
+	onFlowSave?: () => void;
+	onFlowCancel?: () => void;
 }
 
 const FlowEditorDiv = styled.div`
@@ -49,6 +59,12 @@ const FlowMainSectionDiv = styled.div`
 
 export class FlowEditContext {
     flowEditor: XFlowEditor;
+
+	flowTitle?: string;
+	viewAPIUrl?: string;
+
+	public onFlowSave?: () => void;
+    public onFlowCancel? : () => void ;
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
@@ -85,6 +101,25 @@ export class FlowEditContext {
 
 export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
+	constructor(props: FlowEditorParameters) {
+		super(props);
+
+		if (props.flowTitle) {
+			this.editContext.flowTitle = props.flowTitle;
+		}
+
+		if (props.viewAPIUrl) {
+			this.editContext.viewAPIUrl = props.viewAPIUrl;
+		}
+
+		if (props.onFlowSave) {
+			this.editContext.onFlowSave = props.onFlowSave;
+		}
+
+		if (props.onFlowCancel) {
+			this.editContext.onFlowCancel = props.onFlowCancel;
+		}
+	}
 
     editContext : FlowEditContext = new FlowEditContext(this);
 
@@ -96,7 +131,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
                 <FlowEditorDiv>
-                    <FlowTopBar/>
+                    <FlowTopBar editContext={this.editContext} />
                     <FlowMainSectionDiv>
                         <FlowSideActions/>
                         <FlowToolbox/>
@@ -153,15 +188,74 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
 const TopBarDiv = styled.div`
     width: 100%;
-    height: 88px;
-    border: 1px solid gray;
+    height: 50px;
+	border: 1px solid gray;
+	display: flex;
+	align-items: center;
 `;
 
-export const FlowTopBar = function (props :{}) {
-    return (
-       <TopBarDiv>
+const TopbarContent = styled.div`
+	display: flex;
+	margin-left: auto;
+	align-items: center;
+	& > .MuiButtonBase-root {
+		margin-left: 10px;
+	}
+`;
 
-       </TopBarDiv>
+export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
+
+    const onChangeFlowTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        props.editContext.flowTitle = event.target.value;
+        StateManager.propertyChanged(props.editContext, 'flowTitle');
+    }
+
+    return (
+		<ObserveState
+			listenTo={props.editContext}
+			properties={['flowTitle']}
+			control={() =>
+				<TopBarDiv>
+					{
+						props.editContext.flowTitle && <TitleInput
+							classes={{
+								input: 'TopbarInput',
+								focused: 'TopbarInput-focused',
+								root: `TopbarInput-root`
+							}}
+							data-testid="flowName"
+							inputProps={{ 'aria-label': 'Flow Name' }}
+							value={props.editContext.flowTitle}
+							disableUnderline
+							onChange={onChangeFlowTitle}
+						/>
+					}
+					<TopbarContent>
+						{
+							props.editContext.viewAPIUrl && <StyledButton color="primary" startIcon={<ViewIcon />} href={props.editContext.viewAPIUrl}>
+								View
+							</StyledButton>
+						}
+						{
+							props.editContext.onFlowSave && <TopbarSaveButton
+								onClick={props.editContext.onFlowSave}
+								color="primary"
+								variant="contained"
+								data-testid="btn-form-save"
+							>
+								Save
+							</TopbarSaveButton>
+						}
+						{
+							props.editContext.onFlowCancel && <TopbarIconButton onClick={props.editContext.onFlowSave}>
+								<CloseIcon />
+							</TopbarIconButton>
+						}
+					</TopbarContent>
+				</TopBarDiv>
+			}
+		/>
+		
     );
 }
 

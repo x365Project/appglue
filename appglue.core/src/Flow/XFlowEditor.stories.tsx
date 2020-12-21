@@ -18,6 +18,16 @@ export const EmptyDesigner = TestTemplate.bind({},{flow: flow});
 
 flow = getFlowWithSteps();
 
-const TestTemplateWithSteps: Story<FlowEditorParameters> = (args) => <XFlowEditor {...args} />;
 
-export const WithStepsEmptyDesigner = TestTemplateWithSteps.bind({},{flow: flow});
+export const WithStepsEmptyDesigner = TestTemplate.bind({},{flow: flow});
+
+flow = getFlowWithNoSteps();
+
+
+export const AllTopbarControls = TestTemplate.bind({},{
+    flow: flow, 
+    flowTitle: 'Flow Title', 
+    viewAPIUrl: 'http://localhost:6006',
+    onFlowCancel: () => {},
+    onFlowSave: () => {}
+});
