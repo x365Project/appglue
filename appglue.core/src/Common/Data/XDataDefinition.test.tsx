@@ -1,5 +1,7 @@
-import {DateDataDefinition, StringDataDefinition, XDataDefinition} from "./XDataDefinition";
+import {XDataDefinition} from "./XDataDefinition";
 import {DataUtilities} from "../DataUtilities";
+import {DateDataDefinition} from "./Definitions/DateDataDefinition";
+import {StringDataDefinition} from "./Definitions/StringDataDefinition";
 
 describe("Data Utilities", () => {
 

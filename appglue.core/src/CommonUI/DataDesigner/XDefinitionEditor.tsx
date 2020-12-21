@@ -1,14 +1,6 @@
 import React, {useState} from "react";
 import {
-    BooleanDataDefinition,
     XDataDefinition,
-    DateDataDefinition,
-    FileDataDefinition,
-    IDataDefinition,
-    NumberDataDefinition,
-    ObjectDataDefinitionElement,
-    StringDataDefinition,
-    UndefinedDataDefinition,
     XDataTypes
 } from "../../Common/Data/XDataDefinition";
 import {Button, IconButton, Select, TextField} from "@material-ui/core";
@@ -16,6 +8,14 @@ import {Pencil, Switch} from "mdi-material-ui";
 import styled from "styled-components";
 import {AddBoxOutlined, ArrowDownwardOutlined, ArrowUpwardOutlined, CheckBox, DeleteOutlined} from "@material-ui/icons";
 import {ActionButtons} from "../../Expressions/ExpressionElements/Logic/IfThenExpression";
+import {ObjectDataDefinitionElement} from "../../Common/Data/Definitions/ObjectDataDefinitionElement";
+import {FileDataDefinition} from "../../Common/Data/Definitions/FileDataDefinition";
+import {NumberDataDefinition} from "../../Common/Data/Definitions/NumberDataDefinition";
+import {DateDataDefinition} from "../../Common/Data/Definitions/DateDataDefinition";
+import {StringDataDefinition} from "../../Common/Data/Definitions/StringDataDefinition";
+import {BooleanDataDefinition} from "../../Common/Data/Definitions/BooleanDataDefinition";
+import {UndefinedDataDefinition} from "../../Common/Data/Definitions/UndefinedDataDefinition";
+import {IDataDefinition} from "../../Common/Data/Definitions/IDataDefinition";
 
 class DataEditorFactory {
 

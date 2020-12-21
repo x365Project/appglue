@@ -1,10 +1,10 @@
 import {
-    BooleanDataDefinition,
-    XDataDefinition,
-    IDataDefinition,
-    ObjectDataDefinitionElement,
-    StringDataDefinition
+    XDataDefinition
 } from "../../../Common/Data/XDataDefinition";
+import {ObjectDataDefinitionElement} from "../../../Common/Data/Definitions/ObjectDataDefinitionElement";
+import {StringDataDefinition} from "../../../Common/Data/Definitions/StringDataDefinition";
+import {BooleanDataDefinition} from "../../../Common/Data/Definitions/BooleanDataDefinition";
+import {IDataDefinition} from "../../../Common/Data/Definitions/IDataDefinition";
 
 export function getEmptyDataDefinition() {
     return new XDataDefinition();
