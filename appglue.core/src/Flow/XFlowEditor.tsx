@@ -223,7 +223,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 								focused: 'TopbarInput-focused',
 								root: `TopbarInput-root`
 							}}
-							data-testid="flowName"
+							data-testid="topbar-flow-name"
 							inputProps={{ 'aria-label': 'Flow Name' }}
 							value={props.editContext.flowTitle}
 							disableUnderline
@@ -233,7 +233,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 					<TopbarContent>
 						{
 							props.editContext.viewAPIUrl && <StyledButton color="primary" startIcon={<ViewIcon />} href={props.editContext.viewAPIUrl}>
-								View
+								View API
 							</StyledButton>
 						}
 						{
@@ -247,7 +247,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 							</TopbarSaveButton>
 						}
 						{
-							props.editContext.onFlowCancel && <TopbarIconButton onClick={props.editContext.onFlowSave}>
+							props.editContext.onFlowCancel && <TopbarIconButton onClick={props.editContext.onFlowCancel} data-testid="btn-topbar-flow-cancel">
 								<CloseIcon />
 							</TopbarIconButton>
 						}
