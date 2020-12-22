@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu, IconButton} from "@material-ui/core";
+import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu, IconButton, Input, Button} from "@material-ui/core";
 import MovementIcon from "../assets/images/icons/movement.svg";
 import { BorderStyle } from "../Form/FormDesignConstants";
 
@@ -135,4 +135,209 @@ export const ContainerDivider = styled("div")<{
 	border: ${props => `${props.lineWidthBetweenContainers}px ${props.lineStyleBetweenContrainers} ${props.lineColorBetweenContainers}`};
 	width: 100%;
 	display: flex;
+`;
+
+
+export const TitleInput = styled(Input)`
+	&& {
+		color: #01244E;
+		font-size: 14px;
+        font-weight: bold;
+        
+
+		@media (min-width: 768px) {
+			font-size: (14px + 4 * (100vw - 768px) / 598);
+		}
+
+		@media (min-width: 1366px) {
+			font-size: calc(18px + 6 * (100vw - 1366px) / 554);
+		}
+
+		@media (min-width: 1920px) {
+			font-size: 24px;
+        }
+        
+
+        .TopbarInput-root {
+            border: solid 1px transparent;
+            border-radius: 5px;
+            width: 98px;
+            font-family: Mulish;
+
+            @media (min-width: 768px) {
+                width: calc(98px + 50 * (100vw - 768px) / 598);
+            }
+
+            @media (min-width: 1366px) {
+                width: calc(148px + 42 * (100vw - 1366px) / 554);
+            }
+
+            @media (min-width: 1920px) {
+                width: 190px;
+            }
+        }
+
+        .TopbarInput-root.TopbarInput-focused {
+            border-color:#E6E9ED;
+        }
+
+		input {
+			padding: 0px 6px;
+			height: 27px;
+
+			@media (min-width: 768px) {
+				height: calc(27px + 2 * (100vw - 768px) / 598);
+			}
+	
+			@media (min-width: 1366px) {
+				height: calc(29px + 9 * (100vw - 1366px) / 554);
+			}
+	
+			@media (min-width: 1920px) {
+				height: 40px;
+			}
+		}
+	}
+`;
+
+
+export const StyledButton = styled(Button)`
+    && {
+        ${props => props.color === 'primary' && `
+            background: #49A0D5;
+            color: #fff;
+            &:hover {
+                background: #0C4385;
+            }
+        `}
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 24px;
+    }
+`
+
+export const StyledIconButton = styled(IconButton)`
+    && {
+        ${props => props.color === 'primary' && `
+            background: #49A0D5;
+            color: #fff;
+            &:hover {
+                background: #0C4385;
+            }
+        `}
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 24px;
+    }
+`
+
+export const TopbarSaveButton = styled(Button)`
+	&& {
+		justify-content: center;
+		padding: 0;
+		display: flex;
+		align-items: center;	
+		font-family: Mulish;
+		background: #15466B;
+		font-weight: bold;
+		min-width: 0;
+		width: 40px;
+		height: 28px;
+		font-size: 10px;
+
+		&:hover {
+			background: #1873b9;
+		}
+
+		@media (min-width: 768px) {
+			width: calc(40px + 26 * (100vw - 768px) / 598);
+			height: calc(28px + 4 * (100vw - 768px) / 598);
+			font-size: calc(10px + 2 * (100vw - 1366px) / 554);
+		}
+
+		@media (min-width: 1366px) {
+			width: calc(66px + 20 * (100vw - 1366px) / 554);
+			height: calc(32px + 10 * (100vw - 1366px) / 554);
+			font-size: calc(12px + 3 * (100vw - 1366px) / 554);
+			line-height: calc(15px + 4 * (100vw - 1366px) / 554);
+		}
+
+		@media (min-width: 1920px) {
+			width: 86px;
+			height: 42px;
+			font-size: 15px;
+			line-height: 19px;
+		}
+
+
+		span.label {
+			display: none;
+			@media (min-width: 1366px) {
+				display: block;
+			}
+		}
+
+		img {
+			display: block;
+			@media (min-width: 1366px) {
+				display: none;
+			}
+		}
+	}
+`;
+
+
+export const TopbarIconButton = styled(Button)`
+	&& {
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0;
+		width: 28px;
+		height: 27px;
+		min-width: 0;
+		border: none;
+
+		&.TopbarIconButton-selected {
+			background: #F2FAFE;
+		}
+		
+		@media (min-width: 768px) {
+			width: calc(28px + 10 * (100vw - 768px) / 598);
+			height: calc(27px + 2 * (100vw - 768px) / 598);
+		}
+
+		@media (min-width: 1366px) {
+			width: calc(38px + 12 * (100vw - 1366px) / 554);
+			height: calc(29px + 9 * (100vw - 1366px) / 554);
+		}
+
+		@media (min-width: 1920px) {
+			width: 50px;
+			height: 40px;
+		}
+
+		img {
+			transform: scale(0.67);
+			max-width: 20px;
+
+			@media (min-width: 1366px) {
+				transform: scale(0.78);
+			}
+
+			@media (min-width: 1920px) {
+				transform: scale(1);
+			}
+
+		}
+	}
 `;

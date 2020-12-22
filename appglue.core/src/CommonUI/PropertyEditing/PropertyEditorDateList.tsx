@@ -4,6 +4,7 @@ import { InputLabel, IconButton } from "@material-ui/core";
 import styled from "styled-components";
 import { StyledTextField } from "./PropertyEditorStyles";
 import { PlusWhiteIcon } from "../Icon/PlusWhiteIcon";
+import { StyledIconButton } from "../CommonStyles";
 
 const StyledDateList = styled.div`
     width: 100%;
@@ -29,22 +30,6 @@ const StyledDateList = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-
-        .MuiButtonBase-root {
-            background: #49A0D5;
-            border-radius: 4px;
-            padding: 8px 12px;
-            color: #fff;
-            font-family: Mulish;
-            font-style: normal;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 24px;
-    
-            &:hover {
-                background: #0C4385;
-            }
-        }
     }
 
 `;
@@ -85,7 +70,7 @@ export const PropertyEditorDateList : React.FC<PropertyEditorDateListInterface> 
                 {
                     props.label && <InputLabel classes={{root: 'DateList-Label'}}>{props.label}</InputLabel>
                 }
-                <IconButton onClick={add}><PlusWhiteIcon /></IconButton>
+                <StyledIconButton onClick={add} color="primary"><PlusWhiteIcon /></StyledIconButton>
             </div>
             <div className="DateList">
             {
