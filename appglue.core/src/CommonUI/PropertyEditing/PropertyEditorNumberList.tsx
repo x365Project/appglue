@@ -10,13 +10,14 @@ const StyledNumberList = styled("div")<{
     width: 100%;
 
     .NumberList-TextBox {
+        position: relative;
         display: flex;
         flex-direction: column;
         ${props => props.active && `
-            border: solid 2px rgb(63, 81, 181);
+            border: solid 1px rgb(63, 81, 181);
         `}
         ${props => !props.active && `
-            border: solid 2px rgba(0, 0, 0, 0.23);
+            border: solid 1px rgba(0, 0, 0, 0.23);
         `}
         border-radius: 4px;
         font-family: Mulish;
@@ -33,6 +34,19 @@ const StyledNumberList = styled("div")<{
             font-weight: 600;
             padding: 0;
         }
+
+        ${props => props.active && `
+            &:before {
+                position: absolute;
+                content: "";
+                border: solid 2px rgb(63, 81, 181);
+                top: -1px;
+                left: -1px;
+                bottom: -1px;
+                right: -1px;
+                border-radius: 4px;
+            }
+        `}
     }
 
     .NumberList-Label {
