@@ -9,7 +9,8 @@ import {
     Input,
     FormControlLabel,
     Checkbox,
-    Tooltip
+    Tooltip,
+    TextField
 } from "@material-ui/core";
 import {ExpressionValue} from "../ExpressionValue";
 import {ExpressionValueType} from "../ExpressionValueType";
@@ -488,7 +489,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     <>
                         <ModeButtons value={this.props.expressionValue}/>
                         <VariableOrValContentPanel>
-                            <StyledTextField
+                            <TextField
                                 label="Variable Name"
                                 value={this.props.expressionValue.variableName || ''}
                                 onChange={this.variableNameChange}
@@ -532,7 +533,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 </ExpressionColumnRow>
                             </ExpressionColumn>
                             <VariableOrValColumn>
-                                <StyledTextField
+                                <TextField
                                     value={this.props.expressionValue.variableName || ''}
                                     label="Variable Name"
                                     onFocus={() => {
