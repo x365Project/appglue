@@ -19,8 +19,7 @@ const StyledBooleanList = styled.div`
         font-family: Mulish;
         font-style: normal;
         font-weight: 600;
-        font-size: 14px;
-        line-height: 20px;
+        margin-bottom: 5px;
     }
 
     .BooleanList-header {

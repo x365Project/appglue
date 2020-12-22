@@ -1,5 +1,5 @@
 import React from "react";
-import { StyledTextField, TextFieldDisplayType } from "./PropertyEditorStyles";
+import {TextField} from "@material-ui/core";
 
 export interface PropertyEditorIntegerInterface {
     editObject: object,
@@ -9,7 +9,6 @@ export interface PropertyEditorIntegerInterface {
     hint?: string,
     updateCallback : CallableFunction,
     parentDefaultValue? : number | null,
-    type?: TextFieldDisplayType,
     autoFocus?: boolean,
     disableUnderline?: boolean,
     variant?: 'filled' | 'outlined' | 'standard'
@@ -38,18 +37,17 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
     }
 
     return (
-        <StyledTextField
+        <TextField
             value={value}
             type="number"
             label={props.label}
             onChange={onChange}
             helperText={props.hint}
-            displayType={props.type || TextFieldDisplayType.Default}
             autoFocus={props.autoFocus}
             InputProps={{
                 disableUnderline: props.disableUnderline
             }}
-            variant={props.variant}
+            variant={props.variant || "outlined"}
         />
     );
 }

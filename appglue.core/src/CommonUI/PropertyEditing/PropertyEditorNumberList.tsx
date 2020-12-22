@@ -12,12 +12,18 @@ const StyledNumberList = styled("div")<{
     .NumberList-TextBox {
         display: flex;
         flex-direction: column;
-        border: solid 1px ${props => props.active ? '#93A9BF' :'#D8E4EE'};
+        ${props => props.active && `
+            border: solid 2px rgb(63, 81, 181);
+        `}
+        ${props => !props.active && `
+            border: solid 2px rgba(0, 0, 0, 0.23);
+        `}
         border-radius: 4px;
         font-family: Mulish;
         padding: 6px 12px;
-
+    
         transition: all .3s;
+
         min-height: 100px;
 
         .MuiInputBase-input {
@@ -25,30 +31,28 @@ const StyledNumberList = styled("div")<{
             font-family: Mulish;
             font-style: normal;
             font-weight: 600;
-            font-size: 14px;
-            line-height: 20px;
             padding: 0;
         }
     }
 
     .NumberList-Label {
-        color: #677C95;
+        color: ${props => props.active ? 'rgb(63, 81, 181)': 'rgba(0, 0, 0, 0.54)'};
+        font-family: Mulish;
+        font-style: normal;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .NumberList-hint {
+        color: rgba(0, 0, 0, 0.54);
         font-family: Mulish;
         font-style: normal;
         font-weight: 600;
         font-size: 14px;
-        line-height: 20px;
-    }
-
-    .NumberList-hint {
-        color: #677C95;
-        font-family: Mulish;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 12px;
         line-height: 18px;
+        margin-top: 5px;
+        display: block;
     }
-
 `;
 
 export interface PropertyEditorNumberListInterface{

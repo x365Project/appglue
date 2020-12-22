@@ -136,7 +136,7 @@ export const StyledTextField = styled(({displayType, ...rest}: TextFieldProps & 
 export const StyledFormControlForSwitch = styled(FormControlLabel)`
 	&& {
 		.MuiFormControlLabel-label {
-			color: #93A9BF;
+			color: #677C95;
 			display: block;
 			font-family: Mulish;
 			font-style: normal;
@@ -144,7 +144,6 @@ export const StyledFormControlForSwitch = styled(FormControlLabel)`
 			font-size: 14px;
 			line-height: 24px;
 		}
-
 	}
 `
 
@@ -155,14 +154,15 @@ export const StyledSwitch = styled(Switch)`
 		width: 76px;
 
 		.MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-			background: #00B2A4;
-			opacity: 0.2;
+			background: #1D6295;
+			opacity: 1;
 		}
 
 		.MuiSwitch-track {
-			background-color: #EBF4FA;
+			background-color: #fff;
 			opacity: 1;
 			border-radius: 12px;
+			border: solid 2px #1D6295;
 		}
 
 		.MuiSwitch-switchBase {
@@ -170,14 +170,14 @@ export const StyledSwitch = styled(Switch)`
 
 			.MuiSwitch-thumb {
 				border: solid 2px #fff;
-				background-color: #93A9BF;
+				background-color: #1D6295;
 			}
 
 			&.Mui-checked {
 				transform: translateX(28px);
 
 				.MuiSwitch-thumb {
-					background-color: #00B2A4;
+					background-color: #1D6295;
 				}
 			}
 		}
