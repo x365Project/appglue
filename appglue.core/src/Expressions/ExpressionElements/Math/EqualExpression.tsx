@@ -4,9 +4,8 @@ import {ExpressionValue} from "../../ExpressionValue";
 import {ExpressionValueRenderer} from "../../ExpressionValueRenderer";
 import {RegisterExpression} from "../../Utilities/RegisterExpression";
 import {ExpressionExpectedType} from "../../ExpressionExpectedType";
-import {BracketedDiv, ExpressionDiv, ExpressionPiece} from "../../ExpressionStyles";
+import {BracketedDiv, ExpressionPiece} from "../../ExpressionStyles";
 import {EqualIcon} from "../../../CommonUI/Icon/EqualIcon"
-import { ObserveMultiState } from "../../../CommonUI/StateManagement/ObserveMultiState";
 
 
 @RegisterExpression('Math', 'Equal', <EqualIcon />, ExpressionExpectedType.NUMBER, true)
@@ -22,15 +21,15 @@ export class EqualExpression extends BaseExpression {
 
     render() {
         return (
-                <BracketedDiv>
-                    <ExpressionPiece>
-                        <ExpressionValueRenderer el={this.value1!}/>
-                    </ExpressionPiece>
-                    <ExpressionPiece> = </ExpressionPiece>
-                    <ExpressionPiece>
-                        <ExpressionValueRenderer el={this.value2 !}/>
-                    </ExpressionPiece>
-                </BracketedDiv>
+            <BracketedDiv>
+                <ExpressionPiece>
+                    <ExpressionValueRenderer el={this.value1!}/>
+                </ExpressionPiece>
+                <ExpressionPiece> = </ExpressionPiece>
+                <ExpressionPiece>
+                    <ExpressionValueRenderer el={this.value2 !}/>
+                </ExpressionPiece>
+            </BracketedDiv>
         );
     }
 }

@@ -17,7 +17,7 @@ export class StringListGetStringByIndexExpression extends BaseExpression {
     constructor() {
         super({}, {});
         this.value1 = ExpressionValue.createExpressionValue(this, 'value1', ExpressionExpectedType.NUMBER);
-        this.value2 = ExpressionValue.createExpressionValue(this,'value2', ExpressionExpectedType.STRING_LIST);
+        this.value2 = ExpressionValue.createExpressionValue(this, 'value2', ExpressionExpectedType.STRING_LIST);
     }
 
     render() {
@@ -26,7 +26,7 @@ export class StringListGetStringByIndexExpression extends BaseExpression {
                 <ExpressionPiece>
                     <ExpressionValueRenderer el={this.value1!}/>
                 </ExpressionPiece>
-                <ExpressionPiece> index of </ExpressionPiece>
+                <ExpressionPiece>th of</ExpressionPiece>
                 <ExpressionPiece>
                     <ExpressionValueRenderer el={this.value2 !}/>
                 </ExpressionPiece>

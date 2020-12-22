@@ -20,6 +20,11 @@ export const ExpressionPiece = styled("div")<{hasChild?: boolean}>`
 	padding-right: 4px;
 	padding-bottom: 4px;
 	padding-left: 4px;
+	font-size: 14px;
+	font-weight: 600;
+	font-family: Mulish;
+	line-height: 20px;
+	color: #677C95;
 
 	${props => props.hasChild && `
 		flex: 1;
@@ -47,6 +52,11 @@ export const BracketedDiv = styled("div")<{hasChild?: boolean;}>`
     margin-left: 6px;
     margin-right: 10px;
 	position: relative;
+	font-size: 14px;
+	font-weight: 600;
+	font-family: Mulish;
+	line-height: 20px;
+	color: #677C95;
 
 	${props => props.hasChild && `
 		flex: 1;
