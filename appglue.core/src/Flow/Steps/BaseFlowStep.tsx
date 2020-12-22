@@ -5,6 +5,7 @@ import {IFlowElement} from "../Structure/IFlowElement";
 import {IFlowStep} from "../Structure/IFlowStep";
 import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import {DataUtilities} from "../../Common/DataUtilities";
+import {FlowStepOutputInstructions} from "../Structure/FlowStepOutputInstructions";
 
 export const BasicStep = styled.div`
     width: 100%;
@@ -20,6 +21,9 @@ export abstract class BaseFlowStep
         IFlowStep {
     _id: string = DataUtilities.generateUniqueId();
     name?: string;
+
+    // this is where we put instructions on what to do with non default paths
+    nonDefaultOutputInstructions? : FlowStepOutputInstructions[];
 
 
     constructor() {
