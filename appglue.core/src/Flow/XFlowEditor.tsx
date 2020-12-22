@@ -32,6 +32,7 @@ import { StateManager } from "../CommonUI/StateManagement/StateManager";
 import { ObserveState } from "../CommonUI/StateManagement/ObserveState";
 import { XData } from "../Common/Data/XData";
 import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
+import { TextIcon } from "../CommonUI/TextIcon";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -286,12 +287,34 @@ export const FlowToolbox = function (props :{}) {
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                 >
+                    <Draggable
+                        draggableId="___newstack"
+                        index={0}
+                    >
+                        {
+                            (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+                                return (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                    >
+                                        <ToolboxItem>
+                                            <TextIcon name="S" />
+                                            New Stack
+                                        </ToolboxItem>
+                                    </div>
+                                );
+                            }
+                        }
+                    </Draggable>
+
                     {Object.values(FlowStepRegistration).map((value: RegistrationData, index: number) => {
                         return (
                             <Draggable
                                 key={'toolbox' + index}
                                 draggableId={value.name}
-                                index={index}>
+                                index={index + 1}>
                                 {
                                     (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
                                         return (
@@ -343,7 +366,8 @@ export class FlowToolboxItem extends React.Component<{ item: RegistrationData },
 const DesignPanel = styled.div`
     width: 100%;
     height: 100%;
-    background: #E5E5E5;
+	background: #E5E5E5;
+	position: relative;
 `;
 
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {

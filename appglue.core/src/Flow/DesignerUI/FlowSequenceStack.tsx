@@ -8,6 +8,7 @@ import {
     DroppableProvided,
     DroppableStateSnapshot
 } from "react-beautiful-dnd";
+import ReactDraggable, { DraggableData, DraggableEvent } from "react-draggable";
 import styled from "styled-components";
 import {FlowStepDesignWrapper} from "../Utilities/FlowStepDesignWrapper";
 import {Button} from "@material-ui/core";
@@ -81,87 +82,93 @@ const StepPathConnectDiv = styled.div`
 
 
 export class FlowSequenceStack extends React.Component<{ flow: XFlowConfiguration, sequence: FlowStepSequence, editContext: FlowEditContext }, {}> {
-    getStyle() : {} {
-        return {
-            top: this.props.sequence.x + "px",
-            left: this.props.sequence.y + "px"
-        };
+    width: number = 275;
 
+    onDragStop = (_e: DraggableEvent, data: DraggableData) => {
+        this.props.sequence.x = data.x;
+        this.props.sequence.y = data.y;
     }
 
     render() {
         return (
-            <Droppable
-                droppableId={this.props.sequence._id}>
-                {(
-                    provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
+            <ReactDraggable
+                bounds="parent"
+                defaultPosition={{x: this.props.sequence.x, y: this.props.sequence.y}}
+                onStop={this.onDragStop}
+            >
+                <div style={{width: this.width}}>
+                    <Droppable
+                        droppableId={this.props.sequence._id}>
+                        {(
+                            provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 
-                    return (
-                        <FlowSequenceDiv
-                            style={this.getStyle()}
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            width={275}
-                        >
-                            {this.props.sequence.steps.length === 0 && <>put steps here</> }
-                            {this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
-                                let isLast = this.props.sequence.steps.length === i + 1;
+                            return (
+                                <FlowSequenceDiv
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    width={this.width}
+                                >
+                                    {this.props.sequence.steps.length === 0 && <>put steps here</> }
+                                    {this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
+                                        let isLast = this.props.sequence.steps.length === i + 1;
 
-                                let otherPaths: FlowStepOutput[] = [];
-                                if (step.outputs && Array.isArray(step.outputs) && step.outputs.length > 1) {
-                                    otherPaths = [...step.outputs]
-                                    // removes first item
-                                    otherPaths.shift();
+                                        let otherPaths: FlowStepOutput[] = [];
+                                        if (step.outputs && Array.isArray(step.outputs) && step.outputs.length > 1) {
+                                            otherPaths = [...step.outputs]
+                                            // removes first item
+                                            otherPaths.shift();
 
-
-                                } else if (step.outputs && Array.isArray(step.outputs) && isLast) {
-                                    otherPaths = [...step.outputs]
-                                }
-
-                                return (
-                                    <Draggable
-                                        key={step._id}
-                                        draggableId={step._id}
-                                        index={i}>
-                                        {
-                                            (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
-                                                return (
-
-                                                    <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                    >
-                                                        {this.renderStep(step, this.props.editContext)}
-                                                        {(!isLast || otherPaths.length !== 0) && (
-                                                            <StepConnectSection>
-                                                                <StepConnect/>
-                                                                {otherPaths.length !== 0 && (
-                                                                    <StepConnectOtherPaths>
-                                                                        {otherPaths.map((stepOutput: FlowStepOutput, i: number) => {
-                                                                            return (
-                                                                                <div key={'path'+stepOutput.name}>
-                                                                                    {this.renderAltPath(this.props.sequence, step, stepOutput, this.props.editContext)}
-                                                                                </div>
-                                                                            );
-                                                                        })}
-                                                                    </StepConnectOtherPaths>
-                                                                )}
-                                                            </StepConnectSection>
-                                                        )}
-                                                    </div>
-                                                );
-                                            }
+                                        } else if (step.outputs && Array.isArray(step.outputs) && isLast) {
+                                            otherPaths = [...step.outputs]
                                         }
-                                    </Draggable>
-                                );
-                            })}
-                            {provided.placeholder}
-                        </FlowSequenceDiv>
-                    );
-                }
-                }
-            </Droppable>
+
+                                        return (
+                                            <Draggable
+                                                key={step._id}
+                                                draggableId={step._id}
+                                                index={i}>
+                                                {
+                                                    (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+                                                        return (
+
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                            >
+                                                                {this.renderStep(step, this.props.editContext)}
+                                                                {(!isLast || otherPaths.length !== 0) && (
+                                                                    <StepConnectSection>
+                                                                        <StepConnect/>
+                                                                        {otherPaths.length !== 0 && (
+                                                                            <StepConnectOtherPaths>
+                                                                                {otherPaths.map((stepOutput: FlowStepOutput, i: number) => {
+                                                                                    return (
+                                                                                        <div key={'path'+stepOutput.name}>
+                                                                                            {this.renderAltPath(this.props.sequence, step, stepOutput, this.props.editContext)}
+                                                                                        </div>
+                                                                                    );
+                                                                                })}
+                                                                            </StepConnectOtherPaths>
+                                                                        )}
+                                                                    </StepConnectSection>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    }
+                                                }
+                                            </Draggable>
+                                        );
+                                    })}
+                                    {provided.placeholder}
+                                </FlowSequenceDiv>
+                            );
+                        }
+                        }
+                    </Droppable>
+                </div>
+            </ReactDraggable>
+            
 
         );
     }
