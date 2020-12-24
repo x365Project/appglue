@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu, IconButton, Input, Button} from "@material-ui/core";
+import {AccordionDetails, AccordionSummary, Typography, Accordion, Menu, IconButton, Input, Button, Tooltip, ButtonGroup} from "@material-ui/core";
 import MovementIcon from "../assets/images/icons/movement.svg";
 import { BorderStyle } from "../Form/FormDesignConstants";
+import React from "react";
 
 export const EditLayerConfigArea = styled.div`
   position: absolute;
@@ -295,6 +296,45 @@ export const TopbarSaveButton = styled(Button)`
 `;
 
 
+export const TopbarViewButton = styled(Button)`
+&& {
+    height 28px;
+    ${props => props.color === 'primary' && `
+        background: #49A0D5;
+        color: #fff;
+        &:hover {
+            background: #0C4385;
+        }
+    `}
+    border-radius: 4px;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 24px;
+
+    @media (min-width: 768px) {
+        height: calc(28px + 4 * (100vw - 768px) / 598);
+        font-size: calc(10px + 2 * (100vw - 1366px) / 554);
+    }
+
+    @media (min-width: 1366px) {
+        height: calc(32px + 10 * (100vw - 1366px) / 554);
+        font-size: calc(12px + 3 * (100vw - 1366px) / 554);
+        line-height: calc(15px + 4 * (100vw - 1366px) / 554);
+    }
+
+    @media (min-width: 1920px) {
+        width: 86px;
+        height: 42px;
+        font-size: 15px;
+        line-height: 19px;
+    }
+
+}
+`;
+
+
 export const TopbarIconButton = styled(Button)`
 	&& {
 		padding: 0;
@@ -340,4 +380,63 @@ export const TopbarIconButton = styled(Button)`
 
 		}
 	}
+`;
+
+export const TopbarDiv = styled.div`
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+    padding: 13px 15px;
+
+    @media (min-width: 768px) {
+        padding-left: calc(15px + 4 * (100vw - 768px) / 598);
+        padding-right: calc(15px + 4 * (100vw - 768px) / 598);
+        padding-top: calc(13px + 6 * (100vw - 768px) / 598);
+        padding-bottom: calc(13px + 6 * (100vw - 768px) / 598);
+    }
+
+    @media (min-width: 1366px) {
+        padding-left: calc(19px + 4 * (100vw - 1366px) / 554);
+        padding-right: calc(19px + 4 * (100vw - 1366px) / 554);
+        padding-top: calc(19px + 4 * (100vw - 1366px) / 554);
+        padding-bottom: calc(19px + 4 * (100vw - 1366px) / 554);
+    }
+
+    @media (min-width: 1920px) {
+        padding: 23px;
+    }
+`;
+
+
+export const TopbarActionButton: React.FC<{action?: () => void, disabled: boolean, title: string, icon: JSX.Element, testId: string}> =({
+	action,
+	disabled,
+	title,
+	icon,
+	testId
+}) => {
+	const button = (
+		<TopbarIconButton
+			onClick={() => action!()}
+			data-testid={testId}
+			disabled={disabled}
+		>
+			{icon}
+		</TopbarIconButton>
+	)
+
+	if (!disabled) {
+		return <Tooltip title={title}>
+			{button}
+		</Tooltip>
+	}
+	return button
+}
+
+
+export const TopbarButtonGroup = styled(ButtonGroup)`
+    && {
+        border: solid 1px #E6E9ED;
+        border-radius: 5px;
+    }
 `;

@@ -13,7 +13,7 @@ import {
     DropResult
 } from "react-beautiful-dnd";
 import {AutoBind} from "../Common/AutoBind";
-import {FlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
+import {FlowSequenceStack, FakeFlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
 import ReactDraggable from "react-draggable";
 import {Accordion} from "@material-ui/core";
 import {
@@ -21,7 +21,13 @@ import {
     EditLayerStyledAccordionDetails,
 	EditLayerStyledAccordionSummary,
 	EditLayerStyledTypography,
-	TitleInput, StyledButton, TopbarSaveButton, TopbarIconButton
+    TitleInput,
+    TopbarSaveButton,
+    TopbarIconButton,
+    TopbarDiv,
+    TopbarViewButton,
+    TopbarButtonGroup,
+    TopbarActionButton
 } from "../CommonUI/CommonStyles";
 import {BaseFlowStep} from "./Steps/BaseFlowStep";
 import {FlowStepSequence} from "./Structure/FlowStepSequence";
@@ -32,6 +38,12 @@ import { StateManager } from "../CommonUI/StateManagement/StateManager";
 import { ObserveState } from "../CommonUI/StateManagement/ObserveState";
 import { XData } from "../Common/Data/XData";
 import { CloseIcon } from "../CommonUI/Icon/CloseIcon";
+import { TextIcon } from "../CommonUI/TextIcon";
+import { CopyIcon } from "../CommonUI/Icon/CopyIcon";
+import { CutIcon } from "../CommonUI/Icon/CutIcon";
+import { PasteIcon } from "../CommonUI/Icon/PasteIcon";
+import { DeleteIcon } from "../CommonUI/Icon/DeleteIcon";
+import { DataUtilities } from "../Common/DataUtilities";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -47,7 +59,8 @@ const FlowEditorDiv = styled.div`
 `;
 
 export class FlowConstants {
-    static ToolboxId = 'Toolbox'
+    static ToolboxId = 'Toolbox';
+    static FakeStackId = 'Fakestack';
 }
 
 const FlowMainSectionDiv = styled.div`
@@ -61,10 +74,66 @@ export class FlowEditContext {
     flowEditor: XFlowEditor;
 
 	flowTitle?: string;
-	viewAPIUrl?: string;
+    viewAPIUrl?: string;
+    isDraggingControl: boolean = false;
 
 	public onFlowSave?: () => void;
     public onFlowCancel? : () => void ;
+
+
+    @AutoBind
+    clone(step: BaseFlowStep) : BaseFlowStep {
+        let type = step.name!;
+        let registeredControl = Object.values(FlowStepRegistration).filter((v: RegistrationData) => {
+            return Reflect.get(v.prototype, '__type') === type;
+        })[0];
+        let val = new registeredControl!.prototype.constructor();
+
+        return Object.assign(val, step);
+    }
+
+    @AutoBind
+    onCopy(e?: IFlowElement) {
+        let elem = e || this._lastSelectionElement;
+        if (!elem) return;
+
+        this.clipboardElement = this.clone(elem as BaseFlowStep) as IFlowElement;
+
+        StateManager.propertyChanged(this, 'clipboardElement');
+    }
+
+    @AutoBind
+    onCut(e?: IFlowElement) {
+        let elem = e || this._lastSelectionElement;
+        if (!elem) return;
+
+        this.flow.remove(elem as BaseFlowStep);
+        this.clipboardElement = this.clone(elem as BaseFlowStep) as IFlowElement;
+
+        StateManager.propertyChanged(this, 'clipboardElement');
+    }
+
+    @AutoBind
+    onDelete(e?: IFlowElement) {
+        let elem = e || this._lastSelectionElement;
+        if (!elem) return;
+
+        this.flow.remove(elem as BaseFlowStep);
+    };
+
+    @AutoBind
+    onPaste() {
+        if (!this.clipboardElement || !this.selectionElement) return;
+        this.clipboardElement._id = DataUtilities.generateUniqueId();
+        for (let s of this.flow.sequences) {
+            let idx = s.steps.indexOf(this.selectionElement as BaseFlowStep);
+            if (idx >= 0) {
+                this.flow.add(this.clone(this.clipboardElement as BaseFlowStep), s._id, idx);
+                break;
+            }
+        }
+    }
+
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
@@ -75,6 +144,7 @@ export class FlowEditContext {
     }
 
     private _selectionElement?: IFlowElement;
+    private _lastSelectionElement?: IFlowElement;
 
     get selection(): string | undefined {
         return this._selectionElement?._id;
@@ -84,14 +154,29 @@ export class FlowEditContext {
         return this._selectionElement;
     }
 
+    get lastSelectionElement(): IFlowElement | undefined {
+        return this._lastSelectionElement;
+    }
+
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;
+        this._lastSelectionElement = selection;
         this.refresh()
     }
 
     clearSelection() {
         this._selectionElement = undefined;
         this.refresh()
+    }
+
+    private _clipboardElement?: IFlowElement;
+
+    get clipboardElement() : IFlowElement | undefined {
+        return this._clipboardElement;
+    }
+
+    set clipboardElement(elem: IFlowElement | undefined) {
+        this._clipboardElement = elem;
     }
 
     refresh() {
@@ -129,13 +214,16 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
     render() {
         return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
+            <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
                 <FlowEditorDiv>
                     <FlowTopBar editContext={this.editContext} />
                     <FlowMainSectionDiv>
                         <FlowSideActions/>
                         <FlowToolbox/>
-                        <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
+                        <ObserveState listenTo={this.props.flow} properties={["sequences"]} control={() => (
+                            <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
+                        )} />
+                        
                     </FlowMainSectionDiv>
                 </FlowEditorDiv>
             </DragDropContext>
@@ -143,7 +231,20 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     }
 
     @AutoBind
+    onDragUpdate(_result: DropResult) {
+        this.editContext.isDraggingControl = true;
+
+        StateManager.propertyChanged(this.editContext, 'isDraggingControl');
+    }
+
+    @AutoBind
+    onDragStart() {
+        this.editContext.clearSelection();
+    }
+
+    @AutoBind
     onDragEnd(result: DropResult) {
+        this.editContext.isDraggingControl = false;
         // if not destination... then we should not do anything
         if (!result.destination)
             return;
@@ -154,6 +255,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
         let isNew = false;
         let control : BaseFlowStep | null;
+
         if (Object.keys(FlowStepRegistration).indexOf(result.draggableId) !== -1) {
             // @ts-ignore
             let registeredControl = FlowStepRegistration[result.draggableId];
@@ -170,6 +272,17 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
             if (result.destination.droppableId === result.source.droppableId) {
                 // changing order
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
+            } else if (result.destination.droppableId === FlowConstants.FakeStackId) {
+                if (!isNew) {
+                    this.props.flow.remove(control);
+                }
+                let initialSeq = new FlowStepSequence();
+                let length = this.props.flow.sequences.length - 1;
+                initialSeq.x = this.props.flow.sequences[length].x + 300;
+                initialSeq.y = this.props.flow.sequences[length].y;
+                this.props.flow.sequences.push(initialSeq);
+                this.props.flow.add(control, initialSeq._id);
+                StateManager.propertyChanged(this.props.flow, 'sequences');
             } else if (isNew) {
                 // adding new
                 this.props.flow.add(control, result.destination.droppableId, result.destination.index);
@@ -178,6 +291,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
             }
         }
 
+        StateManager.propertyChanged(this.editContext, 'isDraggingControl');
         if (control)
             this.editContext.setSelection(control);
         else
@@ -185,14 +299,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
     }
 }
-
-const TopBarDiv = styled.div`
-    width: 100%;
-    height: 50px;
-	border: 1px solid gray;
-	display: flex;
-	align-items: center;
-`;
 
 const TopbarContent = styled.div`
 	display: flex;
@@ -210,12 +316,16 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
         StateManager.propertyChanged(props.editContext, 'flowTitle');
     }
 
+    const isActionDisabled = () => {
+        return !props.editContext.lastSelectionElement
+    }
+
     return (
 		<ObserveState
 			listenTo={props.editContext}
 			properties={['flowTitle']}
 			control={() =>
-				<TopBarDiv>
+				<TopbarDiv>
 					{
 						props.editContext.flowTitle && <TitleInput
 							classes={{
@@ -230,11 +340,47 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 							onChange={onChangeFlowTitle}
 						/>
 					}
+
+                    <TopbarButtonGroup
+						variant="outlined"
+						size="small"
+					>
+						<TopbarActionButton
+							title="Copy"
+							icon={<CopyIcon />}
+							disabled={isActionDisabled()}
+							testId="btn-topbar-copy"
+							action={props.editContext.onCopy}
+						/>
+						<TopbarActionButton
+							title="Cut"
+							icon={<CutIcon />}
+							disabled={isActionDisabled()}
+							testId="btn-topbar-cut"
+							action={props.editContext.onCut}
+						/>
+						<TopbarActionButton
+							title="Paste"
+							icon={<PasteIcon />}
+							disabled={isActionDisabled()}
+							testId="btn-topbar-paste"
+							action={props.editContext.onPaste}
+						/>
+						<TopbarActionButton
+							title="Delete"
+							icon={<DeleteIcon />}
+							disabled={isActionDisabled()}
+							testId="btn-topbar-delete"
+							action={props.editContext.onDelete}
+						/>
+					</TopbarButtonGroup>
+
+
 					<TopbarContent>
 						{
-							props.editContext.viewAPIUrl && <StyledButton color="primary" startIcon={<ViewIcon />} href={props.editContext.viewAPIUrl}>
+							props.editContext.viewAPIUrl && <TopbarViewButton color="primary" startIcon={<ViewIcon />} href={props.editContext.viewAPIUrl}>
 								View API
-							</StyledButton>
+							</TopbarViewButton>
 						}
 						{
 							props.editContext.onFlowSave && <TopbarSaveButton
@@ -252,7 +398,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 							</TopbarIconButton>
 						}
 					</TopbarContent>
-				</TopBarDiv>
+				</TopbarDiv>
 			}
 		/>
 		
@@ -291,7 +437,8 @@ export const FlowToolbox = function (props :{}) {
                             <Draggable
                                 key={'toolbox' + index}
                                 draggableId={value.name}
-                                index={index}>
+                                index={index}
+                            >
                                 {
                                     (provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
                                         return (
@@ -343,7 +490,8 @@ export class FlowToolboxItem extends React.Component<{ item: RegistrationData },
 const DesignPanel = styled.div`
     width: 100%;
     height: 100%;
-    background: #E5E5E5;
+	background: #E5E5E5;
+	position: relative;
 `;
 
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
@@ -374,20 +522,21 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
     return (
         <DesignPanel>
+            <ObserveState listenTo={props.editContext} control={() => (
+                <FakeFlowSequenceStack flow={props.flow} show={props.editContext.isDraggingControl}/>
+            )} />
+
             {props.flow.sequences.filter((value:FlowStepSequence) => {
                 return value.x != -1;
             }).map((s: FlowStepSequence, i: number) => {
-                return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} />
+                return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
             })}
-
             {
                 editUIComponent && (
                     <ReactDraggable
-//                        bounds="parent"
                         onDrag={onDragMovingConfigPanel}
                         onStop={onEndMovingConfigPanel}
                         handle=".config-form-header"
-                        //nodeRef={this.configFormNode}
                     >
                         <EditLayerConfigArea
                             // ref={this.configFormNode}

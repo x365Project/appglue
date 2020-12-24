@@ -3,6 +3,7 @@ import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "./FlowStepSequence";
 import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
+import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
 export class XFlowConfiguration implements IFlowElement{
     _id: string = DataUtilities.generateUniqueId();
@@ -20,6 +21,11 @@ export class XFlowConfiguration implements IFlowElement{
     }
 
     find(stepId: string): BaseFlowStep | null {
+        for (let s of this.sequences) {
+            for (let step of s.steps) {
+                if (step._id === stepId) return step;
+            }
+        }
         return null;
     }
 
@@ -37,12 +43,44 @@ export class XFlowConfiguration implements IFlowElement{
         else {
             sequence.steps.splice(index, 0, step)
         }
+        StateManager.propertyChanged(sequence, 'steps');
+    }
+
+    remove(step: BaseFlowStep, sequenceId?: string): void {
+        if (sequenceId) {
+            let sequence = this.getSequence(sequenceId);
+            if (sequence) {
+                sequence.remove(step);
+            }
+        } else {
+            for (let s of this.sequences) {
+                s.remove(step);
+            }
+        }
     }
 
     moveInSequence(step: BaseFlowStep, sequence : string, index?: number): void {
+        let s = this.getSequence(sequence);
+        if (!s) return;
+        let originIdx = s.steps.indexOf(step);
+        if (originIdx < 0) return;
+        s.steps.splice(originIdx, 1);
+        if (index !== undefined && index !== null) {
+            s.steps.splice(index, 0, step);
+        } else {
+            s.steps.push(step);
+        }
+        StateManager.propertyChanged(s, 'steps');
     }
 
-    moveToSequence(step: BaseFlowStep,fromSequence : string, toSequence : string, index?: number): void {
+    moveToSequence(step: BaseFlowStep, fromSequence : string, toSequence : string, index?: number): void {
+        let fromS = this.getSequence(fromSequence);
+        let toS = this.getSequence(toSequence);
+
+        if (!fromS || !toS) return;
+        fromS.remove(step);
+
+        this.add(step, toSequence, index);
     }
 
     getSequence(id: string): FlowStepSequence | null {

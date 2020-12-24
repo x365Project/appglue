@@ -10,8 +10,8 @@ export interface InlineInputProps {
 export const InheritLabel = styled.label`
     border-bottom: 2px solid transparent;
     &:hover {
-      border-bottom: 2px solid #93A9BF;
-      background-color: white;
+        border-bottom: 2px solid #93A9BF;
+        background-color: white;
     }
 `;
 
@@ -29,7 +29,6 @@ export const EditInput = styled(Input)`
             font-size: 14px;
             line-height: 20px;
             color: #677C95;
-    
             padding: 6px 12px;
         }
     }
@@ -37,11 +36,9 @@ export const EditInput = styled(Input)`
 
 export function InlineTextEdit(props: InlineInputProps) {
 
-
-    let [editing, setEditing] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     function clickAway() {
-        editing = false;
         setEditing(false);
     }
 
@@ -52,10 +49,7 @@ export function InlineTextEdit(props: InlineInputProps) {
                     value={props.text}
                     disableUnderline
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                       // props.text = event.target.value;
-                        if (props.onEdit){
-                            props.onEdit(event.target.value);
-                        }
+                        props.onEdit(event.target.value);
                     }}
                     onBlur={ clickAway }
                     onKeyDown={(event: React.KeyboardEvent) => {
@@ -63,6 +57,7 @@ export function InlineTextEdit(props: InlineInputProps) {
                             clickAway();
                         }
                     }}
+                    className="InlineEdit InlineEdit-input"
                 />
             </ClickAwayListener>
         );
@@ -70,10 +65,14 @@ export function InlineTextEdit(props: InlineInputProps) {
 
     function renderLabel() {
         return (
-            <InheritLabel onClick={() => {
-                editing = true;
-                setEditing( true);
-            }}>{props.text}</InheritLabel>
+            <InheritLabel
+                className="InlineEdit InlineEdit-label"
+                onClick={() => {
+                    setEditing( true);
+                }}
+            >
+                {props.text}
+            </InheritLabel>
         );
     }
 
