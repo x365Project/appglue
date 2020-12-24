@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 export interface InlineInputProps {
     text: string;
+    placeholder?: string;
     onEdit: (newValue: string) => void;
 }
 
@@ -58,6 +59,7 @@ export function InlineTextEdit(props: InlineInputProps) {
                         }
                     }}
                     className="InlineEdit InlineEdit-input"
+                    placeholder={props.placeholder}
                 />
             </ClickAwayListener>
         );
@@ -71,7 +73,7 @@ export function InlineTextEdit(props: InlineInputProps) {
                     setEditing( true);
                 }}
             >
-                {props.text}
+                {props.text || props.placeholder}
             </InheritLabel>
         );
     }

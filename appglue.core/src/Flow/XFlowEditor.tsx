@@ -15,7 +15,7 @@ import {
 import {AutoBind} from "../Common/AutoBind";
 import {FlowSequenceStack, FakeFlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
 import ReactDraggable from "react-draggable";
-import {Accordion} from "@material-ui/core";
+import {Accordion, MenuItem} from "@material-ui/core";
 import {
     EditLayerConfigArea,
     EditLayerStyledAccordionDetails,
@@ -27,7 +27,8 @@ import {
     TopbarDiv,
     TopbarViewButton,
     TopbarButtonGroup,
-    TopbarActionButton
+    TopbarActionButton,
+    ContextMenuForControl
 } from "../CommonUI/CommonStyles";
 import {BaseFlowStep} from "./Steps/BaseFlowStep";
 import {FlowStepSequence} from "./Structure/FlowStepSequence";
@@ -44,6 +45,10 @@ import { CutIcon } from "../CommonUI/Icon/CutIcon";
 import { PasteIcon } from "../CommonUI/Icon/PasteIcon";
 import { DeleteIcon } from "../CommonUI/Icon/DeleteIcon";
 import { DataUtilities } from "../Common/DataUtilities";
+import { IContextForControl } from "../Common/IContextForControl";
+import { CopyWhiteIcon } from "../CommonUI/Icon/CopyWhiteIcon";
+import { CutWhiteIcon } from "../CommonUI/Icon/CutWhiteIcon";
+import { DeleteWhiteIcon } from "../CommonUI/Icon/DeleteWhiteIcon";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -93,29 +98,39 @@ export class FlowEditContext {
     }
 
     @AutoBind
-    onCopy(e?: IFlowElement) {
-        let elem = e || this._lastSelectionElement;
+    onCopy(selectedId?: string) {
+        let elem = this._lastSelectionElement;
+        if (selectedId) {
+            elem = this.flow.find(selectedId) as IFlowElement;
+            this.contextControl = null;
+        }
         if (!elem) return;
 
         this.clipboardElement = this.clone(elem as BaseFlowStep) as IFlowElement;
 
-        StateManager.propertyChanged(this, 'clipboardElement');
     }
 
     @AutoBind
-    onCut(e?: IFlowElement) {
-        let elem = e || this._lastSelectionElement;
+    onCut(selectedId?: string) {
+        let elem = this._lastSelectionElement;
+        if (selectedId) {
+            elem = this.flow.find(selectedId) as IFlowElement;
+            this.contextControl = null;
+        }
         if (!elem) return;
 
         this.flow.remove(elem as BaseFlowStep);
         this.clipboardElement = this.clone(elem as BaseFlowStep) as IFlowElement;
 
-        StateManager.propertyChanged(this, 'clipboardElement');
     }
 
     @AutoBind
-    onDelete(e?: IFlowElement) {
-        let elem = e || this._lastSelectionElement;
+    onDelete(selectedId?: string) {
+        let elem = this._lastSelectionElement;
+        if (selectedId) {
+            elem = this.flow.find(selectedId) as IFlowElement;
+            this.contextControl = null;
+        }
         if (!elem) return;
 
         this.flow.remove(elem as BaseFlowStep);
@@ -133,7 +148,6 @@ export class FlowEditContext {
             }
         }
     }
-
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
@@ -177,6 +191,18 @@ export class FlowEditContext {
 
     set clipboardElement(elem: IFlowElement | undefined) {
         this._clipboardElement = elem;
+        StateManager.propertyChanged(this, 'clipboardElement');
+    }
+
+    private _contextControl: IContextForControl | null = null;
+
+    get contextControl(): IContextForControl | null {
+        return this._contextControl;
+    }
+
+    set contextControl(control: IContextForControl | null) {
+        this._contextControl = control;
+        StateManager.propertyChanged(this, 'contextControl');
     }
 
     refresh() {
@@ -323,7 +349,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
     return (
 		<ObserveState
 			listenTo={props.editContext}
-			properties={['flowTitle']}
+			properties={['flowTitle', 'clipboard']}
 			control={() =>
 				<TopbarDiv>
 					{
@@ -518,6 +544,32 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
         }, 500);
     }
 
+    function renderContextMenuUI() {
+        let contextControl = props.editContext.contextControl;
+        if (contextControl) {
+            return <ContextMenuForControl
+                open={!!contextControl}
+                onClose={() => props.editContext.contextControl = null}
+                anchorReference="anchorPosition"
+                anchorPosition={
+                contextControl.mouseY !== null && contextControl.mouseX !== null
+                    ? { top: contextControl.mouseY, left: contextControl.mouseX }
+                    : undefined
+                }
+            >
+                <MenuItem onClick={() => props.editContext.onCopy(contextControl!.selectedId)} data-testid="btn-context-copy">
+                    <CopyWhiteIcon/> Copy
+                </MenuItem>
+                <MenuItem onClick={() => props.editContext.onCut(contextControl!.selectedId)} data-testid="btn-context-cut">
+                    <CutWhiteIcon/> Cut
+                </MenuItem>
+                <MenuItem onClick={() => props.editContext.onDelete(contextControl!.selectedId)} data-testid="btn-context-paste">
+                    <DeleteWhiteIcon /> Delete
+                </MenuItem>
+            </ContextMenuForControl>
+        }
+    }
+
 
 
     return (
@@ -560,6 +612,13 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                     </ReactDraggable>
                 )
             }
+            <ObserveState listenTo={props.editContext} properties={["contextControl"]} control={
+                () => <>
+                    {
+                        renderContextMenuUI()
+                    }
+                </>
+            } />
 
         </DesignPanel>
     );
