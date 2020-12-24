@@ -32,6 +32,7 @@ import { CopyIcon } from "../../CommonUI/Icon/CopyIcon";
 import { CloseIcon } from "../../CommonUI/Icon/CloseIcon";
 import { PasteIcon } from "../../CommonUI/Icon/PasteIcon";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
+import { TopbarIconButton, TopbarSaveButton, TopbarActionButton, TopbarButtonGroup } from "../../CommonUI/CommonStyles";
 
 const SelectDiv = styled.div`
 	position: relative;
@@ -186,135 +187,6 @@ const Topbarlabel = styled(InputLabel)`
 	}
 `;
 
-const TopbarIconButton = styled(Button)`
-	&& {
-		padding: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 0;
-		width: 28px;
-		height: 27px;
-		min-width: 0;
-		border: none;
-
-		&.TopbarIconButton-selected {
-			background: #F2FAFE;
-		}
-		
-		@media (min-width: 768px) {
-			width: calc(28px + 10 * (100vw - 768px) / 598);
-			height: calc(27px + 2 * (100vw - 768px) / 598);
-		}
-
-		@media (min-width: 1366px) {
-			width: calc(38px + 12 * (100vw - 1366px) / 554);
-			height: calc(29px + 9 * (100vw - 1366px) / 554);
-		}
-
-		@media (min-width: 1920px) {
-			width: 50px;
-			height: 40px;
-		}
-
-		img {
-			transform: scale(0.67);
-			max-width: 20px;
-
-			@media (min-width: 1366px) {
-				transform: scale(0.78);
-			}
-
-			@media (min-width: 1920px) {
-				transform: scale(1);
-			}
-
-		}
-	}
-`;
-
-
-const TopbarSaveButton = styled(Button)`
-	&& {
-		justify-content: center;
-		padding: 0;
-		display: flex;
-		align-items: center;	
-		font-family: Mulish;
-		background: #15466B;
-		font-weight: bold;
-		min-width: 0;
-		width: 40px;
-		height: 28px;
-		font-size: 10px;
-
-		&:hover {
-			background: #1873b9;
-		}
-
-		@media (min-width: 768px) {
-			width: calc(40px + 26 * (100vw - 768px) / 598);
-			height: calc(28px + 4 * (100vw - 768px) / 598);
-			font-size: calc(10px + 2 * (100vw - 1366px) / 554);
-		}
-
-		@media (min-width: 1366px) {
-			width: calc(66px + 20 * (100vw - 1366px) / 554);
-			height: calc(32px + 10 * (100vw - 1366px) / 554);
-			font-size: calc(12px + 3 * (100vw - 1366px) / 554);
-			line-height: calc(15px + 4 * (100vw - 1366px) / 554);
-		}
-
-		@media (min-width: 1920px) {
-			width: 86px;
-			height: 42px;
-			font-size: 15px;
-			line-height: 19px;
-		}
-
-
-		span.label {
-			display: none;
-			@media (min-width: 1366px) {
-				display: block;
-			}
-		}
-
-		img {
-			display: block;
-			@media (min-width: 1366px) {
-				display: none;
-			}
-		}
-	}
-`;
-
-
-const TopbarActionButton: React.FC<{action?: () => void, disabled: boolean, title: string, icon: JSX.Element, testId: string}> =({
-	action,
-	disabled,
-	title,
-	icon,
-	testId
-}) => {
-	const button = (
-		<TopbarIconButton
-			onClick={() => action!()}
-			data-testid={testId}
-			disabled={disabled}
-		>
-			{icon}
-		</TopbarIconButton>
-	)
-
-	if (!disabled) {
-		return <Tooltip title={title}>
-			{button}
-		</Tooltip>
-	}
-	return button
-
-}
 
 class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
 
@@ -328,12 +200,9 @@ class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
 			<ObserveState
 				listenTo={this.props.editContext}
 				control={ () => 
-					<ButtonGroup
+					<TopbarButtonGroup
 						variant="outlined"
 						size="small"
-						classes={{
-							root: 'TopbarButtonGroup-root'
-						}}
 					>
 						<TopbarActionButton
 							title="Copy"
@@ -363,7 +232,7 @@ class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
 							testId="btn-topbar-delete"
 							action={this.props.editContext.onDelete}
 						/>
-					</ButtonGroup>
+					</TopbarButtonGroup>
 				}
 			/>
 		)
@@ -458,12 +327,9 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 							<Topbarlabel>
 								Display Format
 							</Topbarlabel>
-							<ButtonGroup
+							<TopbarButtonGroup
 								variant="outlined"
 								size="small"
-								classes={{
-									root: 'TopbarButtonGroup-root'
-								}}
 							>
 								<Tooltip title="Paper">
 									<TopbarIconButton
@@ -553,8 +419,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 										<CellphoneVerticalIcon alt={FormDesignConstants.FORM_MODE_PHONE_VERTICAL} />
 									</TopbarIconButton>
 								</Tooltip>
-								
-							</ButtonGroup>
+							</TopbarButtonGroup>
 						</ThemeProvider>
 					</TopbarItemDiv>
 					{
