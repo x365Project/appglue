@@ -6,6 +6,7 @@ export interface InlineInputProps {
     text: string;
     placeholder?: string;
     onEdit: (newValue: string) => void;
+    onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 export const InheritLabel = styled.label`
@@ -52,6 +53,11 @@ export function InlineTextEdit(props: InlineInputProps) {
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         props.onEdit(event.target.value);
                     }}
+                    onClick={(event: React.MouseEvent<HTMLElement>) => {
+                        if (props.onClick) {
+                            props.onClick(event);
+                        }
+                    }}
                     onBlur={ clickAway }
                     onKeyDown={(event: React.KeyboardEvent) => {
                         if (event.key === 'Enter') {
@@ -69,8 +75,11 @@ export function InlineTextEdit(props: InlineInputProps) {
         return (
             <InheritLabel
                 className="InlineEdit InlineEdit-label"
-                onClick={() => {
-                    setEditing( true);
+                onClick={(event: React.MouseEvent<HTMLLabelElement>) => {
+                    setEditing(true);
+                    if (props.onClick) {
+                        props.onClick(event);
+                    }
                 }}
             >
                 {props.text || props.placeholder}

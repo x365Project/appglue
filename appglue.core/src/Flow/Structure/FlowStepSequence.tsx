@@ -11,6 +11,8 @@ export class FlowStepSequence implements IFlowElement {
     x: number = -1;
     y: number = -1;
 
+    private _isCollapsed: boolean = false;
+
     steps: BaseFlowStep[] = [];
 
     get width(): number {
@@ -20,6 +22,15 @@ export class FlowStepSequence implements IFlowElement {
 
     get ports(): string[] {
         return [];
+    }
+
+    get isCollapsed() {
+        return this._isCollapsed;
+    }
+
+    set isCollapsed(collapsed: boolean) {
+        this._isCollapsed = collapsed;
+        StateManager.propertyChanged(this, 'isCollapsed');
     }
 
     remove(step: BaseFlowStep): void {

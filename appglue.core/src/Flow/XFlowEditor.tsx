@@ -299,13 +299,21 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 // changing order
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
             } else if (result.destination.droppableId === FlowConstants.FakeStackId) {
+
                 if (!isNew) {
                     this.props.flow.remove(control);
                 }
                 let initialSeq = new FlowStepSequence();
-                let length = this.props.flow.sequences.length - 1;
-                initialSeq.x = this.props.flow.sequences[length].x + 300;
-                initialSeq.y = this.props.flow.sequences[length].y;
+                let y = this.props.flow.sequences[0].y 
+                let x = Math.max(
+                    ...this.props.flow.sequences
+                        .filter((s) => {
+                            return s.y < y + 150;
+                        })
+                        .map((s) => s.x + (s.isCollapsed ? 150 : 300))
+                );
+                initialSeq.x = x;
+                initialSeq.y = y;
                 this.props.flow.sequences.push(initialSeq);
                 this.props.flow.add(control, initialSeq._id);
                 StateManager.propertyChanged(this.props.flow, 'sequences');

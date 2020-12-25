@@ -17,10 +17,11 @@ import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import { InlineTextEdit } from "../../CommonUI/InlineTextEdit";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
-import MovementIcon from "../../assets/images/icons/movement_white.svg";
-import DownIcon from "../../assets/images/icons/down.svg";
-import UpIcon from "../../assets/images/icons/up.svg";
-import { Collapse } from "@material-ui/core";
+import MovementSvg from "../../assets/images/icons/movement_white.svg";
+import {UpIcon} from "../../CommonUI/Icon/UpIcon";
+import {DownIcon} from "../../CommonUI/Icon/DownIcon";
+import {MoveIcon} from "../../CommonUI/Icon/MoveIcon";
+import { Collapse, Typography } from "@material-ui/core";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
@@ -28,28 +29,83 @@ const FlowSequenceDiv = styled('div')<{
 	x: number;
 	y: number;
 	isDragging: boolean;
+	index: number;
 }>`
-	width: ${props => props.width}px;
-	height: ${props => props.height ? `${props.height}px` : 'auto'};
 	top: ${props => props.isDragging ? 0 : props.y}px;
 	left: ${props => props.isDragging ? 0 : props.x}px;
-    background: white;
-    position: absolute;
-    border: 1px solid darkgray;
-    border-radius: 5px;
-    padding: 10px;
+    background: #fff;
+	position: absolute;
+	border: 1px solid darkgray;
+	border-radius: 5px;
+
 	margin-bottom: 10px;
+
+	width: ${props => props.width}px;
+	height: ${props => props.height ? `${props.height}px` : 'auto'};
 
 	${props => !props.isDragging && `
 		transform: none !important;
 	`}
 
-	&:hover {
-		cursor: url(${MovementIcon}), auto;
-	}
-
 	> * {
 		cursor: initial;
+	}
+
+	> div.stack {
+		position: relative;
+		padding: 15px 10px 10px;
+
+		${props => props.index > 0 && `
+			&.stack-move {
+				cursor: url(${MovementSvg}), auto;
+			}
+		`}
+
+	}
+
+	.InlineEdit {
+		min-width: 100px;
+		min-height: 25px;;
+		max-width: 100%;
+	}
+
+	.InlineEdit-label {
+		font-family: Mulish;
+		font-style: normal;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 25px;
+		color: #677C95;
+		text-align: center;
+		overflow: hidden;
+		padding: 0 6px;
+		width: 100%;
+		display: block;
+	}
+
+	.InlineEdit-input .MuiInputBase-input {
+		padding: 0;
+		width: auto;
+		text-align: center;
+	}
+
+	.button-group {
+		display: flex;
+		opacity: 0;
+		position: absolute;
+		right: 5px;
+		top: -20px;
+
+		transition: opacity .1s;
+	
+		> *:first-child {
+			margin-right: 5px;
+		}
+	}
+
+	&:hover .button-group {
+		opacity: 1;
+
 	}
 `;
 
@@ -58,52 +114,30 @@ const FlowSequenceSummary = styled.div`
 	flex-direction: column;
 `;
 
-const FlowSequenceHeader = styled("div")<{isCollapsed: boolean;}>`
-	display: flex;
-	align-items: center;
-	min-height: 20px;
-
-	border-bottom: solid 1px darkgray;
-	margin-bottom: 10px;
-	position: relative;
-
-	&:hover {
-		cursor: url(${props => !props.isCollapsed ?  UpIcon : DownIcon}), auto;
-	}
-`;
-
 const TitleDiv = styled.div`																										
 	position: absolute;
-	right: 5px;
+	left: 5px;
 	top: -20px;
 	border: solid 1px darkgray;
 	background: #fff;
 	min-width: 100px;
-	min-height: 20px;
+	min-height: 25px;;
 	display: flex;
 	border-top-right-radius: 4px;
 	border-top-left-radius: 4px;
+`;
 
-	.InlineEdit {
-		min-width: 100px;
-		min-height: 20px;
-		max-width: 120px;
-	}
 
-	.InlineEdit-label {
-		font-family: Mulish;
-		font-style: normal;
-		font-weight: 600;
-		font-size: 14px;
-		line-height: 20px;
-		color: #677C95;
-		text-align: center;
-	}
+const StyledIconButton = styled.div`
+	display: flex;
+	background: #fff;
+	border-radius: 4px;
+	padding: 5px;
+	border: solid 1px darkgray;
 
-	.InlineEdit-input .MuiInputBase-input {
-		padding: 0;
-		width: auto;
-		text-align: center;
+	img {
+		width: 15px;
+		height: 15px;
 	}
 `;
 
@@ -193,8 +227,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	
 	width: number = 275;
 
-	collapsedWidth: number = 150;
-	collapsedHeight: number = 150;
+	collapsedWidth: number = 120;
+	collapsedHeight: number = 120;
 	
 	constructor(props: IFlowSequenceStack) {
 		super(props);
@@ -226,15 +260,22 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
 	setCollapsed = (isCollapsed: boolean) => {
+		this.props.sequence.isCollapsed = isCollapsed;
 		this.setState({
 			isCollapsed: isCollapsed
 		})
 	}
 
 	onToggleCollapsed = (_event: React.MouseEvent<HTMLDivElement>) => {
+		this.props.sequence.isCollapsed = !this.state.isCollapsed;
 		this.setState({
 			isCollapsed: !this.state.isCollapsed
 		})
+	}
+
+	onTitleClick = (event: React.MouseEvent<HTMLElement>) => {
+		event.stopPropagation();
+		event.preventDefault();
 	}
 
     render() {
@@ -245,8 +286,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
                 defaultPosition={{x: this.props.sequence.x, y: this.props.sequence.y}}
 				onStop={this.onDragStop}
 				onStart={this.onDragStart}
-				handle={`.stack-wrapper`}
-				cancel=".stack-body"
+				handle={`.stack-move`}
+				cancel=".inline-editor"
             >
                 <FlowSequenceDiv
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
@@ -254,23 +295,37 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 					x={this.props.sequence.x}
 					y={this.props.sequence.y}
 					isDragging={this.state.isDragging}
-					className="stack-wrapper"
+					index={this.props.index}
 				>
-					<div className="stack-body">
-						<FlowSequenceHeader onClick={this.onToggleCollapsed} isCollapsed={this.state.isCollapsed}>
-							<ObserveState
+					<div className={`stack${this.state.isCollapsed ? ' stack-move': ''}`}>
+						{
+							!this.state.isCollapsed && <ObserveState
 								listenTo={this.props.sequence}
 								control={
-									() => <TitleDiv>
+									() => <TitleDiv className="inline-editor">
 										<InlineTextEdit
 											text={this.props.sequence.name || (this.props.index  === 0 ? 'primary' : '')}
 											placeholder={this.props.index > 0 ? 'unnamed' : 'primary'}
 											onEdit={this.onUpdateStackName}
+											onClick={this.onTitleClick}
 										/>
 									</TitleDiv>
 								}
 							/>
-						</FlowSequenceHeader>
+						}
+						
+						<div className="button-group">
+							<StyledIconButton onClick={this.onToggleCollapsed}>
+								{
+									this.state.isCollapsed ? <UpIcon /> : <DownIcon />
+								}
+							</StyledIconButton>
+							{
+								!this.state.isCollapsed && this.props.index !== 0 && <StyledIconButton className="stack-move">
+									<MoveIcon />
+								</StyledIconButton>
+							}
+						</div>
 						<Droppable droppableId={this.props.sequence._id}>
 							{(
 								provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
@@ -285,7 +340,22 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 												<>
 													<Collapse in={this.state.isCollapsed}>
 														<FlowSequenceSummary>
-															Steps: {this.props.sequence.steps.length}
+															<ObserveState
+																listenTo={this.props.sequence}
+																control={
+																	() =><div className="inline-editor">
+																		<InlineTextEdit
+																			text={this.props.sequence.name || (this.props.index  === 0 ? 'primary' : '')}
+																			placeholder={this.props.index > 0 ? 'unnamed' : 'primary'}
+																			onEdit={this.onUpdateStackName}
+																			onClick={this.onTitleClick}
+																		/>
+																	</div>
+																}
+															/>
+															<Typography align="center" variant="h4">
+																{this.props.sequence.steps.length}
+															</Typography>
 														</FlowSequenceSummary>
 													</Collapse>
 													<Collapse in={!this.state.isCollapsed}>
@@ -400,9 +470,16 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 export class FakeFlowSequenceStack extends React.Component<{ flow: XFlowConfiguration, show: boolean }, {}> {
 
 	getDefaultPosition = () => {
+		let y = this.props.flow.sequences[0].y 
+		let x = Math.max(
+			...this.props.flow.sequences
+				.filter((s) => {
+					return s.y < y + 150;
+				})
+				.map((s) => s.x + (s.isCollapsed ? 150 : 300))
+		);
 		return {
-			y: this.props.flow.sequences[0].y,
-			x: this.props.flow.sequences[this.props.flow.sequences.length - 1].x + 300
+			x, y
 		};
 	}
 
