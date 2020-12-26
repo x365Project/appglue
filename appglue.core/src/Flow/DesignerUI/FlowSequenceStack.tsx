@@ -64,15 +64,17 @@ const FlowSequenceDiv = styled('div')<{
 
 	.button-group {
 		display: flex;
+
 		opacity: 0;
+
 		position: absolute;
 		right: 5px;
 		top: -20px;
 
 		transition: opacity .1s;
 	
-		> *:first-child {
-			margin-right: 5px;
+		> *:last-child {
+			margin-left: 5px;
 		}
 	}
 
@@ -165,6 +167,19 @@ const StyledIconButton = styled.div`
 	img {
 		width: 15px;
 		height: 15px;
+	}
+
+	&.stack-move {
+		position: relative;
+
+		&::after {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			content: "";
+			height: 100%;
+		}
 	}
 
 `;
@@ -281,7 +296,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 			isDragging: true
 		})
 	}
-	
+
 	onUpdateStackName = (newValue: string) => {
 		if (newValue.length <= 30) {
 			this.props.sequence.name = newValue;
@@ -328,6 +343,14 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 						this.props.editContext.setSelection(this.props.sequence);
 					}}
 					selected={this.props.editContext.selection === this.props.sequence._id}
+					onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
+						e.preventDefault();
+						this.props.editContext.contextControl = {
+							selectedId: this.props.sequence._id,
+							mouseX: e.clientX,
+							mouseY: e.clientY
+						}
+					}}
 				>
 					<div className={`stack${this.state.isCollapsed ? ' stack-move': ''}`}>
 						<ObserveState
@@ -410,6 +433,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																					<div
 																						onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
 																							e.preventDefault();
+																							e.stopPropagation();
 																							this.props.editContext.contextControl = {
 																								selectedId: step._id,
 																								mouseX: e.clientX,

@@ -141,6 +141,15 @@ export class FlowEditContext {
         if (!elem) return;
 
         if (elem instanceof FlowStepSequence) {
+
+            if (!(elem as FlowStepSequence).canCopy) {
+                this.notification = {
+                    message: 'You can not copy this sequence',
+                    onSuccess: () => {}
+                }
+                return;
+            }
+
             let idx = this.flow.sequences.indexOf(elem as FlowStepSequence);
             if (idx > 0) {
                 if ((elem as FlowStepSequence).steps.length > 0) {
@@ -152,6 +161,7 @@ export class FlowEditContext {
                         onCancel: () => {}
                     }
                 } else {
+                    this.deleteSequence(idx);
                 }
             } else {
                 this.notification = {

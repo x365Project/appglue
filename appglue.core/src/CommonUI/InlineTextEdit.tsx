@@ -60,6 +60,7 @@ export function InlineTextEdit(props: InlineInputProps) {
                     }}
                     className="InlineEdit InlineEdit-input"
                     placeholder={props.placeholder}
+                    autoFocus
                 />
             </ClickAwayListener>
         );
