@@ -20,10 +20,11 @@ export class XFlowConfiguration implements IFlowElement{
        // this.connections = [];
     }
 
-    find(stepId: string): BaseFlowStep | null {
+    find(id: string): IFlowElement | null {
         for (let s of this.sequences) {
+            if (s._id === id) return s;
             for (let step of s.steps) {
-                if (step._id === stepId) return step;
+                if (step._id === id) return step;
             }
         }
         return null;
@@ -37,7 +38,7 @@ export class XFlowConfiguration implements IFlowElement{
             sequence._id = sequenceId;
             this.sequences.push(sequence);
         }
-        if (!index){
+        if (index === undefined || index === null){
             sequence.steps.push(step);
         }
         else {
@@ -50,11 +51,11 @@ export class XFlowConfiguration implements IFlowElement{
         if (sequenceId) {
             let sequence = this.getSequence(sequenceId);
             if (sequence) {
-                sequence.remove(step);
+                sequence.remove(step as BaseFlowStep);
             }
         } else {
             for (let s of this.sequences) {
-                s.remove(step);
+                s.remove(step as BaseFlowStep);
             }
         }
     }
