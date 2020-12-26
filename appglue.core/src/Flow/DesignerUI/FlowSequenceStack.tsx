@@ -17,10 +17,11 @@ import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import { InlineTextEdit } from "../../CommonUI/InlineTextEdit";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
-import MovementIcon from "../../assets/images/icons/movement_white.svg";
-import DownIcon from "../../assets/images/icons/down.svg";
-import UpIcon from "../../assets/images/icons/up.svg";
-import { Collapse } from "@material-ui/core";
+import MovementSvg from "../../assets/images/icons/movement_white.svg";
+import {UpIcon} from "../../CommonUI/Icon/UpIcon";
+import {DownIcon} from "../../CommonUI/Icon/DownIcon";
+import {MoveIcon} from "../../CommonUI/Icon/MoveIcon";
+import { Collapse, Typography } from "@material-ui/core";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
@@ -28,28 +29,56 @@ const FlowSequenceDiv = styled('div')<{
 	x: number;
 	y: number;
 	isDragging: boolean;
+	index: number;
+	selected: boolean;
 }>`
-	width: ${props => props.width}px;
-	height: ${props => props.height ? `${props.height}px` : 'auto'};
 	top: ${props => props.isDragging ? 0 : props.y}px;
 	left: ${props => props.isDragging ? 0 : props.x}px;
-    background: white;
-    position: absolute;
-    border: 1px solid darkgray;
-    border-radius: 5px;
-    padding: 10px;
+    background: #fff;
+	position: absolute;
+	border-radius: 5px;
 	margin-bottom: 10px;
+	min-width: ${props => props.width}px;
+	height: ${props => props.height ? `${props.height}px` : 'auto'};
+	border: 1px solid ${props => props.selected ? 'blue': 'darkgray'};
 
 	${props => !props.isDragging && `
 		transform: none !important;
 	`}
 
-	&:hover {
-		cursor: url(${MovementIcon}), auto;
-	}
-
 	> * {
 		cursor: initial;
+	}
+
+	> div.stack {
+		position: relative;
+		padding: 15px 10px 10px;
+
+		${props => props.index > 0 && `
+			&.stack-move {
+				cursor: url(${MovementSvg}), auto;
+			}
+		`}
+
+	}
+
+	.button-group {
+		display: flex;
+		opacity: 0;
+		position: absolute;
+		right: 5px;
+		top: -20px;
+
+		transition: opacity .1s;
+	
+		> *:first-child {
+			margin-right: 5px;
+		}
+	}
+
+	&:hover .button-group {
+		opacity: 1;
+
 	}
 `;
 
@@ -58,53 +87,86 @@ const FlowSequenceSummary = styled.div`
 	flex-direction: column;
 `;
 
-const FlowSequenceHeader = styled("div")<{isCollapsed: boolean;}>`
-	display: flex;
-	align-items: center;
-	min-height: 20px;
-
-	border-bottom: solid 1px darkgray;
-	margin-bottom: 10px;
-	position: relative;
-
-	&:hover {
-		cursor: url(${props => !props.isCollapsed ?  UpIcon : DownIcon}), auto;
-	}
-`;
-
-const TitleDiv = styled.div`																										
-	position: absolute;
-	right: 5px;
-	top: -20px;
-	border: solid 1px darkgray;
-	background: #fff;
+const TitleDiv = styled("div")<{content?:string;}>`
+	margin-top: -32px;
+	
+	background: transparent;
 	min-width: 100px;
-	min-height: 20px;
+	min-height: 37px;;
+	margin-bottom: 15px; 
+	margin-right: 65px;
 	display: flex;
-	border-top-right-radius: 4px;
-	border-top-left-radius: 4px;
 
 	.InlineEdit {
 		min-width: 100px;
-		min-height: 20px;
-		max-width: 120px;
+		max-width: 100%;
+		height: 37px;
+		overflow: hidden;
+		border: solid 1px darkgray;
+		background: #fff;
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
 	}
 
 	.InlineEdit-label {
 		font-family: Mulish;
 		font-style: normal;
 		font-weight: 600;
-		font-size: 14px;
-		line-height: 20px;
+		font-size: 15px;
+		line-height: 25px;
 		color: #677C95;
-		text-align: center;
+		padding: 6px;
+		max-width: 100%;
+		letter-spacing: .5px;
 	}
 
-	.InlineEdit-input .MuiInputBase-input {
-		padding: 0;
-		width: auto;
-		text-align: center;
+	.InlineEdit-input {
+		position: relative;
+		display: inline-block;
+		.MuiInputBase-input {
+			padding: 6px;
+			max-width: 100%;
+			font-size: 15px;
+			font-family: Mulish;
+			font-style: normal;
+			font-weight: 600;
+			border: none;
+			line-height: 25px;
+			letter-spacing: .5px;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+
+		&::before {
+			content: "${props => props.content || ''}";
+			font-size: 15px;
+			display: block;
+			font-family: Mulish;
+			font-style: normal;
+			font-weight: 600;
+			padding: 0 6px;
+			letter-spacing: .5px;
+			opacity: 0;
+		}
 	}
+
+`;
+
+
+const StyledIconButton = styled.div`
+	display: flex;
+	background: #fff;
+	border-radius: 4px;
+	padding: 5px;
+	border: solid 1px darkgray;
+	cursor: initial;
+
+	img {
+		width: 15px;
+		height: 15px;
+	}
+
 `;
 
 const FlowSequenceContent = styled.div`
@@ -193,9 +255,9 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	
 	width: number = 275;
 
-	collapsedWidth: number = 150;
-	collapsedHeight: number = 150;
-	
+	collapsedWidth: number = 120;
+	collapsedHeight: number = 120;
+
 	constructor(props: IFlowSequenceStack) {
 		super(props);
 
@@ -221,8 +283,10 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 	
 	onUpdateStackName = (newValue: string) => {
-		this.props.sequence.name = newValue;
-		StateManager.propertyChanged(this.props.sequence, 'name');
+		if (newValue.length <= 30) {
+			this.props.sequence.name = newValue;
+			StateManager.propertyChanged(this.props.sequence, 'name');
+		}
 	}
 
 	setCollapsed = (isCollapsed: boolean) => {
@@ -237,6 +301,11 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		})
 	}
 
+	onTitleClick = (event: React.MouseEvent<HTMLElement>) => {
+		event.stopPropagation();
+		event.preventDefault();
+	}
+
     render() {
         return (
             <ReactDraggable
@@ -245,8 +314,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
                 defaultPosition={{x: this.props.sequence.x, y: this.props.sequence.y}}
 				onStop={this.onDragStop}
 				onStart={this.onDragStart}
-				handle={`.stack-wrapper`}
-				cancel=".stack-body"
+				handle={`.stack-move`}
+				cancel=".inline-editor"
             >
                 <FlowSequenceDiv
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
@@ -254,23 +323,38 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 					x={this.props.sequence.x}
 					y={this.props.sequence.y}
 					isDragging={this.state.isDragging}
-					className="stack-wrapper"
+					index={this.props.index}
+					onClick={(_e: React.MouseEvent<HTMLDivElement>) => {
+						this.props.editContext.setSelection(this.props.sequence);
+					}}
+					selected={this.props.editContext.selection === this.props.sequence._id}
 				>
-					<div className="stack-body">
-						<FlowSequenceHeader onClick={this.onToggleCollapsed} isCollapsed={this.state.isCollapsed}>
-							<ObserveState
-								listenTo={this.props.sequence}
-								control={
-									() => <TitleDiv>
-										<InlineTextEdit
-											text={this.props.sequence.name || (this.props.index  === 0 ? 'primary' : '')}
-											placeholder={this.props.index > 0 ? 'unnamed' : 'primary'}
-											onEdit={this.onUpdateStackName}
-										/>
-									</TitleDiv>
+					<div className={`stack${this.state.isCollapsed ? ' stack-move': ''}`}>
+						<ObserveState
+							listenTo={this.props.sequence}
+							control={
+								() => <TitleDiv className="inline-editor" content={this.props.sequence.name}>
+									<InlineTextEdit
+										text={this.props.sequence.name || (this.props.index  === 0 ? 'primary' : '')}
+										placeholder={this.props.index > 0 ? 'unnamed' : 'primary'}
+										onEdit={this.onUpdateStackName}
+									/>
+								</TitleDiv>
+							}
+						/>
+						
+						<div className="button-group">
+							<StyledIconButton onClick={this.onToggleCollapsed} data-testid="btn-stack-collapse">
+								{
+									this.state.isCollapsed ? <UpIcon /> : <DownIcon />
 								}
-							/>
-						</FlowSequenceHeader>
+							</StyledIconButton>
+							{
+								!this.state.isCollapsed && this.props.index !== 0 && <StyledIconButton className="stack-move">
+									<MoveIcon />
+								</StyledIconButton>
+							}
+						</div>
 						<Droppable droppableId={this.props.sequence._id}>
 							{(
 								provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
@@ -285,7 +369,12 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 												<>
 													<Collapse in={this.state.isCollapsed}>
 														<FlowSequenceSummary>
-															Steps: {this.props.sequence.steps.length}
+															<Typography align="center">
+																Steps
+															</Typography>
+															<Typography align="center" variant="h4" data-testid="steps-count">
+																{this.props.sequence.steps.length}
+															</Typography>
 														</FlowSequenceSummary>
 													</Collapse>
 													<Collapse in={!this.state.isCollapsed}>
@@ -311,7 +400,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																	<Draggable
 																		key={step._id}
 																		draggableId={step._id}
-																		index={i}>
+																		index={i}
+																	>
 																		{
 																			(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
 
@@ -368,14 +458,12 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 					</div>
                 </FlowSequenceDiv>
             </ReactDraggable>
-            
-
         );
     }
 
     renderAltPath(sequence: FlowStepSequence, step: BaseFlowStep, stepOutput: FlowStepOutput, editContext: FlowEditContext) {
         return (
-            <div onClick={() => {
+            <div onClick={(_event: React.MouseEvent<HTMLDivElement>) => {
                     editContext.setSelection(step);
                 }}>
                 <StepPathConnectDiv/>
@@ -388,7 +476,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 
     private renderStep(step: BaseFlowStep, editContext: FlowEditContext) {
         return (
-            <StepSurround selected={editContext.selection === step._id} invalid={false} onClick={() => {
+            <StepSurround selected={editContext.selection === step._id} invalid={false} onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+				event.stopPropagation();
                 editContext.setSelection(step);
             }}>
                 {step.render()}
@@ -400,9 +489,17 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 export class FakeFlowSequenceStack extends React.Component<{ flow: XFlowConfiguration, show: boolean }, {}> {
 
 	getDefaultPosition = () => {
+		let y = this.props.flow.sequences[0].y;
+		let x = Math.max(
+			...this.props.flow.sequences
+				.filter((s) => {
+					return s.y < y + 150;
+				})
+				.map((s) => s.x + (s.isCollapsed ? 150 : 300))
+		);
+
 		return {
-			y: this.props.flow.sequences[0].y,
-			x: this.props.flow.sequences[this.props.flow.sequences.length - 1].x + 300
+			x, y
 		};
 	}
 

@@ -15,7 +15,7 @@ import {
 import {AutoBind} from "../Common/AutoBind";
 import {FlowSequenceStack, FakeFlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
 import ReactDraggable from "react-draggable";
-import {Accordion, MenuItem} from "@material-ui/core";
+import {Accordion, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button} from "@material-ui/core";
 import {
     EditLayerConfigArea,
     EditLayerStyledAccordionDetails,
@@ -75,6 +75,13 @@ const FlowMainSectionDiv = styled.div`
     height: 100vh;
 `;
 
+export interface IDialog {
+    message: string;
+    onSuccess?: () => void,
+    onCancel?: () => void,
+}
+
+
 export class FlowEditContext {
     flowEditor: XFlowEditor;
 
@@ -82,19 +89,26 @@ export class FlowEditContext {
     viewAPIUrl?: string;
     isDraggingControl: boolean = false;
 
+
 	public onFlowSave?: () => void;
     public onFlowCancel? : () => void ;
 
 
     @AutoBind
-    clone(step: BaseFlowStep) : BaseFlowStep {
-        let type = step.name!;
-        let registeredControl = Object.values(FlowStepRegistration).filter((v: RegistrationData) => {
-            return Reflect.get(v.prototype, '__type') === type;
-        })[0];
-        let val = new registeredControl!.prototype.constructor();
+    clone(s: IFlowElement) : IFlowElement {
+        let val;
+        if (s instanceof FlowStepSequence) {
+            val = new FlowStepSequence();
+        } else {
+            let type = s.name!;
+            let registeredControl = Object.values(FlowStepRegistration).filter((v: RegistrationData) => {
+                return Reflect.get(v.prototype, '__type') === type;
+            })[0];
+    
+            val = new registeredControl!.prototype.constructor();
+        }
 
-        return Object.assign(val, step);
+        return Object.assign(val, s);
     }
 
     @AutoBind
@@ -106,7 +120,14 @@ export class FlowEditContext {
         }
         if (!elem) return;
 
-        this.clipboardElement = this.clone(elem as BaseFlowStep) as IFlowElement;
+        if (elem instanceof FlowStepSequence && !(elem as FlowStepSequence).canCopy) {
+            this.notification = {
+                message: 'You can not copy this sequence',
+                onSuccess: () => {}
+            }
+        } else {
+            this.clipboardElement = this.clone(elem) as IFlowElement;
+        }
 
     }
 
@@ -119,9 +140,36 @@ export class FlowEditContext {
         }
         if (!elem) return;
 
-        this.flow.remove(elem as BaseFlowStep);
-        this.clipboardElement = this.clone(elem as BaseFlowStep) as IFlowElement;
+        if (elem instanceof FlowStepSequence) {
+            let idx = this.flow.sequences.indexOf(elem as FlowStepSequence);
+            if (idx > 0) {
+                if ((elem as FlowStepSequence).steps.length > 0) {
+                    this.notification = {
+                        message: 'This sequence has the steps. Do you want to cut it really?',
+                        onSuccess: () => {
+                            this.deleteSequence(idx);
+                        },
+                        onCancel: () => {}
+                    }
+                } else {
+                }
+            } else {
+                this.notification = {
+                    message: 'Primary Stack can not be cut. But it\'s copied to clipboarded',
+                    onSuccess: () => {}
+                }
+            }
+        } else {
+            this.flow.remove(elem as BaseFlowStep);
+        }
+        this.clipboardElement = this.clone(elem) as IFlowElement;
 
+    }
+
+    @AutoBind
+    deleteSequence(idx: number) {
+        this.flow.sequences.splice(idx, 1);
+        StateManager.propertyChanged(this.flow, 'sequences');
     }
 
     @AutoBind
@@ -133,20 +181,73 @@ export class FlowEditContext {
         }
         if (!elem) return;
 
-        this.flow.remove(elem as BaseFlowStep);
+        if (elem instanceof FlowStepSequence) {
+            if (!(elem as FlowStepSequence).canDelete) {
+                this.notification = {
+                    message: 'You can not delete this sequence',
+                    onSuccess: () => {}
+                }
+                return;
+            }
+            let idx = this.flow.sequences.indexOf(elem as FlowStepSequence);
+            if (idx > 0) {
+                if ((elem as FlowStepSequence).steps.length > 0) {
+                    this.notification = {
+                        message: 'This sequence has the steps. If you delete this, you will lost all data. it\'s okay?',
+                        onSuccess: () => {
+                            this.deleteSequence(idx);
+                        },
+                        onCancel: () => {}
+                    }
+                } else {
+                    this.deleteSequence(idx);
+                }
+                
+            } else {
+                this.notification = {
+                    message: 'Primary Stack can not be deleted.',
+                    onSuccess: () => {}
+                }
+            }
+        } else {
+            this.flow.remove(elem as BaseFlowStep);
+        }
+
     };
 
     @AutoBind
     onPaste() {
         if (!this.clipboardElement || !this.selectionElement) return;
-        this.clipboardElement._id = DataUtilities.generateUniqueId();
-        for (let s of this.flow.sequences) {
-            let idx = s.steps.indexOf(this.selectionElement as BaseFlowStep);
-            if (idx >= 0) {
-                this.flow.add(this.clone(this.clipboardElement as BaseFlowStep), s._id, idx);
-                break;
+
+        if (this.clipboardElement instanceof FlowStepSequence && this.selectionElement instanceof FlowStepSequence) {
+            let idx = this.flow.sequences.indexOf(this.selectionElement as FlowStepSequence);
+            let newSeq = this.clone(this.clipboardElement) as FlowStepSequence;
+            newSeq._id = DataUtilities.generateUniqueId();
+            newSeq.steps = newSeq.steps.map((s: BaseFlowStep) => {
+                let newS = this.clone(s) as BaseFlowStep;
+                newS._id = DataUtilities.generateUniqueId();
+                return newS;
+            });
+
+            newSeq.x += 20;
+            newSeq.y += 20;
+
+            this.flow.sequences.splice(idx + 1, 0, newSeq);
+
+            StateManager.propertyChanged(this.flow, 'sequences');
+
+        } else if (!(this.clipboardElement instanceof FlowStepSequence) && !(this.selectionElement instanceof FlowStepSequence)) {
+            for (let s of this.flow.sequences) {
+                let idx = s.steps.indexOf(this.selectionElement as BaseFlowStep);
+                if (idx >= 0) {
+                    let elem = this.clone(this.clipboardElement) as BaseFlowStep;
+                    elem._id = DataUtilities.generateUniqueId();
+                    this.flow.add(elem, s._id, idx);
+                    break;
+                }
             }
         }
+
     }
 
     constructor(flowEditor: XFlowEditor) {
@@ -205,6 +306,17 @@ export class FlowEditContext {
         StateManager.propertyChanged(this, 'contextControl');
     }
 
+    private _notification?: IDialog;
+
+    set notification(n: IDialog | undefined) {
+        this._notification = n;
+        StateManager.propertyChanged(this, 'notification');
+    }
+
+    get notification() {
+        return this._notification;
+    }
+
     refresh() {
         this.flowEditor.forceUpdate();
     }
@@ -249,7 +361,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                         <ObserveState listenTo={this.props.flow} properties={["sequences"]} control={() => (
                             <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
                         )} />
-                        
                     </FlowMainSectionDiv>
                 </FlowEditorDiv>
             </DragDropContext>
@@ -291,7 +402,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
             isNew = true;
         } else {
-            control = this.props.flow.find(result.draggableId);
+            control = this.props.flow.find(result.draggableId) as BaseFlowStep;
         }
 
         if (control) {
@@ -299,13 +410,21 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 // changing order
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
             } else if (result.destination.droppableId === FlowConstants.FakeStackId) {
+
                 if (!isNew) {
                     this.props.flow.remove(control);
                 }
                 let initialSeq = new FlowStepSequence();
-                let length = this.props.flow.sequences.length - 1;
-                initialSeq.x = this.props.flow.sequences[length].x + 300;
-                initialSeq.y = this.props.flow.sequences[length].y;
+                let y = this.props.flow.sequences[0].y 
+                let x = Math.max(
+                    ...this.props.flow.sequences
+                        .filter((s) => {
+                            return s.y < y + 150;
+                        })
+                        .map((s) => s.x + (s.isCollapsed ? 150 : 300))
+                );
+                initialSeq.x = x;
+                initialSeq.y = y;
                 this.props.flow.sequences.push(initialSeq);
                 this.props.flow.add(control, initialSeq._id);
                 StateManager.propertyChanged(this.props.flow, 'sequences');
@@ -349,7 +468,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
     return (
 		<ObserveState
 			listenTo={props.editContext}
-			properties={['flowTitle', 'clipboard']}
+			properties={['flowTitle', 'clipboardElement']}
 			control={() =>
 				<TopbarDiv>
 					{
@@ -388,7 +507,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 						<TopbarActionButton
 							title="Paste"
 							icon={<PasteIcon />}
-							disabled={isActionDisabled()}
+							disabled={isActionDisabled() || !props.editContext.clipboardElement}
 							testId="btn-topbar-paste"
 							action={props.editContext.onPaste}
 						/>
@@ -544,6 +663,20 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
         }, 500);
     }
 
+    function onClose() {
+        if (props.editContext.notification!.onCancel) {
+            props.editContext.notification!.onCancel();
+        }
+        props.editContext.notification = undefined;
+    }
+
+    function onSuccess() {
+        if (props.editContext.notification!.onSuccess) {
+            props.editContext.notification!.onSuccess();
+        }
+        props.editContext.notification = undefined;
+    }
+
     function renderContextMenuUI() {
         let contextControl = props.editContext.contextControl;
         if (contextControl) {
@@ -570,6 +703,37 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
         }
     }
 
+    function renderDialog() {
+        return <ObserveState
+            listenTo={props.editContext}
+            properties={["notification"]}
+            control={
+                () => <Dialog
+                    open={!!props.editContext.notification}
+                    onClose={onClose}
+                >
+                    <DialogTitle>
+                        Warning
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>{props.editContext.notification && props.editContext.notification!.message}</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        {
+                            props.editContext.notification && props.editContext.notification!.onSuccess
+                            && <Button variant="contained" color="primary" onClick={onSuccess} data-testid="btn-dialog-success">OK</Button>
+                        }
+                        {
+                            props.editContext.notification && props.editContext.notification!.onCancel
+                            && <Button variant="contained" onClick={onClose} data-testid="btn-dialog-cancel">Cancel</Button>
+                        }
+                        
+                        
+                    </DialogActions>
+                </Dialog>
+            }
+        />
+    }
 
 
     return (
@@ -619,6 +783,9 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                     }
                 </>
             } />
+            {
+                renderDialog()
+            }
 
         </DesignPanel>
     );

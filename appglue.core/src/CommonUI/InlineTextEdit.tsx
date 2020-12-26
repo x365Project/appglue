@@ -69,8 +69,8 @@ export function InlineTextEdit(props: InlineInputProps) {
         return (
             <InheritLabel
                 className="InlineEdit InlineEdit-label"
-                onClick={() => {
-                    setEditing( true);
+                onClick={(event: React.MouseEvent<HTMLLabelElement>) => {
+                    setEditing(true);
                 }}
             >
                 {props.text || props.placeholder}

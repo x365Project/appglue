@@ -11,15 +11,43 @@ export class FlowStepSequence implements IFlowElement {
     x: number = -1;
     y: number = -1;
 
+    private _canDelete: boolean = true;
+    get canDelete(): boolean {
+        return this._canDelete;
+    }
+
+    set canDelete(d: boolean) {
+        this._canDelete = d;
+    }
+
+    private _canCopy: boolean = true;
+
+    get canCopy(): boolean {
+        return this._canCopy;
+    }
+
+    set canCopy(c: boolean) {
+        this._canCopy = c;
+    }
+
     steps: BaseFlowStep[] = [];
 
     get width(): number {
-        // set some size defaults
         return 275;
     }
-
+    
     get ports(): string[] {
         return [];
+    }
+
+    private _isCollapsed: boolean = false;
+    get isCollapsed() {
+        return this._isCollapsed;
+    }
+
+    set isCollapsed(collapsed: boolean) {
+        this._isCollapsed = collapsed;
+        StateManager.propertyChanged(this, 'isCollapsed');
     }
 
     remove(step: BaseFlowStep): void {

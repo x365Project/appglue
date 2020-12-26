@@ -23,7 +23,6 @@ export const WithStepsEmptyDesigner = TestTemplate.bind({},{flow: flow});
 
 flow = getFlowWithNoSteps();
 
-
 export const AllTopbarControls = TestTemplate.bind({},{
     flow: flow, 
     flowTitle: 'Flow Title', 
@@ -31,3 +30,13 @@ export const AllTopbarControls = TestTemplate.bind({},{
     onFlowCancel: () => {},
     onFlowSave: () => {}
 });
+
+flow = getFlowWithSteps();
+flow.sequences[0].canDelete = false;
+
+export const CanNotDeleteSequence = TestTemplate.bind({},{flow: flow});
+
+flow = getFlowWithSteps();
+flow.sequences[0].canCopy = false;
+
+export const CanNotCopySequence = TestTemplate.bind({},{flow: flow});
