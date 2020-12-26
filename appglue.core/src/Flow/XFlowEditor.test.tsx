@@ -1,10 +1,11 @@
 import React from 'react';
 import { render, fireEvent } from "@testing-library/react";
 import {FlowEditorParameters, XFlowEditor} from "./XFlowEditor";
-import { XFlowConfiguration } from './Structure/XFlowConfiguration';
+import { getFlowWithSteps } from './Testing/TestDataSetup';
+import { FlowStepSequence } from './Structure/FlowStepSequence';
 
 class FlowEditorParams implements FlowEditorParameters {
-    flow = new XFlowConfiguration();
+    flow = getFlowWithSteps();
     flowTitle?: string;
 	viewAPIUrl?: string;
 	onFlowSave?: () => void;
@@ -93,7 +94,7 @@ describe("XFlowEditor", () => {
         expect(errorList).toHaveLength(0);
     });
 
-    it("Check if FlowSequenceStack works correctly", () => {
+    it("Check if FlowSequenceStack title works correctly", () => {
 
         let flowEditor = new FlowEditorParams();
 
@@ -107,10 +108,147 @@ describe("XFlowEditor", () => {
 
         fireEvent.change(stackInput!, {target: {value: 'new title'}});
         fireEvent.blur(stackInput!)
+        
         expect(stackInput!).not.toBeInTheDocument();
-
         stackLabel = container.querySelector('.InlineEdit-label');
         expect(stackLabel).toHaveTextContent('new title');
+    });
+
+    it("Check stack copy/cut/paste/delete functions", () => {
+        let flowEditor = new FlowEditorParams();
+
+        const {container, queryByTestId} = render(<XFlowEditor {...flowEditor} />);
+        let cutBtn = queryByTestId('btn-topbar-cut');
+        expect(cutBtn).toBeInTheDocument();
+        expect(cutBtn).toHaveAttribute('disabled');
+
+        let pasteBtn = queryByTestId('btn-topbar-paste');
+        expect(pasteBtn).toBeInTheDocument();
+        expect(pasteBtn).toHaveAttribute('disabled');
+
+        let deleteBtn = queryByTestId('btn-topbar-delete');
+        expect(deleteBtn).toBeInTheDocument();
+        expect(deleteBtn).toHaveAttribute('disabled');
+
+        let copyBtn = queryByTestId('btn-topbar-copy');
+        expect(copyBtn).toBeInTheDocument();
+        expect(copyBtn).toHaveAttribute('disabled');
+
+        let sequence = container.querySelector('.stack');
+
+        expect(sequence).toBeInTheDocument();
+
+        // select
+        fireEvent.click(sequence!);
+        cutBtn = queryByTestId('btn-topbar-cut');
+        expect(cutBtn).not.toHaveAttribute('disabled');
+
+        pasteBtn = queryByTestId('btn-topbar-paste');
+        expect(pasteBtn).toHaveAttribute('disabled');
+
+        deleteBtn = queryByTestId('btn-topbar-delete');
+        expect(deleteBtn).not.toHaveAttribute('disabled');
+
+        copyBtn = queryByTestId('btn-topbar-copy');
+        expect(copyBtn).not.toHaveAttribute('disabled');
+
+        let collapseBtn = queryByTestId('btn-stack-collapse');
+        expect(collapseBtn).toBeInTheDocument();
+
+        fireEvent.click(copyBtn!);
+
+        pasteBtn = queryByTestId('btn-topbar-paste');
+        expect(pasteBtn).not.toHaveAttribute('disabled');
+
+        fireEvent.click(pasteBtn!);
+
+        let sequences = container.querySelectorAll('.stack');
+        expect(sequences).toHaveLength(2);
+
+        fireEvent.click(sequences[1]);
+        cutBtn = queryByTestId('btn-topbar-cut');
+
+        fireEvent.click(cutBtn!);
+        
+        let btnDialogSuccess = queryByTestId('btn-dialog-success');
+        expect(btnDialogSuccess).toBeInTheDocument();
+
+        fireEvent.click(btnDialogSuccess!);
+        fireEvent.click(pasteBtn!);
+
+        sequences = container.querySelectorAll('.stack');
+        expect(sequences).toHaveLength(2);
+
+        fireEvent.click(sequences[1]);
+
+        fireEvent.click(deleteBtn!);
+        btnDialogSuccess = queryByTestId('btn-dialog-success');
+        expect(btnDialogSuccess).toBeInTheDocument();
+        fireEvent.click(btnDialogSuccess!);
+
+        sequences = container.querySelectorAll('.stack');
+        expect(sequences).toHaveLength(1);
+    });
+
+    it("Check stack locked copy/cut/paste/delete functions", () => {
+        let flowEditor = new FlowEditorParams();
+        let newSeq = new FlowStepSequence();
+        newSeq.canCopy = false;
+        newSeq.canDelete = false;
+        flowEditor.flow.sequences.push(newSeq);
+        newSeq.x = 100;
+        newSeq.y = 20;
+
+        const {container, queryByTestId} = render(<XFlowEditor {...flowEditor} />);
+        let cutBtn = queryByTestId('btn-topbar-cut');
+        expect(cutBtn).toBeInTheDocument();
+        expect(cutBtn).toHaveAttribute('disabled');
+
+        let pasteBtn = queryByTestId('btn-topbar-paste');
+        expect(pasteBtn).toBeInTheDocument();
+        expect(pasteBtn).toHaveAttribute('disabled');
+
+        let deleteBtn = queryByTestId('btn-topbar-delete');
+        expect(deleteBtn).toBeInTheDocument();
+        expect(deleteBtn).toHaveAttribute('disabled');
+
+        let copyBtn = queryByTestId('btn-topbar-copy');
+        expect(copyBtn).toBeInTheDocument();
+        expect(copyBtn).toHaveAttribute('disabled');
+
+        let sequences = container.querySelectorAll('.stack');
+        expect(sequences).toHaveLength(2);
+
+        fireEvent.click(sequences[1]);
+
+        copyBtn = queryByTestId('btn-topbar-copy');
+        expect(copyBtn).toBeInTheDocument();
+        expect(copyBtn).not.toHaveAttribute('disabled');
+        fireEvent.click(copyBtn!);
+
+        let btnDialogSuccess = queryByTestId('btn-dialog-success');
+        expect(btnDialogSuccess).toBeInTheDocument();
+        fireEvent.click(btnDialogSuccess!);
+
+        // check if paste button is enabled.
+        pasteBtn = queryByTestId('btn-topbar-paste');
+        expect(pasteBtn).toHaveAttribute('disabled');
+
+        fireEvent.click(sequences[1]);
+
+        deleteBtn = queryByTestId('btn-topbar-delete');
+        expect(deleteBtn).toBeInTheDocument();
+        expect(deleteBtn).not.toHaveAttribute('disabled');
+
+        fireEvent.click(deleteBtn!);
+
+        btnDialogSuccess = queryByTestId('btn-dialog-success');
+        expect(btnDialogSuccess).toBeInTheDocument();
+        fireEvent.click(btnDialogSuccess!);
+
+        sequences = container.querySelectorAll('.stack');
+        expect(sequences).toHaveLength(2);
+
     });
 
 });

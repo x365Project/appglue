@@ -344,7 +344,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 						/>
 						
 						<div className="button-group">
-							<StyledIconButton onClick={this.onToggleCollapsed}>
+							<StyledIconButton onClick={this.onToggleCollapsed} data-testid="btn-stack-collapse">
 								{
 									this.state.isCollapsed ? <UpIcon /> : <DownIcon />
 								}
@@ -372,7 +372,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 															<Typography align="center">
 																Steps
 															</Typography>
-															<Typography align="center" variant="h4">
+															<Typography align="center" variant="h4" data-testid="steps-count">
 																{this.props.sequence.steps.length}
 															</Typography>
 														</FlowSequenceSummary>

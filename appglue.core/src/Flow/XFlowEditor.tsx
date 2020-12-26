@@ -148,7 +148,8 @@ export class FlowEditContext {
                         message: 'This sequence has the steps. Do you want to cut it really?',
                         onSuccess: () => {
                             this.deleteSequence(idx);
-                        }
+                        },
+                        onCancel: () => {}
                     }
                 } else {
                 }
@@ -195,7 +196,8 @@ export class FlowEditContext {
                         message: 'This sequence has the steps. If you delete this, you will lost all data. it\'s okay?',
                         onSuccess: () => {
                             this.deleteSequence(idx);
-                        }
+                        },
+                        onCancel: () => {}
                     }
                 } else {
                     this.deleteSequence(idx);
@@ -466,7 +468,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
     return (
 		<ObserveState
 			listenTo={props.editContext}
-			properties={['flowTitle', 'clipboard']}
+			properties={['flowTitle', 'clipboardElement']}
 			control={() =>
 				<TopbarDiv>
 					{
@@ -505,7 +507,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 						<TopbarActionButton
 							title="Paste"
 							icon={<PasteIcon />}
-							disabled={isActionDisabled()}
+							disabled={isActionDisabled() || !props.editContext.clipboardElement}
 							testId="btn-topbar-paste"
 							action={props.editContext.onPaste}
 						/>
@@ -719,11 +721,11 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                     <DialogActions>
                         {
                             props.editContext.notification && props.editContext.notification!.onSuccess
-                            && <Button variant="contained" color="primary" onClick={onSuccess}>OK</Button>
+                            && <Button variant="contained" color="primary" onClick={onSuccess} data-testid="btn-dialog-success">OK</Button>
                         }
                         {
                             props.editContext.notification && props.editContext.notification!.onCancel
-                            && <Button variant="contained" onClick={() => onClose}>Cancel</Button>
+                            && <Button variant="contained" onClick={onClose} data-testid="btn-dialog-cancel">Cancel</Button>
                         }
                         
                         
