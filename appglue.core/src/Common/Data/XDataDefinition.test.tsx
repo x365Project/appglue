@@ -1,9 +1,8 @@
 import {XDataDefinition} from "./XDataDefinition";
-import {DataUtilities} from "../DataUtilities";
 import {DateDataDefinition} from "./Definitions/DateDataDefinition";
 import {StringDataDefinition} from "./Definitions/StringDataDefinition";
 
-describe("Data Utilities", () => {
+describe("Data Definition", () => {
 
 
     it("Merge Object - Parse Simple Object", () => {
@@ -44,6 +43,68 @@ describe("Data Utilities", () => {
             throw 'value not correct - isMale'
 
     });
+
+    it("Merge Object - Parse Nested Object", () => {
+
+        let data = {
+            firstName: 'carl',
+            age: 50,
+            isMale: true,
+            address : {
+                address1: '100 main street',
+                zip: 22000
+            }
+        }
+
+        let def = new XDataDefinition();
+        def.mergeObject(data);
+
+        if (def.fields.length !== 4)
+            throw 'expected 4 fields';
+
+        // check each field
+
+        if (def.fields[0].name !== 'firstName')
+            throw 'name not correct - 0'
+
+        if (def.fields[1].name !== 'age')
+            throw 'name not correct - 1'
+
+        if (def.fields[2].name !== 'isMale')
+            throw 'name not correct - 2'
+
+        if (def.fields[3].name !== 'address')
+            throw 'name not correct - 3'
+
+        // check sample values
+        let sampleObject = def.toSampleObject();
+
+        if (Reflect.get(sampleObject, 'firstName') !== 'carl')
+            throw 'value not correct - firstName';
+
+        if (Reflect.get(sampleObject, 'age') !== 50)
+            throw 'value not correct - age'
+
+        if (Reflect.get(sampleObject, 'isMale') !== true)
+            throw 'value not correct - isMale'
+
+        let add = Reflect.get(sampleObject, 'address');
+        if (!add)
+            throw 'value not correct - address'
+
+        if (typeof add !== 'object')
+            throw 'value not object - address'
+
+        let zip = Reflect.get(add, 'zip');
+
+        if (!zip)
+            throw 'zip not found'
+
+        if (zip !== 22000)
+            throw 'zip wrong'
+
+    });
+
 
     it("Merge Object - Parse Arrays Object", () => {
 
@@ -300,7 +361,7 @@ describe("Data Utilities", () => {
             throw 'should be date field'
 
         if (!(dateField.getValue() instanceof Date)) {
-            throw 'value should be a date' 
+            throw 'value should be a date'
         }
 
         if ((dateField.getValue() as Date).getFullYear() !== 1970)
@@ -335,8 +396,6 @@ describe("Data Utilities", () => {
             throw 'name not correct - 2'
 
         let dateField = def.fields[2] as DateDataDefinition;
-
-        console.log(def);
 
         if (!dateField)
             throw 'should be date field'

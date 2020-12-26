@@ -1,5 +1,5 @@
 import React from "react";
-import { InputLabel, IconButton } from "@material-ui/core";
+import { InputLabel } from "@material-ui/core";
 
 import styled from "styled-components";
 import { StyledTextField } from "./PropertyEditorStyles";
@@ -18,12 +18,11 @@ const StyledDateList = styled.div`
         }
     }
     .DateList-Label {
-        color: #677C95;
+        color: rgba(0, 0, 0, 0.54);
         font-family: Mulish;
         font-style: normal;
         font-weight: 600;
-        font-size: 14px;
-        line-height: 20px;
+        margin-bottom: 5px;
     }
 
     .DateList-header {

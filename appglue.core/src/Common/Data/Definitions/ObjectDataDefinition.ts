@@ -1,5 +1,6 @@
 import {DataUtilities} from "../../DataUtilities";
 import {
+    XDataDefinition,
     XDataTypes
 } from "../XDataDefinition";
 import {NumberDataDefinition} from "./NumberDataDefinition";
@@ -12,7 +13,7 @@ import {FileDataDefinition} from "./FileDataDefinition";
 import {FileData} from "../../FileData";
 import {IDataDefinitionOwner} from "../IDataDefinitionOwner";
 
-export class ObjectDataDefinitionElement
+export class ObjectDataDefinition
     extends BaseDataDefinition<object>
     implements IDataDefinitionOwner{
     readonly type: XDataTypes = XDataTypes.OBJECT;
@@ -20,7 +21,34 @@ export class ObjectDataDefinitionElement
     keyField?: string;
     fields: IDataDefinition[] = [];
 
-    value: { [p: string]: any } = {};
+    getValueObject(): { [propertyName: string]: any; } {
+        if (this.owner && this.name)  {
+            let valObj = this.owner.getValueObject()[this.name];
+
+            if (!valObj) {
+                valObj = {};
+                this.owner.getValueObject()[this.name] = valObj;
+            }
+
+            // check array
+            if (Array.isArray(valObj) != this.list) {
+                if (this.list) {
+                    // set array
+                    valObj = [];
+                    this.owner.getValueObject()[this.name] = valObj;
+                } else {
+                    // set object
+                    valObj = {};
+                    this.owner.getValueObject()[this.name] = valObj;
+                }
+            }
+
+            return valObj;
+        }
+        // this should not happen
+        return this.list ? [] : {};
+    }
+
 
     static parseObject(
         owner: IDataDefinitionOwner,
@@ -38,7 +66,11 @@ export class ObjectDataDefinitionElement
             dateDef.name = name;
             dateDef.owner = owner;
             dateDef.list = isList;
-            dateDef.setValue(data as Date);
+            if (isList) {
+                dateDef.setListValue(data as Date[]);
+            } else {
+                dateDef.setValue(data as Date);
+            }
 
             return dateDef;
         }
@@ -50,18 +82,30 @@ export class ObjectDataDefinitionElement
             dateDef.name = name;
             dateDef.owner = owner;
             dateDef.list = isList;
-            dateDef.setValue(data as FileData);
+
+            if (isList) {
+                dateDef.setListValue(data as FileData[]);
+            } else {
+                dateDef.setValue(data as FileData);
+            }
 
             return dateDef;
         }
 
         // default parse as object
 
-        let objectDef = currentDefinition as ObjectDataDefinitionElement ?? new ObjectDataDefinitionElement();
+        let objectDef = currentDefinition as ObjectDataDefinition ?? new ObjectDataDefinition();
         objectDef.name = name;
         objectDef.owner = owner;
 
         objectDef.list = isList;
+
+        if (isList) {
+            objectDef.setListValue(data as object[]);
+        } else {
+            objectDef.setValue(data);
+        }
+
         objectDef.fields = this.parseFieldsForObject(objectDef, checkVal, objectDef.fields, removeItemsNotInSchema, reorderElementsToMatch);
 
         return objectDef;
@@ -104,18 +148,31 @@ export class ObjectDataDefinitionElement
 
                     if (isArray) {
                         //todo: handle date array
+                        let dateArray: Date[] = [];
+
+                        for (let dString of val) {
+                            dateArray.push(DataUtilities.getDateFromString(dString));
+                        }
+
+                        sdef.setListValue(dateArray);
                     } else {
                         sdef.setValue(DataUtilities.getDateFromString(val));
                     }
                     sdef.list = isArray;
 
                     def = sdef;
-
                 } else {
                     let sdef = oldFieldsMap[name] as StringDataDefinition ?? new StringDataDefinition();
+
                     sdef.name = name;
                     sdef.owner = owner;
-                    sdef.setValue(val);
+
+                    if (isArray) {
+                        sdef.setListValue(val);
+                    } else {
+                        sdef.setValue(val);
+                    }
+
                     sdef.list = isArray;
 
                     def = sdef;
@@ -125,7 +182,11 @@ export class ObjectDataDefinitionElement
                 let sdef = oldFieldsMap[name] as NumberDataDefinition ?? new NumberDataDefinition();
                 sdef.name = name;
                 sdef.owner = owner;
-                sdef.setValue(val) ;
+                if (isArray) {
+                    sdef.setListValue(val);
+                } else {
+                    sdef.setValue(val);
+                }
                 sdef.list = isArray;
 
                 def = sdef;
@@ -133,12 +194,16 @@ export class ObjectDataDefinitionElement
                 let sdef = oldFieldsMap[name] as BooleanDataDefinition ?? new BooleanDataDefinition();
                 sdef.name = name;
                 sdef.owner = owner;
-                sdef.setValue(val);
+                if (isArray) {
+                    sdef.setListValue(val);
+                } else {
+                    sdef.setValue(val);
+                }
                 sdef.list = isArray;
 
                 def = sdef;
             } else {
-                def = ObjectDataDefinitionElement.parseObject(
+                def = ObjectDataDefinition.parseObject(
                     owner,
                     checkVal,
                     val,
@@ -154,45 +219,33 @@ export class ObjectDataDefinitionElement
                 newFieldList.push(def);
             }
         }
-
-        if (removeItemsNotInSchema && reorderElementsToMatch) {
-            return newFieldList;
-        } else if (reorderElementsToMatch && !removeItemsNotInSchema) {
-            for (let oldField of existingFields) {
-                if (oldField.name && !newFieldsMap[oldField.name]) {
-                    newFieldList.push(oldField);
-                }
-            }
-            return newFieldList;
-        } else if (!reorderElementsToMatch && !removeItemsNotInSchema) {
-            let toSet: IDataDefinition[] = [];
-
-            for (let oldField of existingFields) {
-                if (oldField.name) {
-                    if (!newFieldsMap[oldField.name]) {
-                        toSet.push(oldField);
-                    } else {
-                        toSet.push(newFieldsMap[oldField.name])
-                    }
-                }
-            }
-            return toSet;
-        } else { // if (!reorderElementsToMatch && removeItemsNotInSchema)
-            let toSet: IDataDefinition[] = [];
-
-            for (let oldField of existingFields) {
-                if (oldField.name) {
-                    if (!newFieldsMap[oldField.name]) {
-                        // this field is being removed
-                    } else {
-                        toSet.push(newFieldsMap[oldField.name])
-                    }
-                }
-            }
-
-            return toSet;
-        }
+        return XDataDefinition.reconcileFieldList(
+            removeItemsNotInSchema,
+            reorderElementsToMatch,
+            newFieldList,
+            newFieldsMap,
+            existingFields);
     }
 
 
+
+    getValue(): object | undefined {
+        return this.getValueObject();
+    }
+
+    setValue(value: object) {
+        if (this.owner && this.name)  {
+            this.owner.getValueObject()[this.name] = value;
+        }
+    }
+
+    getListValue(): object[] | undefined {
+        return this.getValueObject() as object[];
+    }
+
+    setListValue(value: object[]) {
+        if (this.owner && this.name)  {
+            this.owner.getValueObject()[this.name] = value;
+        }
+    }
 }

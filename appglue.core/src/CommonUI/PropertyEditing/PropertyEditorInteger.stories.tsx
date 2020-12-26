@@ -3,7 +3,6 @@ import React from "react";
 import {Meta, Story} from "@storybook/react/types-6-0";
 import {XFormDesigner} from "../../Form/XFormDesigner";
 import {PropertyEditorInteger, PropertyEditorIntegerInterface} from "./PropertyEditorInteger";
-import { TextFieldDisplayType } from "./PropertyEditorStyles";
 import { ObserveState } from "../StateManagement/ObserveState";
 import { StateManager } from "../StateManagement/StateManager";
 
@@ -30,7 +29,6 @@ class TextData implements PropertyEditorIntegerInterface {
     propertyName: string | number = 'textValue';
     requiredText: string = 'required text';
 
-    type?: TextFieldDisplayType = TextFieldDisplayType.Default;
 
     updateCallback = () => {
         StateManager.changed(this);
@@ -40,16 +38,4 @@ class TextData implements PropertyEditorIntegerInterface {
 
 const TextTemplate: Story<PropertyEditorIntegerInterface> = (args) => <ObserveState listenTo={args} control={() => <PropertyEditorInteger {...args} />} />;
 
-export const DefaultIntegerEditor = TextTemplate.bind({}, new TextData());
-
-
-let errorTestData = new TextData();
-errorTestData.type = TextFieldDisplayType.Error;
-
-export const ErrorIntegerEditor = TextTemplate.bind({}, errorTestData);
-
-
-let successTestData = new TextData();
-successTestData.type = TextFieldDisplayType.Success;
-
-export const SuccessIntegerEditor = TextTemplate.bind({}, successTestData);
+export const IntegerEditor = TextTemplate.bind({}, new TextData());

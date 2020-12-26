@@ -1,7 +1,7 @@
 import {
     XDataDefinition
 } from "../../../Common/Data/XDataDefinition";
-import {ObjectDataDefinitionElement} from "../../../Common/Data/Definitions/ObjectDataDefinitionElement";
+import {ObjectDataDefinition} from "../../../Common/Data/Definitions/ObjectDataDefinition";
 import {StringDataDefinition} from "../../../Common/Data/Definitions/StringDataDefinition";
 import {BooleanDataDefinition} from "../../../Common/Data/Definitions/BooleanDataDefinition";
 import {IDataDefinition} from "../../../Common/Data/Definitions/IDataDefinition";
@@ -21,7 +21,7 @@ export function getFilledDataDefinition() {
     fdef.name = 'boolfield';
     def.fields.push(fdef);
 
-    let odef = new ObjectDataDefinitionElement();
+    let odef = new ObjectDataDefinition();
     odef.name = 'person'
     fdef = new StringDataDefinition();
     fdef.name = 'firstName';

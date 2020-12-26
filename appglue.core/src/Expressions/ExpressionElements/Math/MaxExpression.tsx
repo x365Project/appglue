@@ -21,7 +21,7 @@ export class MaxExpression extends BaseExpression {
     render() {
         return (
             <ExpressionPiece>
-                Max
+                max
                 <BracketedDiv>
                     <ExpressionValueRenderer el={this.value1!}/>
                 </BracketedDiv>

@@ -10,6 +10,12 @@ import {
 
     StringLengthExpression,
     MultiplyExpression,
+    ExistsExpression,
+    IsFalseExpression,
+    IsTrueExpression,
+    LessThanExpression,
+    LessThanEqualToExpression,
+    NotExpression,
 } from "./ExpressionElements";
 
 import {XExpressionEditor} from "./XExpressionEditor";
@@ -327,3 +333,45 @@ exp = getIfElseSimpleRule();
 export const IfElseSimpleRuleNoReturn = Template.bind({},{expression : exp});
 
 
+let expression:any;
+
+expression= new ExistsExpression();
+expression.value1.variableName = 'testVal';
+
+exp = new XExpressionDefinition();
+exp.expression = expression;
+export const Exists = Template.bind({},{expression : exp});
+
+
+expression = new IsFalseExpression();
+expression.value1.variableName = 'test1';
+exp = new XExpressionDefinition();
+exp.expression = expression;
+export const IsFalse = Template.bind({},{expression : exp});
+
+
+expression = new IsTrueExpression();
+expression.value1.variableName = 'test1';
+exp = new XExpressionDefinition();
+exp.expression = expression;
+export const isTrue = Template.bind({},{expression : exp});
+
+expression = new LessThanExpression();
+expression.value1.variableName = 'test1';
+expression.value2.variableName = 'test2';
+exp = new XExpressionDefinition();
+exp.expression = expression;
+export const LessThan = Template.bind({},{expression : exp});
+
+expression = new LessThanEqualToExpression();
+expression.value1.variableName = 'test1';
+expression.value2.variableName = 'test2';
+exp = new XExpressionDefinition();
+exp.expression = expression;
+export const LessThanEqualTo = Template.bind({},{expression : exp});
+
+expression = new NotExpression();
+expression.value1.variableName = 'test1';
+exp = new XExpressionDefinition();
+exp.expression = expression;
+export const Not = Template.bind({},{expression : exp});

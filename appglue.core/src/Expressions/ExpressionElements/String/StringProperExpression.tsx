@@ -22,7 +22,7 @@ export class StringProperExpression extends BaseExpression {
         return (
             <>
                 <ExpressionPiece>
-                    text.toProperCase
+                    text.toPropercase
                     <BracketedDiv>
                         <ExpressionValueRenderer el={this.value1!}/>
                     </BracketedDiv>
