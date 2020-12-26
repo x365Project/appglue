@@ -174,6 +174,10 @@ describe("XFlowEditor", () => {
         expect(btnDialogSuccess).toBeInTheDocument();
 
         fireEvent.click(btnDialogSuccess!);
+
+        sequences = container.querySelectorAll('.stack');
+        expect(sequences).toHaveLength(1);
+
         fireEvent.click(pasteBtn!);
 
         sequences = container.querySelectorAll('.stack');
