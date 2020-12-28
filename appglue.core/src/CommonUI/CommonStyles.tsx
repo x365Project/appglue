@@ -408,25 +408,29 @@ export const TopbarDiv = styled.div`
 `;
 
 
-export const TopbarActionButton: React.FC<{action?: () => void, disabled: boolean, title: string, icon: JSX.Element, testId: string}> =({
+export const IconButtonWithTitle: React.FC<{action?: () => void, disabled?: boolean, title: string, icon: JSX.Element, testId?: string, selected?: boolean}> =({
 	action,
 	disabled,
 	title,
 	icon,
-	testId
+    testId,
+    selected
 }) => {
 	const button = (
 		<TopbarIconButton
 			onClick={() => action!()}
 			data-testid={testId}
-			disabled={disabled}
+            disabled={disabled}
+            classes={{
+                root: selected ? 'TopbarIconButton-selected' : undefined 
+            }}
 		>
 			{icon}
 		</TopbarIconButton>
 	)
 
 	if (!disabled) {
-		return <Tooltip title={title}>
+		return <Tooltip title={title} data-testid={testId}>
 			{button}
 		</Tooltip>
 	}
@@ -434,7 +438,7 @@ export const TopbarActionButton: React.FC<{action?: () => void, disabled: boolea
 }
 
 
-export const TopbarButtonGroup = styled(ButtonGroup)`
+export const StyledButtonGroup = styled(ButtonGroup)`
     && {
         border: solid 1px #E6E9ED;
         border-radius: 5px;

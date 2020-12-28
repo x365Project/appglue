@@ -11,6 +11,7 @@ export class FlowStepSequence implements IFlowElement {
     x: number = -1;
     y: number = -1;
 
+
     private _canDelete: boolean = true;
     get canDelete(): boolean {
         return this._canDelete;
@@ -48,6 +49,16 @@ export class FlowStepSequence implements IFlowElement {
     set isCollapsed(collapsed: boolean) {
         this._isCollapsed = collapsed;
         StateManager.propertyChanged(this, 'isCollapsed');
+    }
+    
+    private _isRelated: boolean = false;
+    get isRelated(): boolean {
+        return this._isRelated;
+    }
+
+    set isRelated(isRelated: boolean) {
+        this._isRelated = isRelated;
+        StateManager.propertyChanged(this, 'isRelated');
     }
 
     remove(step: BaseFlowStep): void {

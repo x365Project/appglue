@@ -26,8 +26,8 @@ import {
     TopbarIconButton,
     TopbarDiv,
     TopbarViewButton,
-    TopbarButtonGroup,
-    TopbarActionButton,
+    StyledButtonGroup,
+    IconButtonWithTitle,
     ContextMenuForControl
 } from "../CommonUI/CommonStyles";
 import {BaseFlowStep} from "./Steps/BaseFlowStep";
@@ -496,39 +496,39 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 						/>
 					}
 
-                    <TopbarButtonGroup
+                    <StyledButtonGroup
 						variant="outlined"
 						size="small"
 					>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Copy"
 							icon={<CopyIcon />}
 							disabled={isActionDisabled()}
 							testId="btn-topbar-copy"
 							action={props.editContext.onCopy}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Cut"
 							icon={<CutIcon />}
 							disabled={isActionDisabled()}
 							testId="btn-topbar-cut"
 							action={props.editContext.onCut}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Paste"
 							icon={<PasteIcon />}
 							disabled={isActionDisabled() || !props.editContext.clipboardElement}
 							testId="btn-topbar-paste"
 							action={props.editContext.onPaste}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Delete"
 							icon={<DeleteIcon />}
 							disabled={isActionDisabled()}
 							testId="btn-topbar-delete"
 							action={props.editContext.onDelete}
 						/>
-					</TopbarButtonGroup>
+					</StyledButtonGroup>
 
 
 					<TopbarContent>
@@ -753,7 +753,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
             )} />
 
             {props.flow.sequences.filter((value:FlowStepSequence) => {
-                return value.x != -1;
+                return value.x != -1 && !value.isRelated;
             }).map((s: FlowStepSequence, i: number) => {
                 return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
             })}

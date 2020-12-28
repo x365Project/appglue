@@ -87,7 +87,6 @@ const EndAddButton = styled.div`
 const DataEditorRow = styled.div`
   display: flex;
   flex-direction: row;
-  float: top;
   margin-bottom: 5px;
 `;
 

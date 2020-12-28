@@ -13,7 +13,6 @@ import styled from "styled-components";
 import {FlowEditContext, FlowConstants} from "../XFlowEditor";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
-import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import { InlineTextEdit } from "../../CommonUI/InlineTextEdit";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
@@ -22,18 +21,20 @@ import {UpIcon} from "../../CommonUI/Icon/UpIcon";
 import {DownIcon} from "../../CommonUI/Icon/DownIcon";
 import {MoveIcon} from "../../CommonUI/Icon/MoveIcon";
 import { Collapse, Typography } from "@material-ui/core";
+import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
+import { TextIcon } from "../../CommonUI/TextIcon";
+import { StyledButtonGroup, IconButtonWithTitle } from "../../CommonUI/CommonStyles";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
 	height?: number;
-	x: number;
-	y: number;
+	position: IPosition,
 	isDragging: boolean;
 	index: number;
 	selected: boolean;
 }>`
-	top: ${props => props.isDragging ? 0 : props.y}px;
-	left: ${props => props.isDragging ? 0 : props.x}px;
+	top: ${props => props.isDragging ? 0 : props.position.y}px;
+	left: ${props => props.isDragging ? 0 : props.position.x}px;
     background: #fff;
 	position: absolute;
 	border-radius: 5px;
@@ -219,18 +220,71 @@ const StepConnect = styled.div`
 const StepConnectOtherPaths = styled.div`
 	display: flex;
 	flex-direction: column;
-	float: top;
 	margin-bottom: 5px;
+`;
+
+const StepPathWrapper = styled.div`
+	display: flex;
+	flex-direction: row;
 `;
 
 const StepPathDiv = styled('div')<{width: number}>`
 	border: 2px solid lightgray;
 	border-radius: 5px;
 	padding-left: 7px;
-	float: left;
-	height: 25px;
+	height: 35px;
 	width: ${props => props.width}px;
 	background: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-right: 20px;
+
+	.StepInstruction-buttonGroup {
+		border: none;
+		opacity: 0;
+
+		.MuiButtonBase-root {
+			height: 25px;
+			width: 25px;
+
+			margin-left: 5px;
+			&:first-child {
+				margin-left: 0px;
+			}
+
+			&.TopbarIconButton-selected .MuiButton-label div {
+				color: gray;
+				border-color: gray;
+			}
+		}
+	}
+
+	&:hover .StepInstruction-buttonGroup {
+		opacity: 1;
+	}
+`;
+
+const StepPathSequenceDiv = styled.div`
+	width: 50px;
+	display: flex;
+	align-items: center;
+	height: 35px;
+`;
+
+const LineDiv = styled("div")<{
+	orientation?: 'vertical' | 'horizontal';
+	direction?: 'top' | 'bottom' | 'right' | 'left';
+}>`
+	${props => (!props.orientation || props.orientation === 'horizontal') && `
+		width: 100%;
+		border: dashed 2px darkgray;
+		height: 2px;
+	`}
+`;
+
+const StepChildSequenceDiv = styled.div`
+	position: relative;
 `;
 
 const StepPathConnectDiv = styled.div`
@@ -242,26 +296,39 @@ const StepPathConnectDiv = styled.div`
 `;
 
 export const FakeFlowSequenceDiv = styled("div")<{
-	x: number;
-	y: number;
+	position: IPosition;
 	show: boolean;
+	parent?: string;
 }>`
 	width: 275px;
 	background: transparent;
 	border: dotted 2px darkgray;
-	min-height: 152px;
+	
 	border-radius: 4px;
-	position: absolute;
-	top: ${props => props.y}px;
-	left: ${props => props.x}px;
+	position: ${props => props.parent ? 'relative': 'absolute'};
+	${props => !props.parent && `
+		top: ${props.position.y}px;
+		left: ${props.position.x}px;
+		min-height: 152px;
+	`}
+	${props => props.parent && `
+		min-height: 50px;
+	`}
+
 	opacity: ${props => props.show ? 1: 0};
 	transition: opacity .1s;
 `;
+
+interface IPosition {
+	x: number;
+	y: number;
+}
 
 interface IFlowSequenceStack {
 	flow: XFlowConfiguration;
 	sequence: FlowStepSequence;
 	editContext: FlowEditContext;
+	position?: IPosition,
 	index: number;
 }
 
@@ -281,6 +348,13 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 			isCollapsed: false
 		}
 	}
+
+	getDefaultPosition = () : IPosition => {
+		return this.props.position || {
+			x: this.props.sequence.x,
+			y: this.props.sequence.y
+		}
+	} 
 
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
         this.props.sequence.x = data.x;
@@ -326,7 +400,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
             <ReactDraggable
 				bounds="parent"
 				disabled={this.props.index === 0}
-                defaultPosition={{x: this.props.sequence.x, y: this.props.sequence.y}}
+                defaultPosition={this.getDefaultPosition()}
 				onStop={this.onDragStop}
 				onStart={this.onDragStart}
 				handle={`.stack-move`}
@@ -335,8 +409,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
                 <FlowSequenceDiv
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
 					height={this.state.isCollapsed? this.collapsedHeight: undefined}
-					x={this.props.sequence.x}
-					y={this.props.sequence.y}
+					position={this.getDefaultPosition()}
 					isDragging={this.state.isDragging}
 					index={this.props.index}
 					onClick={(_e: React.MouseEvent<HTMLDivElement>) => {
@@ -409,8 +482,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 															{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
 																let isLast = this.props.sequence.steps.length === i + 1;
 
-																let otherPaths: FlowStepOutput[] = [];
-																if (step.outputs && Array.isArray(step.outputs) && step.outputs.length > 1) {
+																let otherPaths: FlowStepOutputInstructions[] = [];
+																if (step.outputs && step.outputs.length > 1) {
 																	otherPaths = [...step.outputs]
 																	// removes first item
 																	otherPaths.shift();
@@ -450,11 +523,11 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																								<StepConnect/>
 																								{otherPaths.length !== 0 && (
 																									<StepConnectOtherPaths>
-																										{otherPaths.map((stepOutput: FlowStepOutput, i: number) => {
+																										{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
 																											return (
-																												<div key={'path'+stepOutput.name}>
+																												<React.Fragment key={'path'+stepOutput.name}>
 																													{this.renderAltPath(this.props.sequence, step, stepOutput, this.props.editContext)}
-																												</div>
+																												</React.Fragment>
 																											);
 																										})}
 																									</StepConnectOtherPaths>
@@ -485,16 +558,83 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
         );
     }
 
-    renderAltPath(sequence: FlowStepSequence, step: BaseFlowStep, stepOutput: FlowStepOutput, editContext: FlowEditContext) {
+    renderAltPath(sequence: FlowStepSequence, step: BaseFlowStep, stepOutput: FlowStepOutputInstructions, editContext: FlowEditContext) {
+		let childSequence:FlowStepSequence | null = null;
+		if (stepOutput.branchToSequence && stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
+			childSequence = editContext.flow.find(stepOutput.branchToSequence) as FlowStepSequence;
+		}
         return (
-            <div onClick={(_event: React.MouseEvent<HTMLDivElement>) => {
-                    editContext.setSelection(step);
-                }}>
+            <React.Fragment>
                 <StepPathConnectDiv/>
-                <StepPathDiv key={stepOutput.name} width={sequence.width - 40}>
-                    <>{stepOutput.name}</>
-                </StepPathDiv>
-            </div>
+				<StepPathWrapper>
+					<StepPathDiv
+						key={stepOutput.name}
+						width={
+							stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
+							? sequence.width - 40
+							: sequence.width - 73
+						}
+					>
+						{stepOutput.name}
+						<StyledButtonGroup
+							variant="outlined"
+							size="small"
+							classes={{
+								root: "StepInstruction-buttonGroup"
+							}}
+						>
+							<IconButtonWithTitle
+								title="Continue"
+								icon={<TextIcon name="C" />}
+								action={() => {
+									stepOutput.strategy = FlowStepOutputInstructionType.CONTINUE;
+								}}
+								selected={stepOutput.strategy === FlowStepOutputInstructionType.CONTINUE}
+							/>
+							<IconButtonWithTitle
+								title="Throw"
+								icon={<TextIcon name="T" />}
+								action={() => {
+									stepOutput.strategy = FlowStepOutputInstructionType.THROW_EXCEPTION;
+								}}
+								selected={stepOutput.strategy === FlowStepOutputInstructionType.THROW_EXCEPTION}
+							/>
+							<IconButtonWithTitle
+								title="End"
+								icon={<TextIcon name="E" />}
+								action={() => {
+									stepOutput.strategy = FlowStepOutputInstructionType.END_FLOW;
+								}}
+								selected={stepOutput.strategy === FlowStepOutputInstructionType.END_FLOW}
+							/>
+							<IconButtonWithTitle
+								title="Branch"
+								icon={<TextIcon name="B" />}
+								action={() => {
+									stepOutput.strategy = FlowStepOutputInstructionType.BRANCH;
+								}}
+								selected={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH}
+							/>
+						</StyledButtonGroup>
+					</StepPathDiv>
+					{
+						stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && 
+						<>
+							<StepPathSequenceDiv>
+								<LineDiv />
+							</StepPathSequenceDiv>
+							<StepChildSequenceDiv>
+								{
+									childSequence && <FlowSequenceStack sequence={childSequence} flow={this.props.flow} editContext={this.props.editContext} index={1} />
+								}
+								{
+									!childSequence && <FakeFlowSequenceStack flow={this.props.flow} show parent={`${step._id}_${stepOutput._id}`} />
+								}
+							</StepChildSequenceDiv>
+						</>
+					}
+				</StepPathWrapper>
+            </React.Fragment>
         );
     }
 
@@ -510,9 +650,9 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
     }
 }
 
-export class FakeFlowSequenceStack extends React.Component<{ flow: XFlowConfiguration, show: boolean }, {}> {
+export class FakeFlowSequenceStack extends React.Component<{ flow: XFlowConfiguration; show: boolean; parent?: string; }, {}> {
 
-	getDefaultPosition = () => {
+	getDefaultPosition = (): IPosition => {
 		let y = this.props.flow.sequences[0].y;
 		let x = Math.max(
 			...this.props.flow.sequences
@@ -529,12 +669,13 @@ export class FakeFlowSequenceStack extends React.Component<{ flow: XFlowConfigur
 
 	render() {
         return (
-			<Droppable droppableId={FlowConstants.FakeStackId} >
+			<Droppable droppableId={`${FlowConstants.FakeStackId}${this.props.parent ? '_' + this.props.parent : ''}`}>
 				{
 					(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 						return <FakeFlowSequenceDiv
-							{...this.getDefaultPosition()}
+							position={this.getDefaultPosition()}
 							show={this.props.show}
+							parent={this.props.parent}
 							{...provided.droppableProps}
 							ref={provided.innerRef}
 						>

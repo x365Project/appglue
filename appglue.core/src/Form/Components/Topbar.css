@@ -78,7 +78,7 @@
 	}
 }
 
-.TopbarButtonGroup-root.MuiButtonGroup-root {
+.StyledButtonGroup-root.MuiButtonGroup-root {
 	border: solid 1px #E6E9ED;
 	border-radius: 5px;
 }
