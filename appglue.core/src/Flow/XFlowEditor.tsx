@@ -10,7 +10,9 @@ import {
     Droppable,
     DroppableProvided,
     DroppableStateSnapshot,
-    DropResult
+    DropResult,
+    DragStart,
+    ResponderProvided
 } from "react-beautiful-dnd";
 import {AutoBind} from "../Common/AutoBind";
 import {FlowSequenceStack, FakeFlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
@@ -49,6 +51,7 @@ import { IContextForControl } from "../Common/IContextForControl";
 import { CopyWhiteIcon } from "../CommonUI/Icon/CopyWhiteIcon";
 import { CutWhiteIcon } from "../CommonUI/Icon/CutWhiteIcon";
 import { DeleteWhiteIcon } from "../CommonUI/Icon/DeleteWhiteIcon";
+import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -66,6 +69,7 @@ const FlowEditorDiv = styled.div`
 export class FlowConstants {
     static ToolboxId = 'Toolbox';
     static FakeStackId = 'Fakestack';
+    static DROPPING_COLOR = '#4682B4';
 }
 
 const FlowMainSectionDiv = styled.div`
@@ -88,7 +92,6 @@ export class FlowEditContext {
 	flowTitle?: string;
     viewAPIUrl?: string;
     isDraggingControl: boolean = false;
-
 
 	public onFlowSave?: () => void;
     public onFlowCancel? : () => void ;
@@ -283,6 +286,20 @@ export class FlowEditContext {
         return this._lastSelectionElement;
     }
 
+
+    get newStackPosition(): {x: number; y: number} {
+        let y = this.flow.sequences[0].y 
+        let x = Math.max(
+            ...this.flow.sequences
+                .filter((s) => {
+                    return s.y < y + 150;
+                })
+                .map((s) => s.x + (s.isCollapsed ? 150 : 300))
+        );
+        return {x, y};
+    }
+
+
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;
         this._lastSelectionElement = selection;
@@ -325,6 +342,26 @@ export class FlowEditContext {
 
     get notification() {
         return this._notification;
+    }
+
+    private _draggingElemType?: IDraggingElementType;
+
+    get draggingElemType(): IDraggingElementType | undefined {
+        return this._draggingElemType;
+    }
+
+    set draggingElemType(type: IDraggingElementType | undefined) {
+        this._draggingElemType = type;
+    }
+
+    private _draggingElemId?: string;
+
+    get draggingElem(): string | undefined {
+        return this._draggingElemId;
+    }
+
+    set draggingElem(elemId: string | undefined) {
+        this._draggingElemId = elemId;
     }
 
     refresh() {
@@ -385,13 +422,23 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     }
 
     @AutoBind
-    onDragStart() {
+    onDragStart(initial: DragStart, _provided: ResponderProvided) {
+        if (initial.draggableId.startsWith(FlowConstants.FakeStackId)) {
+            this.editContext.draggingElemType = IDraggingElementType.Related;
+        } else {
+            this.editContext.draggingElemType = IDraggingElementType.Step;
+        }
+        console.log(initial.draggableId);
+        this.editContext.draggingElem = initial.draggableId;
         this.editContext.clearSelection();
     }
 
     @AutoBind
     onDragEnd(result: DropResult) {
         this.editContext.isDraggingControl = false;
+        this.editContext.draggingElemType = undefined;
+        this.editContext.draggingElem = undefined;
+
         // if not destination... then we should not do anything
         if (!result.destination)
             return;
@@ -425,25 +472,47 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                     this.props.flow.remove(control);
                 }
                 let initialSeq = new FlowStepSequence();
-                let y = this.props.flow.sequences[0].y 
-                let x = Math.max(
-                    ...this.props.flow.sequences
-                        .filter((s) => {
-                            return s.y < y + 150;
-                        })
-                        .map((s) => s.x + (s.isCollapsed ? 150 : 300))
-                );
-                initialSeq.x = x;
-                initialSeq.y = y;
+
+                initialSeq.x = this.editContext.newStackPosition.x;
+                initialSeq.y = this.editContext.newStackPosition.y;
                 this.props.flow.sequences.push(initialSeq);
                 this.props.flow.add(control, initialSeq._id);
                 StateManager.propertyChanged(this.props.flow, 'sequences');
+
+            } else if (result.destination.droppableId.startsWith(FlowConstants.FakeStackId)) {
+                let [_, stepId, stepOutputName, _extra] = result.destination.droppableId.split('_');
+                if (!stepId || !stepOutputName ) return;
+
+                let step = this.props.flow.find(stepId) as BaseFlowStep;
+                let stepOutput = step.findOutPut(stepOutputName);
+
+                if (!stepOutput) return;
+
+                if (!isNew) {
+                    this.props.flow.remove(control);
+                }
+
+                let initialSeq = new FlowStepSequence();
+                initialSeq.x = this.editContext.newStackPosition.x;
+                initialSeq.y = this.editContext.newStackPosition.y;
+                this.props.flow.sequences.push(initialSeq);
+                this.props.flow.add(control, initialSeq._id);
+                stepOutput.connectedSequenceId = initialSeq._id;
+                StateManager.propertyChanged(this.props.flow, 'sequences');
+
             } else if (isNew) {
                 // adding new
                 this.props.flow.add(control, result.destination.droppableId, result.destination.index);
             } else {
                 this.props.flow.moveToSequence(control, result.source.droppableId, result.destination.droppableId, result.destination.index)
             }
+        } else if (result.destination.droppableId.endsWith('_header')) {
+            let [_, stepId, stepOutputName, _extra1] = result.draggableId.split('_');
+            let [stackId, _extra2] = result.destination.droppableId.split('_');
+            let step = this.props.flow.find(stepId) as BaseFlowStep;
+            let stepOutput = step.findOutPut(stepOutputName);
+            if (!stepOutput) return;
+            stepOutput.connectedSequenceId = stackId;
         }
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
@@ -646,7 +715,8 @@ const DesignPanel = styled.div`
     width: 100%;
     height: 100%;
 	background: #E5E5E5;
-	position: relative;
+    position: relative;
+    overflow: auto;
 `;
 
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
@@ -737,8 +807,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                             props.editContext.notification && props.editContext.notification!.onCancel
                             && <Button variant="contained" onClick={onClose} data-testid="btn-dialog-cancel">Cancel</Button>
                         }
-                        
-                        
                     </DialogActions>
                 </Dialog>
             }
@@ -749,11 +817,11 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     return (
         <DesignPanel>
             <ObserveState listenTo={props.editContext} control={() => (
-                <FakeFlowSequenceStack flow={props.flow} show={props.editContext.isDraggingControl}/>
+                <FakeFlowSequenceStack show={props.editContext.isDraggingControl && props.editContext.draggingElemType !== IDraggingElementType.Related} editContext={props.editContext}/>
             )} />
 
             {props.flow.sequences.filter((value:FlowStepSequence) => {
-                return value.x != -1 && !value.isRelated;
+                return value.x != -1;
             }).map((s: FlowStepSequence, i: number) => {
                 return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
             })}

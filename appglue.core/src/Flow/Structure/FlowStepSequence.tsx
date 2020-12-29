@@ -3,6 +3,8 @@ import React from "react";
 import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
+import { PropertyEditorColor } from "../../CommonUI/PropertyEditing/PropertyEditorColor";
+import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 
 export class FlowStepSequence implements IFlowElement {
     _id: string = DataUtilities.generateUniqueId();
@@ -50,15 +52,14 @@ export class FlowStepSequence implements IFlowElement {
         this._isCollapsed = collapsed;
         StateManager.propertyChanged(this, 'isCollapsed');
     }
-    
-    private _isRelated: boolean = false;
-    get isRelated(): boolean {
-        return this._isRelated;
+
+    private _stackColor?: string;
+    get stackColor(): string | undefined {
+        return this._stackColor;
     }
 
-    set isRelated(isRelated: boolean) {
-        this._isRelated = isRelated;
-        StateManager.propertyChanged(this, 'isRelated');
+    set stackColor(color: string | undefined) {
+        this._stackColor = color;
     }
 
     remove(step: BaseFlowStep): void {
@@ -72,7 +73,15 @@ export class FlowStepSequence implements IFlowElement {
     renderEditUI(): JSX.Element | null {
 
         return (
-            <div>edit sequence</div>
+            <ObserveState listenTo={this}
+                properties={["stackColor"]}
+                control={
+                    () => <PropertyEditorColor editObject={this} propertyName="stackColor" label="Stack Color" updateCallback={() => {
+                       StateManager.propertyChanged(this, 'stackColor');
+                    }} />
+                }
+            />
+            
         );
     }
 
