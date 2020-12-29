@@ -25,7 +25,7 @@ export const PropertyEditorText : React.FC<PropertyEditorTextInterface> = (props
     }
     const value = Reflect.get(props.editObject, props.propertyName) ?? props.parentDefaultValue;
     return (
-        <TextField value={value || ''} label={props.label} onChange={onChange} helperText={props.hint} variant="outlined"/>
+        <TextField value={value || ''} label={props.label} onChange={onChange} helperText={props.hint} variant="outlined" autoFocus={props.autoFocus}/>
     );
 }
 

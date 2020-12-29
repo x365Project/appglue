@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import {
     DateEqualToExpression,
     DateGetDayExpression,
@@ -93,7 +93,7 @@ describe("XExpressionEditor", () => {
         console.log = originalLog;
     })
 
-    it("Date: equal", () => {
+    it("Date: equal with focus render value", () => {
         let expression: DateEqualToExpression = new DateEqualToExpression();
         expression.value1.value = '2020-02-02';
         expression.value2.value = '2020-02-02';
@@ -101,9 +101,15 @@ describe("XExpressionEditor", () => {
         exp.expression = expression;
 
 
-        const {getAllByText} = render(<XExpressionEditor expression={exp} />);
+        const {getAllByText, container} = render(<XExpressionEditor expression={exp} />);
+        let dateElems = getAllByText(/2020-02-02/i);
 
-        expect(getAllByText(/2020-02-02/i)).toHaveLength(2);
+        expect(dateElems).toHaveLength(2);
+
+        fireEvent.click(dateElems[0]);
+
+        let valueInput = container.querySelector('.MuiInputBase-root input') as HTMLInputElement;
+        expect(valueInput).toHaveFocus();
 
         expect(errorList).toHaveLength(0);
     });
@@ -371,10 +377,16 @@ describe("XExpressionEditor", () => {
         let exp = new XExpressionDefinition();
         exp.expression = expression;
 
-        const {queryByText} = render(<XExpressionEditor expression={exp} />);
+        const {queryByText, container} = render(<XExpressionEditor expression={exp} />);
+        let valueElem = queryByText(/-1/i);
 
         expect(queryByText(/absolute/i)).toBeInTheDocument();
-        expect(queryByText(/-1/i)).toBeInTheDocument();
+        expect(valueElem).toBeInTheDocument();
+
+        fireEvent.click(valueElem!);
+
+        let valueInput = container.querySelector('.MuiInputBase-root input') as HTMLInputElement;
+        expect(valueInput).toHaveFocus();
 
         expect(errorList).toHaveLength(0);
     });
@@ -470,14 +482,21 @@ describe("XExpressionEditor", () => {
 
     it("Math:  Max", () => {
         let expression = new MaxExpression();
-        expression.value1.variableName = 'numberList'
+        expression.value1.value = [1, 2];
         let exp = new XExpressionDefinition();
         exp.expression = expression;
 
-        const {queryByText} = render(<XExpressionEditor expression={exp} />);
+        const {queryByText, container} = render(<XExpressionEditor expression={exp} />);
 
-        expect(queryByText(/numberList/i)).toBeInTheDocument();
+        let valueElem = queryByText(expression.value1.value.join(','));
+
+        expect(valueElem).toBeInTheDocument();
         expect(queryByText(/max/i)).toBeInTheDocument();
+
+        fireEvent.click(valueElem!);
+
+        let valueInput = container.querySelector('.MuiInputBase-root input') as HTMLInputElement;
+        expect(valueInput).toHaveFocus();
 
         expect(errorList).toHaveLength(0);
     });
@@ -604,11 +623,17 @@ describe("XExpressionEditor", () => {
         let exp = new XExpressionDefinition();
         exp.expression = expression;
 
-        const {queryByText} = render(<XExpressionEditor expression={exp} />);
+        const {queryByText, container} = render(<XExpressionEditor expression={exp} />);
+
+        let valueElem = queryByText(expression.value2.value.join(','));
 
         expect(queryByText(/stringlist1/i)).toBeInTheDocument();
-        expect(queryByText(expression.value2.value.join(','))).toBeInTheDocument();
+        expect(valueElem).toBeInTheDocument();
         expect(queryByText(/Click to edit/i)).not.toBeInTheDocument();
+
+        fireEvent.click(valueElem!)
+        let valueInput = container.querySelector('.MuiInputBase-root input') as HTMLInputElement;
+        expect(valueInput).toHaveFocus();
 
         expect(errorList).toHaveLength(0);
     });
@@ -620,11 +645,16 @@ describe("XExpressionEditor", () => {
         let exp = new XExpressionDefinition();
         exp.expression = expression;
 
-        const {queryByText} = render(<XExpressionEditor expression={exp} />);
+        const {queryByText, container} = render(<XExpressionEditor expression={exp} />);
 
+        let valueElem = queryByText(expression.value2.value);
         expect(queryByText(/stringlist1/i)).toBeInTheDocument();
-        expect(queryByText(expression.value2.value)).toBeInTheDocument();
+        expect(valueElem).toBeInTheDocument();
         expect(queryByText(/Click to edit/i)).not.toBeInTheDocument();
+
+        fireEvent.click(valueElem!)
+        let valueInput = container.querySelector('.MuiInputBase-root input') as HTMLInputElement;
+        expect(valueInput).toHaveFocus();
 
         expect(errorList).toHaveLength(0);
     });
