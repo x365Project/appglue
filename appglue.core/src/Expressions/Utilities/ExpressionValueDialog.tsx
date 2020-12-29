@@ -542,9 +542,10 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                                 />
                             </VariableOrValColumn>
                             <VariableOrValColumn>
-                                <StyledTextField
+                                <TextField
                                     value={this.props.expressionValue.value || ''}
                                     label="Value"
+                                    variant="outlined"
                                     onFocus={() => {
                                         this.props.expressionValue.valueType = ExpressionValueType.VALUE;
                                     }}
@@ -593,6 +594,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     editObject={this.props.expressionValue}
                     propertyName="value"
                     updateCallback={this.valueChange}
+                    autoFocus
                 />
 
             case ExpressionExpectedType.STRING:
@@ -610,6 +612,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     editObject={this.props.expressionValue}
                     propertyName="value"
                     updateCallback={this.valueChange}
+                    autoFocus
                 />
 
             case ExpressionExpectedType.DATE:
@@ -618,7 +621,7 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     editObject={this.props.expressionValue}
                     propertyName="value"
                     updateCallback={this.valueChange}
-
+                    autoFocus
                 />
 
             case ExpressionExpectedType.DATE_LIST:

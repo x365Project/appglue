@@ -75,7 +75,8 @@ export interface PropertyEditorNumberListInterface{
     label?: string,
     placeholder?: string;
     hint?: string;
-    updateCallback : () => void,
+    autoFocus?: boolean;
+    updateCallback : () => void;
 }
 
 
@@ -158,6 +159,7 @@ export const PropertyEditorNumberList : React.FC<PropertyEditorNumberListInterfa
                             onFocus={() => onFocus(idx)}
                             onKeyDown={onKeyDown}
                             type="number"
+                            autoFocus={props.autoFocus && idx === 0}
                             onClick={onClickInput}
                             placeholder={
                                 idx === 0 ? props.placeholder || 'Numbers...' : ''
