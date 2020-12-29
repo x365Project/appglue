@@ -364,6 +364,12 @@ export class FlowEditContext {
         this._draggingElemId = elemId;
     }
 
+    private _drawLineCanvas: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
+
+    get drawLineCanvas(): React.RefObject<HTMLCanvasElement> {
+        return this._drawLineCanvas;
+    }
+
     refresh() {
         this.flowEditor.forceUpdate();
     }
