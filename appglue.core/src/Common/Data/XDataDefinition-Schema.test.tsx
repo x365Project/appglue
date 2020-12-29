@@ -2,6 +2,7 @@ import {XDataDefinition} from "./XDataDefinition";
 import {DateDataDefinition} from "./Definitions/DateDataDefinition";
 import {StringDataDefinition} from "./Definitions/StringDataDefinition";
 import {XFormDataEditing} from "../../Form/Components/XFormDataEditing";
+import {NumberDataDefinition} from "./Definitions/NumberDataDefinition";
 
 // {
 //     "firstName": "John",
@@ -27,6 +28,29 @@ const basicschema = `
       "description": "Age in years which must be equal to or greater than zero.",
       "type": "integer",
       "minimum": 0
+    },
+    "isMale": {
+      "type": "boolean",
+      "description": "gender of person."
+    }
+  }
+}
+`
+
+// {
+//     "phoneNumber": "555-1212",
+// }
+const patternSchema = `
+{
+  "$id": "https://example.com/person.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "phoneNumber": {
+      "type": "string",
+      "pattern": "^(\\\\([0-9]{3}\\\\))?[0-9]{3}-[0-9]{4}$",
+      "description": "The person's first name."
     }
   }
 }
@@ -260,10 +284,11 @@ describe("Data Definition - Schema", () => {
 //     "firstName": "John",
 //     "lastName": "Doe",
 //     "age": 21
+//     "isMale": true
 // }
 
-        if (def.fields.length !== 3)
-            throw 'expected 3 fields';
+        if (def.fields.length !== 4)
+            throw 'expected 4 fields';
 
         if (def.fields[0].name !== 'firstName')
             throw 'field name wrong - 1';
@@ -273,7 +298,71 @@ describe("Data Definition - Schema", () => {
 
         if (def.fields[2].name !== 'age')
             throw 'field name wrong - 3';
+
+        if (def.fields[3].name !== 'isMale')
+            throw 'field name wrong - 4';
     });
+
+    it("Parse Pattern Schema", () => {
+
+        let def = new XDataDefinition();
+        def.mergeJSONSchema(patternSchema, false, true);
+
+// {
+//     "phoneNumber": "555-1212"
+// }
+
+        if (def.fields.length !== 1)
+            throw 'expected 1 fields';
+
+        if (def.fields[0].name !== 'phoneNumber')
+            throw 'field name wrong - 1';
+
+        let stringDef = def.fields[0] as StringDataDefinition;
+
+        if (!stringDef)
+            throw 'should be string def';
+
+        if (!stringDef.pattern)
+            throw 'should have pattern';
+    });
+
+
+    it("Parse Min Max", () => {
+
+        let def = new XDataDefinition();
+        def.mergeJSONSchema(minMaxSchema, false, true);
+
+// {
+//     "latitude": 48.858093,
+//     "longitude": 2.294694
+// }
+
+        if (def.fields.length !== 2)
+            throw 'expected 2 fields';
+
+        if (def.fields[0].name !== 'latitude')
+            throw 'field name wrong - 1';
+
+        if (def.fields[1].name !== 'longitude')
+            throw 'field name wrong - 2';
+
+        let nDef = def.fields[0] as NumberDataDefinition;
+
+        if (!nDef)
+            throw 'should be number def'
+
+        if (nDef.upperBounds !== 90)
+            throw 'should be 90'
+
+        if (nDef.lowerBounds !== -90)
+            throw 'should be -90'
+
+        if (nDef.allowDecimals !== true)
+            throw 'should allow decimals'
+
+    });
+
 
     it("Parse allOf", () => {
 

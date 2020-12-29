@@ -5,6 +5,7 @@ import {IDataDefinitionOwner} from "./IDataDefinitionOwner";
 import {StringDataDefinition} from "./Definitions/StringDataDefinition";
 import {NumberDataDefinition} from "./Definitions/NumberDataDefinition";
 import {BooleanDataDefinition} from "./Definitions/BooleanDataDefinition";
+import $RefParser from "@apidevtools/json-schema-ref-parser";
 
 export class XDataDefinition implements IDataDefinitionOwner{
     fields : IDataDefinition[] = [];
@@ -77,7 +78,10 @@ export class XDataDefinition implements IDataDefinitionOwner{
                 let propDescription = properties[property];
 
                 let def: IDataDefinition | undefined = undefined;
-                if (propDescription.type === 'array') {
+                if (propDescription.type === '#ref') {
+                    // lookup local ref
+
+                } else if (propDescription.type === 'array') {
 // https://json-schema.org/understanding-json-schema/reference/array.html
 
                     // handle array
@@ -97,6 +101,11 @@ export class XDataDefinition implements IDataDefinitionOwner{
                         sdef.list = false;
                         sdef.owner = owner;
                         sdef.setValue(property + ' value');
+
+                        let pattern = Reflect.get(propDescription, 'pattern') ;
+                        if (pattern)
+                            sdef.pattern = pattern;
+
                         def = sdef;
                     } else if (propDescription.type === 'boolean' ) {
                         let sdef = new BooleanDataDefinition();
@@ -111,6 +120,21 @@ export class XDataDefinition implements IDataDefinitionOwner{
                         sdef.list = false;
                         sdef.owner = owner;
                         sdef.setValue(10);
+
+
+                        // check upper and lower bounds
+                        let upperBound = Reflect.get(propDescription, "maximum");
+                        if (upperBound) {
+                            sdef.upperBounds = +upperBound;
+                        }
+
+                        let lowerBound = Reflect.get(propDescription, "minimum");
+                        if (lowerBound) {
+                            sdef.lowerBounds = +lowerBound;
+                        }
+
+                        sdef.allowDecimals = (propDescription.type === 'number');
+
                         def = sdef;
                     } else if (propDescription.type === 'null') {
                         // ignore
