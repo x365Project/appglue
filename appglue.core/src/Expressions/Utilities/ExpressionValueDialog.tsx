@@ -584,7 +584,6 @@ export class ExpressionValueDialog extends React.Component<{ expressionValue: Ex
                     propertyName="value"
                     updateCallback={this.valueChange}
                     autoFocus
-                    disableUnderline
                     variant="outlined"
                 />
 

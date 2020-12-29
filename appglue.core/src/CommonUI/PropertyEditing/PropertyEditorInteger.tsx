@@ -10,7 +10,6 @@ export interface PropertyEditorIntegerInterface {
     updateCallback : CallableFunction,
     parentDefaultValue? : number | null,
     autoFocus?: boolean,
-    disableUnderline?: boolean,
     variant?: 'filled' | 'outlined' | 'standard'
 }
 
@@ -35,7 +34,7 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
     if (!value && value !== 0) {
         value = ''
     }
-
+    let variant = props.variant || "outlined";
     return (
         <TextField
             value={value}
@@ -44,10 +43,7 @@ export const PropertyEditorInteger : React.FC<PropertyEditorIntegerInterface> = 
             onChange={onChange}
             helperText={props.hint}
             autoFocus={props.autoFocus}
-            InputProps={{
-                disableUnderline: props.disableUnderline
-            }}
-            variant={props.variant || "outlined"}
+            variant={variant}
         />
     );
 }
