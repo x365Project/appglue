@@ -2,9 +2,10 @@ import React from "react";
 import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot, DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd";
 
 
-import {FlowEditContext, FlowConstants} from "../XFlowEditor";
+import {FlowConstants} from "../XFlowEditor";
 import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 import { FakeFlowSequenceDropDiv, FakeFlowSequenceDragDiv } from "./FlowSequenceStack";
+import {FlowEditContext} from "../FlowEditContext";
 
 interface IFakeFlowSequenceStack {
 	editContext: FlowEditContext;

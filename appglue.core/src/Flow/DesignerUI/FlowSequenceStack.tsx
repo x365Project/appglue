@@ -10,7 +10,7 @@ import {
 } from "react-beautiful-dnd";
 import ReactDraggable, { DraggableData, DraggableEvent } from "react-draggable";
 import styled from "styled-components";
-import {FlowEditContext, FlowConstants} from "../XFlowEditor";
+import {FlowConstants} from "../XFlowEditor";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
 import { InlineTextEdit } from "../../CommonUI/InlineTextEdit";
@@ -26,6 +26,7 @@ import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
 
 
 import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
+import {FlowEditContext} from "../FlowEditContext";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;

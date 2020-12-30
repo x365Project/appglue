@@ -4,9 +4,9 @@ import { Select } from "@material-ui/core";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
-import {FlowEditContext} from "../XFlowEditor";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 import {FakeFlowSequenceStack} from "./FakeFlowSequenceStack";
+import {FlowEditContext} from "../FlowEditContext";
 
 
 const StepPathWrapper = styled.div`

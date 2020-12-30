@@ -1,8 +1,8 @@
 
 import {InlineTextEdit} from "../../CommonUI/InlineTextEdit";
 import React from "react";
-import {FlowEditContext} from "../XFlowEditor";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
+import {FlowEditContext} from "../FlowEditContext";
 
 export interface StepNameLabelProps {
     step: BaseFlowStep;

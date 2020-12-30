@@ -1,12 +1,12 @@
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import React from "react";
-import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
-import { StateManager } from "../../CommonUI/StateManagement/StateManager";
-import { PropertyEditorColor } from "../../CommonUI/PropertyEditing/PropertyEditorColor";
-import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {PropertyEditorColor} from "../../CommonUI/PropertyEditing/PropertyEditorColor";
+import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
+import {IFlowStepSequence} from "./IFlowStepSequence";
 
-export class FlowStepSequence implements IFlowElement {
+export class FlowStepSequence implements IFlowStepSequence {
     _id: string = DataUtilities.generateUniqueId();
     name?: string;
 
