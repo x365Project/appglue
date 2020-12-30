@@ -86,58 +86,52 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 			}
 		}
 		return (
-			<ObserveState
-				listenTo={this.props.sequence}
-				properties={["steps"]}
-				control={
-					() => <>
-						<StepPathConnectDiv />
-						<StepPathWrapper ref={this.containerRef}>
-							<ObserveState listenTo={childSequence}
-								properties={["stackColor"]}
-								control={
-									() => <StepPathDiv
-										key={stepOutput.pathName}
-										width={
-											stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
-											? sequence.width - 40
-											: sequence.width - 73
-										}
-										color={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && !!childSequence ? childSequence.stackColor : undefined}
-									>
-										{stepOutput.pathName}
-		
-										<Select
-											disableUnderline
-											native
-											value={stepOutput.strategy}
-											onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
-												stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;										
-											}}
-										>
-											<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>
-											<option value={FlowStepOutputInstructionType.THROW_EXCEPTION}>Throw</option>
-											<option value={FlowStepOutputInstructionType.END_FLOW}>End</option>
-											<option value={FlowStepOutputInstructionType.BRANCH}>Branch</option>
-										</Select>
-									</StepPathDiv>
+			<>
+				<StepPathConnectDiv />
+				<StepPathWrapper ref={this.containerRef}>
+					<ObserveState listenTo={childSequence}
+						properties={["stackColor"]}
+						control={
+							() => <StepPathDiv
+								key={stepOutput.pathName}
+								width={
+									stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
+									? sequence.width - 40
+									: sequence.width - 73
 								}
-							/>
-							{
-								stepOutput.strategy === FlowStepOutputInstructionType.BRANCH
-								&& !childSequence
-								&& editContext.draggingElem !== step._id
-								&& <>
-									<StepPathSequenceDiv>
-										<LineDiv />
-									</StepPathSequenceDiv>
-									<FakeFlowSequenceStack show parent={`${step._id}_${stepOutput.pathName}`} editContext={editContext} />
-								</>
-							}
-						</StepPathWrapper>
-					</>
-				} 
-			/>
+								color={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && !!childSequence ? childSequence.stackColor : undefined}
+							>
+								{stepOutput.pathName}
+
+								<Select
+									disableUnderline
+									native
+									value={stepOutput.strategy}
+									onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
+										stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;										
+									}}
+								>
+									<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>
+									<option value={FlowStepOutputInstructionType.THROW_EXCEPTION}>Throw</option>
+									<option value={FlowStepOutputInstructionType.END_FLOW}>End</option>
+									<option value={FlowStepOutputInstructionType.BRANCH}>Branch</option>
+								</Select>
+							</StepPathDiv>
+						}
+					/>
+					{
+						stepOutput.strategy === FlowStepOutputInstructionType.BRANCH
+						&& !childSequence
+						&& editContext.draggingElem !== step._id
+						&& <>
+							<StepPathSequenceDiv>
+								<LineDiv />
+							</StepPathSequenceDiv>
+							<FakeFlowSequenceStack show parent={`${step._id}_${stepOutput.pathName}`} editContext={editContext} />
+						</>
+					}
+				</StepPathWrapper>
+			</>
 		);
 	}
 }

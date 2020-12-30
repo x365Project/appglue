@@ -457,82 +457,77 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 							{
 								(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 									return (
-										<ObserveState
-											listenTo={this.props.sequence}
-											properties={["steps"]}
-											control={() => (
-												<Collapse in={!this.state.isCollapsed} {...provided.droppableProps} ref={provided.innerRef} collapsedHeight={1}>
-													<FlowSequenceContent>
-														{this.props.sequence.steps.length === 0 && <>put steps here</> }
-														{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
-															let isLast = this.props.sequence.steps.length === i + 1;
+										<Collapse in={!this.state.isCollapsed} {...provided.droppableProps} ref={provided.innerRef} collapsedHeight={1}>
+											<FlowSequenceContent>
+												{this.props.sequence.steps.length === 0 && <>put steps here</> }
+												{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
+													let isLast = this.props.sequence.steps.length === i + 1;
 
-															let otherPaths: FlowStepOutputInstructions[] = [];
-															if (step.outputs && step.outputs.length > 1) {
-																otherPaths = [...step.outputs]
-																// removes first item
-																otherPaths.shift();
+													let otherPaths: FlowStepOutputInstructions[] = [];
+													if (step.outputs && step.outputs.length > 1) {
+														otherPaths = [...step.outputs]
+														// removes first item
+														otherPaths.shift();
 
-															} else if (step.outputs && Array.isArray(step.outputs) && isLast) {
-																otherPaths = [...step.outputs]
-															}
+													} else if (step.outputs && Array.isArray(step.outputs) && isLast) {
+														otherPaths = [...step.outputs]
+													}
 
-															return (
-																<Draggable
-																	key={step._id}
-																	draggableId={step._id}
-																	index={i}
-																>
-																	{
-																		(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
-																			return (
-																				<div
-																					onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
-																						e.preventDefault();
-																						e.stopPropagation();
-																						this.props.editContext.contextControl = {
-																							selectedId: step._id,
-																							mouseX: e.clientX,
-																							mouseY: e.clientY
-																						}
-																					}}
-																					ref={provided.innerRef}
-																					{...provided.draggableProps}
-																					{...provided.dragHandleProps}
-																				>
-																					{this.renderStep(step, this.props.editContext)}
-																					{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
-																						<StepConnectSection>
-																							<StepConnect/>
-																							{otherPaths.length !== 0 && (
-																								<StepConnectOtherPaths>
-																									{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
-																										return (
-																											<FlowSequenceStackAltPath
-																												key={'path'+stepOutput.pathName}
-																												sequence={this.props.sequence}
-																												step={step}
-																												stepOutput={stepOutput}
-																												editContext={this.props.editContext}
-																											/>
-																										);
-																									})}
-																								</StepConnectOtherPaths>
-																							)}
-																						</StepConnectSection>
+													return (
+														<Draggable
+															key={step._id}
+															draggableId={step._id}
+															index={i}
+														>
+															{
+																(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+																	return (
+																		<div
+																			onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
+																				e.preventDefault();
+																				e.stopPropagation();
+																				this.props.editContext.contextControl = {
+																					selectedId: step._id,
+																					mouseX: e.clientX,
+																					mouseY: e.clientY
+																				}
+																			}}
+																			ref={provided.innerRef}
+																			{...provided.draggableProps}
+																			{...provided.dragHandleProps}
+																		>
+																			{this.renderStep(step, this.props.editContext)}
+																			{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
+																				<StepConnectSection>
+																					<StepConnect/>
+																					{otherPaths.length !== 0 && (
+																						<StepConnectOtherPaths>
+																							{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
+																								return (
+																									<FlowSequenceStackAltPath
+																										key={'path'+stepOutput.pathName}
+																										sequence={this.props.sequence}
+																										step={step}
+																										stepOutput={stepOutput}
+																										editContext={this.props.editContext}
+																									/>
+																								);
+																							})}
+																						</StepConnectOtherPaths>
 																					)}
-																				</div>
-																			);
-																		}
-																	}
-																</Draggable>
-															);
-														})}
-														{ provided.placeholder }
-													</FlowSequenceContent>
-												</Collapse>
-											)}
-										/>
+																				</StepConnectSection>
+																			)}
+																		</div>
+																	);
+																}
+															}
+														</Draggable>
+													);
+												})}
+												{ provided.placeholder }
+											</FlowSequenceContent>
+										</Collapse>
+
 										
 									);
 								}

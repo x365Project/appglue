@@ -554,7 +554,10 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
             stepOutput.connectedSequenceId = stackId;
         }
 
-        StateManager.propertyChanged(this.editContext, 'isDraggingControl');
+		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
+		
+		this.editContext.clearCanvas();
+		
         if (control)
             this.editContext.setSelection(control);
         else
