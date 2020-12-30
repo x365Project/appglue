@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {XFlowConfiguration} from "./Structure/XFlowConfiguration";
 import styled from "styled-components";
 import {FlowStepRegistration, RegistrationData} from "./Utilities/RegisterFlowStep";
@@ -15,7 +15,8 @@ import {
     ResponderProvided
 } from "react-beautiful-dnd";
 import {AutoBind} from "../Common/AutoBind";
-import {FlowSequenceStack, FakeFlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
+import {FlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
+import {FakeFlowSequenceStack} from "./DesignerUI/FakeFlowSequenceStack";
 import ReactDraggable from "react-draggable";
 import {Accordion, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button} from "@material-ui/core";
 import {
@@ -70,6 +71,8 @@ export class FlowConstants {
     static ToolboxId = 'Toolbox';
     static FakeStackId = 'Fakestack';
     static DROPPING_COLOR = '#4682B4';
+    static DEFAULT_RELATION_LINE_COLOR = 'black';
+    static DEFAULT_RELATION_LINE_WIDTH = 2;
 }
 
 const FlowMainSectionDiv = styled.div`
@@ -363,12 +366,42 @@ export class FlowEditContext {
     set draggingElem(elemId: string | undefined) {
         this._draggingElemId = elemId;
     }
+	
+	private _canvas: {
+		context:CanvasRenderingContext2D | null;
+		width: number;
+		height: number;
+	} | null = null;
+	
+	set canvas(c: {context:CanvasRenderingContext2D | null; width: number; height: number;} | null) {
+		this._canvas = c;
+	}
 
-    private _drawLineCanvas: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
+	get canvas(): {context:CanvasRenderingContext2D | null; width: number; height: number;} | null {
+		return this._canvas
+	}
 
-    get drawLineCanvas(): React.RefObject<HTMLCanvasElement> {
-        return this._drawLineCanvas;
-    }
+	get canvasContext(): CanvasRenderingContext2D | null {
+		return this._canvas?.context || null;
+	}
+
+    drawLine(point: {x: number, y: number}, point1: {x: number, y: number}) {
+        if (this.canvasContext) {
+            this.canvasContext.beginPath();
+            this.canvasContext.moveTo(point.x, point.y);
+            this.canvasContext.lineTo(point1.x, point1.y);
+            this.canvasContext.strokeStyle = FlowConstants.DEFAULT_RELATION_LINE_COLOR;
+            this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
+            this.canvasContext.stroke();
+        }
+	}
+	
+	clearCanvas() {
+		console.log(this.canvasContext);
+		if (this._canvas) {
+			this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
+		}
+	}
 
     refresh() {
         this.flowEditor.forceUpdate();
@@ -434,9 +467,8 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         } else {
             this.editContext.draggingElemType = IDraggingElementType.Step;
         }
-        console.log(initial.draggableId);
         this.editContext.draggingElem = initial.draggableId;
-        this.editContext.clearSelection();
+		this.editContext.clearSelection();
     }
 
     @AutoBind
@@ -723,6 +755,14 @@ const DesignPanel = styled.div`
 	background: #E5E5E5;
     position: relative;
     overflow: auto;
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 `;
 
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
@@ -732,6 +772,22 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     const [expandedConfigPanel, setexpandedConfigPanel] = useState(true);
     const [isMovingConfigPanel, setisMovingConfigPanel] = useState(false);
     // make state
+
+    const canvas: React.RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+    
+    // initialize the canvas context
+    useEffect(() => {
+        // dynamically assign the width and height to canvas
+        let canvasEle = canvas.current! as HTMLCanvasElement;
+        canvasEle.width = canvasEle.clientWidth;
+        canvasEle.height = canvasEle.clientHeight;
+        props.editContext.canvas = {
+			context: canvasEle.getContext("2d"),
+			width: canvasEle.clientWidth,
+			height: canvasEle.clientHeight
+		};
+    }, []);
+    
 
     function onToggleExpandedConfigPanel() {
         if (!isMovingConfigPanel) {
@@ -825,6 +881,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
             <ObserveState listenTo={props.editContext} control={() => (
                 <FakeFlowSequenceStack show={props.editContext.isDraggingControl && props.editContext.draggingElemType !== IDraggingElementType.Related} editContext={props.editContext}/>
             )} />
+            <canvas ref={canvas} />
 
             {props.flow.sequences.filter((value:FlowStepSequence) => {
                 return value.x != -1;
