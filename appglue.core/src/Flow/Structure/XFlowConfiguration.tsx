@@ -71,6 +71,7 @@ export class XFlowConfiguration implements IFlowElement{
         } else {
             s.steps.push(step);
         }
+
         StateManager.propertyChanged(s, 'steps');
     }
 
