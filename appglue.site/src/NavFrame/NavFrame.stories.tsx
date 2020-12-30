@@ -1,25 +1,25 @@
 import React from 'react';
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import {Meta, Story} from '@storybook/react/types-6-0';
+import { Meta, Story } from '@storybook/react/types-6-0';
 
-import {NavFrame} from './NavFrame';
+import { NavFrame } from './NavFrame';
 import {
-    ContentTheme,
-    FrameProps,
-    FrameSize,
-    Layout,
-    LayoutWidth,
-    NavBarTheme,
-    SideBarType,
-    TopBarTheme,
+  ContentTheme,
+  FrameProps,
+  FrameSize,
+  Layout,
+  LayoutWidth,
+  NavBarTheme,
+  SideBarType,
+  TopBarTheme,
 } from './FrameProps';
 
 export default {
-    title: 'NavFrame',
-    component: NavFrame,
+  title: 'NavFrame',
+  component: NavFrame,
 } as Meta;
 
-const Template: Story<FrameProps> = (args) => <NavFrame layoutOptions={args} />;
+const Template: Story<FrameProps> = args => <NavFrame layoutOptions={args} />;
 
 let frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -31,7 +31,7 @@ export const BoxedLayoutHorizontal = Template.bind(null, frameOptions);
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.BOXED;
-frameOptions.layout = Layout.HORIZONTAL;
+frameOptions.layout = Layout.VERTICAL;
 
 export const BoxedLayoutVertical = Template.bind(null, frameOptions);
 
@@ -50,7 +50,6 @@ frameOptions.layout = Layout.VERTICAL;
 export const FullWidthLayoutVertical = Template.bind(null, frameOptions);
 
 // *********** Vertical theme ******
-
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -85,7 +84,6 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 
 export const DarkNavBar = Template.bind(null, frameOptions);
 
-
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
@@ -102,7 +100,6 @@ frameOptions.navBarTheme = NavBarTheme.COLORED;
 frameOptions.color = '#ff0000';
 
 export const ColoredNavBar = Template.bind(null, frameOptions);
-
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -149,7 +146,6 @@ frameOptions.navBarTheme = NavBarTheme.DARK;
 
 export const HDarkNavBar = Template.bind(null, frameOptions);
 
-
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
@@ -167,7 +163,6 @@ frameOptions.color = '#ff0000';
 
 export const HColoredNavBar = Template.bind(null, frameOptions);
 
-
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
@@ -177,8 +172,6 @@ frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
 export const HDarkTheme = Template.bind(null, frameOptions);
-
-
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
@@ -201,7 +194,6 @@ frameOptions.topBarTheme = TopBarTheme.DARK;
 frameOptions.contentTheme = ContentTheme.DARK;
 
 export const CompactNavBar = Template.bind(null, frameOptions);
-
 
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;

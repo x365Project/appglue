@@ -1,5 +1,5 @@
-import React from "react";
-import { FrameProps } from "./FrameProps";
+import React from 'react';
+import { FrameProps } from './FrameProps';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,15 +17,21 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SettingsIcon from '@material-ui/icons/Settings';
+import clsx from 'clsx';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { List, Divider } from '@material-ui/core';
-import TopMenu from './NavBarData'
-import LogoIocn from '../assets/logo.svg'
+import TopMenu from './NavBarData';
+import LogoIocn from '../assets/logo.svg';
+import { PageRoutes } from '../Pages/PageRoutes';
+import { LayoutWidth } from './FrameProps';
+import { ContentTheme } from './FrameProps';
+import { TopBarTheme } from './FrameProps';
+import { NavBarTheme } from './FrameProps';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
@@ -85,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Iconbutton: {
     color: '#ffffff',
-    marginLeft: '44px'
+    marginLeft: '44px',
   },
   sectionDesktop: {
     display: 'none',
@@ -112,18 +118,18 @@ const useStyles = makeStyles((theme) => ({
   LogoBlock: {
     margin: ' 12px 33px',
     [theme.breakpoints.up('sm')]: {
-      margin: ' 4px 33px'    
-    }
+      margin: ' 4px 33px',
+    },
   },
   LogoIcon: {
     paddingRight: '10px',
   },
   ButtonMenu: {
     padding: '0',
-    margin: '0 0 0 24px'
+    margin: '0 0 0 24px',
   },
   LogoMenuIcon: {
-    color: '#ffffff'
+    color: '#ffffff',
   },
   content: {
     backgroundColor: '#f7fbfd',
@@ -132,17 +138,43 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   userName: {
-    padding: '13px 0 0 10px'
-  }
+    padding: '13px 0 0 10px',
+  },
+  borderGrow: {
+    maxWidth: '1440px',
+    margin: '0 auto',
+  },
+  lightContentTheme: {
+    background: '#f7fbfd',
+  },
+  darkContentTheme: {
+    background: '#424C5C',
+  },
+  lightTopBar: {
+    background: theme.palette.primary.light,
+  },
+  darkTopBar: {
+    background: theme.palette.primary.dark,
+  },
+  coloredTopBar: {
+    // background: theme.palette.primary.main,
+  },
+  darkNavBar: {
+    background: theme.palette.primary.dark,
+  },
+  lightNavBar: {
+    background: theme.palette.primary.light,
+  },
+  coloredNavBar: {
+    // background: theme.palette.primary.main,
+  },
 }));
-
 
 export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [value, setValue] = React.useState(0);
-
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -192,14 +224,22 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
+        <IconButton
+          className={classes.Iconbutton}
+          aria-label="show 4 new mails"
+          color="inherit"
+        >
           <FullscreenIcon />
         </IconButton>
         <p>Messages</p>
       </MenuItem>
 
       <MenuItem>
-        <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
+        <IconButton
+          className={classes.Iconbutton}
+          aria-label="show 4 new mails"
+          color="inherit"
+        >
           <Badge badgeContent={10} color="secondary">
             <ChatBubbleOutlineIcon />
           </Badge>
@@ -207,7 +247,11 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
         <p>Messages</p>
       </MenuItem>
       <MenuItem>
-        <IconButton className={classes.Iconbutton} aria-label="show 11 new notifications" color="inherit">
+        <IconButton
+          className={classes.Iconbutton}
+          aria-label="show 11 new notifications"
+          color="inherit"
+        >
           <Badge badgeContent={1} color="secondary">
             <NotificationsIcon />
           </Badge>
@@ -215,7 +259,8 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
         <p>Notifications</p>
       </MenuItem>
       <MenuItem>
-        <IconButton className={classes.Iconbutton}
+        <IconButton
+          className={classes.Iconbutton}
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
@@ -228,15 +273,45 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
     </Menu>
   );
 
-
   return (
-    <>
-      <div className={classes.grow}>
-        <AppBar position="static" className={classes.appBar} style={{ background: props.layoutOptions.color }}>
+    <div
+      className={clsx(
+        classes.grow,
+        props.layoutOptions.layoutWidth === LayoutWidth.BOXED &&
+          classes.borderGrow
+      )}
+    >
+      <div
+        className={clsx(
+          classes.grow,
+          props.layoutOptions.layoutWidth === LayoutWidth.BOXED &&
+            classes.borderGrow
+        )}
+      >
+        <AppBar
+          position="static"
+          style={
+            props.layoutOptions.topBarTheme === TopBarTheme.COLORED
+              ? {
+                  background: props.layoutOptions.colorGradientEnd,
+                }
+              : {}
+          }
+          className={clsx(
+            classes.appBar,
+            props.layoutOptions.topBarTheme === TopBarTheme.DARK &&
+              classes.darkTopBar,
+            props.layoutOptions.topBarTheme === TopBarTheme.COLORED &&
+              classes.coloredTopBar,
+            props.layoutOptions.topBarTheme === TopBarTheme.LIGHT &&
+              classes.lightTopBar
+          )}
+        >
           <Toolbar className={classes.LogoBlock}>
             <img src={LogoIocn} className={classes.LogoIcon} />
             <Typography>AppGlue</Typography>
-            <IconButton className={classes.Iconbutton}
+            <IconButton
+              className={classes.Iconbutton}
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
@@ -260,21 +335,36 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             </div>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
-
-              <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
-                <FullscreenIcon style={{ fontSize: '30px' }} className={classes.LogoMenuIcon} />
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show 4 new mails"
+                color="inherit"
+              >
+                <FullscreenIcon
+                  style={{ fontSize: '30px' }}
+                  className={classes.LogoMenuIcon}
+                />
               </IconButton>
-              <IconButton className={classes.Iconbutton} aria-label="show 4 new mails" color="inherit">
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show 4 new mails"
+                color="inherit"
+              >
                 <Badge badgeContent={10} color="secondary">
                   <ChatBubbleOutlineIcon className={classes.LogoMenuIcon} />
                 </Badge>
               </IconButton>
-              <IconButton className={classes.Iconbutton} aria-label="show 17 new notifications" color="inherit">
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show 17 new notifications"
+                color="inherit"
+              >
                 <Badge badgeContent={1} color="secondary">
                   <NotificationsIcon className={classes.LogoMenuIcon} />
                 </Badge>
               </IconButton>
-              <IconButton className={classes.Iconbutton}
+              <IconButton
+                className={classes.Iconbutton}
                 edge="end"
                 aria-label="account of current user"
                 aria-controls={menuId}
@@ -284,10 +374,10 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
                 <AccountCircle className={classes.LogoMenuIcon} />
               </IconButton>
               <Typography className={classes.userName}>John Doe</Typography>
-
             </div>
             <div className={classes.sectionMobile}>
-              <IconButton className={classes.Iconbutton}
+              <IconButton
+                className={classes.Iconbutton}
                 aria-label="show more"
                 aria-controls={mobileMenuId}
                 aria-haspopup="true"
@@ -302,23 +392,49 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
         {renderMenu}
       </div>
       <div>
-        <List className={classes.HorizontalMenu}>
-          {
-            TopMenu.map((data) => {
-              return (
-                <>
-                  <ListItem button className={classes.ButtonMenu}>
-                    <ListItemIcon className={classes.MenuIcon}>{<data.icon />}</ListItemIcon>
-                    <ListItemText>{data.label}</ListItemText>
-                  </ListItem>
-                </>
-              )
-            })
+        <List
+          style={
+            props.layoutOptions.navBarTheme === NavBarTheme.COLORED
+              ? {
+                  background: props.layoutOptions.colorGradientEnd,
+                }
+              : {}
           }
+          className={clsx(
+            classes.HorizontalMenu,
+            props.layoutOptions.navBarTheme === NavBarTheme.DARK &&
+              classes.darkNavBar,
+            props.layoutOptions.navBarTheme === NavBarTheme.COLORED &&
+              classes.coloredNavBar,
+            props.layoutOptions.navBarTheme === NavBarTheme.LIGHT &&
+              classes.lightNavBar
+          )}
+        >
+          {PageRoutes.getRootPages().map(page => {
+            return (
+              <>
+                <ListItem button className={classes.ButtonMenu}>
+                  <ListItemIcon className={classes.MenuIcon}>
+                    {page.renderIcon()}
+                  </ListItemIcon>
+                  <ListItemText>{page.name}</ListItemText>
+                </ListItem>
+              </>
+            );
+          })}
         </List>
-      </div><main className={classes.content}>
+      </div>
+      <main
+        className={clsx(
+          classes.content,
+          props.layoutOptions.contentTheme === ContentTheme.LIGHT &&
+            classes.lightContentTheme,
+          props.layoutOptions.contentTheme === ContentTheme.DARK &&
+            classes.darkContentTheme
+        )}
+      >
         <Typography>hello AppGluer</Typography>
       </main>
-    </>
-  )
+    </div>
+  );
 }

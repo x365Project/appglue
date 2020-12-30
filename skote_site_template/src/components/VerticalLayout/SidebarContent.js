@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types"
 import React, { useEffect } from "react"
 
 // MetisMenu
@@ -80,7 +80,7 @@ const SidebarContent = props => {
                 <Link to="/dashboard-saas">{props.t("Saas")}</Link>
               </li>
               <li>
-                <Link to="/dashboard-crypto">{props.t("Crypto")}</Link>
+                <Link to="/dashboard-crypto">{props.t("Cryptosss")}</Link>
               </li>
             </ul>
           </li>
@@ -142,9 +142,9 @@ const SidebarContent = props => {
           </li>
 
           <li>
-            <Link to="/#" className="has-arrow waves-effect">
+            <Link className="has-arrow waves-effect">
               <i className="bx bx-bitcoin"></i>
-              <span>{props.t("Crypto")}</span>
+              <span>Cryptorrr</span>
             </Link>
             <ul className="sub-menu" aria-expanded="false">
               <li>
@@ -563,7 +563,7 @@ const SidebarContent = props => {
 
 SidebarContent.propTypes = {
   location: PropTypes.object,
-  t: PropTypes.any
+  t: PropTypes.any,
 }
 
 export default withRouter(withTranslation()(SidebarContent))
