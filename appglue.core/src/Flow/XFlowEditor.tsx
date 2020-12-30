@@ -71,8 +71,8 @@ export class FlowConstants {
     static ToolboxId = 'Toolbox';
     static FakeStackId = 'Fakestack';
     static DROPPING_COLOR = '#4682B4';
-    static DEFAULT_RELATION_LINE_COLOR = 'black';
-    static DEFAULT_RELATION_LINE_WIDTH = 2;
+    static DEFAULT_RELATION_LINE_COLOR = 'gray';
+    static DEFAULT_RELATION_LINE_WIDTH = 1;
 }
 
 const FlowMainSectionDiv = styled.div`
@@ -387,7 +387,8 @@ export class FlowEditContext {
 
     drawLine(point: {x: number, y: number}, point1: {x: number, y: number}) {
         if (this.canvasContext) {
-            this.canvasContext.beginPath();
+			this.canvasContext.beginPath();
+			this.canvasContext.setLineDash([5, 15]);
             this.canvasContext.moveTo(point.x, point.y);
             this.canvasContext.lineTo(point1.x, point1.y);
             this.canvasContext.strokeStyle = FlowConstants.DEFAULT_RELATION_LINE_COLOR;
@@ -397,7 +398,6 @@ export class FlowEditContext {
 	}
 	
 	clearCanvas() {
-		console.log(this.canvasContext);
 		if (this._canvas) {
 			this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
 		}
@@ -465,7 +465,8 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         if (initial.draggableId.startsWith(FlowConstants.FakeStackId)) {
             this.editContext.draggingElemType = IDraggingElementType.Related;
         } else {
-            this.editContext.draggingElemType = IDraggingElementType.Step;
+			this.editContext.draggingElemType = IDraggingElementType.Step;
+			this.editContext.clearCanvas();
         }
         this.editContext.draggingElem = initial.draggableId;
 		this.editContext.clearSelection();

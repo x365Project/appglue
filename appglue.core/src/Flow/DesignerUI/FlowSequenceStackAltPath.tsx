@@ -1,12 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { Select } from "@material-ui/core";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
-import {FlowEditContext, FlowConstants} from "../XFlowEditor";
+import {FlowEditContext} from "../XFlowEditor";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
-import { TextIcon } from "../../CommonUI/TextIcon";
-import { StyledButtonGroup, IconButtonWithTitle } from "../../CommonUI/CommonStyles";
 import {FakeFlowSequenceStack} from "./FakeFlowSequenceStack";
 
 
@@ -28,25 +27,6 @@ const StepPathDiv = styled('div')<{width: number; color?: string;}>`
 	align-items: center;
 	padding-right: 20px;
 	transition: all .1s;
-
-	.StepInstruction-buttonGroup {
-		border: none;
-
-		.MuiButtonBase-root {
-			height: 25px;
-			width: 25px;
-
-			margin-left: 5px;
-			&:first-child {
-				margin-left: 0px;
-			}
-
-			&.TopbarIconButton-selected .MuiButton-label div {
-				color: gray;
-				border-color: gray;
-			}
-		}
-	}
 `;
 
 const StepPathSequenceDiv = styled.div`
@@ -106,79 +86,58 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 			}
 		}
 		return (
-			<>
-                <StepPathConnectDiv />
-				<StepPathWrapper ref={this.containerRef}>
-					<ObserveState listenTo={childSequence}
-						properties={["stackColor"]}
-						control={
-							() => <StepPathDiv
-								key={stepOutput.pathName}
-								width={
-									stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
-									? sequence.width - 40
-									: sequence.width - 73
+			<ObserveState
+				listenTo={this.props.sequence}
+				properties={["steps"]}
+				control={
+					() => <>
+						<StepPathConnectDiv />
+						<StepPathWrapper ref={this.containerRef}>
+							<ObserveState listenTo={childSequence}
+								properties={["stackColor"]}
+								control={
+									() => <StepPathDiv
+										key={stepOutput.pathName}
+										width={
+											stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
+											? sequence.width - 40
+											: sequence.width - 73
+										}
+										color={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && !!childSequence ? childSequence.stackColor : undefined}
+									>
+										{stepOutput.pathName}
+		
+										<Select
+											disableUnderline
+											native
+											value={stepOutput.strategy}
+											onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
+												stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;										
+											}}
+										>
+											<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>
+											<option value={FlowStepOutputInstructionType.THROW_EXCEPTION}>Throw</option>
+											<option value={FlowStepOutputInstructionType.END_FLOW}>End</option>
+											<option value={FlowStepOutputInstructionType.BRANCH}>Branch</option>
+										</Select>
+									</StepPathDiv>
 								}
-								color={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && !!childSequence ? childSequence.stackColor : undefined}
-							>
-								{stepOutput.pathName}
-								<StyledButtonGroup
-									variant="outlined"
-									size="small"
-									classes={{
-										root: "StepInstruction-buttonGroup"
-									}}
-								>
-									<IconButtonWithTitle
-										title="Continue"
-										icon={<TextIcon name="C" />}
-										action={() => {
-											stepOutput.strategy = FlowStepOutputInstructionType.CONTINUE;
-										}}
-										selected={stepOutput.strategy === FlowStepOutputInstructionType.CONTINUE}
-									/>
-									<IconButtonWithTitle
-										title="Throw"
-										icon={<TextIcon name="T" />}
-										action={() => {
-											stepOutput.strategy = FlowStepOutputInstructionType.THROW_EXCEPTION;
-										}}
-										selected={stepOutput.strategy === FlowStepOutputInstructionType.THROW_EXCEPTION}
-									/>
-									<IconButtonWithTitle
-										title="End"
-										icon={<TextIcon name="E" />}
-										action={() => {
-											stepOutput.strategy = FlowStepOutputInstructionType.END_FLOW;
-										}}
-										selected={stepOutput.strategy === FlowStepOutputInstructionType.END_FLOW}
-									/>
-									<IconButtonWithTitle
-										title="Branch"
-										icon={<TextIcon name="B" />}
-										action={() => {
-											stepOutput.strategy = FlowStepOutputInstructionType.BRANCH;
-										}}
-										selected={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH}
-									/>
-								</StyledButtonGroup>
-							</StepPathDiv>
-						}
-					/>
-					{
-						stepOutput.strategy === FlowStepOutputInstructionType.BRANCH
-						&& !childSequence
-						&& editContext.draggingElem !== step._id
-						&& <>
-							<StepPathSequenceDiv>
-								<LineDiv />
-							</StepPathSequenceDiv>
-							<FakeFlowSequenceStack show parent={`${step._id}_${stepOutput.pathName}`} editContext={editContext} />
-						</>
-					}
-				</StepPathWrapper>
-            </>
-
+							/>
+							{
+								stepOutput.strategy === FlowStepOutputInstructionType.BRANCH
+								&& !childSequence
+								&& editContext.draggingElem !== step._id
+								&& <>
+									<StepPathSequenceDiv>
+										<LineDiv />
+									</StepPathSequenceDiv>
+									<FakeFlowSequenceStack show parent={`${step._id}_${stepOutput.pathName}`} editContext={editContext} />
+								</>
+							}
+						</StepPathWrapper>
+					</>
+				} 
+			/>
 		);
 	}
 }
