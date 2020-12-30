@@ -73,9 +73,10 @@ export interface PropertyEditorTextListInterface{
     editObject: object,
     propertyName: string | number,
     placeholder?: string;
-    label?: string,
-    hint?: string,
-    updateCallback : () => void,
+    label?: string;
+    hint?: string;
+    autoFocus?: boolean;
+    updateCallback : () => void;
 }
 
 
@@ -154,6 +155,7 @@ export const PropertyEditorTextList : React.FC<PropertyEditorTextListInterface> 
                             onChange={onChange}
                             disableUnderline
                             onFocus={() => onFocus(idx)}
+                            autoFocus={props.autoFocus && idx === 0}
                             onKeyDown={onKeyDown}
                             placeholder={
                                 idx === 0 ? props.placeholder || 'items...' : ''

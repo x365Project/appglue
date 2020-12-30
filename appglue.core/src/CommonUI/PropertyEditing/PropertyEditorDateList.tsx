@@ -34,10 +34,11 @@ const StyledDateList = styled.div`
 `;
 
 export interface PropertyEditorDateListInterface{
-    editObject: object,
-    propertyName: string | number,
-    label?: string,
-    updateCallback : () => void,
+    editObject: object;
+    propertyName: string | number;
+    label?: string;
+    autFocus?: boolean;
+    updateCallback : () => void;
 }
 
 
@@ -79,6 +80,7 @@ export const PropertyEditorDateList : React.FC<PropertyEditorDateListInterface> 
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e, idx)}
                         type="date"
                         key={idx}
+                        autoFocus={props.autFocus && idx === 0}
                     />
                 ))
             }
