@@ -32,7 +32,7 @@ import { CopyIcon } from "../../CommonUI/Icon/CopyIcon";
 import { CloseIcon } from "../../CommonUI/Icon/CloseIcon";
 import { PasteIcon } from "../../CommonUI/Icon/PasteIcon";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
-import { TopbarIconButton, TopbarSaveButton, TopbarActionButton, TopbarButtonGroup } from "../../CommonUI/CommonStyles";
+import { TopbarIconButton, TopbarSaveButton, IconButtonWithTitle, StyledButtonGroup } from "../../CommonUI/CommonStyles";
 
 const SelectDiv = styled.div`
 	position: relative;
@@ -200,39 +200,39 @@ class TopbarActionGroup extends React.Component<{editContext: FormContext}> {
 			<ObserveState
 				listenTo={this.props.editContext}
 				control={ () => 
-					<TopbarButtonGroup
+					<StyledButtonGroup
 						variant="outlined"
 						size="small"
 					>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Copy"
 							icon={<CopyIcon />}
 							disabled={this.isActionDisabled()}
 							testId="btn-topbar-copy"
 							action={this.props.editContext.onCopy}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Cut"
 							icon={<CutIcon />}
 							disabled={this.isActionDisabled()}
 							testId="btn-topbar-cut"
 							action={this.props.editContext.onCut}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Paste"
 							icon={<PasteIcon />}
 							disabled={this.isActionDisabled() || !this.props.editContext.clipboardControl || !this.props.editContext.getLastSelectedId()}
 							testId="btn-topbar-paste"
 							action={this.props.editContext.onPaste}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Delete"
 							icon={<DeleteIcon />}
 							disabled={this.isActionDisabled()}
 							testId="btn-topbar-delete"
 							action={this.props.editContext.onDelete}
 						/>
-					</TopbarButtonGroup>
+					</StyledButtonGroup>
 				}
 			/>
 		)
@@ -327,7 +327,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 							<Topbarlabel>
 								Display Format
 							</Topbarlabel>
-							<TopbarButtonGroup
+							<StyledButtonGroup
 								variant="outlined"
 								size="small"
 							>
@@ -419,7 +419,7 @@ export class Topbar extends React.Component<{editContext: FormContext}> {
 										<CellphoneVerticalIcon alt={FormDesignConstants.FORM_MODE_PHONE_VERTICAL} />
 									</TopbarIconButton>
 								</Tooltip>
-							</TopbarButtonGroup>
+							</StyledButtonGroup>
 						</ThemeProvider>
 					</TopbarItemDiv>
 					{

@@ -41,9 +41,18 @@ export abstract class BaseFlowStep
         );
     }
 
+    findOutPut(name: string): FlowStepOutputInstructions | null {
+        if (this.nonDefaultOutputInstructions) {
+            for (let o of this.nonDefaultOutputInstructions) {
+                if (o.pathName === name) return o;
+            }
+        }
+        return null;
+    }
+
     abstract renderEditUI(): JSX.Element | null ;
 
 
-    abstract get outputs(): FlowStepOutput | FlowStepOutput[] | undefined | null ;
+    abstract get outputs(): FlowStepOutputInstructions[] | undefined ;
 
 }

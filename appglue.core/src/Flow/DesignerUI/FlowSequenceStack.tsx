@@ -13,7 +13,6 @@ import styled from "styled-components";
 import {FlowEditContext, FlowConstants} from "../XFlowEditor";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
-import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import { InlineTextEdit } from "../../CommonUI/InlineTextEdit";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
@@ -22,25 +21,35 @@ import {UpIcon} from "../../CommonUI/Icon/UpIcon";
 import {DownIcon} from "../../CommonUI/Icon/DownIcon";
 import {MoveIcon} from "../../CommonUI/Icon/MoveIcon";
 import { Collapse, Typography } from "@material-ui/core";
+import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
+import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
+
+
+import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
 	height?: number;
-	x: number;
-	y: number;
+	position: IPosition,
 	isDragging: boolean;
 	index: number;
 	selected: boolean;
+	isDroppingOver: boolean;
+	color?: string;
 }>`
-	top: ${props => props.isDragging ? 0 : props.y}px;
-	left: ${props => props.isDragging ? 0 : props.x}px;
-    background: #fff;
+
+	top: ${props => props.isDragging ? 0 : props.position.y}px;
+	left: ${props => props.isDragging ? 0 : props.position.x}px;
 	position: absolute;
+    background: #fff;
 	border-radius: 5px;
 	margin-bottom: 10px;
 	min-width: ${props => props.width}px;
 	height: ${props => props.height ? `${props.height}px` : 'auto'};
-	border: 1px solid ${props => props.selected ? 'blue': 'darkgray'};
+	${props => props.isDroppingOver
+		?`border: 1px dashed ${FlowConstants.DROPPING_COLOR};`
+		:`border: 1px solid ${props.selected ? 'blue': (props.color || 'darkgray')};`
+	}
 
 	${props => !props.isDragging && `
 		transform: none !important;
@@ -89,7 +98,7 @@ const FlowSequenceSummary = styled.div`
 	flex-direction: column;
 `;
 
-const TitleDiv = styled("div")<{content?:string;}>`
+const TitleDiv = styled("div")<{content?:string; color?: string;}>`
 	margin-top: -32px;
 	
 	background: transparent;
@@ -104,7 +113,7 @@ const TitleDiv = styled("div")<{content?:string;}>`
 		max-width: 100%;
 		height: 37px;
 		overflow: hidden;
-		border: solid 1px darkgray;
+		border: solid 1px ${props => props.color || 'darkgray'};
 		background: #fff;
 		border-top-right-radius: 4px;
 		border-top-left-radius: 4px;
@@ -116,7 +125,7 @@ const TitleDiv = styled("div")<{content?:string;}>`
 		font-weight: 600;
 		font-size: 15px;
 		line-height: 25px;
-		color: #677C95;
+		color: ${props => props.color || '#677C95'};
 		padding: 6px;
 		max-width: 100%;
 		letter-spacing: .5px;
@@ -219,54 +228,67 @@ const StepConnect = styled.div`
 const StepConnectOtherPaths = styled.div`
 	display: flex;
 	flex-direction: column;
-	float: top;
 	margin-bottom: 5px;
 `;
 
-const StepPathDiv = styled('div')<{width: number}>`
-	border: 2px solid lightgray;
-	border-radius: 5px;
-	padding-left: 7px;
-	float: left;
-	height: 25px;
-	width: ${props => props.width}px;
-	background: white;
-`;
-
-const StepPathConnectDiv = styled.div`
-	border-left: 2px solid black;
-	margin-left: 25px;
-	display: flex;
-	min-height: 5px;
-	width: 100%;
-`;
-
-export const FakeFlowSequenceDiv = styled("div")<{
-	x: number;
-	y: number;
+export const FakeFlowSequenceDropDiv = styled("div")<{
+	position: IPosition;
 	show: boolean;
+	parent?: string;
+	isDroppingOver: boolean;
 }>`
-	width: 275px;
 	background: transparent;
-	border: dotted 2px darkgray;
-	min-height: 152px;
 	border-radius: 4px;
-	position: absolute;
-	top: ${props => props.y}px;
-	left: ${props => props.x}px;
+	position: ${props => props.parent ? 'relative': 'absolute'};
+	
 	opacity: ${props => props.show ? 1: 0};
 	transition: opacity .1s;
+
+	${props => !props.parent && `
+		width: 275px;
+		top: ${props.position.y}px;
+		left: ${props.position.x}px;
+		min-height: 152px;
+		${!props.isDroppingOver && `border: dotted 2px darkgray`};	
+	`}
+
+	${props => props.isDroppingOver &&
+		`border: dotted 2px ${FlowConstants.DROPPING_COLOR};`
+	}
+
+	${props => props.parent && `
+		min-height: 35px;
+		width: 150px;
+	`}
+
 `;
+
+export const FakeFlowSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	${props => props.showBoarder && `
+		border: dotted 2px darkgray;
+	`}
+`;
+
+interface IPosition {
+	x: number;
+	y: number;
+}
 
 interface IFlowSequenceStack {
 	flow: XFlowConfiguration;
 	sequence: FlowStepSequence;
 	editContext: FlowEditContext;
+	parent?: string,
 	index: number;
 }
 
 
-export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDragging: boolean; isCollapsed: boolean;}> {
+export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDragging: boolean; isCollapsed: boolean; isDroppingOver: boolean;}> {
 	
 	width: number = 275;
 
@@ -278,9 +300,17 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 
 		this.state = {
 			isDragging: false,
-			isCollapsed: false
+			isCollapsed: false,
+			isDroppingOver: false
 		}
 	}
+
+	getDefaultPosition = () : IPosition => {
+		return {
+			x: this.props.sequence.x,
+			y: this.props.sequence.y
+		}
+	} 
 
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
         this.props.sequence.x = data.x;
@@ -291,6 +321,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
 	onDragStart = (_e: DraggableEvent, _data: DraggableData) => {
+		this.props.editContext.clearCanvas();
 		this.props.editContext.clearSelection();
 		this.setState({
 			isDragging: true
@@ -325,8 +356,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
         return (
             <ReactDraggable
 				bounds="parent"
-				disabled={this.props.index === 0}
-                defaultPosition={{x: this.props.sequence.x, y: this.props.sequence.y}}
+				disabled={this.props.index === 0 || !!this.props.parent}
+                defaultPosition={this.getDefaultPosition()}
 				onStop={this.onDragStop}
 				onStart={this.onDragStart}
 				handle={`.stack-move`}
@@ -335,8 +366,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
                 <FlowSequenceDiv
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
 					height={this.state.isCollapsed? this.collapsedHeight: undefined}
-					x={this.props.sequence.x}
-					y={this.props.sequence.y}
+					position={this.getDefaultPosition()}
 					isDragging={this.state.isDragging}
 					index={this.props.index}
 					onClick={(_e: React.MouseEvent<HTMLDivElement>) => {
@@ -351,21 +381,63 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 							mouseY: e.clientY
 						}
 					}}
+					isDroppingOver={this.state.isDroppingOver}
+					color={this.props.sequence.stackColor}
 				>
 					<div className={`stack${this.state.isCollapsed ? ' stack-move': ''}`}>
-						<ObserveState
-							listenTo={this.props.sequence}
-							control={
-								() => <TitleDiv className="inline-editor" content={this.props.sequence.name}>
-									<InlineTextEdit
-										text={this.props.sequence.name || (this.props.index  === 0 ? 'primary' : '')}
-										placeholder={this.props.index > 0 ? 'unnamed' : 'primary'}
-										onEdit={this.onUpdateStackName}
+						<Droppable droppableId={`${this.props.sequence._id}_header`}
+							isDropDisabled={this.props.editContext.draggingElemType !== IDraggingElementType.Related && !this.state.isCollapsed}
+						>
+							{(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
+
+								if (snapshot.isDraggingOver && this.props.editContext.draggingElemType === IDraggingElementType.Related) {
+									if (!this.state.isDroppingOver) {
+										this.setState({
+											isDroppingOver: true
+										})
+									}
+								} else if (this.state.isDroppingOver) {
+									this.setState({
+										isDroppingOver: false
+									})
+								}
+
+								if (this.props.editContext.draggingElemType !== IDraggingElementType.Related && this.state.isCollapsed) {
+									if (snapshot.isDraggingOver) {
+										this.setState({
+											isCollapsed: false
+										})
+									}
+								}
+								
+								return <div {...provided.droppableProps} ref={provided.innerRef}>
+									<ObserveState
+										listenTo={this.props.sequence}
+										control={
+											() => <TitleDiv className="inline-editor" content={this.props.sequence.name} color={this.props.sequence.stackColor}>
+												<InlineTextEdit
+													text={this.props.sequence.name || (this.props.index  === 0 ? 'primary' : '')}
+													placeholder={this.props.index > 0 ? 'unnamed' : 'primary'}
+													onEdit={this.onUpdateStackName}
+												/>
+											</TitleDiv>
+										}
 									/>
-								</TitleDiv>
-							}
-						/>
-						
+
+									<Collapse in={this.state.isCollapsed}>
+										<FlowSequenceSummary>
+											<Typography align="center">
+												Steps
+											</Typography>
+											<Typography align="center" variant="h4" data-testid="steps-count">
+												{this.props.sequence.steps.length}
+											</Typography>
+										</FlowSequenceSummary>
+									</Collapse>
+									{provided.placeholder}
+								</div>
+							}}
+						</Droppable>
 						<div className="button-group">
 							<StyledIconButton onClick={this.onToggleCollapsed} data-testid="btn-stack-collapse">
 								{
@@ -378,100 +450,86 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 								</StyledIconButton>
 							}
 						</div>
-						<Droppable droppableId={this.props.sequence._id}>
-							{(
-								provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
-									if (snapshot.isDraggingOver && this.state.isCollapsed) {
-										this.setCollapsed(false);
-									}
+						<Droppable droppableId={this.props.sequence._id}
+							isDropDisabled={this.props.editContext.draggingElemType !== IDraggingElementType.Step}
+						>
+							{
+								(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 									return (
 										<ObserveState
 											listenTo={this.props.sequence}
 											properties={["steps"]}
 											control={() => (
-												<>
-													<Collapse in={this.state.isCollapsed}>
-														<FlowSequenceSummary>
-															<Typography align="center">
-																Steps
-															</Typography>
-															<Typography align="center" variant="h4" data-testid="steps-count">
-																{this.props.sequence.steps.length}
-															</Typography>
-														</FlowSequenceSummary>
-													</Collapse>
-													<Collapse in={!this.state.isCollapsed}>
-														<FlowSequenceContent
-															{...provided.droppableProps}
-															ref={provided.innerRef}
-														>
-															{this.props.sequence.steps.length === 0 && <>put steps here</> }
-															{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
-																let isLast = this.props.sequence.steps.length === i + 1;
+												<Collapse in={!this.state.isCollapsed} {...provided.droppableProps} ref={provided.innerRef} collapsedHeight={1}>
+													<FlowSequenceContent>
+														{this.props.sequence.steps.length === 0 && <>put steps here</> }
+														{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
+															let isLast = this.props.sequence.steps.length === i + 1;
 
-																let otherPaths: FlowStepOutput[] = [];
-																if (step.outputs && Array.isArray(step.outputs) && step.outputs.length > 1) {
-																	otherPaths = [...step.outputs]
-																	// removes first item
-																	otherPaths.shift();
+															let otherPaths: FlowStepOutputInstructions[] = [];
+															if (step.outputs && step.outputs.length > 1) {
+																otherPaths = [...step.outputs]
+																// removes first item
+																otherPaths.shift();
 
-																} else if (step.outputs && Array.isArray(step.outputs) && isLast) {
-																	otherPaths = [...step.outputs]
-																}
+															} else if (step.outputs && Array.isArray(step.outputs) && isLast) {
+																otherPaths = [...step.outputs]
+															}
 
-																return (
-																	<Draggable
-																		key={step._id}
-																		draggableId={step._id}
-																		index={i}
-																	>
-																		{
-																			(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
-
-																				return (
-
-																					<div
-																						onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
-																							e.preventDefault();
-																							e.stopPropagation();
-																							this.props.editContext.contextControl = {
-																								selectedId: step._id,
-																								mouseX: e.clientX,
-																								mouseY: e.clientY
-																							}
-																						}}
-																						ref={provided.innerRef}
-																						{...provided.draggableProps}
-																						{...provided.dragHandleProps}
-																					>
-																						{this.renderStep(step, this.props.editContext)}
-																						{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
-																							<StepConnectSection>
-																								<StepConnect/>
-																								{otherPaths.length !== 0 && (
-																									<StepConnectOtherPaths>
-																										{otherPaths.map((stepOutput: FlowStepOutput, i: number) => {
-																											return (
-																												<div key={'path'+stepOutput.name}>
-																													{this.renderAltPath(this.props.sequence, step, stepOutput, this.props.editContext)}
-																												</div>
-																											);
-																										})}
-																									</StepConnectOtherPaths>
-																								)}
-																							</StepConnectSection>
-																						)}
-																					</div>
-																				);
-																			}
+															return (
+																<Draggable
+																	key={step._id}
+																	draggableId={step._id}
+																	index={i}
+																>
+																	{
+																		(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+																			return (
+																				<div
+																					onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
+																						e.preventDefault();
+																						e.stopPropagation();
+																						this.props.editContext.contextControl = {
+																							selectedId: step._id,
+																							mouseX: e.clientX,
+																							mouseY: e.clientY
+																						}
+																					}}
+																					ref={provided.innerRef}
+																					{...provided.draggableProps}
+																					{...provided.dragHandleProps}
+																				>
+																					{this.renderStep(step, this.props.editContext)}
+																					{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
+																						<StepConnectSection>
+																							<StepConnect/>
+																							{otherPaths.length !== 0 && (
+																								<StepConnectOtherPaths>
+																									{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
+																										return (
+																											<FlowSequenceStackAltPath
+																												key={'path'+stepOutput.pathName}
+																												sequence={this.props.sequence}
+																												step={step}
+																												stepOutput={stepOutput}
+																												editContext={this.props.editContext}
+																											/>
+																										);
+																									})}
+																								</StepConnectOtherPaths>
+																							)}
+																						</StepConnectSection>
+																					)}
+																				</div>
+																			);
 																		}
-																	</Draggable>
-																);
-															})}
-															{ provided.placeholder }
-														</FlowSequenceContent>
-													</Collapse>
-												</>
+																	}
+																</Draggable>
+															);
+														})}
+														{ provided.placeholder }
+													</FlowSequenceContent>
+												</Collapse>
 											)}
 										/>
 										
@@ -485,19 +543,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
         );
     }
 
-    renderAltPath(sequence: FlowStepSequence, step: BaseFlowStep, stepOutput: FlowStepOutput, editContext: FlowEditContext) {
-        return (
-            <div onClick={(_event: React.MouseEvent<HTMLDivElement>) => {
-                    editContext.setSelection(step);
-                }}>
-                <StepPathConnectDiv/>
-                <StepPathDiv key={stepOutput.name} width={sequence.width - 40}>
-                    <>{stepOutput.name}</>
-                </StepPathDiv>
-            </div>
-        );
-    }
-
     private renderStep(step: BaseFlowStep, editContext: FlowEditContext) {
         return (
             <StepSurround selected={editContext.selection === step._id} invalid={false} onClick={(event: React.MouseEvent<HTMLDivElement>) => {
@@ -508,41 +553,4 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
             </StepSurround>
         );
     }
-}
-
-export class FakeFlowSequenceStack extends React.Component<{ flow: XFlowConfiguration, show: boolean }, {}> {
-
-	getDefaultPosition = () => {
-		let y = this.props.flow.sequences[0].y;
-		let x = Math.max(
-			...this.props.flow.sequences
-				.filter((s) => {
-					return s.y < y + 150;
-				})
-				.map((s) => s.x + (s.isCollapsed ? 150 : 300))
-		);
-
-		return {
-			x, y
-		};
-	}
-
-	render() {
-        return (
-			<Droppable droppableId={FlowConstants.FakeStackId} >
-				{
-					(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
-						return <FakeFlowSequenceDiv
-							{...this.getDefaultPosition()}
-							show={this.props.show}
-							{...provided.droppableProps}
-							ref={provided.innerRef}
-						>
-							{provided.placeholder}
-						</FakeFlowSequenceDiv>
-					}
-				}
-			</Droppable>
-		)
-	}
 }

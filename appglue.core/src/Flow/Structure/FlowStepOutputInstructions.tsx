@@ -1,7 +1,12 @@
 
 export class FlowStepOutputInstructions {
     strategy: FlowStepOutputInstructionType = FlowStepOutputInstructionType.BRANCH;
-    branchToSequence?: string;
+    connectedSequenceId?: string;
+    pathName?: string;
+
+    constructor(name?: string) {
+        this.pathName = name;
+    }
 }
 
 export enum FlowStepOutputInstructionType {

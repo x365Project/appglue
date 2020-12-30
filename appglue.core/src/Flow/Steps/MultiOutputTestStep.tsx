@@ -2,19 +2,22 @@ import {RegisterFlowStep} from "../Utilities/RegisterFlowStep";
 import {TextIcon} from "../../CommonUI/TextIcon";
 import {BaseFlowStep} from "./BaseFlowStep";
 import React from "react";
-import {FlowStepOutput} from "../Structure/FlowStepOutput";
+import { FlowStepOutputInstructions } from "../Structure/FlowStepOutputInstructions";
 
 @RegisterFlowStep('Utilities', 'Multi', <TextIcon name={'2x'}/>)
 export class MultiOutputTestStep extends BaseFlowStep {
-    get outputs(): FlowStepOutput | FlowStepOutput[] | undefined | null {
-        let outputs: FlowStepOutput[] = [];
-        let output = new FlowStepOutput();
-        outputs.push(output);
-        output = new FlowStepOutput('alt1');
-        outputs.push(output);
-        output = new FlowStepOutput('alt2');
-        outputs.push(output);
-        return outputs;
+    
+    constructor() {
+        super();
+        let output1 = new FlowStepOutputInstructions();
+        let output2 = new FlowStepOutputInstructions('alt1');
+        let output3 = new FlowStepOutputInstructions('alt2');
+        this.nonDefaultOutputInstructions = [output1, output2, output3];
+    }
+
+
+    get outputs(): FlowStepOutputInstructions[] | undefined {
+        return this.nonDefaultOutputInstructions;
     }
 
     renderEditUI(): JSX.Element | null {

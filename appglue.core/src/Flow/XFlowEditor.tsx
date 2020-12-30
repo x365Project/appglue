@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {XFlowConfiguration} from "./Structure/XFlowConfiguration";
 import styled from "styled-components";
 import {FlowStepRegistration, RegistrationData} from "./Utilities/RegisterFlowStep";
@@ -10,10 +10,13 @@ import {
     Droppable,
     DroppableProvided,
     DroppableStateSnapshot,
-    DropResult
+    DropResult,
+    DragStart,
+    ResponderProvided
 } from "react-beautiful-dnd";
 import {AutoBind} from "../Common/AutoBind";
-import {FlowSequenceStack, FakeFlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
+import {FlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
+import {FakeFlowSequenceStack} from "./DesignerUI/FakeFlowSequenceStack";
 import ReactDraggable from "react-draggable";
 import {Accordion, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button} from "@material-ui/core";
 import {
@@ -26,8 +29,8 @@ import {
     TopbarIconButton,
     TopbarDiv,
     TopbarViewButton,
-    TopbarButtonGroup,
-    TopbarActionButton,
+    StyledButtonGroup,
+    IconButtonWithTitle,
     ContextMenuForControl
 } from "../CommonUI/CommonStyles";
 import {BaseFlowStep} from "./Steps/BaseFlowStep";
@@ -49,6 +52,7 @@ import { IContextForControl } from "../Common/IContextForControl";
 import { CopyWhiteIcon } from "../CommonUI/Icon/CopyWhiteIcon";
 import { CutWhiteIcon } from "../CommonUI/Icon/CutWhiteIcon";
 import { DeleteWhiteIcon } from "../CommonUI/Icon/DeleteWhiteIcon";
+import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -66,6 +70,9 @@ const FlowEditorDiv = styled.div`
 export class FlowConstants {
     static ToolboxId = 'Toolbox';
     static FakeStackId = 'Fakestack';
+    static DROPPING_COLOR = '#4682B4';
+    static DEFAULT_RELATION_LINE_COLOR = 'black';
+    static DEFAULT_RELATION_LINE_WIDTH = 2;
 }
 
 const FlowMainSectionDiv = styled.div`
@@ -88,7 +95,6 @@ export class FlowEditContext {
 	flowTitle?: string;
     viewAPIUrl?: string;
     isDraggingControl: boolean = false;
-
 
 	public onFlowSave?: () => void;
     public onFlowCancel? : () => void ;
@@ -283,6 +289,20 @@ export class FlowEditContext {
         return this._lastSelectionElement;
     }
 
+
+    get newStackPosition(): {x: number; y: number} {
+        let y = this.flow.sequences[0].y 
+        let x = Math.max(
+            ...this.flow.sequences
+                .filter((s) => {
+                    return s.y < y + 150;
+                })
+                .map((s) => s.x + (s.isCollapsed ? 150 : 300))
+        );
+        return {x, y};
+    }
+
+
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;
         this._lastSelectionElement = selection;
@@ -326,6 +346,62 @@ export class FlowEditContext {
     get notification() {
         return this._notification;
     }
+
+    private _draggingElemType?: IDraggingElementType;
+
+    get draggingElemType(): IDraggingElementType | undefined {
+        return this._draggingElemType;
+    }
+
+    set draggingElemType(type: IDraggingElementType | undefined) {
+        this._draggingElemType = type;
+    }
+
+    private _draggingElemId?: string;
+
+    get draggingElem(): string | undefined {
+        return this._draggingElemId;
+    }
+
+    set draggingElem(elemId: string | undefined) {
+        this._draggingElemId = elemId;
+    }
+	
+	private _canvas: {
+		context:CanvasRenderingContext2D | null;
+		width: number;
+		height: number;
+	} | null = null;
+	
+	set canvas(c: {context:CanvasRenderingContext2D | null; width: number; height: number;} | null) {
+		this._canvas = c;
+	}
+
+	get canvas(): {context:CanvasRenderingContext2D | null; width: number; height: number;} | null {
+		return this._canvas
+	}
+
+	get canvasContext(): CanvasRenderingContext2D | null {
+		return this._canvas?.context || null;
+	}
+
+    drawLine(point: {x: number, y: number}, point1: {x: number, y: number}) {
+        if (this.canvasContext) {
+            this.canvasContext.beginPath();
+            this.canvasContext.moveTo(point.x, point.y);
+            this.canvasContext.lineTo(point1.x, point1.y);
+            this.canvasContext.strokeStyle = FlowConstants.DEFAULT_RELATION_LINE_COLOR;
+            this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
+            this.canvasContext.stroke();
+        }
+	}
+	
+	clearCanvas() {
+		console.log(this.canvasContext);
+		if (this._canvas) {
+			this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
+		}
+	}
 
     refresh() {
         this.flowEditor.forceUpdate();
@@ -385,13 +461,22 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     }
 
     @AutoBind
-    onDragStart() {
-        this.editContext.clearSelection();
+    onDragStart(initial: DragStart, _provided: ResponderProvided) {
+        if (initial.draggableId.startsWith(FlowConstants.FakeStackId)) {
+            this.editContext.draggingElemType = IDraggingElementType.Related;
+        } else {
+            this.editContext.draggingElemType = IDraggingElementType.Step;
+        }
+        this.editContext.draggingElem = initial.draggableId;
+		this.editContext.clearSelection();
     }
 
     @AutoBind
     onDragEnd(result: DropResult) {
         this.editContext.isDraggingControl = false;
+        this.editContext.draggingElemType = undefined;
+        this.editContext.draggingElem = undefined;
+
         // if not destination... then we should not do anything
         if (!result.destination)
             return;
@@ -425,25 +510,47 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                     this.props.flow.remove(control);
                 }
                 let initialSeq = new FlowStepSequence();
-                let y = this.props.flow.sequences[0].y 
-                let x = Math.max(
-                    ...this.props.flow.sequences
-                        .filter((s) => {
-                            return s.y < y + 150;
-                        })
-                        .map((s) => s.x + (s.isCollapsed ? 150 : 300))
-                );
-                initialSeq.x = x;
-                initialSeq.y = y;
+
+                initialSeq.x = this.editContext.newStackPosition.x;
+                initialSeq.y = this.editContext.newStackPosition.y;
                 this.props.flow.sequences.push(initialSeq);
                 this.props.flow.add(control, initialSeq._id);
                 StateManager.propertyChanged(this.props.flow, 'sequences');
+
+            } else if (result.destination.droppableId.startsWith(FlowConstants.FakeStackId)) {
+                let [_, stepId, stepOutputName, _extra] = result.destination.droppableId.split('_');
+                if (!stepId || !stepOutputName ) return;
+
+                let step = this.props.flow.find(stepId) as BaseFlowStep;
+                let stepOutput = step.findOutPut(stepOutputName);
+
+                if (!stepOutput) return;
+
+                if (!isNew) {
+                    this.props.flow.remove(control);
+                }
+
+                let initialSeq = new FlowStepSequence();
+                initialSeq.x = this.editContext.newStackPosition.x;
+                initialSeq.y = this.editContext.newStackPosition.y;
+                this.props.flow.sequences.push(initialSeq);
+                this.props.flow.add(control, initialSeq._id);
+                stepOutput.connectedSequenceId = initialSeq._id;
+                StateManager.propertyChanged(this.props.flow, 'sequences');
+
             } else if (isNew) {
                 // adding new
                 this.props.flow.add(control, result.destination.droppableId, result.destination.index);
             } else {
                 this.props.flow.moveToSequence(control, result.source.droppableId, result.destination.droppableId, result.destination.index)
             }
+        } else if (result.destination.droppableId.endsWith('_header')) {
+            let [_, stepId, stepOutputName, _extra1] = result.draggableId.split('_');
+            let [stackId, _extra2] = result.destination.droppableId.split('_');
+            let step = this.props.flow.find(stepId) as BaseFlowStep;
+            let stepOutput = step.findOutPut(stepOutputName);
+            if (!stepOutput) return;
+            stepOutput.connectedSequenceId = stackId;
         }
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
@@ -496,39 +603,39 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 						/>
 					}
 
-                    <TopbarButtonGroup
+                    <StyledButtonGroup
 						variant="outlined"
 						size="small"
 					>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Copy"
 							icon={<CopyIcon />}
 							disabled={isActionDisabled()}
 							testId="btn-topbar-copy"
 							action={props.editContext.onCopy}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Cut"
 							icon={<CutIcon />}
 							disabled={isActionDisabled()}
 							testId="btn-topbar-cut"
 							action={props.editContext.onCut}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Paste"
 							icon={<PasteIcon />}
 							disabled={isActionDisabled() || !props.editContext.clipboardElement}
 							testId="btn-topbar-paste"
 							action={props.editContext.onPaste}
 						/>
-						<TopbarActionButton
+						<IconButtonWithTitle
 							title="Delete"
 							icon={<DeleteIcon />}
 							disabled={isActionDisabled()}
 							testId="btn-topbar-delete"
 							action={props.editContext.onDelete}
 						/>
-					</TopbarButtonGroup>
+					</StyledButtonGroup>
 
 
 					<TopbarContent>
@@ -646,7 +753,16 @@ const DesignPanel = styled.div`
     width: 100%;
     height: 100%;
 	background: #E5E5E5;
-	position: relative;
+    position: relative;
+    overflow: auto;
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 `;
 
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
@@ -656,6 +772,22 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     const [expandedConfigPanel, setexpandedConfigPanel] = useState(true);
     const [isMovingConfigPanel, setisMovingConfigPanel] = useState(false);
     // make state
+
+    const canvas: React.RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+    
+    // initialize the canvas context
+    useEffect(() => {
+        // dynamically assign the width and height to canvas
+        let canvasEle = canvas.current! as HTMLCanvasElement;
+        canvasEle.width = canvasEle.clientWidth;
+        canvasEle.height = canvasEle.clientHeight;
+        props.editContext.canvas = {
+			context: canvasEle.getContext("2d"),
+			width: canvasEle.clientWidth,
+			height: canvasEle.clientHeight
+		};
+    }, []);
+    
 
     function onToggleExpandedConfigPanel() {
         if (!isMovingConfigPanel) {
@@ -737,8 +869,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                             props.editContext.notification && props.editContext.notification!.onCancel
                             && <Button variant="contained" onClick={onClose} data-testid="btn-dialog-cancel">Cancel</Button>
                         }
-                        
-                        
                     </DialogActions>
                 </Dialog>
             }
@@ -749,8 +879,9 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     return (
         <DesignPanel>
             <ObserveState listenTo={props.editContext} control={() => (
-                <FakeFlowSequenceStack flow={props.flow} show={props.editContext.isDraggingControl}/>
+                <FakeFlowSequenceStack show={props.editContext.isDraggingControl && props.editContext.draggingElemType !== IDraggingElementType.Related} editContext={props.editContext}/>
             )} />
+            <canvas ref={canvas} />
 
             {props.flow.sequences.filter((value:FlowStepSequence) => {
                 return value.x != -1;
