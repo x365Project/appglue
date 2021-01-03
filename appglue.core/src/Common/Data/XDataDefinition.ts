@@ -6,6 +6,7 @@ import {StringDataDefinition} from "./Definitions/StringDataDefinition";
 import {NumberDataDefinition} from "./Definitions/NumberDataDefinition";
 import {BooleanDataDefinition} from "./Definitions/BooleanDataDefinition";
 import $RefParser from "@apidevtools/json-schema-ref-parser";
+import {FileDataDefinition} from "./Definitions/FileDataDefinition";
 
 export class XDataDefinition implements IDataDefinitionOwner{
     fields : IDataDefinition[] = [];
@@ -81,6 +82,8 @@ export class XDataDefinition implements IDataDefinitionOwner{
                 if (propDescription.type === '#ref') {
                     // lookup local ref
 
+
+
                 } else if (propDescription.type === 'array') {
 // https://json-schema.org/understanding-json-schema/reference/array.html
 
@@ -96,7 +99,7 @@ export class XDataDefinition implements IDataDefinitionOwner{
                 } else {
                     if (propDescription.type === 'string') {
                         // todo: emum
-                        let sdef = new StringDataDefinition();
+                        let sdef = oldFieldsMap[property] as StringDataDefinition ?? new StringDataDefinition();
                         sdef.name = property;
                         sdef.list = false;
                         sdef.owner = owner;
@@ -108,14 +111,14 @@ export class XDataDefinition implements IDataDefinitionOwner{
 
                         def = sdef;
                     } else if (propDescription.type === 'boolean' ) {
-                        let sdef = new BooleanDataDefinition();
+                        let sdef = oldFieldsMap[property] as BooleanDataDefinition ?? new BooleanDataDefinition();
                         sdef.name = property;
                         sdef.list = false;
                         sdef.owner = owner;
                         sdef.setValue(false);
                         def = sdef;
                     } else if (propDescription.type === 'number' || propDescription.type === 'integer') {
-                        let sdef = new NumberDataDefinition();
+                        let sdef = oldFieldsMap[property] as NumberDataDefinition ?? new NumberDataDefinition();
                         sdef.name = property;
                         sdef.list = false;
                         sdef.owner = owner;
@@ -139,7 +142,12 @@ export class XDataDefinition implements IDataDefinitionOwner{
                     } else if (propDescription.type === 'null') {
                         // ignore
                     } else if (propDescription.type === 'object') {
-                        // parse sub object
+                        let odef = oldFieldsMap[property] as ObjectDataDefinition ?? new ObjectDataDefinition();
+                        odef.name = property;
+                        odef.list = false;
+                        odef.owner = owner;
+                        odef.fields = this.parseSchemaNode(fullSchema, propDescription, owner, (oldFieldsMap[property] as ObjectDataDefinition)?.fields ?? [], removeItemsNotInSchema, reorderElementsToMatchSchema);
+                        def = odef;
                     }
                 }
 

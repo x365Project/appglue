@@ -120,7 +120,14 @@ export class ArrayLastDataMemberAccessor implements IDataMemberAccessor {
 
 export class ArrayAddDataMemberAccessor implements IDataMemberAccessor {
     get(fromValue: object): any {
-        return null;
+        if (Array.isArray(fromValue)) {
+            if (fromValue.length === 0)
+                return null;
+
+            return fromValue[fromValue.length -1];
+        } else {
+            throw 'value is not an array'
+        }
     }
 
     set(onValue: any, value: any): void {
@@ -134,7 +141,14 @@ export class ArrayAddDataMemberAccessor implements IDataMemberAccessor {
 
 export class ArrayAddFirstDataMemberAccessor implements IDataMemberAccessor {
     get(fromValue: object): any {
-        return null;
+        if (Array.isArray(fromValue)) {
+            if (fromValue.length === 0)
+                return null;
+
+            return fromValue[0];
+        } else {
+            throw 'value is not an array'
+        }
     }
 
     set(onValue: any, value: any): void {
