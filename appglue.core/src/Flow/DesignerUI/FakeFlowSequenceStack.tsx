@@ -18,7 +18,7 @@ export const FakeFlowSequenceDropDiv = styled("div")<{
 }>`
 	background: transparent;
 	border-radius: 4px;
-	position: 'absolute;
+	position: absolute;
 
 	opacity: ${props => props.show ? 1: 0};
 	transition: opacity .1s;
@@ -71,9 +71,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 
         return (
 			<ReactDraggable bounds="parent">
-				<Droppable droppableId={droppableId}
-					isDropDisabled={this.props.editContext.draggingElemType !== IDraggingElementType.Step}
-				>
+				<Droppable droppableId={droppableId}>
 					{
 						(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
 							return <FakeFlowSequenceDropDiv

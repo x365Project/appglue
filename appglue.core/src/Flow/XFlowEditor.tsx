@@ -142,7 +142,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
     @AutoBind
     onDragStart(initial: DragStart, _provided: ResponderProvided) {
-        this.editContext.draggingElemType = IDraggingElementType.Step;
         this.editContext.clearCanvas();
         this.editContext.draggingElem = initial.draggableId;
 		this.editContext.clearSelection();
@@ -420,8 +419,8 @@ const DesignPanel = styled.div`
         position: absolute;
         left: 0;
         right: 0;
-        width: 5000px;
-        height: 5000px;
+        width: 100%;
+        height: 100%;
     }
 `;
 

@@ -85,7 +85,6 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					}
 				}
 			}
-			
 		}
 		return (
 			<>

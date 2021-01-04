@@ -372,9 +372,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 								</StyledIconButton>
 							}
 						</div>
-						<Droppable droppableId={this.props.sequence._id}
-							isDropDisabled={this.props.editContext.draggingElemType !== IDraggingElementType.Step}
-						>
+						<Droppable droppableId={this.props.sequence._id}>
 							{
 								(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 									if (this.state.isCollapsed && snapshot.isDraggingOver) {
