@@ -12,7 +12,8 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     x: number = -1;
     y: number = -1;
-
+    width: number = 275;
+    height: number = 145;
 
     private _canDelete: boolean = true;
     get canDelete(): boolean {
@@ -34,10 +35,6 @@ export class FlowStepSequence implements IFlowStepSequence {
     }
 
     steps: BaseFlowStep[] = [];
-
-    get width(): number {
-        return 275;
-    }
     
     get ports(): string[] {
         return [];
@@ -68,6 +65,13 @@ export class FlowStepSequence implements IFlowStepSequence {
             this.steps.splice(index, 1);
             StateManager.propertyChanged(this, 'steps');
         }
+    }
+
+    find(stepId: string): BaseFlowStep | null {
+        for (let s of this.steps) {
+            if (s._id === stepId) return s;
+        }
+        return null;
     }
 
     renderEditUI(): JSX.Element | null {

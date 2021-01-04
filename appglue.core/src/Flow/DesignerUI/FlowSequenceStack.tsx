@@ -23,6 +23,7 @@ import {MoveIcon} from "../../CommonUI/Icon/MoveIcon";
 import { Collapse, Typography } from "@material-ui/core";
 import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
 import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
+import { IPosition } from "../CommonUI/IPosition";
 
 
 import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
@@ -232,53 +233,7 @@ const StepConnectOtherPaths = styled.div`
 	margin-bottom: 5px;
 `;
 
-export const FakeFlowSequenceDropDiv = styled("div")<{
-	position: IPosition;
-	show: boolean;
-	parent?: string;
-	isDroppingOver: boolean;
-}>`
-	background: transparent;
-	border-radius: 4px;
-	position: ${props => props.parent ? 'relative': 'absolute'};
-	
-	opacity: ${props => props.show ? 1: 0};
-	transition: opacity .1s;
 
-	${props => !props.parent && `
-		width: 275px;
-		top: ${props.position.y}px;
-		left: ${props.position.x}px;
-		min-height: 152px;
-		${!props.isDroppingOver && `border: dotted 2px darkgray`};	
-	`}
-
-	${props => props.isDroppingOver &&
-		`border: dotted 2px ${FlowConstants.DROPPING_COLOR};`
-	}
-
-	${props => props.parent && `
-		min-height: 35px;
-		width: 150px;
-	`}
-
-`;
-
-export const FakeFlowSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	${props => props.showBoarder && `
-		border: dotted 2px darkgray;
-	`}
-`;
-
-interface IPosition {
-	x: number;
-	y: number;
-}
 
 interface IFlowSequenceStack {
 	flow: XFlowConfiguration;
@@ -295,6 +250,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 
 	collapsedWidth: number = 120;
 	collapsedHeight: number = 120;
+
+	containerRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
 	constructor(props: IFlowSequenceStack) {
 		super(props);
@@ -355,6 +312,11 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
     render() {
+		if (this.containerRef && this.containerRef.current) {
+			this.props.sequence.width = this.containerRef.current.scrollWidth;
+			this.props.sequence.height = this.containerRef.current.scrollHeight
+		}
+
         return (
             <ReactDraggable
 				bounds="parent"
@@ -385,6 +347,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 					}}
 					isDroppingOver={this.state.isDroppingOver}
 					color={this.props.sequence.stackColor}
+					ref={this.containerRef}
 				>
 					<div className={`stack${this.state.isCollapsed ? ' stack-move': ''}`}>
 						<Droppable droppableId={`${this.props.sequence._id}_header`}

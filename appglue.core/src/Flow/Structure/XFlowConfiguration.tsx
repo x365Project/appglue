@@ -29,6 +29,13 @@ export class XFlowConfiguration implements IFlowElement{
         return null;
     }
 
+    findSequenceByStepId(stepId: string) {
+        for (let s of this.sequences) {
+            if (s.find(stepId)) return s;
+        }
+        return null;
+    }
+
     add(step: BaseFlowStep, sequenceId : string, index?: number): void {
         let sequence = this.getSequence(sequenceId);
 
