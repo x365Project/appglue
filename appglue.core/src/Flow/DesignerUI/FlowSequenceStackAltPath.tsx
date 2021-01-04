@@ -30,24 +30,6 @@ const StepPathDiv = styled('div')<{width: number; color?: string;}>`
 	transition: all .1s;
 `;
 
-const StepPathSequenceDiv = styled.div`
-	width: 50px;
-	display: flex;
-	align-items: center;
-	height: 35px;
-`;
-
-const LineDiv = styled("div")<{
-	orientation?: 'vertical' | 'horizontal';
-	direction?: 'top' | 'bottom' | 'right' | 'left';
-}>`
-	${props => (!props.orientation || props.orientation === 'horizontal') && `
-		width: 100%;
-		border: dashed 2px darkgray;
-		height: 2px;
-	`}
-`;
-
 const StepPathConnectDiv = styled.div`
 	border-left: 2px solid black;
 	margin-left: 25px;

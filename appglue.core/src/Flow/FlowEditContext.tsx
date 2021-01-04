@@ -8,7 +8,8 @@ import {DataUtilities} from "../Common/DataUtilities";
 import {XFlowConfiguration} from "./Structure/XFlowConfiguration";
 import {IContextForControl} from "../Common/IContextForControl";
 import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
-import {FlowConstants, IDialog, XFlowEditor} from "./XFlowEditor";
+import {IDialog, XFlowEditor} from "./XFlowEditor";
+import {FlowConstants} from "./CommonUI/FlowConstants";
 import {CandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
 import { IPosition } from "./CommonUI/IPosition";
@@ -21,13 +22,6 @@ export class FlowEditContext {
     isDraggingControl: boolean = false;
 
     private candidateSequences: CandidateSequence[] = [];
-
-    private availableSpots: {from: IPosition, to?: IPosition}[] = [{
-        from: {
-            x: 0,
-            y: 0
-        }
-    }];
 
     public onFlowSave?: () => void;
     public onFlowCancel?: () => void;
@@ -48,6 +42,13 @@ export class FlowEditContext {
 
     getCandidateSequences() : CandidateSequence[] {
         return this.candidateSequences;
+    }
+
+    findCandiateSequence(id: string): CandidateSequence | null {
+        for (let c of this.candidateSequences) {
+            if (c._id === id) return c;
+        }
+        return null;
     }
 
     purgeCandidateSequences() : void {
@@ -75,68 +76,9 @@ export class FlowEditContext {
         return null;
     }
 
-    calculateAvailableSpots() {
-        let rects = this.flow.sequences.map((s) => ({
-            from: {
-                x: s.x,
-                y: s.y
-            },
-            to: {
-                x: s.x + s.width,
-                y: s.y + s.height
-            }
-        }));
-
-        rects.concat(
-            this.candidateSequences.map((c) => {
-                let width = 275;
-                let height = 145;
-                if (c.forStepId) {
-                    width = 150;
-                    height = 35;
-                }
-    
-                return {
-                    from: {
-                        x: c.x,
-                        y: c.y
-                    },
-                    to: {
-                        x: c.x + width,
-                        y: c.y + height
-                    }
-                }
-            })
-        );
-
-        rects.sort((a, b) => {
-            if (a.from.x > b.from.x) {
-                return 1;
-            } else if (a.from.x < b.from.x) {
-                return -1;
-            } else {
-                if (a.from.y > b.from.y) return 1;
-                else return -1;
-            }
-        });
-
-        
-
-    }
-
     positionCandidateSequences() : void {
         // set actual X/Y for any sequences
-        let canRemoveCandidates: CandidateSequence[] = [];
-        for (let c of this.candidateSequences) {
-            let { forPath, forStepId, desiredX, desiredY, x, y } = c;
-            // let width = forPath ? 150 : 75;
-            // let height = forPath ? 35 : 152;
-            if (forStepId) {
-                let width = 150;
-                let height = 35;
-            }
-
-        }
+        StateManager.propertyChanged(this, "candidateSequences")
     }
 
     combineSequences(combine: IFlowStepSequence, withSequence: IFlowStepSequence) {
@@ -324,8 +266,8 @@ export class FlowEditContext {
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
-
-
+        let c = new CandidateSequence(315, 20);
+        this.addCandidateSequence(c);
     }
 
     get flow(): XFlowConfiguration {
@@ -348,7 +290,7 @@ export class FlowEditContext {
     }
 
 
-    get newStackPosition(): { x: number; y: number } {
+    get newStackPosition(): IPosition {
         let y = this.flow.sequences[0].y
         let x = Math.max(
             ...this.flow.sequences

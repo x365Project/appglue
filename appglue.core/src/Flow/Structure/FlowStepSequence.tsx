@@ -5,6 +5,7 @@ import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {PropertyEditorColor} from "../../CommonUI/PropertyEditing/PropertyEditorColor";
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 import {IFlowStepSequence} from "./IFlowStepSequence";
+import {FlowConstants} from "../CommonUI/FlowConstants";
 
 export class FlowStepSequence implements IFlowStepSequence {
     _id: string = DataUtilities.generateUniqueId();
@@ -12,8 +13,8 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     x: number = -1;
     y: number = -1;
-    width: number = 275;
-    height: number = 145;
+    width: number = FlowConstants.DEFAULT_STACK_WIDTH;
+    height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
 
     private _canDelete: boolean = true;
     get canDelete(): boolean {
