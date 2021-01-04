@@ -56,13 +56,12 @@ const StepPathConnectDiv = styled.div`
 	width: 100%;
 `;
 
-
-
 interface IFlowSequenceStackAltPath {
 	sequence: FlowStepSequence;
 	step: BaseFlowStep;
 	stepOutput: FlowStepOutputInstructions;
 	editContext: FlowEditContext;
+	width: number;
 }
 
 export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStackAltPath, {}> {
@@ -117,8 +116,8 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 								key={stepOutput.pathName}
 								width={
 									stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
-									? sequence.width - 40
-									: sequence.width - 73
+									? this.props.width - 40
+									: this.props.width - 73
 								}
 								color={stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && !!childSequence ? childSequence.stackColor : undefined}
 							>

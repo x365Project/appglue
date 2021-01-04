@@ -22,6 +22,13 @@ export class FlowEditContext {
 
     private candidateSequences: CandidateSequence[] = [];
 
+    private availableSpots: {from: IPosition, to?: IPosition}[] = [{
+        from: {
+            x: 0,
+            y: 0
+        }
+    }];
+
     public onFlowSave?: () => void;
     public onFlowCancel?: () => void;
 
@@ -68,45 +75,53 @@ export class FlowEditContext {
         return null;
     }
 
-    getAvailableSpots(desiredX: number, desiredY: number, width: number, height: number): {from: IPosition, to: IPosition}[] {
-        let sequences = this.flow.sequences.map((s) => {
-            let distance = Math.min(
-                Math.pow(desiredX - s.x, 2) + Math.pow(desiredY - s.y, 2), 
-                Math.pow(desiredX - s.x - s.width, 2) + Math.pow(desiredY - s.y, 2),
-                Math.pow(desiredX - s.x, 2) + Math.pow(desiredY - s.y - s.height, 2),
-                Math.pow(desiredX - s.x - s.width, 2) + Math.pow(desiredY - s.y - s.height, 2), 
-            );
+    calculateAvailableSpots() {
+        let rects = this.flow.sequences.map((s) => ({
+            from: {
+                x: s.x,
+                y: s.y
+            },
+            to: {
+                x: s.x + s.width,
+                y: s.y + s.height
+            }
+        }));
 
-            return {
-                distance,
-                sequence: s
+        rects.concat(
+            this.candidateSequences.map((c) => {
+                let width = 275;
+                let height = 145;
+                if (c.forStepId) {
+                    width = 150;
+                    height = 35;
+                }
+    
+                return {
+                    from: {
+                        x: c.x,
+                        y: c.y
+                    },
+                    to: {
+                        x: c.x + width,
+                        y: c.y + height
+                    }
+                }
+            })
+        );
+
+        rects.sort((a, b) => {
+            if (a.from.x > b.from.x) {
+                return 1;
+            } else if (a.from.x < b.from.x) {
+                return -1;
+            } else {
+                if (a.from.y > b.from.y) return 1;
+                else return -1;
             }
         });
 
+        
 
-
-        // let from = {
-        //     x: sequence.x - width <= 0 ? sequence.x : sequence.x - width,
-        //     y: sequence.y - height <= 0 ? sequence.y : sequence.y - height
-        // };
-
-        // let to = {
-        //     x: sequence.x + sequence.width + width,
-        //     y: sequence.y + sequence.height + height
-        // }
-
-        // let result: {from: IPosition, to: IPosition}[] = [];
-
-        // let sequences = this.flow.sequences.filter((s) => {
-        //     if (s._id === sequence._id) return false;
-        //     if (s.x + s.width < from.x || s.x > to.x) return false;
-        //     if (s.y + s.height < from.y || s.y > to.y) return false;
-        //     return true;
-        // });
-
-
-
-        return result;
     }
 
     positionCandidateSequences() : void {
@@ -309,6 +324,8 @@ export class FlowEditContext {
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
+
+
     }
 
     get flow(): XFlowConfiguration {

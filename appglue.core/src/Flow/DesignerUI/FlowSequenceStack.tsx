@@ -39,7 +39,6 @@ const FlowSequenceDiv = styled('div')<{
 	isDroppingOver: boolean;
 	color?: string;
 }>`
-
 	top: ${props => props.isDragging ? 0 : props.position.y}px;
 	left: ${props => props.isDragging ? 0 : props.position.x}px;
 	position: absolute;
@@ -70,7 +69,6 @@ const FlowSequenceDiv = styled('div')<{
 				cursor: url(${MovementSvg}), auto;
 			}
 		`}
-
 	}
 
 	.button-group {
@@ -474,6 +472,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																										step={step}
 																										stepOutput={stepOutput}
 																										editContext={this.props.editContext}
+																										width={this.width}
 																									/>
 																								);
 																							})}

@@ -448,10 +448,10 @@ const DesignPanel = styled.div`
 
     canvas {
         position: absolute;
-        top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        right: 0;
+        width: 5000px;
+        height: 5000px;
     }
 `;
 
@@ -464,11 +464,11 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     // make state
 
     const canvas: React.RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
-    
     // initialize the canvas context
     useEffect(() => {
         // dynamically assign the width and height to canvas
         let canvasEle = canvas.current! as HTMLCanvasElement;
+
         canvasEle.width = canvasEle.clientWidth;
         canvasEle.height = canvasEle.clientHeight;
         props.editContext.canvas = {
@@ -568,10 +568,11 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
     return (
         <DesignPanel>
+            <canvas ref={canvas} />
             <ObserveState listenTo={props.editContext} control={() => (
                 <FakeFlowSequenceStack show={props.editContext.isDraggingControl && props.editContext.draggingElemType !== IDraggingElementType.Related} editContext={props.editContext}/>
             )} />
-            <canvas ref={canvas} />
+
 
             {props.flow.sequences.filter((value:FlowStepSequence) => {
                 return value.x != -1;
@@ -617,7 +618,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
             {
                 renderDialog()
             }
-
         </DesignPanel>
     );
 }
