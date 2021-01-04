@@ -14,8 +14,8 @@ export class PageRoutes {
   static getRootPages(): INavigationPage[] {
     let pages: INavigationPage[] = [...this.pages];
 
-    pages.push(new SettingsPage());
     pages.push(new TeamPage());
+    pages.push(new SettingsPage());
 
     return pages;
   }

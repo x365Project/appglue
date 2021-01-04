@@ -323,6 +323,10 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     setProfileAnchorEl(null);
   };
 
+  const handleRenderPage = (renderPage: any) => {
+    setCurrentPageContent(renderPage());
+  };
+
   // const handleMobileMenuOpen = (e) => {
   //   setMobileMoreAnchorEl(e.currentTarget);
   // };
@@ -406,6 +410,10 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
 
   const [open, setOpen] = React.useState(
     props.layoutOptions.sideBarType !== SideBarType.ICON
+  );
+
+  const [currentPageContent, setCurrentPageContent] = React.useState(
+    <Typography>hello AppGluer</Typography>
   );
 
   const handleDrawerOpen = () => {
@@ -571,6 +579,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
         open={open}
       >
         <SideBarNav
+          handleRenderPage={handleRenderPage}
           color={props.layoutOptions.color}
           colorGradientEnd={props.layoutOptions.colorGradientEnd}
           navBarTheme={props.layoutOptions.navBarTheme}
@@ -588,7 +597,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
         )}
       >
         <div className={classes.appBarSpacer} />
-        <Typography>hello AppGluer</Typography>
+        {/* {currentPageContent} */}
       </main>
       {renderMobileMenu}
       {renderMenu}
