@@ -17,6 +17,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SettingsIcon from '@material-ui/icons/Settings';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import clsx from 'clsx';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -30,6 +31,7 @@ import { LayoutWidth } from './FrameProps';
 import { ContentTheme } from './FrameProps';
 import { TopBarTheme } from './FrameProps';
 import { NavBarTheme } from './FrameProps';
+import { addToObject } from '../utils/helpers';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -127,6 +129,7 @@ const useStyles = makeStyles(theme => ({
   ButtonMenu: {
     padding: '0',
     margin: '0 0 0 24px',
+    width: 'unset',
   },
   LogoMenuIcon: {
     color: '#ffffff',
@@ -168,6 +171,10 @@ const useStyles = makeStyles(theme => ({
   coloredNavBar: {
     // background: theme.palette.primary.main,
   },
+  arrow: {
+    paddingLeft: '7px',
+    transition: '.2s',
+  },
 }));
 
 export default function TopBarNav(props: { layoutOptions: FrameProps }) {
@@ -195,6 +202,33 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   // const handleMobileMenuOpen = (e) => {
   //   setMobileMoreAnchorEl(e.currentTarget);
   // };
+
+  let previous = {};
+
+  React.useEffect(() => {
+    PageRoutes.getRootPages().map(page => {
+      if (page.getSubPages().length > 0) {
+        const result = addToObject(previous, page.name, false);
+        previous = result;
+        setLinksWithSubpages(result);
+      }
+      page.getSubPages().map(subpage => {
+        if (subpage.getSubPages().length > 0) {
+          const result = addToObject(previous, page.name, false);
+          previous = result;
+          setLinksWithSubpages(result);
+        }
+      });
+    });
+  }, []);
+
+  const handleToggleSubpages = (name: string) => {
+    const copy: any = Object.assign({}, linksWithSubpages);
+    copy[name] = !copy[name];
+    setLinksWithSubpages(copy);
+  };
+
+  const [linksWithSubpages, setLinksWithSubpages] = React.useState<any>({});
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -413,12 +447,11 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
           {PageRoutes.getRootPages().map(page => {
             return (
               <>
-                <ListItem button className={classes.ButtonMenu}>
-                  <ListItemIcon className={classes.MenuIcon}>
-                    {page.renderIcon()}
-                  </ListItemIcon>
-                  <ListItemText>{page.name}</ListItemText>
-                </ListItem>
+                <NavItem
+                  page={page}
+                  classes={classes}
+                  handleToggleSubpages={handleToggleSubpages}
+                />
               </>
             );
           })}
@@ -438,3 +471,34 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
     </div>
   );
 }
+
+const NavItem = ({
+  page,
+  classes,
+  isOpened = false,
+  handleToggleSubpages,
+}: {
+  page: any;
+  classes: any;
+  isOpened?: boolean;
+  handleToggleSubpages: (name: string) => void;
+}) => {
+  const subpages = page.getSubPages();
+
+  return (
+    <ListItem button className={classes.ButtonMenu}>
+      <ListItemIcon className={classes.MenuIcon}>
+        {page.renderIcon()}
+      </ListItemIcon>
+      <ListItemText>
+        <span>{page.name}</span>
+      </ListItemText>
+      {subpages.length > 0 && (
+        <KeyboardArrowDownIcon
+          onClick={() => handleToggleSubpages(page.name)}
+          className={clsx(classes.arrow, isOpened && classes.opened_arrow)}
+        />
+      )}
+    </ListItem>
+  );
+};
