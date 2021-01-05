@@ -76,7 +76,7 @@ export class FlowEditContext {
                 if (c.forStepId && c.forPath) {
                     let step = this.flow.find(c.forStepId) as BaseFlowStep;
                     if (!step) return false;
-                    let stepOutput = step.findOutPut(c.forPath);
+                    let stepOutput = step.findOutputInstruction(c.forPath);
                     if (!stepOutput) return false;
     
                     return stepOutput.strategy === FlowStepOutputInstructionType.BRANCH;

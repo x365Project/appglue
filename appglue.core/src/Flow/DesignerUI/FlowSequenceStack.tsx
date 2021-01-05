@@ -412,14 +412,11 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 													{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
 														let isLast = this.props.sequence.steps.length === i + 1;
 
-														let otherPaths: FlowStepOutputInstructions[] = [];
-														if (step.outputs && step.outputs.length > 1) {
-															otherPaths = [...step.outputs]
+														let otherPaths: FlowStepOutputInstructions[] = step.getOutcomeInstructions();
+
+														if (otherPaths.length !== 0) {
 															// removes first item
 															otherPaths.shift();
-
-														} else if (step.outputs && Array.isArray(step.outputs) && isLast) {
-															otherPaths = [...step.outputs]
 														}
 
 														return (

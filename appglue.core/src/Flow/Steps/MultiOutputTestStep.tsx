@@ -3,26 +3,24 @@ import {TextIcon} from "../../CommonUI/TextIcon";
 import {BaseFlowStep} from "./BaseFlowStep";
 import React from "react";
 import { FlowStepOutputInstructions } from "../Structure/FlowStepOutputInstructions";
+import {PropertyEditorTextList} from "../../CommonUI/PropertyEditing/PropertyEditorTextList";
+import {FlowStepOutput} from "../Structure/FlowStepOutput";
 
 @RegisterFlowStep('Utilities', 'Multi', <TextIcon name={'2x'}/>)
 export class MultiOutputTestStep extends BaseFlowStep {
-    
-    constructor() {
-        super();
-        let output1 = new FlowStepOutputInstructions();
-        let output2 = new FlowStepOutputInstructions('alt1');
-        let output3 = new FlowStepOutputInstructions('alt2');
-        this.nonDefaultOutputInstructions = [output1, output2, output3];
-    }
+    paths : string[] = ['default', 'a', 'b'];
 
-
-    get outputs(): FlowStepOutputInstructions[] | undefined {
-        return this.nonDefaultOutputInstructions;
+    getOutcomes(): FlowStepOutput[] | undefined{
+        return this.paths.map(value => {
+            return new FlowStepOutput(value);
+        });
     }
 
     renderEditUI(): JSX.Element | null {
         return (
-            <div>edit multi step</div>
+            <>
+                <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.forceUpdate} />
+            </>
         );
     }
 
