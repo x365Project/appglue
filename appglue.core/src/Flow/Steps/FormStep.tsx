@@ -6,6 +6,7 @@ import {Button} from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
 import {FlowStepOutput} from "../Structure/FlowStepOutput";
+import { FlowStepOutputInstructions } from "../Structure/FlowStepOutputInstructions";
 
 const FormStepDiv = styled.div`
     display: flex;
@@ -30,9 +31,6 @@ const FloatRight = styled.div`
 
 @RegisterFlowStep('UI', 'Form', <TextIcon name={'Form'}/>)
 export class FormStep extends BaseFlowStep {
-    get outputs(): FlowStepOutput | FlowStepOutput[] | undefined | null {
-        return new FlowStepOutput();
-    }
 
     render() {
 

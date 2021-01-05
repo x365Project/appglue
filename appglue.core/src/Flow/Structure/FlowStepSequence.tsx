@@ -5,6 +5,7 @@ import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {PropertyEditorColor} from "../../CommonUI/PropertyEditing/PropertyEditorColor";
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 import {IFlowStepSequence} from "./IFlowStepSequence";
+import {FlowConstants} from "../CommonUI/FlowConstants";
 
 export class FlowStepSequence implements IFlowStepSequence {
     _id: string = DataUtilities.generateUniqueId();
@@ -12,7 +13,8 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     x: number = -1;
     y: number = -1;
-
+    width: number = FlowConstants.DEFAULT_STACK_WIDTH;
+    height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
 
     private _canDelete: boolean = true;
     get canDelete(): boolean {
@@ -34,10 +36,6 @@ export class FlowStepSequence implements IFlowStepSequence {
     }
 
     steps: BaseFlowStep[] = [];
-
-    get width(): number {
-        return 275;
-    }
     
     get ports(): string[] {
         return [];
@@ -68,6 +66,13 @@ export class FlowStepSequence implements IFlowStepSequence {
             this.steps.splice(index, 1);
             StateManager.propertyChanged(this, 'steps');
         }
+    }
+
+    find(stepId: string): BaseFlowStep | null {
+        for (let s of this.steps) {
+            if (s._id === stepId) return s;
+        }
+        return null;
     }
 
     renderEditUI(): JSX.Element | null {

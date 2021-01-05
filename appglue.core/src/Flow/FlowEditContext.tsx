@@ -8,9 +8,11 @@ import {DataUtilities} from "../Common/DataUtilities";
 import {XFlowConfiguration} from "./Structure/XFlowConfiguration";
 import {IContextForControl} from "../Common/IContextForControl";
 import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
-import {FlowConstants, IDialog, XFlowEditor} from "./XFlowEditor";
+import {IDialog, XFlowEditor} from "./XFlowEditor";
+import {FlowConstants} from "./CommonUI/FlowConstants";
 import {CandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
+import { IPosition } from "./CommonUI/IPosition";
 
 export class FlowEditContext {
     flowEditor: XFlowEditor;
@@ -27,7 +29,7 @@ export class FlowEditContext {
 
     addCandidateSequence(s: CandidateSequence) : void {
         this.candidateSequences.push(s);
-        this.purgeCandidateSequences();
+        this.positionCandidateSequences();
     }
 
     removeCandidateSequence(s: CandidateSequence) : void {
@@ -42,6 +44,13 @@ export class FlowEditContext {
         return this.candidateSequences;
     }
 
+    findCandiateSequence(id: string): CandidateSequence | null {
+        for (let c of this.candidateSequences) {
+            if (c._id === id) return c;
+        }
+        return null;
+    }
+
     purgeCandidateSequences() : void {
         // remove any that are missing
         // add any that are needed
@@ -49,8 +58,27 @@ export class FlowEditContext {
         this.positionCandidateSequences();
     }
 
+    purgeCandidateSequencesByStepId(stepId?: string) {
+        if (!stepId) {
+            this.purgeCandidateSequences();
+        }
+
+        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => c.forStepId !== stepId);
+        StateManager.propertyChanged(this, 'candidateSequences');
+    }
+
+    getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
+        let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) => 
+            (c.forStepId === stepId && c.forPath == pathName)
+        )
+
+        if (filteredSequences.length > 0) return filteredSequences[0];
+        return null;
+    }
+
     positionCandidateSequences() : void {
         // set actual X/Y for any sequences
+        StateManager.propertyChanged(this, "candidateSequences")
     }
 
     combineSequences(combine: IFlowStepSequence, withSequence: IFlowStepSequence) {
@@ -238,6 +266,8 @@ export class FlowEditContext {
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
+        let c = new CandidateSequence(315, 20);
+        this.addCandidateSequence(c);
     }
 
     get flow(): XFlowConfiguration {
@@ -260,7 +290,7 @@ export class FlowEditContext {
     }
 
 
-    get newStackPosition(): { x: number; y: number } {
+    get newStackPosition(): IPosition {
         let y = this.flow.sequences[0].y
         let x = Math.max(
             ...this.flow.sequences

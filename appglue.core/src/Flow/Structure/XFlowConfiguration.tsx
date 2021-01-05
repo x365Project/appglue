@@ -3,7 +3,6 @@ import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "./FlowStepSequence";
 import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
-import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
 export class XFlowConfiguration implements IFlowElement{
     _id: string = DataUtilities.generateUniqueId();
@@ -30,6 +29,13 @@ export class XFlowConfiguration implements IFlowElement{
         return null;
     }
 
+    findSequenceByStepId(stepId: string) {
+        for (let s of this.sequences) {
+            if (s.find(stepId)) return s;
+        }
+        return null;
+    }
+
     add(step: BaseFlowStep, sequenceId : string, index?: number): void {
         let sequence = this.getSequence(sequenceId);
 
@@ -44,7 +50,6 @@ export class XFlowConfiguration implements IFlowElement{
         else {
             sequence.steps.splice(index, 0, step)
         }
-        StateManager.propertyChanged(sequence, 'steps');
     }
 
     remove(step: BaseFlowStep, sequenceId?: string): void {
@@ -71,8 +76,6 @@ export class XFlowConfiguration implements IFlowElement{
         } else {
             s.steps.push(step);
         }
-
-        StateManager.propertyChanged(s, 'steps');
     }
 
     moveToSequence(step: BaseFlowStep, fromSequence : string, toSequence : string, index?: number): void {

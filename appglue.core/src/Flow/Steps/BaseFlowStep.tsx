@@ -53,6 +53,8 @@ export abstract class BaseFlowStep
     abstract renderEditUI(): JSX.Element | null ;
 
 
-    abstract get outputs(): FlowStepOutputInstructions[] | undefined ;
+    get outputs(): FlowStepOutputInstructions[] | undefined {
+        return this.nonDefaultOutputInstructions;
+    }
 
 }
