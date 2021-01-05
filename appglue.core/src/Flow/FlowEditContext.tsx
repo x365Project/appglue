@@ -57,10 +57,12 @@ export class FlowEditContext {
     }
 
     private doPurgeOfSequences() {
-        // remove any that are missing
-        // add any that are needed
-        // make sure we have a blank one
+        let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
+        // remove the candidate that has same id with sequence.
+        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => sequenceIds.indexOf(c._id) < 0);
+        this.addNonPathCandidateSequence();
+        
     }
 
     purgeCandidateSequencesByStepId(stepId?: string) {
@@ -132,6 +134,7 @@ export class FlowEditContext {
                 } else {
                     // see if can fit in gap
                     let lastRange : {top: number, bottom: number} = ranges[0];
+                    
                     ranges.shift();
                     let positioned = false;
                     for (let r of ranges) {
@@ -143,7 +146,7 @@ export class FlowEditContext {
                     }
 
                     // put below last
-                    if (!positioned) {
+                    if (ranges.length > 0 &&!positioned) {
                         s.y = ranges[ranges.length -1].bottom + 20;
                     }
                 }
@@ -181,7 +184,7 @@ export class FlowEditContext {
         }
 
         // set actual X/Y for any sequences
-        StateManager.propertyChanged(this, "candidateSequences")
+        StateManager.propertyChanged(this, "candidateSequences");
     }
 
     private getSequencesNearPosition(toPosition : CandidateSequence, postionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {
@@ -397,8 +400,16 @@ export class FlowEditContext {
 
     constructor(flowEditor: XFlowEditor) {
         this.flowEditor = flowEditor;
-        let c = new CandidateSequence(315, 20);
-        this.addCandidateSequence(c);
+
+        this.addNonPathCandidateSequence();
+    }
+
+    addNonPathCandidateSequence() {
+        if (this.candidateSequences.filter((c) => !c.forStepId).length === 0) {
+            let newStackPosition = this.getNewStackPosition();
+            let c = new CandidateSequence(newStackPosition.x, newStackPosition.y);
+            this.addCandidateSequence(c);
+        }
     }
 
     get flow(): XFlowConfiguration {
@@ -421,14 +432,16 @@ export class FlowEditContext {
     }
 
 
-    get newStackPosition(): IPosition {
-        let y = this.flow.sequences[0].y
+    getNewStackPosition(): IPosition {
+        let y = this.flow.sequences[0].y;
+        let bottomY = y + FlowConstants.DEFAULT_STACK_HEIGHT;
+
         let x = Math.max(
             ...this.flow.sequences
                 .filter((s) => {
-                    return s.y < y + 150;
+                    return s.y < bottomY;
                 })
-                .map((s) => s.x + (s.isCollapsed ? 150 : 300))
+                .map((s) => s.x + s.width)
         );
         return {x, y};
     }

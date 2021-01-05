@@ -4,40 +4,44 @@ import ReactDraggable from "react-draggable";
 
 
 import {FlowConstants} from "../CommonUI/FlowConstants";
-import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 import {FlowEditContext} from "../FlowEditContext";
 import styled from "styled-components";
 import { IPosition } from "../CommonUI/IPosition";
 import { CandidateSequence } from "../Structure/CandidateSequence";
 
-export const FakeFlowSequenceDropDiv = styled("div")<{
+export const FakeFlowSequenceDiv = styled("div")<{
 	position: IPosition;
 	show: boolean;
-	isNew: boolean;
-	isDroppingOver: boolean;
 }>`
-	background: transparent;
-	border-radius: 4px;
-	position: absolute;
 
-	opacity: ${props => props.show ? 1: 0};
-	transition: opacity .1s;
 	top: ${props => props.position.y}px;
 	left: ${props => props.position.x}px;
+	position: absolute;
+	opacity: ${props => props.show ? 1: 0};
+	background: transparent;
+	border-radius: 4px;
+`;
 
+export const FakeFlowSequenceDropDiv = styled("div")<{
+	isDroppingOver: boolean;
+	isNew: boolean;
+}>`
+
+	
+	${props => props.isDroppingOver &&
+		`border: dotted 2px ${FlowConstants.DROPPING_COLOR};`
+	}
+	
 	${props => !props.isNew && `
 		width: 275px;
 		min-height: 152px;
 		${!props.isDroppingOver && `border: dotted 2px darkgray`};	
 	`}
 
-	${props => props.isDroppingOver &&
-		`border: dotted 2px ${FlowConstants.DROPPING_COLOR};`
-	}
-
 	${props => props.isNew && `
 		min-height: 35px;
 		width: 150px;
+		${!props.isDroppingOver && `border: dotted 2px darkgray`};
 	`}
 
 `;
@@ -71,24 +75,27 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 
         return (
 			<ReactDraggable bounds="parent" disabled={!this.props.candiate.forStepId}>
-				<Droppable droppableId={droppableId}>
-					{
-						(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
-							return <FakeFlowSequenceDropDiv
-								position={this.getDefaultPosition()}
-								show={!!this.props.candiate.forStepId || this.props.editContext.isDraggingControl}
-								isNew={!!this.props.candiate.forStepId}
-								isDroppingOver={dropSnapshot.isDraggingOver}
-								{...dropProvided.droppableProps}
-								ref={dropProvided.innerRef}
-							>
-								{
-									dropProvided.placeholder
-								}
-							</FakeFlowSequenceDropDiv>
+				<FakeFlowSequenceDiv
+					position={this.getDefaultPosition()}
+					show={!!this.props.candiate.forStepId || this.props.editContext.isDraggingControl}
+				>
+					<Droppable droppableId={droppableId}>
+						{
+							(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
+								return <FakeFlowSequenceDropDiv
+									isNew={!!this.props.candiate.forStepId}
+									isDroppingOver={dropSnapshot.isDraggingOver}
+									{...dropProvided.droppableProps}
+									ref={dropProvided.innerRef}
+								>
+									{
+										dropProvided.placeholder
+									}
+								</FakeFlowSequenceDropDiv>
+							}
 						}
-					}
-				</Droppable>
+					</Droppable>
+				</FakeFlowSequenceDiv>
 			</ReactDraggable>
 		)
 	}

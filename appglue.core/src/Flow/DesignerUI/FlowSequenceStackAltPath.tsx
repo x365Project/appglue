@@ -55,8 +55,8 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 		if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
 			if (this.containerRef && this.containerRef.current) {
 				let point1 = {
-					x: this.containerRef.current.offsetLeft + (sequence.width - 40) + sequence.x,
-					y: this.containerRef.current.offsetTop + sequence.y
+					x: this.containerRef.current.offsetLeft + (this.props.width - 40) + sequence.x,
+					y: this.containerRef.current.offsetTop + sequence.y + 18
 				};
 				if (stepOutput.connectedSequenceId) {
 					childSequence = editContext.flow.find(stepOutput.connectedSequenceId) as FlowStepSequence;
@@ -71,19 +71,21 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					}
 				} else if (stepOutput.pathName) {
 					let candidateSequence = editContext.getCandidateSequenceForPath(step._id, stepOutput.pathName);
-					if (candidateSequence) {
-						editContext.drawLine(
-							point1,
-							{
-								x: candidateSequence.x,
-								y: candidateSequence.y
-							}
-						)
-					} else {
+					if (!candidateSequence) {
 						candidateSequence = new CandidateSequence(point1.x + 150, point1.y, step._id, stepOutput.pathName);
 						editContext.addCandidateSequence(candidateSequence);
 					}
+						
+					editContext.drawLine(
+						point1,
+						{
+							x: candidateSequence.x,
+							y: candidateSequence.y + 18
+						}
+					)
 				}
+			} else {
+				this.forceUpdate();
 			}
 		}
 		return (
