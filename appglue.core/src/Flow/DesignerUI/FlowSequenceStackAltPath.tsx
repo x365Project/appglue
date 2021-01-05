@@ -7,6 +7,7 @@ import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../St
 import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 import {FlowEditContext} from "../FlowEditContext";
 import { CandidateSequence } from "../Structure/CandidateSequence";
+import {FlowConstants} from "../CommonUI/FlowConstants";
 
 
 const StepPathWrapper = styled.div`
@@ -69,7 +70,7 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					);
 				} else if (stepOutput.pathName) {
 					if (!candidateSequence) {
-						candidateSequence = new CandidateSequence(point1.x + 150, point1.y, step._id, stepOutput.pathName);
+						candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
 						editContext.addCandidateSequence(candidateSequence);
 					}
 
