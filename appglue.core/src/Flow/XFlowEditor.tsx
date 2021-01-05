@@ -56,7 +56,6 @@ import {DeleteIcon} from "../CommonUI/Icon/DeleteIcon";
 import {CopyWhiteIcon} from "../CommonUI/Icon/CopyWhiteIcon";
 import {CutWhiteIcon} from "../CommonUI/Icon/CutWhiteIcon";
 import {DeleteWhiteIcon} from "../CommonUI/Icon/DeleteWhiteIcon";
-import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
 import {FlowConstants} from "./CommonUI/FlowConstants";
 import {FlowEditContext} from "./FlowEditContext";
 
@@ -122,8 +121,8 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 <FlowEditorDiv>
                     <FlowTopBar editContext={this.editContext} />
                     <FlowMainSectionDiv>
-                        <FlowSideActions/>
-                        <FlowToolbox/>
+                        <FlowSideActions />
+                        <FlowToolbox />
                         <ObserveState listenTo={this.props.flow} properties={["sequences"]} control={() => (
                             <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
                         )} />
@@ -150,7 +149,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     @AutoBind
     onDragEnd(result: DropResult) {
         this.editContext.isDraggingControl = false;
-        this.editContext.draggingElemType = undefined;
         this.editContext.draggingElem = undefined;
 
         // if not destination... then we should not do anything
@@ -177,6 +175,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         }
 
         if (control) {
+
             if (result.destination.droppableId === result.source.droppableId) {
                 // changing order
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
@@ -186,22 +185,28 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                     this.props.flow.remove(control);
                 }
                 let initialSeq = new FlowStepSequence();
-
-                initialSeq.x = this.editContext.newStackPosition.x;
-                initialSeq.y = this.editContext.newStackPosition.y;
+                let newStackPosition = this.editContext.getNewStackPosition();
+                initialSeq.x = newStackPosition.x;
+                initialSeq.y = newStackPosition.y;
                 this.props.flow.sequences.push(initialSeq);
                 this.props.flow.add(control, initialSeq._id);
                 StateManager.propertyChanged(this.props.flow, 'sequences');
-
             } else {
                 let c = this.editContext.findCandiateSequence(result.destination.droppableId);
                 if (c) {
                     let s = c.createSequence();
                     this.flow.sequences.push(s);
+                    if (c.forPath && c.forStepId) {
+                        let step = this.flow.find(c.forStepId) as BaseFlowStep;
+                        let stepOutput = step.findOutPut(c.forPath);
+                        if (!stepOutput) return;
+                        stepOutput.connectedSequenceId = s._id;
+                    }
+
+                    this.editContext.positionCandidateSequences();
                 }
 
                 if (isNew) {
-                    // adding new
                     this.props.flow.add(control, result.destination.droppableId, result.destination.index);
                 } else {
                     this.props.flow.moveToSequence(control, result.source.droppableId, result.destination.droppableId, result.destination.index)
@@ -210,11 +215,13 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         }
 
 		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
-		
+
 		this.editContext.clearCanvas();
 		
-        if (control)
+        if (control) {
+
             this.editContext.setSelection(control);
+        }
         else
             this.editContext.clearSelection();
 

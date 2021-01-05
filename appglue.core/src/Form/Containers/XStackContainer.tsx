@@ -55,8 +55,7 @@ export class XStackContainer
 
         if (mode === FormMode.FormDesign) {
             return (
-                <Droppable
-                    droppableId={this.id} key={this.id}>
+                <Droppable droppableId={this.id} key={this.id}>
                     {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 
 

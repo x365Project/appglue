@@ -6,6 +6,7 @@ import {PropertyEditorColor} from "../../CommonUI/PropertyEditing/PropertyEditor
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 import {IFlowStepSequence} from "./IFlowStepSequence";
 import {FlowConstants} from "../CommonUI/FlowConstants";
+import { IPosition } from "../CommonUI/IPosition";
 
 export class FlowStepSequence implements IFlowStepSequence {
     _id: string = DataUtilities.generateUniqueId();

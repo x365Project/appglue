@@ -272,6 +272,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		this.props.editContext.clearCanvas();
         this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
+		this.props.editContext.positionCandidateSequences();
+
 		this.setState({
 			isDragging: false
 		})
