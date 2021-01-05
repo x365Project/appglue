@@ -58,6 +58,7 @@ import {CutWhiteIcon} from "../CommonUI/Icon/CutWhiteIcon";
 import {DeleteWhiteIcon} from "../CommonUI/Icon/DeleteWhiteIcon";
 import {FlowConstants} from "./CommonUI/FlowConstants";
 import {FlowEditContext} from "./FlowEditContext";
+import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -202,8 +203,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                         if (!stepOutput) return;
                         stepOutput.connectedSequenceId = s._id;
                     }
-
-                    this.editContext.positionCandidateSequences();
                 }
 
                 if (isNew) {
@@ -213,6 +212,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 }
             }
         }
+        this.editContext.positionCandidateSequences();
 
 		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
 
@@ -559,14 +559,18 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                             />
                         )
                     }
+
                 </>}
             />
 
-            {props.flow.sequences.filter((value:FlowStepSequence) => {
-                return value.x != -1;
-            }).map((s: FlowStepSequence, i: number) => {
-                return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
-            })}
+            {
+                props.flow.sequences.filter((value:FlowStepSequence) => {
+                    return value.x != -1;
+                }).map((s: FlowStepSequence, i: number) => {
+                    return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
+                })
+            }
+
             {
                 editUIComponent && (
                     <ReactDraggable
