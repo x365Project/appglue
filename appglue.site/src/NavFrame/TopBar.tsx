@@ -597,7 +597,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
         )}
       >
         <div className={classes.appBarSpacer} />
-        {/* {currentPageContent} */}
+        {currentPageContent}
       </main>
       {renderMobileMenu}
       {renderMenu}

@@ -2,26 +2,26 @@
   font-family: Mulish;
   font-style: normal;
   font-weight: bold;
-  src: url(./assets/fonts/Mulish/static/Mulish-Bold.ttf) format("truetype");
+  src: url(./assets/fonts/Mulish/static/Mulish-Bold.ttf) format('truetype');
 }
 
 @font-face {
   font-family: Mulish;
   font-style: normal;
   font-weight: 400;
-  src: url(./assets/fonts/Mulish/static/Mulish-Regular.ttf) format("truetype");
+  src: url(./assets/fonts/Mulish/static/Mulish-Regular.ttf) format('truetype');
 }
 
 @font-face {
   font-family: Mulish;
   font-style: normal;
   font-weight: 600;
-  src: url(./assets/fonts/Mulish/static/Mulish-SemiBold.ttf) format("truetype");
+  src: url(./assets/fonts/Mulish/static/Mulish-SemiBold.ttf) format('truetype');
 }
 
 body {
   margin: 0;
-  font-family: Mulish;
+  font-family: Mulish, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -30,6 +30,6 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
