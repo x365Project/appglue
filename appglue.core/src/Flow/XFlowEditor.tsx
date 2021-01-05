@@ -196,6 +196,13 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 if (c) {
                     let s = c.createSequence();
                     this.flow.sequences.push(s);
+                    if (c.forPath && c.forStepId) {
+                        let step = this.flow.find(c.forStepId) as BaseFlowStep;
+                        let stepOutput = step.findOutPut(c.forPath);
+                        if (!stepOutput) return;
+                        stepOutput.connectedSequenceId = s._id;
+                    }
+
                     this.editContext.positionCandidateSequences();
                 }
 
