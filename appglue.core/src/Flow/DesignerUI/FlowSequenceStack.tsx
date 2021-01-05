@@ -273,6 +273,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
+		
+		StateManager.changed(this.props.sequence);
 		this.props.editContext.positionCandidateSequences();
 		this.props.editContext.clearCanvas();
 		this.props.editContext.refresh();
@@ -292,6 +294,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
+
 	}
 
 	onUpdateStackName = (newValue: string) => {

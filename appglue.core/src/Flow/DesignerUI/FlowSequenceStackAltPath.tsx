@@ -72,6 +72,12 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					if (!candidateSequence) {
 						candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
 						editContext.addCandidateSequence(candidateSequence);
+					} else {
+						if (candidateSequence.desiredX !== point1.x + 150 || point1.y !== candidateSequence.desiredY) {
+							candidateSequence.desiredX = point1.x + 150;
+							candidateSequence.desiredY = point1.y;
+							editContext.positionCandidateSequences();
+						}
 					}
 
 					editContext.drawLine(
