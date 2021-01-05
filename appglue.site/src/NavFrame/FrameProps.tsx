@@ -53,7 +53,7 @@ export class FrameProps {
   colorGradientEnd: string =
     'linear-gradient(160.55deg, #49A0D5 1.59%, #00D1C1 94.21%)'; // gradients have 2 colors...
 
-  layout: Layout = Layout.VERTICAL;
+  layout: Layout = Layout.HORIZONTAL;
   sideBarType: SideBarType = SideBarType.DEFAULT;
   frameSize: FrameSize = FrameSize.STANDARD;
   layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
