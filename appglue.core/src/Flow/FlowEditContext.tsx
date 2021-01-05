@@ -61,6 +61,15 @@ export class FlowEditContext {
     private doPurgeOfSequences() {
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
+        // DO NOT REMOVE MY COMMENTS.  I DID NOT WRITE THE COMMENTS FOR FUN - THEY ARE INSTRUCIONS AND YOU
+        // DID NOT FOLLOW THEM.
+
+        // Here is what you lost by deleting my instructions.
+        // -- what if a step adds or removes a path.  Are you removing these?
+        // -- what if a step is deleted, do you deal with this
+        // -- are you checking to make sure that if a step has a path, there is a candidate for it?
+
+
         // remove the candidate that has same id with sequence.
         this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => {
             if (sequenceIds.indexOf(c._id) < 0) {

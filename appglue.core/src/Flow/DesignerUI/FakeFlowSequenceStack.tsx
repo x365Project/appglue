@@ -33,13 +33,13 @@ export const FakeFlowSequenceDropDiv = styled("div")<{
 	${props => !props.isNew && `
 		width: ${FlowConstants.DEFAULT_STACK_WIDTH}px;
 		min-height: ${FlowConstants.DEFAULT_STACK_HEIGHT}px;
-		${!props.isDroppingOver && `border: dotted 2px darkgray`};	
+		${!props.isDroppingOver && `border: dashed 1px darkgray`};	
 	`}
 
 	${props => props.isNew && `
 		width: ${FlowConstants.PATH_CANDIDATE_WIDTH}px;
 		min-height: ${FlowConstants.PATH_CANDIDATE_HEIGHT}px;
-		${!props.isDroppingOver && `border: dotted 2px darkgray`};
+		${!props.isDroppingOver && `border: dashed 1px darkgray`};
 	`}
 
 `;
