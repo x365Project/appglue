@@ -152,8 +152,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         this.editContext.isDraggingControl = false;
         this.editContext.draggingElem = undefined;
 
-        console.log(result);
-
         // if not destination... then we should not do anything
         if (!result.destination)
             return;
