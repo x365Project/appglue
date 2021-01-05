@@ -13,4 +13,5 @@ export class FlowConstants {
 
   static PATH_CANDIDATE_SHIFT = 50;
   static PATH_CANDIDATE_HEIGHT = 50;
+  static PATH_CANDIDATE_WIDTH = 150;
 }
