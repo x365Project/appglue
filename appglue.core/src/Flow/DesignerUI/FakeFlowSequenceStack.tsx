@@ -24,8 +24,10 @@ export const FakeFlowSequenceDropDiv = styled("div")<{
 	isDroppingOver: boolean;
 	isNew: boolean;
 }>`
+	border-radius: 5px;
+
 	${props => props.isDroppingOver &&
-		`border: dotted 2px ${FlowConstants.DROPPING_COLOR};`
+		`border: dashed 1px ${FlowConstants.DROPPING_COLOR};`
 	}
 	
 	${props => !props.isNew && `
@@ -48,8 +50,9 @@ export const FakeFlowSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
 	left: 0;
 	width: 100%;
 	height: 100%;
+	border-radius: 5px;
 	${props => props.showBoarder && `
-		border: dotted 2px darkgray;
+		border: dashed 1px darkgray;
 	`}
 `;
 
