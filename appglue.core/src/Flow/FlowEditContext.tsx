@@ -13,6 +13,8 @@ import {FlowConstants} from "./CommonUI/FlowConstants";
 import {CandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
 import { IPosition } from "./CommonUI/IPosition";
+import { IRelationLine } from "./CommonUI/IRelationLine";
+import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
 
 export class FlowEditContext {
     flowEditor: XFlowEditor;
@@ -60,9 +62,22 @@ export class FlowEditContext {
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
         // remove the candidate that has same id with sequence.
-        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => sequenceIds.indexOf(c._id) < 0);
+        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => {
+            if (sequenceIds.indexOf(c._id) < 0) {
+                if (c.forStepId && c.forPath) {
+                    let step = this.flow.find(c.forStepId) as BaseFlowStep;
+                    if (!step) return false;
+                    let stepOutput = step.findOutPut(c.forPath);
+                    if (!stepOutput) return false;
+    
+                    return stepOutput.strategy === FlowStepOutputInstructionType.BRANCH;
+                }
+                return true;
+            }
+            return false;
+        });
+
         this.addNonPathCandidateSequence();
-        
     }
 
     purgeCandidateSequencesByStepId(stepId?: string) {
@@ -76,7 +91,7 @@ export class FlowEditContext {
 
     getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
         let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) => 
-            (c.forStepId === stepId && c.forPath == pathName)
+            (c.forStepId === stepId && c.forPath === pathName)
         )
 
         if (filteredSequences.length > 0) return filteredSequences[0];
@@ -454,8 +469,8 @@ export class FlowEditContext {
     }
 
     clearSelection() {
-        this._selectionElement = undefined;
         this.refresh()
+        this._selectionElement = undefined;
     }
 
     private _clipboardElement?: IFlowElement;
@@ -529,13 +544,15 @@ export class FlowEditContext {
         return this._canvas?.context || null;
     }
 
-    drawLine(point: { x: number, y: number }, point1: { x: number, y: number }) {
+    private lines: IRelationLine[] = [];
+
+    drawLine(point: { x: number, y: number }, point1: { x: number, y: number }, remove: boolean = false) {
         if (this.canvasContext) {
             this.canvasContext.beginPath();
             this.canvasContext.setLineDash([5, 15]);
             this.canvasContext.moveTo(point.x, point.y);
             this.canvasContext.lineTo(point1.x, point1.y);
-            this.canvasContext.strokeStyle = FlowConstants.DEFAULT_RELATION_LINE_COLOR;
+            this.canvasContext.strokeStyle = remove ? FlowConstants.DELETE_RELATION_LINE_COLOR : FlowConstants.DEFAULT_RELATION_LINE_COLOR;
             this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
             this.canvasContext.stroke();
         }

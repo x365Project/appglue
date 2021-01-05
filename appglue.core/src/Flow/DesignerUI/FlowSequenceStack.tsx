@@ -28,6 +28,8 @@ import { IPosition } from "../CommonUI/IPosition";
 
 import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 import {FlowEditContext} from "../FlowEditContext";
+import { CandidateSequence } from "../Structure/CandidateSequence";
+import { ObserveMultiState } from "../../CommonUI/StateManagement/ObserveMultiState";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
@@ -269,10 +271,11 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	} 
 
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
-		this.props.editContext.clearCanvas();
-        this.props.sequence.x = data.x;
+		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
 		this.props.editContext.positionCandidateSequences();
+		this.props.editContext.clearCanvas();
+		this.props.editContext.refresh();
 
 		this.setState({
 			isDragging: false
@@ -280,11 +283,15 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
 	onDragStart = (_e: DraggableEvent, _data: DraggableData) => {
-		this.props.editContext.clearCanvas();
 		this.props.editContext.clearSelection();
 		this.setState({
 			isDragging: true
 		})
+	}
+	
+	onDrag = (_e: DraggableEvent, data: DraggableData) => {
+		this.props.sequence.x = data.x;
+		this.props.sequence.y = data.y;
 	}
 
 	onUpdateStackName = (newValue: string) => {
@@ -324,6 +331,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
                 defaultPosition={this.getDefaultPosition()}
 				onStop={this.onDragStop}
 				onStart={this.onDragStart}
+				onDrag={this.onDrag}
 				handle={`.stack-move`}
 				cancel=".inline-editor"
             >
@@ -352,6 +360,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 					<div className={`stack${this.state.isCollapsed ? ' stack-move': ''}`}>
 						<ObserveState
 							listenTo={this.props.sequence}
+							properties={["name", "stackColor"]}
 							control={
 								() => <TitleDiv className="inline-editor" content={this.props.sequence.name} color={this.props.sequence.stackColor}>
 									<InlineTextEdit
@@ -383,7 +392,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 										});
 									}
 									return (
-										<>
+										<div  {...provided.droppableProps} ref={provided.innerRef}>
 											<Collapse in={this.state.isCollapsed}>
 												<FlowSequenceSummary>
 													<Typography align="center">
@@ -394,7 +403,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 													</Typography>
 												</FlowSequenceSummary>
 											</Collapse>
-											<Collapse in={!this.state.isCollapsed} {...provided.droppableProps} ref={provided.innerRef} collapsedHeight={1}>
+											<Collapse in={!this.state.isCollapsed}>
 												<FlowSequenceContent>
 													{this.props.sequence.steps.length === 0 && <>put steps here</> }
 													{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
@@ -440,15 +449,34 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																						{otherPaths.length !== 0 && (
 																							<StepConnectOtherPaths>
 																								{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
+
+																									let childSequence:FlowStepSequence | null = null;
+																									let candidateSequence: CandidateSequence | null = null;
+																									if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
+
+																										if (stepOutput.connectedSequenceId) {
+																											childSequence = this.props.flow.find(stepOutput.connectedSequenceId) as FlowStepSequence;
+																										} else if (stepOutput.pathName) {
+																											candidateSequence = this.props.editContext.getCandidateSequenceForPath(step._id, stepOutput.pathName);
+																										}
+																									}
+
 																									return (
-																										<FlowSequenceStackAltPath
-																											key={'path'+stepOutput.pathName}
-																											sequence={this.props.sequence}
-																											step={step}
-																											stepOutput={stepOutput}
-																											editContext={this.props.editContext}
-																											width={this.width}
+																										<ObserveMultiState
+																											listenTo={[childSequence, candidateSequence]}
+																											control={() => <FlowSequenceStackAltPath
+																													key={'path'+stepOutput.pathName}
+																													sequence={this.props.sequence}
+																													step={step}
+																													stepOutput={stepOutput}
+																													editContext={this.props.editContext}
+																													width={this.width}
+																													childSequence={childSequence}
+																													candidateSequence={candidateSequence}
+																												/>
+																											}
 																										/>
+																										
 																									);
 																								})}
 																							</StepConnectOtherPaths>
@@ -462,11 +490,10 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 															</Draggable>
 														);
 													})}
-													{ provided.placeholder }
 												</FlowSequenceContent>
 											</Collapse>
-										</>
-										
+											{ provided.placeholder }
+										</div>
 									);
 								}
 							}
