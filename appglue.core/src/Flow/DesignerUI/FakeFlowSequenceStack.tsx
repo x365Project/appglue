@@ -31,15 +31,15 @@ export const FakeFlowSequenceDropDiv = styled("div")<{
 	}
 	
 	${props => !props.isNew && `
-		width: 275px;
-		min-height: 152px;
-		${!props.isDroppingOver && `border: dashed 1px darkgray`};	
+		width: ${FlowConstants.DEFAULT_STACK_WIDTH}px;
+		min-height: ${FlowConstants.DEFAULT_STACK_HEIGHT}px;
+		${!props.isDroppingOver && `border: dotted 2px darkgray`};	
 	`}
 
 	${props => props.isNew && `
-		min-height: 35px;
-		width: 150px;
-		${!props.isDroppingOver && `border: dashed 1px darkgray`};
+		width: ${FlowConstants.PATH_CANDIDATE_WIDTH}px;
+		min-height: ${FlowConstants.PATH_CANDIDATE_HEIGHT}px;
+		${!props.isDroppingOver && `border: dotted 2px darkgray`};
 	`}
 
 `;
@@ -72,6 +72,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candiate.x = data.x;
 		this.props.candiate.y = data.y;
+		StateManager.changed(this.props.candiate);
 		this.props.editContext.clearSelection();
 	}
 
@@ -82,7 +83,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candiate.x = data.x;
 		this.props.candiate.y = data.y;
-		StateManager.changed(this.props.candiate);
+		// StateManager.changed(this.props.candiate);
 	}
 
 	render() {
