@@ -52,10 +52,15 @@ export class FlowEditContext {
     }
 
     purgeCandidateSequences() : void {
+        this.doPurgeOfSequences();
+        this.positionCandidateSequences();
+    }
+
+    private doPurgeOfSequences() {
         // remove any that are missing
         // add any that are needed
         // make sure we have a blank one
-        this.positionCandidateSequences();
+
     }
 
     purgeCandidateSequencesByStepId(stepId?: string) {
@@ -77,7 +82,7 @@ export class FlowEditContext {
     }
 
     positionCandidateSequences() : void {
-        this.purgeCandidateSequences();
+        this.doPurgeOfSequences();
 
         let positionedSequences : IFlowStepSequence[] = [];
 
