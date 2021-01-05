@@ -176,14 +176,12 @@ export class XTabContainerTabContent extends XBaseStackContainer {
         return this.innerMargin || this.getContainer()!.defaultTabContentInnerMargin
     }
 
-
     render() {
 		let mode = this.getFormContext()?.mode ?? FormMode.Runtime;
 		
         if (mode === FormMode.FormDesign) {
             return (
-                <Droppable
-                    droppableId={this.id} key={this.id}>
+                <Droppable droppableId={this.id} key={this.id}>
                     {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
                         return (
                             <StackContainerDiv
@@ -198,7 +196,6 @@ export class XTabContainerTabContent extends XBaseStackContainer {
                                 {...provided.droppableProps}
                             >
                                 {
-
                                     this.controls.map((control, index) => {
                                         return (
                                             <StackContainerColumn

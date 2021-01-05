@@ -70,7 +70,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 		let droppableId = this.props.candiate ? this.props.candiate._id : `${FlowConstants.FakeStackId}`;
 
         return (
-			<ReactDraggable bounds="parent">
+			<ReactDraggable bounds="parent" disabled={!this.props.candiate.forStepId}>
 				<Droppable droppableId={droppableId}>
 					{
 						(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {

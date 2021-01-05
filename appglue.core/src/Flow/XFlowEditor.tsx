@@ -150,8 +150,9 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     @AutoBind
     onDragEnd(result: DropResult) {
         this.editContext.isDraggingControl = false;
-        this.editContext.draggingElemType = undefined;
         this.editContext.draggingElem = undefined;
+
+        console.log(result);
 
         // if not destination... then we should not do anything
         if (!result.destination)
