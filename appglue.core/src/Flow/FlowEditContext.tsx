@@ -77,8 +77,134 @@ export class FlowEditContext {
     }
 
     positionCandidateSequences() : void {
+        this.purgeCandidateSequences();
+
+        let positionedSequences : IFlowStepSequence[] = [];
+
+        for (let s of this.candidateSequences) {
+            let compareTo = this.getSequencesNearPosition(s, positionedSequences) ;
+
+            positionedSequences.push(s);
+
+            s.x = s.desiredX;
+
+            if (compareTo.length === 0) {
+                s.y = s.desiredY;
+            } else {
+                let ranges : {top: number, bottom: number} [] = [];
+                for (let moveAwayFrom of compareTo) {
+                    let realSequence = moveAwayFrom as FlowStepSequence;
+
+                    if (realSequence) {
+                        ranges.push({
+                            top : realSequence.y - 20,
+                            bottom: realSequence.y + realSequence.height + 20
+                        })
+                    } else {
+                        ranges.push({
+                            top : s.y - 20,
+                            bottom: s.y + 50 + 20 // replace 50 with real height
+                        })
+                    }
+                }
+
+                ranges.sort((a: {top: number, bottom: number}, b: {top: number, bottom: number}) => {
+                    if (a.top > b.top) {
+                        return 1;
+                    }
+
+                    if (a.top < b.top) {
+                        return -1;
+                    }
+
+                    return 0;
+                } )
+                // see if we can put it above
+
+                if (s.desiredY + 50 < ranges[0].top) // replace with constant height
+                {
+                    s.y = s.desiredY;
+                } else {
+                    // see if can fit in gap
+                    let lastRange : {top: number, bottom: number} = ranges[0];
+                    ranges.shift();
+                    let positioned = false;
+                    for (let r of ranges) {
+                        if ((r.top - 50 - 20 -20) < lastRange.bottom) {
+                            s.y = lastRange.bottom + 20;
+                            positioned = true;
+                            break;
+                        }
+                    }
+
+                    // put below last
+                    if (!positioned) {
+                        s.y = ranges[ranges.length -1].bottom + 20;
+                    }
+                }
+            }
+        }
+
+        let nonPathRange : CandidateSequence | null = null;
+
+        let farX = 0;
+
+        for (let reals of this.flow.sequences) {
+            let possibleX = reals.x + reals.width;
+
+            if (possibleX > farX)
+                farX = possibleX;
+        }
+
+        for (let cands of this.candidateSequences) {
+            if (!cands.forStepId){
+                nonPathRange = cands;
+                continue;
+            }
+
+            let possibleX = cands.x + 150; // replace with width of path candidates
+
+            if (possibleX > farX)
+                farX = possibleX;
+        }
+
+        if (!nonPathRange) {
+            throw 'cannot find general candidate sequence'
+        } else {
+            nonPathRange.x = farX + 30;
+            nonPathRange.y = nonPathRange.desiredY;
+        }
+
         // set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences")
+    }
+
+    private getSequencesNearPosition(toPosition : CandidateSequence, postionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {
+        let leftBounds = toPosition.x - 15;
+        let rightBounds = toPosition.x + 100;
+
+        let nearSequences : IFlowStepSequence[] = [];
+
+        for (let s of this.flow.sequences) {
+            if (s.x > leftBounds && s.x < rightBounds) {
+                nearSequences.push(s);
+            }
+        }
+
+        for (let s of postionedSequences) {
+            if (s === toPosition)
+                continue;
+
+            // this is general candidate
+            if (!toPosition.forStepId)
+                continue;
+
+            if (s.x > leftBounds && s.x < rightBounds) {
+                nearSequences.push(s);
+            }
+        }
+
+        return nearSequences;
     }
 
     combineSequences(combine: IFlowStepSequence, withSequence: IFlowStepSequence) {
