@@ -549,7 +549,7 @@ export class FlowEditContext {
     drawLine(point: { x: number, y: number }, point1: { x: number, y: number }, remove: boolean = false) {
         if (this.canvasContext) {
             this.canvasContext.beginPath();
-            this.canvasContext.setLineDash([5, 15]);
+            this.canvasContext.setLineDash([3, 2]);
             this.canvasContext.moveTo(point.x, point.y);
             this.canvasContext.lineTo(point1.x, point1.y);
             this.canvasContext.strokeStyle = remove ? FlowConstants.DELETE_RELATION_LINE_COLOR : FlowConstants.DEFAULT_RELATION_LINE_COLOR;
