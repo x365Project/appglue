@@ -546,6 +546,10 @@ export class FlowEditContext {
 
     private lines: IRelationLine[] = [];
 
+    addLine(line: IRelationLine) {
+        
+    }
+
     drawLine(point: { x: number, y: number }, point1: { x: number, y: number }, remove: boolean = false) {
         if (this.canvasContext) {
             this.canvasContext.beginPath();
