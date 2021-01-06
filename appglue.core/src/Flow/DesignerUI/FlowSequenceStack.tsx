@@ -258,7 +258,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 
 		this.state = {
 			isDragging: false,
-			isCollapsed: false,
+			isCollapsed: props.sequence.isCollapsed,
 			isDroppingOver: false
 		}
 	}
@@ -306,12 +306,12 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		this.setState({
 			isCollapsed: isCollapsed
 		})
+
+		this.props.sequence.isCollapsed = isCollapsed;
 	}
 
 	onToggleCollapsed = (_event: React.MouseEvent<HTMLDivElement>) => {
-		this.setState({
-			isCollapsed: !this.state.isCollapsed
-		})
+		this.setCollapsed(!this.state.isCollapsed);
 	}
 
 	onTitleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -389,9 +389,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 							{
 								(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
 									if (this.state.isCollapsed && snapshot.isDraggingOver) {
-										this.setState({
-											isCollapsed: false
-										});
+										this.setCollapsed(false);
 									}
 									return (
 										<div  {...provided.droppableProps} ref={provided.innerRef}>

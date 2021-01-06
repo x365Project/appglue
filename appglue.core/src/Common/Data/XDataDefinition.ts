@@ -5,7 +5,6 @@ import {IDataDefinitionOwner} from "./IDataDefinitionOwner";
 import {StringDataDefinition} from "./Definitions/StringDataDefinition";
 import {NumberDataDefinition} from "./Definitions/NumberDataDefinition";
 import {BooleanDataDefinition} from "./Definitions/BooleanDataDefinition";
-import $RefParser from "@apidevtools/json-schema-ref-parser";
 import {FileDataDefinition} from "./Definitions/FileDataDefinition";
 
 export class XDataDefinition implements IDataDefinitionOwner{

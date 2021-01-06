@@ -4,6 +4,7 @@ import {FlowStepSequence} from "./FlowStepSequence";
 import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepOutputInstructionType} from "./FlowStepOutputInstructions";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 
 export class XFlowConfiguration implements IFlowElement{
     _id: string = DataUtilities.generateUniqueId();
@@ -102,9 +103,9 @@ export class XFlowConfiguration implements IFlowElement{
 
     addSequence(newSeq: FlowStepSequence) {
         this._sequences.push(newSeq)
+        newSeq.flow = this;
 
-        console.log('adding sequence' + newSeq.x + console.trace());
-        // add listener
+        StateManager.propertiesChanged(this, ['sequences']);
     }
 
     deleteSequenceByIndex(idx: number) {
@@ -119,7 +120,7 @@ export class XFlowConfiguration implements IFlowElement{
             for (let step of seq.steps) {
                 for (let inst of step.getOutcomeInstructions()) {
                     if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
-                        conn.push(new FlowConnection(step._id + '-' + inst.pathName, inst.connectedSequenceId, false));
+                        conn.push(new FlowConnection(seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName), inst.connectedSequenceId, false));
                     }
                 }
             }

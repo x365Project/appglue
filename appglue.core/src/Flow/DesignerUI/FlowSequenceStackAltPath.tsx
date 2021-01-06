@@ -9,6 +9,8 @@ import {FlowEditContext} from "../FlowEditContext";
 import { CandidateSequence } from "../Structure/CandidateSequence";
 import {FlowConstants} from "../CommonUI/FlowConstants";
 import {IFlowStepSequence} from "../Structure/IFlowStepSequence";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {ObserveMultiState} from "../../CommonUI/StateManagement/ObserveMultiState";
 
 
 const StepPathWrapper = styled.div`
@@ -86,8 +88,7 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 			<>
 				<StepPathConnectDiv />
 				<StepPathWrapper ref={this.containerRef}>
-					<ObserveState listenTo={targetSequence}
-						properties={["stackColor"]}
+					<ObserveMultiState listenTo={[sequence, stepOutput]}
 						control={
 							() => <StepPathDiv
 								id={step._id + '-' + stepOutput.pathName}
@@ -107,6 +108,9 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 									onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
 										stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;
 										this.props.editContext.purgeCandidateSequences();
+										StateManager.changed(this.props.sequence);
+										StateManager.propertiesChanged(this.props.editContext.flow, ['sequences']);
+										StateManager.changed(stepOutput);
 									}}
 								>
 									<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>

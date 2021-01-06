@@ -6,23 +6,28 @@ import {FlowConstants} from "../CommonUI/FlowConstants";
 
 export class CandidateSequence implements IFlowStepSequence {
     _id: string = DataUtilities.generateUniqueId();
-    desiredX: number;
-    desiredY: number;
     x: number;
     y: number;
+
+    desiredX: number;
+    desiredY: number;
 
     forStepId?: string;
     forPath?: string;
 
 
-    constructor(desiredX: number, desiredY: number, forStepId?: string, forPath?: string) {
-        this.desiredX = desiredX;
-        this.desiredY = desiredY;
-
-        this.x = desiredX;
-        this.y = desiredY;
+    constructor(x: number, y: number, forStepId?: string, forPath?: string) {
+        this.x = x;
+        this.y = y;
+        this.desiredX = x;
+        this.desiredY = y;
         this.forPath = forPath;
         this.forStepId = forStepId;
+    }
+
+    reset() : void {
+        this.x = this.desiredX;
+        this.y = this.desiredY;
     }
 
 

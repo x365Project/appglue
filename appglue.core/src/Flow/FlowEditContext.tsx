@@ -104,73 +104,103 @@ export class FlowEditContext {
     positionCandidateSequences() : void {
         this.doPurgeOfSequences();
 
-        let positionedSequences : IFlowStepSequence[] = [];
-
-        for (let s of this.candidateSequences) {
-            let compareTo = this.getSequencesNearPosition(s, positionedSequences) ;
-
-            positionedSequences.push(s);
-
-            s.x = s.desiredX;
-
-            if (compareTo.length === 0) {
-                s.y = s.desiredY;
-            } else {
-                let ranges : {top: number, bottom: number} [] = [];
-                for (let moveAwayFrom of compareTo) {
-                    let realSequence = moveAwayFrom as FlowStepSequence;
-
-                    if (realSequence) {
-                        ranges.push({
-                            top : realSequence.y - 20,
-                            bottom: realSequence.y + realSequence.height + 20
-                        })
-                    } else {
-                        ranges.push({
-                            top : s.y - 20,
-                            bottom: s.y + 50 + 20 // replace 50 with real height
-                        })
-                    }
-                }
-
-                ranges.sort((a: {top: number, bottom: number}, b: {top: number, bottom: number}) => {
-                    if (a.top > b.top) {
-                        return 1;
-                    }
-
-                    if (a.top < b.top) {
-                        return -1;
-                    }
-
-                    return 0;
-                } )
-                // see if we can put it above
-
-                if (s.desiredY + 50 < ranges[0].top) // replace with constant height
-                {
-                    s.y = s.desiredY;
-                } else {
-                    // see if can fit in gap
-                    let lastRange : {top: number, bottom: number} = ranges[0];
-                    
-                    ranges.shift();
-                    let positioned = false;
-                    for (let r of ranges) {
-                        if ((r.top - 50 - 20 -20) < lastRange.bottom) {
-                            s.y = lastRange.bottom + 20;
-                            positioned = true;
-                            break;
-                        }
-                    }
-
-                    // put below last
-                    if (ranges.length > 0 &&!positioned) {
-                        s.y = ranges[ranges.length -1].bottom + 20;
-                    }
-                }
-            }
+        for (let candS of this.candidateSequences) {
+            candS.reset();
         }
 
+        let toPosition : IFlowStepSequence[] = [...this.candidateSequences];
+
+
+        // add real sequences to this
+        for (let realS of this.flow.sequences) {
+            toPosition.push(realS);
+        }
+
+        let next : IFlowStepSequence | undefined = toPosition.length === 0 ? undefined : toPosition[0];
+        while (next) {
+
+            if (next._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID) {
+                // remove it
+                toPosition.splice(0, 1);
+
+                if (toPosition.length === 0)
+                    break;
+
+                next = toPosition[0];
+                continue;
+            }
+
+            let compareTo = this.getSequencesNearPosition(next, toPosition) ;
+
+            if (compareTo.length === 1) {
+                toPosition.splice(toPosition.indexOf(compareTo[0]), 1);
+
+                if (toPosition.length === 0)
+                    break;
+
+                next = toPosition[0];
+                continue;
+            }
+
+
+            // build ranges
+            // sort
+            let ranges : {top: number, bottom: number, sequence: IFlowStepSequence} [] = [];
+            for (let aSequence of compareTo) {
+                let realSequence = aSequence as FlowStepSequence;
+
+                if (realSequence) {
+                    ranges.push({
+                        top : realSequence.y - 20,
+                        bottom: realSequence.y + realSequence.height + 20,
+                        sequence: realSequence
+
+                    })
+                } else {
+                    ranges.push({
+                        top : aSequence.y - 20,
+                        bottom: aSequence.y + FlowConstants.PATH_CANDIDATE_HEIGHT + 20, // replace 50 with real height
+                        sequence: aSequence
+                    })
+                }
+            }
+
+            ranges.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
+                if (a.top > b.top) {
+                    return 1;
+                }
+
+                if (a.top < b.top) {
+                    return -1;
+                }
+
+                return 0;
+            } )
+
+            let lastSeq : {top: number, bottom: number, sequence: IFlowStepSequence} | undefined = undefined;
+            for (let positionMe of ranges) {
+                if (lastSeq) {
+                    if (positionMe.top < lastSeq.bottom) {
+                        positionMe.sequence.y = lastSeq.bottom;
+                    }
+                }
+
+                lastSeq = positionMe;
+            }
+
+            // remove ones we just positioned
+            for(let toRemove of ranges) {
+                toPosition.splice(toPosition.indexOf(toRemove.sequence), 1);
+            }
+
+            // if there is one left, it is the general purpose stack
+            if (toPosition.length === 0)
+                break;
+
+            next = toPosition[0];
+        }
+
+        // -- non path candidate
         let nonPathCandidate : CandidateSequence | null = null;
 
         let farX = 0;
@@ -198,7 +228,6 @@ export class FlowEditContext {
             throw 'cannot find general candidate sequence'
         } else {
             nonPathCandidate.x = farX + 30;
-            nonPathCandidate.y = nonPathCandidate.desiredY;
         }
 
 
@@ -206,24 +235,15 @@ export class FlowEditContext {
         StateManager.propertyChanged(this, "candidateSequences");
     }
 
-    private getSequencesNearPosition(toPosition : CandidateSequence, postionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {
-        let leftBounds = toPosition.x - 15;
-        let rightBounds = toPosition.x + 100;
+    private getSequencesNearPosition(toPosition : IFlowStepSequence, unpositionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {
+        let leftBounds = toPosition.x - 50;
+        let rightBounds = toPosition.x + FlowConstants.PATH_CANDIDATE_WIDTH;
 
         let nearSequences : IFlowStepSequence[] = [];
 
-        for (let s of this.flow.sequences) {
-            if (s.x > leftBounds && s.x < rightBounds) {
-                nearSequences.push(s);
-            }
-        }
-
-        for (let s of postionedSequences) {
-            if (s === toPosition)
-                continue;
-
+        for (let s of unpositionedSequences) {
             // this is general candidate
-            if (!toPosition.forStepId)
+            if (s._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID)
                 continue;
 
             if (s.x > leftBounds && s.x < rightBounds) {

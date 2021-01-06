@@ -60,6 +60,7 @@ import {FlowEditContext} from "./FlowEditContext";
 import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
+import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -128,9 +129,17 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                             <FlowMainSectionDiv>
                                 <FlowSideActions />
                                 <FlowToolbox />
-                                <ObserveState listenTo={this.props.flow} properties={["sequences"]} control={() => (
-                                    <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
-                                )} />
+                                <ObserveMultiStateProperties
+                                    listeners={
+                                        [
+                                            {listenTo: this.props.flow, propertyName: 'sequences' },
+                                            {listenTo: this.editContext, propertyName: 'propName' }
+                                        ]
+                                    }
+                                    control={() => (
+                                        <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
+                                    )}
+                                />
                             </FlowMainSectionDiv>
                         </FlowEditorDiv>
                     </DragDropContext>
@@ -557,9 +566,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                     onStop={onEndMovingConfigPanel}
                                     handle=".config-form-header"
                                 >
-                                    <EditLayerConfigArea
-                                        // ref={this.configFormNode}
-                                    >
+                                    <EditLayerConfigArea>
                                         <Accordion
                                             expanded={expandedConfigPanel}
                                             onChange={onToggleExpandedConfigPanel}
@@ -583,10 +590,13 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                     }
                 }
             />
+
             <ObserveMultiState listenTo={[props.editContext, props.flow]} control={() => <>
                 {
                     props.flow.getConnections().map((value: FlowConnection) => {
-                        return <Xarrow
+                        console.log(value.fromId);
+
+                       return <Xarrow
                             key={`${value.fromId}-${value.toId}`}
                             start={value.fromId}
                             end={value.toId}
