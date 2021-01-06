@@ -3,7 +3,7 @@ import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "./FlowStepSequence";
 import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
-import { StateManager } from "../../CommonUI/StateManagement/StateManager";
+import {FlowStepOutputInstructionType} from "./FlowStepOutputInstructions";
 
 export class XFlowConfiguration implements IFlowElement{
     _id: string = DataUtilities.generateUniqueId();
@@ -109,6 +109,36 @@ export class XFlowConfiguration implements IFlowElement{
 
     deleteSequenceByIndex(idx: number) {
         this._sequences.splice(idx, 1)
+    }
+
+    getConnections() : FlowConnection[] {
+        let conn : FlowConnection[] = [];
+
+
+        for (let seq of this._sequences) {
+            for (let step of seq.steps) {
+                for (let inst of step.getOutcomeInstructions()) {
+                    if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
+                        conn.push(new FlowConnection(step._id + '-' + inst.pathName, inst.connectedSequenceId, false));
+                    }
+                }
+            }
+        }
+
+        return conn;
+    }
+}
+
+export class FlowConnection {
+    fromId: string;
+    toId: string;
+    isCandidate: boolean;
+
+
+    constructor(fromId: string, toId: string, isCandidate: boolean) {
+        this.fromId = fromId;
+        this.toId = toId;
+        this.isCandidate = isCandidate;
     }
 }
 

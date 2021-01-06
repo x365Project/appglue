@@ -18,6 +18,7 @@ export class CandidateSequence implements IFlowStepSequence {
     constructor(desiredX: number, desiredY: number, forStepId?: string, forPath?: string) {
         this.desiredX = desiredX;
         this.desiredY = desiredY;
+
         this.x = desiredX;
         this.y = desiredY;
         this.forPath = forPath;

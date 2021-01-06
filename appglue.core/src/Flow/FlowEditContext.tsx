@@ -89,14 +89,28 @@ export class FlowEditContext {
         this.addNonPathCandidateSequence();
     }
 
-    getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
-        let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) => 
-            (c.forStepId === stepId && c.forPath === pathName)
-        )
+    getTargetSequence(id: string) : IFlowStepSequence | undefined {
+        for (let s of this.flow.sequences) {
+            if (s._id === id)
+                return s;
+        }
 
-        if (filteredSequences.length > 0) return filteredSequences[0];
-        return null;
+        for (let s of this.candidateSequences) {
+            if (s._id === id)
+                return s;
+        }
+
+        return;
     }
+
+    // getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
+    //     let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) =>
+    //         (c.forStepId === stepId && c.forPath === pathName)
+    //     )
+    //
+    //     if (filteredSequences.length > 0) return filteredSequences[0];
+    //     return null;
+    // }
 
     positionCandidateSequences() : void {
         this.doPurgeOfSequences();
@@ -194,7 +208,6 @@ export class FlowEditContext {
         if (!nonPathCandidate) {
             throw 'cannot find general candidate sequence'
         } else {
-            console.log(farX);
             nonPathCandidate.x = farX + 30;
             nonPathCandidate.y = nonPathCandidate.desiredY;
         }
@@ -513,48 +526,6 @@ export class FlowEditContext {
 
     set draggingElem(elemId: string | undefined) {
         this._draggingElemId = elemId;
-    }
-
-    private _canvas: {
-        context: CanvasRenderingContext2D | null;
-        width: number;
-        height: number;
-    } | null = null;
-
-    set canvas(c: { context: CanvasRenderingContext2D | null; width: number; height: number; } | null) {
-        this._canvas = c;
-    }
-
-    get canvas(): { context: CanvasRenderingContext2D | null; width: number; height: number; } | null {
-        return this._canvas
-    }
-
-    get canvasContext(): CanvasRenderingContext2D | null {
-        return this._canvas?.context || null;
-    }
-
-    private lines: IRelationLine[] = [];
-
-    addLine(line: IRelationLine) {
-        
-    }
-
-    drawLine(point: { x: number, y: number }, point1: { x: number, y: number }, remove: boolean = false) {
-        if (this.canvasContext) {
-            this.canvasContext.beginPath();
-            this.canvasContext.setLineDash([3, 2]);
-            this.canvasContext.moveTo(point.x, point.y);
-            this.canvasContext.lineTo(point1.x, point1.y);
-            this.canvasContext.strokeStyle = remove ? FlowConstants.DELETE_RELATION_LINE_COLOR : FlowConstants.DEFAULT_RELATION_LINE_COLOR;
-            this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
-            this.canvasContext.stroke();
-        }
-    }
-
-    clearCanvas() {
-        if (this._canvas) {
-            this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
-        }
     }
 
     refresh() {

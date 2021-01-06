@@ -30,6 +30,7 @@ import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 import {FlowEditContext} from "../FlowEditContext";
 import { CandidateSequence } from "../Structure/CandidateSequence";
 import { ObserveMultiState } from "../../CommonUI/StateManagement/ObserveMultiState";
+import {IFlowStepSequence} from "../Structure/IFlowStepSequence";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
@@ -276,7 +277,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		
 		StateManager.changed(this.props.sequence);
 		this.props.editContext.positionCandidateSequences();
-		this.props.editContext.clearCanvas();
 		this.props.editContext.refresh();
 
 		this.setState({
@@ -339,6 +339,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 				cancel=".inline-editor"
             >
                 <FlowSequenceDiv
+					id={this.props.sequence._id}
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
 					height={this.state.isCollapsed? this.collapsedHeight: undefined}
 					position={this.getDefaultPosition()}
@@ -450,20 +451,15 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																							<StepConnectOtherPaths>
 																								{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
 
-																									let childSequence:FlowStepSequence | null = null;
-																									let candidateSequence: CandidateSequence | null = null;
-																									if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
+																									let targetSequence : IFlowStepSequence | undefined = undefined;
 
-																										if (stepOutput.connectedSequenceId) {
-																											childSequence = this.props.flow.find(stepOutput.connectedSequenceId) as FlowStepSequence;
-																										} else if (stepOutput.pathName) {
-																											candidateSequence = this.props.editContext.getCandidateSequenceForPath(step._id, stepOutput.pathName);
-																										}
+																									if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && stepOutput.connectedSequenceId) {
+																										targetSequence = this.props.editContext.getTargetSequence(stepOutput.connectedSequenceId);
 																									}
 
 																									return (
 																										<ObserveMultiState
-																											listenTo={[childSequence, candidateSequence]}
+																											listenTo={[targetSequence]}
 																											control={() => <FlowSequenceStackAltPath
 																													key={'path'+stepOutput.pathName}
 																													sequence={this.props.sequence}
@@ -471,8 +467,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																													stepOutput={stepOutput}
 																													editContext={this.props.editContext}
 																													width={this.width}
-																													childSequence={childSequence}
-																													candidateSequence={candidateSequence}
+																													targetSequence={targetSequence}
 																												/>
 																											}
 																										/>

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {XFlowConfiguration} from "./Structure/XFlowConfiguration";
+import {FlowConnection, XFlowConfiguration} from "./Structure/XFlowConfiguration";
 import styled from "styled-components";
 import {FlowStepRegistration, RegistrationData} from "./Utilities/RegisterFlowStep";
 import {
@@ -59,6 +59,7 @@ import {FlowConstants} from "./CommonUI/FlowConstants";
 import {FlowEditContext} from "./FlowEditContext";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
+import Xarrow from "react-xarrows";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -142,7 +143,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
     @AutoBind
     onDragStart(initial: DragStart, _provided: ResponderProvided) {
-        this.editContext.clearCanvas();
         this.editContext.draggingElem = initial.draggableId;
 		this.editContext.clearSelection();
     }
@@ -207,8 +207,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
 		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
 
-		this.editContext.clearCanvas();
-		
         if (control) {
 
             this.editContext.setSelection(control);
@@ -428,23 +426,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
     const [expandedConfigPanel, setexpandedConfigPanel] = useState(true);
     const [isMovingConfigPanel, setisMovingConfigPanel] = useState(false);
-    // make state
-
-    const canvas: React.RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
-    // initialize the canvas context
-    useEffect(() => {
-        // dynamically assign the width and height to canvas
-        let canvasEle = canvas.current! as HTMLCanvasElement;
-
-        canvasEle.width = canvasEle.clientWidth;
-        canvasEle.height = canvasEle.clientHeight;
-        props.editContext.canvas = {
-			context: canvasEle.getContext("2d"),
-			width: canvasEle.clientWidth,
-			height: canvasEle.clientHeight
-		};
-    }, []);
-    
 
     function onToggleExpandedConfigPanel() {
         if (!isMovingConfigPanel) {
@@ -535,7 +516,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
     return (
         <DesignPanel>
-            <canvas ref={canvas} />
 
             <ObserveState
                 listenTo={props.editContext}
@@ -557,6 +537,17 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
             {
                 props.flow.sequences.map((s: FlowStepSequence, i: number) => {
                     return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
+                })
+            }
+
+            {
+                props.flow.getConnections().map((value: FlowConnection) => {
+                    return <Xarrow
+                        start={value.fromId}
+                        end={value.toId}
+                        strokeWidth = {2}
+                        headSize = {3}
+                    />
                 })
             }
 

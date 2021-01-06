@@ -89,9 +89,7 @@ export class CandidateSequenceStack extends React.Component<IFakeFlowSequenceSta
 	render() {
 		let droppableId = this.props.candidate._id;
 
-		console.log('it should render here ...' + this.getDefaultPosition());
-
-        return (
+		return (
 			<ReactDraggable
 				bounds="parent"
 				disabled={!this.props.candidate.forStepId}
@@ -102,6 +100,7 @@ export class CandidateSequenceStack extends React.Component<IFakeFlowSequenceSta
 				position={this.getDefaultPosition()}
 			>
 				<FakeFlowSequenceDiv
+					id={this.props.candidate._id}
 					show={!!this.props.candidate.forStepId || this.props.editContext.isDraggingControl}
 				>
 					<Droppable droppableId={droppableId}>
