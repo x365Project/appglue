@@ -199,7 +199,7 @@ describe("XFlowEditor", () => {
         let newSeq = new FlowStepSequence();
         newSeq.canCopy = false;
         newSeq.canDelete = false;
-        flowEditor.flow.sequences.push(newSeq);
+        flowEditor.flow.addSequence(newSeq);
         newSeq.x = 100;
         newSeq.y = 20;
 

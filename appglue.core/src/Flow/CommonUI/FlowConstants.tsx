@@ -1,7 +1,7 @@
 
 export class FlowConstants {
   static ToolboxId = 'Toolbox';
-  static FakeStackId = 'Fakestack';
+  static DEFAULT_CANDIDATE_SEQ_ID = 'DefaultCandidateId';
   static DROPPING_COLOR = '#4682B4';
   static DELETE_RELATION_LINE_COLOR = 'transparent';
   static DEFAULT_RELATION_LINE_COLOR = 'gray';
@@ -14,4 +14,5 @@ export class FlowConstants {
   static PATH_CANDIDATE_SHIFT = 50;
   static PATH_CANDIDATE_WIDTH = 150;
   static PATH_CANDIDATE_HEIGHT = 35;
+
 }

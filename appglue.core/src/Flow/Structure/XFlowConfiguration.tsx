@@ -7,21 +7,24 @@ import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
 export class XFlowConfiguration implements IFlowElement{
     _id: string = DataUtilities.generateUniqueId();
-   sequences : FlowStepSequence[];
-  // connections: FlowStepSequenceConnection[];
+   private _sequences : FlowStepSequence[];
 
     constructor() {
-        this.sequences = [];
+        this._sequences = [];
         let initialSeq = new FlowStepSequence();
         initialSeq.x = 20;
         initialSeq.y = 20;
 
-        this.sequences.push(initialSeq);
+        this._sequences.push(initialSeq);
        // this.connections = [];
     }
 
+    get sequences(): readonly FlowStepSequence[] {
+        return this._sequences;
+    }
+
     find(id: string): IFlowElement | null {
-        for (let s of this.sequences) {
+        for (let s of this._sequences) {
             if (s._id === id) return s;
             for (let step of s.steps) {
                 if (step._id === id) return step;
@@ -31,7 +34,7 @@ export class XFlowConfiguration implements IFlowElement{
     }
 
     findSequenceByStepId(stepId: string) {
-        for (let s of this.sequences) {
+        for (let s of this._sequences) {
             if (s.find(stepId)) return s;
         }
         return null;
@@ -43,7 +46,7 @@ export class XFlowConfiguration implements IFlowElement{
         if (!sequence) {
             sequence = new FlowStepSequence();
             sequence._id = sequenceId;
-            this.sequences.push(sequence);
+            this.addSequence(sequence);
         }
 
         sequence.addStep(step, index);
@@ -57,7 +60,7 @@ export class XFlowConfiguration implements IFlowElement{
                 sequence.remove(step as BaseFlowStep);
             }
         } else {
-            for (let s of this.sequences) {
+            for (let s of this._sequences) {
                 s.remove(step as BaseFlowStep);
             }
         }
@@ -84,7 +87,7 @@ export class XFlowConfiguration implements IFlowElement{
     }
 
     getSequence(id: string): FlowStepSequence | null {
-        for (let s of this.sequences) {
+        for (let s of this._sequences) {
             if (s._id === id)
                 return s;
         }
@@ -98,8 +101,14 @@ export class XFlowConfiguration implements IFlowElement{
     }
 
     addSequence(newSeq: FlowStepSequence) {
-        this.sequences.push(newSeq)
+        this._sequences.push(newSeq)
+
+        console.log('adding sequence' + newSeq.x + console.trace());
         // add listener
+    }
+
+    deleteSequenceByIndex(idx: number) {
+        this._sequences.splice(idx, 1)
     }
 }
 

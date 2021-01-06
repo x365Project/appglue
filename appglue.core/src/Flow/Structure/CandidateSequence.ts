@@ -1,6 +1,7 @@
 import {IFlowStepSequence} from "./IFlowStepSequence";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepSequence} from "./FlowStepSequence";
+import {FlowConstants} from "../CommonUI/FlowConstants";
 
 
 export class CandidateSequence implements IFlowStepSequence {
@@ -32,7 +33,7 @@ export class CandidateSequence implements IFlowStepSequence {
         let s = new FlowStepSequence();
         s.x = this.x;
         s.y = this.y;
-        s._id = this._id;
+        s._id = this._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID ? DataUtilities.generateUniqueId() : this._id;
         return s;
     }
 }

@@ -46,7 +46,7 @@ export class FlowEditContext {
         return this.candidateSequences;
     }
 
-    findCandiateSequence(id: string): CandidateSequence | null {
+    findCandidateSequence(id: string): CandidateSequence | null {
         for (let c of this.candidateSequences) {
             if (c._id === id) return c;
         }
@@ -87,15 +87,6 @@ export class FlowEditContext {
         });
 
         this.addNonPathCandidateSequence();
-    }
-
-    purgeCandidateSequencesByStepId(stepId?: string) {
-        if (!stepId) {
-            this.purgeCandidateSequences();
-        }
-
-        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => c.forStepId !== stepId);
-        StateManager.propertyChanged(this, 'candidateSequences');
     }
 
     getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
@@ -177,7 +168,7 @@ export class FlowEditContext {
             }
         }
 
-        let nonPathRange : CandidateSequence | null = null;
+        let nonPathCandidate : CandidateSequence | null = null;
 
         let farX = 0;
 
@@ -190,21 +181,22 @@ export class FlowEditContext {
 
         for (let cands of this.candidateSequences) {
             if (!cands.forStepId){
-                nonPathRange = cands;
+                nonPathCandidate = cands;
                 continue;
             }
 
-            let possibleX = cands.x + 150; // replace with width of path candidates
+            let possibleX = cands.x + FlowConstants.PATH_CANDIDATE_WIDTH; // replace with width of path candidates
 
             if (possibleX > farX)
                 farX = possibleX;
         }
 
-        if (!nonPathRange) {
+        if (!nonPathCandidate) {
             throw 'cannot find general candidate sequence'
         } else {
-            nonPathRange.x = farX + 30;
-            nonPathRange.y = nonPathRange.desiredY;
+            console.log(farX);
+            nonPathCandidate.x = farX + 30;
+            nonPathCandidate.y = nonPathCandidate.desiredY;
         }
 
         // set actual X/Y for any sequences
@@ -337,7 +329,7 @@ export class FlowEditContext {
 
     @AutoBind
     deleteSequence(idx: number) {
-        this.flow.sequences.splice(idx, 1);
+        this.flow.deleteSequenceByIndex(idx);
         StateManager.propertyChanged(this.flow, 'sequences');
     }
 
@@ -427,13 +419,16 @@ export class FlowEditContext {
         this.flowEditor = flowEditor;
 
         this.addNonPathCandidateSequence();
+        this.positionCandidateSequences();
     }
 
     addNonPathCandidateSequence() {
-        if (this.candidateSequences.filter((c) => !c.forStepId).length === 0) {
-            let newStackPosition = this.getNewStackPosition();
-            let c = new CandidateSequence(newStackPosition.x, newStackPosition.y);
-            this.addCandidateSequence(c);
+        if (this.candidateSequences.filter((c) => {
+            return c._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
+        }).length === 0) {
+            let c = new CandidateSequence(0, 30);
+            c._id = FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
+            this.candidateSequences.push(c);
         }
     }
 
@@ -455,22 +450,6 @@ export class FlowEditContext {
     get lastSelectionElement(): IFlowElement | undefined {
         return this._lastSelectionElement;
     }
-
-
-    getNewStackPosition(): IPosition {
-        let y = this.flow.sequences[0].y;
-        let bottomY = y + FlowConstants.DEFAULT_STACK_HEIGHT;
-
-        let x = Math.max(
-            ...this.flow.sequences
-                .filter((s) => {
-                    return s.y < bottomY;
-                })
-                .map((s) => s.x + s.width)
-        );
-        return {x, y};
-    }
-
 
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;

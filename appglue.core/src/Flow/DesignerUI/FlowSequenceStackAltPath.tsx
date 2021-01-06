@@ -73,8 +73,9 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 						candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
 						editContext.addCandidateSequence(candidateSequence);
 					} else {
-						if (candidateSequence.desiredX !== point1.x + 150 || point1.y !== candidateSequence.desiredY) {
-							candidateSequence.desiredX = point1.x + 150;
+						// todo: this seems wrong.  why are we positioning inside render.
+						if (candidateSequence.desiredX !== point1.x + FlowConstants.PATH_CANDIDATE_SHIFT || point1.y !== candidateSequence.desiredY) {
+							candidateSequence.desiredX = point1.x + FlowConstants.PATH_CANDIDATE_SHIFT;
 							candidateSequence.desiredY = point1.y;
 							editContext.positionCandidateSequences();
 						}

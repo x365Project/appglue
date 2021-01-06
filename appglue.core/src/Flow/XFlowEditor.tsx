@@ -16,7 +16,6 @@ import {
 } from "react-beautiful-dnd";
 import {AutoBind} from "../Common/AutoBind";
 import {FlowSequenceStack} from "./DesignerUI/FlowSequenceStack";
-import {FakeFlowSequenceStack} from "./DesignerUI/FakeFlowSequenceStack";
 import ReactDraggable from "react-draggable";
 import {
     Accordion,
@@ -59,6 +58,7 @@ import {DeleteWhiteIcon} from "../CommonUI/Icon/DeleteWhiteIcon";
 import {FlowConstants} from "./CommonUI/FlowConstants";
 import {FlowEditContext} from "./FlowEditContext";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
+import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -180,23 +180,14 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
             if (result.destination.droppableId === result.source.droppableId) {
                 // changing order
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
-            } else if (result.destination.droppableId === FlowConstants.FakeStackId) {
-
-                if (!isNew) {
-                    this.props.flow.remove(control);
-                }
-                let initialSeq = new FlowStepSequence();
-                let newStackPosition = this.editContext.getNewStackPosition();
-                initialSeq.x = newStackPosition.x;
-                initialSeq.y = newStackPosition.y;
-                this.props.flow.sequences.push(initialSeq);
-                this.props.flow.add(control, initialSeq._id);
-                StateManager.propertyChanged(this.props.flow, 'sequences');
             } else {
-                let c = this.editContext.findCandiateSequence(result.destination.droppableId);
+                let seqid = result.destination.droppableId;
+                let c = this.editContext.findCandidateSequence(result.destination.droppableId);
                 if (c) {
                     let s = c.createSequence();
-                    this.flow.sequences.push(s);
+                    // this is a new sequence... need to record its actual id
+                    seqid = s._id;
+                    this.flow.addSequence(s);
                     if (c.forPath && c.forStepId) {
                         let step = this.flow.find(c.forStepId) as BaseFlowStep;
                         let stepOutput = step.findOutputInstruction(c.forPath);
@@ -206,9 +197,9 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 }
 
                 if (isNew) {
-                    this.props.flow.add(control, result.destination.droppableId, result.destination.index);
+                    this.props.flow.add(control, seqid, result.destination.index);
                 } else {
-                    this.props.flow.moveToSequence(control, result.source.droppableId, result.destination.droppableId, result.destination.index)
+                    this.props.flow.moveToSequence(control, seqid, result.destination.droppableId, result.destination.index)
                 }
             }
         }
@@ -552,9 +543,9 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 control={() => <>
                     {
                         props.editContext.getCandidateSequences().map((c) =>
-                            <FakeFlowSequenceStack
+                            <CandidateSequenceStack
                                 key={c._id}
-                                candiate={c}
+                                candidate={c}
                                 editContext={props.editContext}
                             />
                         )
@@ -564,9 +555,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
             />
 
             {
-                props.flow.sequences.filter((value:FlowStepSequence) => {
-                    return value.x != -1;
-                }).map((s: FlowStepSequence, i: number) => {
+                props.flow.sequences.map((s: FlowStepSequence, i: number) => {
                     return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
                 })
             }
