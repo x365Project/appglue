@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import ListItemText from '@material-ui/core/ListItemText';
+
 const useStyles = makeStyles(theme => ({
   MenuItem: {
     display: 'flex',
@@ -15,18 +16,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Dropdown = ({ subpages = [], handleRenderPage }) => {
+const Dropdown = ({
+  subpages = [],
+  handleRenderPage,
+}: {
+  subpages: any;
+  handleRenderPage: any;
+}) => {
   const [anchorElement, setAnchorElement] = React.useState(null);
   const classes = useStyles();
   const handleDropdownClose = () => {
     setAnchorElement(null);
   };
 
-  const handleArrowClick = e => {
+  const handleArrowClick = (e: any) => {
     setAnchorElement(e.currentTarget);
   };
 
-  const handleItemClick = renderPage => {
+  const handleItemClick = (renderPage: any) => {
     handleRenderPage(renderPage);
     handleDropdownClose();
   };
@@ -57,7 +64,7 @@ const Dropdown = ({ subpages = [], handleRenderPage }) => {
           },
         }}
       >
-        {subpages.map(page => (
+        {subpages.map((page: any) => (
           <MenuItem
             onClick={() => handleItemClick(page.renderPage)}
             key={page.name}
