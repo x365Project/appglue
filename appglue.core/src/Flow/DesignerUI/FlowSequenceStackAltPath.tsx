@@ -61,32 +61,29 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					y: this.containerRef.current.offsetTop + sequence.y + 18
 				};
 				if (childSequence) {
-					editContext.drawLine(
-						point1,
-						{
-							x: childSequence.x,
-							y: childSequence.y
-						}
-					);
+					editContext.addLine({
+						forStepId: step._id,
+						forStepPath: stepOutput.pathName!,
+						from: point1,
+						to: sequence
+					});
 				} else if (stepOutput.pathName) {
 					if (!candidateSequence) {
 						candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
 						editContext.addCandidateSequence(candidateSequence);
 					} else {
-						if (candidateSequence.desiredX !== point1.x + 150 || point1.y !== candidateSequence.desiredY) {
-							candidateSequence.desiredX = point1.x + 150;
+						if (candidateSequence.desiredX !== point1.x + FlowConstants.PATH_CANDIDATE_SHIFT || point1.y !== candidateSequence.desiredY) {
+							candidateSequence.desiredX = point1.x + FlowConstants.PATH_CANDIDATE_SHIFT;
 							candidateSequence.desiredY = point1.y;
-							editContext.positionCandidateSequences();
 						}
 					}
 
-					editContext.drawLine(
-						point1,
-						{
-							x: candidateSequence.x,
-							y: candidateSequence.y + 18
-						}
-					)
+					editContext.addLine({
+						forStepId: step._id,
+						forStepPath: stepOutput.pathName!,
+						from: point1,
+						to: candidateSequence
+					});
 				}
 			} else {
 				this.forceUpdate();

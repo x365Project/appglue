@@ -115,21 +115,69 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     get flow(): XFlowConfiguration {
         return this.props.flow;
     }
+    private _canvas: {
+        context: CanvasRenderingContext2D | null;
+        width: number;
+        height: number;
+    } | null = null;
+
+    set canvas(c: { context: CanvasRenderingContext2D | null; width: number; height: number; } | null) {
+        this._canvas = c;
+    }
+
+    get canvas(): { context: CanvasRenderingContext2D | null; width: number; height: number; } | null {
+        return this._canvas
+    }
+
+    get canvasContext(): CanvasRenderingContext2D | null {
+        return this._canvas?.context || null;
+    }
+
+    drawLine(point: { x: number, y: number }, point1: { x: number, y: number }) {
+        if (this.canvasContext) {
+            this.canvasContext.beginPath();
+            this.canvasContext.setLineDash([5, 15]);
+            this.canvasContext.moveTo(point.x, point.y);
+            this.canvasContext.lineTo(point1.x, point1.y);
+            this.canvasContext.strokeStyle = FlowConstants.DEFAULT_RELATION_LINE_COLOR;
+            this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
+            this.canvasContext.stroke();
+        }
+    }
+
+    drawLines() {
+        this.clearCanvas();
+
+        for (let l of this.editContext.lines) {
+            this.drawLine(l.from, l.to.getDestination());
+        }
+    }
+
+    clearCanvas() {
+        if (this._canvas) {
+            this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        }
+    }
 
     render() {
         return (
-            <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
-                <FlowEditorDiv>
-                    <FlowTopBar editContext={this.editContext} />
-                    <FlowMainSectionDiv>
-                        <FlowSideActions />
-                        <FlowToolbox />
-                        <ObserveState listenTo={this.props.flow} properties={["sequences"]} control={() => (
-                            <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
-                        )} />
-                    </FlowMainSectionDiv>
-                </FlowEditorDiv>
-            </DragDropContext>
+            <ObserveState
+                listenTo={this}
+                control={
+                    () => <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
+                        <FlowEditorDiv>
+                            <FlowTopBar editContext={this.editContext} />
+                            <FlowMainSectionDiv>
+                                <FlowSideActions />
+                                <FlowToolbox />
+                                <ObserveState listenTo={this.props.flow} properties={["sequences"]} control={() => (
+                                    <FlowDesignPage flow={this.props.flow} editContext={this.editContext}/>
+                                )} />
+                            </FlowMainSectionDiv>
+                        </FlowEditorDiv>
+                    </DragDropContext>
+                }
+            />
         );
     }
 
@@ -142,9 +190,8 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
     @AutoBind
     onDragStart(initial: DragStart, _provided: ResponderProvided) {
-        this.editContext.clearCanvas();
-        this.editContext.draggingElem = initial.draggableId;
 		this.editContext.clearSelection();
+        this.editContext.draggingElem = initial.draggableId;
     }
 
     @AutoBind
@@ -176,7 +223,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
         }
 
         if (control) {
-
             if (result.destination.droppableId === result.source.droppableId) {
                 // changing order
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
@@ -192,16 +238,20 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 this.props.flow.sequences.push(initialSeq);
                 this.props.flow.add(control, initialSeq._id);
                 StateManager.propertyChanged(this.props.flow, 'sequences');
+
             } else {
                 let c = this.editContext.findCandiateSequence(result.destination.droppableId);
                 if (c) {
                     let s = c.createSequence();
                     this.flow.sequences.push(s);
+
+                    StateManager.propertyChanged(this.props.flow, 'sequences');
                     if (c.forPath && c.forStepId) {
                         let step = this.flow.find(c.forStepId) as BaseFlowStep;
                         let stepOutput = step.findOutPut(c.forPath);
                         if (!stepOutput) return;
                         stepOutput.connectedSequenceId = s._id;
+                        this.editContext.convertLineFromCandidateToSequence(s);
                     }
                 }
 
@@ -211,13 +261,11 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                     this.props.flow.moveToSequence(control, result.source.droppableId, result.destination.droppableId, result.destination.index)
                 }
             }
+            this.editContext.positionCandidateSequences();
         }
-        this.editContext.positionCandidateSequences();
 
 		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
 
-		this.editContext.clearCanvas();
-		
         if (control) {
 
             this.editContext.setSelection(control);
@@ -432,14 +480,14 @@ const DesignPanel = styled.div`
 `;
 
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
-    let selectedStep = props.editContext.selectionElement;
-    let editUIComponent = selectedStep?.renderEditUI();
+
 
     const [expandedConfigPanel, setexpandedConfigPanel] = useState(true);
     const [isMovingConfigPanel, setisMovingConfigPanel] = useState(false);
     // make state
 
     const canvas: React.RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+
     // initialize the canvas context
     useEffect(() => {
         // dynamically assign the width and height to canvas
@@ -447,7 +495,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
         canvasEle.width = canvasEle.clientWidth;
         canvasEle.height = canvasEle.clientHeight;
-        props.editContext.canvas = {
+        props.editContext.flowEditor.canvas = {
 			context: canvasEle.getContext("2d"),
 			width: canvasEle.clientWidth,
 			height: canvasEle.clientHeight
@@ -571,35 +619,48 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 })
             }
 
-            {
-                editUIComponent && (
-                    <ReactDraggable
-                        onDrag={onDragMovingConfigPanel}
-                        onStop={onEndMovingConfigPanel}
-                        handle=".config-form-header"
-                    >
-                        <EditLayerConfigArea
-                            // ref={this.configFormNode}
-                        >
-                            <Accordion
-                                expanded={expandedConfigPanel}
-                                onChange={onToggleExpandedConfigPanel}
-                                defaultExpanded
-                            >
-                                <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
-                                    <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
-                                        {/*Edit: {selectedStep?.toString() || 'Flow Step Config'}*/}
-                                        Edit: 'Flow Step Config'
-                                    </EditLayerStyledTypography>
-                                </EditLayerStyledAccordionSummary>
-                                <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                    {editUIComponent}
-                                </EditLayerStyledAccordionDetails>
-                            </Accordion>
-                        </EditLayerConfigArea>
-                    </ReactDraggable>
-                )
-            }
+            <ObserveState listenTo={props.editContext}
+                properties={["selectionElement"]}
+                control={() => {
+                    let selectedStep = props.editContext.selectionElement;
+                    let editUIComponent = selectedStep?.renderEditUI();
+
+                    return <>
+                        {
+                            editUIComponent && (
+                                <ReactDraggable
+                                    onDrag={onDragMovingConfigPanel}
+                                    onStop={onEndMovingConfigPanel}
+                                    handle=".config-form-header"
+                                >
+                                    <EditLayerConfigArea
+                                        // ref={this.configFormNode}
+                                    >
+                                        <Accordion
+                                            expanded={expandedConfigPanel}
+                                            onChange={onToggleExpandedConfigPanel}
+                                            defaultExpanded
+                                        >
+                                            <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
+                                                <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
+                                                    {/*Edit: {selectedStep?.toString() || 'Flow Step Config'}*/}
+                                                    Edit: 'Flow Step Config'
+                                                </EditLayerStyledTypography>
+                                            </EditLayerStyledAccordionSummary>
+                                            <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
+                                                {editUIComponent}
+                                            </EditLayerStyledAccordionDetails>
+                                        </Accordion>
+                                    </EditLayerConfigArea>
+                                </ReactDraggable>
+                            )
+                        }
+                    </>
+                    }
+                }
+            />
+
+            
             <ObserveState listenTo={props.editContext} properties={["contextControl"]} control={
                 () => <>
                     {

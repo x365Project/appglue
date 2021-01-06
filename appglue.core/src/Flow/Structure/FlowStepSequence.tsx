@@ -9,6 +9,7 @@ import {FlowConstants} from "../CommonUI/FlowConstants";
 import { IPosition } from "../CommonUI/IPosition";
 
 export class FlowStepSequence implements IFlowStepSequence {
+    
     _id: string = DataUtilities.generateUniqueId();
     name?: string;
 
@@ -16,6 +17,10 @@ export class FlowStepSequence implements IFlowStepSequence {
     y: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
     height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
+
+    getDestination(): IPosition {
+        return {x: this.x, y: this.y};
+    }
 
     private _canDelete: boolean = true;
     get canDelete(): boolean {

@@ -1,6 +1,7 @@
 import {IFlowStepSequence} from "./IFlowStepSequence";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepSequence} from "./FlowStepSequence";
+import { IPosition } from "../CommonUI/IPosition";
 
 
 export class CandidateSequence implements IFlowStepSequence {
@@ -22,6 +23,15 @@ export class CandidateSequence implements IFlowStepSequence {
         this.forPath = forPath;
         this.forStepId = forStepId;
     }
+
+    getDestination(): IPosition {
+        return {
+            x: this.x,
+            y: this.y
+        }
+    }
+
+    name?: string | undefined;
 
 
     renderEditUI(): JSX.Element | null {

@@ -1,10 +1,9 @@
 import { IPosition } from "./IPosition";
+import { IFlowStepSequence } from "../Structure/IFlowStepSequence";
 
 export interface IRelationLine {
-    from: {
-        position: IPosition,
-        forStepId: string;
-        forStepPath: string;
-    },
-    to: IPosition
+    forStepId: string;
+    forStepPath: string;
+    from: IPosition;
+    to: IFlowStepSequence
 }

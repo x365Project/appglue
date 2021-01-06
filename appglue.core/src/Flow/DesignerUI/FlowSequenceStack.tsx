@@ -26,10 +26,8 @@ import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
 import { IPosition } from "../CommonUI/IPosition";
 
 
-import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 import {FlowEditContext} from "../FlowEditContext";
 import { CandidateSequence } from "../Structure/CandidateSequence";
-import { ObserveMultiState } from "../../CommonUI/StateManagement/ObserveMultiState";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
@@ -273,11 +271,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
-		
-		StateManager.changed(this.props.sequence);
 		this.props.editContext.positionCandidateSequences();
-		this.props.editContext.clearCanvas();
-		this.props.editContext.refresh();
+		this.props.editContext.updateLineBySequence(this.props.sequence);
 
 		this.setState({
 			isDragging: false
@@ -295,6 +290,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
 
+		this.props.editContext.updateLineBySequence(this.props.sequence);
 	}
 
 	onUpdateStackName = (newValue: string) => {
@@ -464,23 +460,16 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																										}
 																									}
 
-																									return (
-																										<ObserveMultiState
-																											listenTo={[childSequence, candidateSequence]}
-																											control={() => <FlowSequenceStackAltPath
-																													key={'path'+stepOutput.pathName}
-																													sequence={this.props.sequence}
-																													step={step}
-																													stepOutput={stepOutput}
-																													editContext={this.props.editContext}
-																													width={this.width}
-																													childSequence={childSequence}
-																													candidateSequence={candidateSequence}
-																												/>
-																											}
-																										/>
-																										
-																									);
+																									return <FlowSequenceStackAltPath
+																										key={'path'+stepOutput.pathName}
+																										sequence={this.props.sequence}
+																										step={step}
+																										stepOutput={stepOutput}
+																										editContext={this.props.editContext}
+																										width={this.width}
+																										childSequence={childSequence}
+																										candidateSequence={candidateSequence}
+																									/>;
 																								})}
 																							</StepConnectOtherPaths>
 																						)}

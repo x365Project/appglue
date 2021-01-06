@@ -198,6 +198,7 @@ export class FlowEditContext {
             nonPathRange.y = nonPathRange.desiredY;
         }
 
+
         // set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences");
     }
@@ -465,12 +466,12 @@ export class FlowEditContext {
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;
         this._lastSelectionElement = selection;
-        this.refresh()
+        StateManager.propertyChanged(this, "selectionElement");
     }
 
     clearSelection() {
-        this.refresh()
         this._selectionElement = undefined;
+        StateManager.propertyChanged(this, "selectionElement");
     }
 
     private _clipboardElement?: IFlowElement;
@@ -526,49 +527,54 @@ export class FlowEditContext {
         this._draggingElemId = elemId;
     }
 
-    private _canvas: {
-        context: CanvasRenderingContext2D | null;
-        width: number;
-        height: number;
-    } | null = null;
-
-    set canvas(c: { context: CanvasRenderingContext2D | null; width: number; height: number; } | null) {
-        this._canvas = c;
-    }
-
-    get canvas(): { context: CanvasRenderingContext2D | null; width: number; height: number; } | null {
-        return this._canvas
-    }
-
-    get canvasContext(): CanvasRenderingContext2D | null {
-        return this._canvas?.context || null;
-    }
-
-    private lines: IRelationLine[] = [];
+    lines: IRelationLine[] = [];
 
     addLine(line: IRelationLine) {
+        let isNew = true;
+        for (let l in this.lines) {
+            if (this.lines[l].forStepId === line.forStepId && this.lines[l].forStepPath === line.forStepPath) {
+                isNew = false;
+                this.lines[l] = line;
+            }
+
+        }
         
+        if (isNew) {
+            this.lines.push(line);
+        }
+
+        this.flowEditor.drawLines();
     }
 
-    drawLine(point: { x: number, y: number }, point1: { x: number, y: number }, remove: boolean = false) {
-        if (this.canvasContext) {
-            this.canvasContext.beginPath();
-            this.canvasContext.setLineDash([5, 15]);
-            this.canvasContext.moveTo(point.x, point.y);
-            this.canvasContext.lineTo(point1.x, point1.y);
-            this.canvasContext.strokeStyle = remove ? FlowConstants.DELETE_RELATION_LINE_COLOR : FlowConstants.DEFAULT_RELATION_LINE_COLOR;
-            this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
-            this.canvasContext.stroke();
+    updateLineBySequence(sequence: FlowStepSequence) {
+        for (let l in this.lines) {
+            if (this.lines[l].to._id === sequence._id) {
+                this.lines[l].to = sequence
+            }
         }
+
+        this.flowEditor.drawLines();
     }
 
-    clearCanvas() {
-        if (this._canvas) {
-            this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    updateLineByCandidate(candidate: CandidateSequence) {
+        for (let l in this.lines) {
+            if (this.lines[l].to._id === candidate._id) {
+                this.lines[l].to = candidate
+            }
         }
+        this.flowEditor.drawLines();
+    }
+
+    convertLineFromCandidateToSequence(sequence: FlowStepSequence) {
+        for (let l in this.lines) {
+            if (this.lines[l].to._id === sequence._id) {
+                this.lines[l].to = sequence;
+            }
+        }
+        this.flowEditor.drawLines();
     }
 
     refresh() {
-        this.flowEditor.forceUpdate();
+        StateManager.changed(this.flowEditor);
     }
 }

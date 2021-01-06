@@ -3,7 +3,6 @@ import {StepNameLabel} from "../CommonUI/StepNameLabel";
 import styled from "styled-components";
 import {IFlowElement} from "../Structure/IFlowElement";
 import {IFlowStep} from "../Structure/IFlowStep";
-import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepOutputInstructions} from "../Structure/FlowStepOutputInstructions";
 
