@@ -7,6 +7,7 @@ import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepOutputInstructions} from "../Structure/FlowStepOutputInstructions";
 import {AutoBind} from "../../Common/AutoBind";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {FlowStepSequence} from "../Structure/FlowStepSequence";
 
 export const BasicStep = styled.div`
     width: 100%;
@@ -23,6 +24,7 @@ export abstract class BaseFlowStep
 
     _id: string = DataUtilities.generateUniqueId();
     name?: string;
+    sequence? : FlowStepSequence;
 
     // this is where we put instructions on what to do with non default paths
     private _nonDefaultOutputInstructions : {[path: string] :  FlowStepOutputInstructions} = {};
@@ -37,6 +39,8 @@ export abstract class BaseFlowStep
     @AutoBind
     stepUpdate () : void {
         StateManager.changed(this);
+        if (this.sequence)
+            StateManager.propertyChanged(this.sequence, 'steps');
     }
 
     // forces refresh of entire designer (expensive)

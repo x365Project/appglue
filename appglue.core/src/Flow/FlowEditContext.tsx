@@ -12,8 +12,6 @@ import {IDialog, XFlowEditor} from "./XFlowEditor";
 import {FlowConstants} from "./CommonUI/FlowConstants";
 import {CandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
-import { IPosition } from "./CommonUI/IPosition";
-import { IRelationLine } from "./CommonUI/IRelationLine";
 import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
 
 export class FlowEditContext {
@@ -46,7 +44,7 @@ export class FlowEditContext {
         return this.candidateSequences;
     }
 
-    findCandiateSequence(id: string): CandidateSequence | null {
+    findCandidateSequence(id: string): CandidateSequence | null {
         for (let c of this.candidateSequences) {
             if (c._id === id) return c;
         }
@@ -89,23 +87,28 @@ export class FlowEditContext {
         this.addNonPathCandidateSequence();
     }
 
-    purgeCandidateSequencesByStepId(stepId?: string) {
-        if (!stepId) {
-            this.purgeCandidateSequences();
+    getTargetSequence(id: string) : IFlowStepSequence | undefined {
+        for (let s of this.flow.sequences) {
+            if (s._id === id)
+                return s;
         }
 
-        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => c.forStepId !== stepId);
-        StateManager.propertyChanged(this, 'candidateSequences');
+        for (let s of this.candidateSequences) {
+            if (s._id === id)
+                return s;
+        }
+
+        return;
     }
 
-    getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
-        let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) => 
-            (c.forStepId === stepId && c.forPath === pathName)
-        )
-
-        if (filteredSequences.length > 0) return filteredSequences[0];
-        return null;
-    }
+    // getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
+    //     let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) =>
+    //         (c.forStepId === stepId && c.forPath === pathName)
+    //     )
+    //
+    //     if (filteredSequences.length > 0) return filteredSequences[0];
+    //     return null;
+    // }
 
     positionCandidateSequences() : void {
         this.doPurgeOfSequences();
@@ -177,7 +180,7 @@ export class FlowEditContext {
             }
         }
 
-        let nonPathRange : CandidateSequence | null = null;
+        let nonPathCandidate : CandidateSequence | null = null;
 
         let farX = 0;
 
@@ -190,21 +193,21 @@ export class FlowEditContext {
 
         for (let cands of this.candidateSequences) {
             if (!cands.forStepId){
-                nonPathRange = cands;
+                nonPathCandidate = cands;
                 continue;
             }
 
-            let possibleX = cands.x + 150; // replace with width of path candidates
+            let possibleX = cands.x + FlowConstants.PATH_CANDIDATE_WIDTH; // replace with width of path candidates
 
             if (possibleX > farX)
                 farX = possibleX;
         }
 
-        if (!nonPathRange) {
+        if (!nonPathCandidate) {
             throw 'cannot find general candidate sequence'
         } else {
-            nonPathRange.x = farX + 30;
-            nonPathRange.y = nonPathRange.desiredY;
+            nonPathCandidate.x = farX + 30;
+            nonPathCandidate.y = nonPathCandidate.desiredY;
         }
 
 
@@ -251,7 +254,7 @@ export class FlowEditContext {
     }
 
     @AutoBind
-    clone(s: IFlowElement): IFlowElement {
+    private cloneFlowElement(s: IFlowElement): IFlowElement {
         let val;
         if (s instanceof FlowStepSequence) {
             val = new FlowStepSequence();
@@ -283,7 +286,7 @@ export class FlowEditContext {
                 }
             }
         } else {
-            this.clipboardElement = this.clone(elem) as IFlowElement;
+            this.clipboardElement = this.cloneFlowElement(elem) as IFlowElement;
         }
 
     }
@@ -332,13 +335,13 @@ export class FlowEditContext {
         } else {
             this.flow.remove(elem as BaseFlowStep);
         }
-        this.clipboardElement = this.clone(elem) as IFlowElement;
+        this.clipboardElement = this.cloneFlowElement(elem) as IFlowElement;
 
     }
 
     @AutoBind
     deleteSequence(idx: number) {
-        this.flow.sequences.splice(idx, 1);
+        this.flow.deleteSequenceByIndex(idx);
         StateManager.propertyChanged(this.flow, 'sequences');
     }
 
@@ -394,18 +397,19 @@ export class FlowEditContext {
 
         if (this.clipboardElement instanceof FlowStepSequence && this.selectionElement instanceof FlowStepSequence) {
             let idx = this.flow.sequences.indexOf(this.selectionElement as FlowStepSequence);
-            let newSeq = this.clone(this.clipboardElement) as FlowStepSequence;
+            let newSeq = new FlowStepSequence();
             newSeq._id = DataUtilities.generateUniqueId();
-            newSeq.steps = newSeq.steps.map((s: BaseFlowStep) => {
-                let newS = this.clone(s) as BaseFlowStep;
+
+            for (let s of (this.clipboardElement as FlowStepSequence).steps) {
+                let newS = this.cloneFlowElement(s) as BaseFlowStep;
                 newS._id = DataUtilities.generateUniqueId();
-                return newS;
-            });
+                newSeq.addStep(newS);
+            }
 
             newSeq.x += 20;
             newSeq.y += 20;
 
-            this.flow.sequences.splice(idx + 1, 0, newSeq);
+            this.flow.addSequence(newSeq);
 
             StateManager.propertyChanged(this.flow, 'sequences');
 
@@ -413,7 +417,7 @@ export class FlowEditContext {
             for (let s of this.flow.sequences) {
                 let idx = s.steps.indexOf(this.selectionElement as BaseFlowStep);
                 if (idx >= 0) {
-                    let elem = this.clone(this.clipboardElement) as BaseFlowStep;
+                    let elem = this.cloneFlowElement(this.clipboardElement) as BaseFlowStep;
                     elem._id = DataUtilities.generateUniqueId();
                     this.flow.add(elem, s._id, idx);
                     break;
@@ -427,13 +431,16 @@ export class FlowEditContext {
         this.flowEditor = flowEditor;
 
         this.addNonPathCandidateSequence();
+        this.positionCandidateSequences();
     }
 
     addNonPathCandidateSequence() {
-        if (this.candidateSequences.filter((c) => !c.forStepId).length === 0) {
-            let newStackPosition = this.getNewStackPosition();
-            let c = new CandidateSequence(newStackPosition.x, newStackPosition.y);
-            this.addCandidateSequence(c);
+        if (this.candidateSequences.filter((c) => {
+            return c._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
+        }).length === 0) {
+            let c = new CandidateSequence(0, 30);
+            c._id = FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
+            this.candidateSequences.push(c);
         }
     }
 
@@ -455,22 +462,6 @@ export class FlowEditContext {
     get lastSelectionElement(): IFlowElement | undefined {
         return this._lastSelectionElement;
     }
-
-
-    getNewStackPosition(): IPosition {
-        let y = this.flow.sequences[0].y;
-        let bottomY = y + FlowConstants.DEFAULT_STACK_HEIGHT;
-
-        let x = Math.max(
-            ...this.flow.sequences
-                .filter((s) => {
-                    return s.y < bottomY;
-                })
-                .map((s) => s.x + s.width)
-        );
-        return {x, y};
-    }
-
 
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;
@@ -534,53 +525,6 @@ export class FlowEditContext {
 
     set draggingElem(elemId: string | undefined) {
         this._draggingElemId = elemId;
-    }
-
-    lines: IRelationLine[] = [];
-
-    addLine(line: IRelationLine) {
-        let isNew = true;
-        for (let l in this.lines) {
-            if (this.lines[l].forStepId === line.forStepId && this.lines[l].forStepPath === line.forStepPath) {
-                isNew = false;
-                this.lines[l] = line;
-            }
-
-        }
-        
-        if (isNew) {
-            this.lines.push(line);
-        }
-
-        this.flowEditor.drawLines();
-    }
-
-    updateLineBySequence(sequence: FlowStepSequence) {
-        for (let l in this.lines) {
-            if (this.lines[l].to._id === sequence._id) {
-                this.lines[l].to = sequence
-            }
-        }
-
-        this.flowEditor.drawLines();
-    }
-
-    updateLineByCandidate(candidate: CandidateSequence) {
-        for (let l in this.lines) {
-            if (this.lines[l].to._id === candidate._id) {
-                this.lines[l].to = candidate
-            }
-        }
-        this.flowEditor.drawLines();
-    }
-
-    convertLineFromCandidateToSequence(sequence: FlowStepSequence) {
-        for (let l in this.lines) {
-            if (this.lines[l].to._id === sequence._id) {
-                this.lines[l].to = sequence;
-            }
-        }
-        this.flowEditor.drawLines();
     }
 
     refresh() {

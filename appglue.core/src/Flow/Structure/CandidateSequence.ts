@@ -2,6 +2,7 @@ import {IFlowStepSequence} from "./IFlowStepSequence";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepSequence} from "./FlowStepSequence";
 import { IPosition } from "../CommonUI/IPosition";
+import {FlowConstants} from "../CommonUI/FlowConstants";
 
 
 export class CandidateSequence implements IFlowStepSequence {
@@ -18,6 +19,7 @@ export class CandidateSequence implements IFlowStepSequence {
     constructor(desiredX: number, desiredY: number, forStepId?: string, forPath?: string) {
         this.desiredX = desiredX;
         this.desiredY = desiredY;
+
         this.x = desiredX;
         this.y = desiredY;
         this.forPath = forPath;
@@ -42,7 +44,7 @@ export class CandidateSequence implements IFlowStepSequence {
         let s = new FlowStepSequence();
         s.x = this.x;
         s.y = this.y;
-        s._id = this._id;
+        s._id = this._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID ? DataUtilities.generateUniqueId() : this._id;
         return s;
     }
 }

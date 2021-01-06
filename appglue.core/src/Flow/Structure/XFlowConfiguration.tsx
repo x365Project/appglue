@@ -3,25 +3,28 @@ import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import {FlowStepSequence} from "./FlowStepSequence";
 import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
-import { StateManager } from "../../CommonUI/StateManagement/StateManager";
+import {FlowStepOutputInstructionType} from "./FlowStepOutputInstructions";
 
 export class XFlowConfiguration implements IFlowElement{
     _id: string = DataUtilities.generateUniqueId();
-   sequences : FlowStepSequence[];
-  // connections: FlowStepSequenceConnection[];
+   private _sequences : FlowStepSequence[];
 
     constructor() {
-        this.sequences = [];
+        this._sequences = [];
         let initialSeq = new FlowStepSequence();
         initialSeq.x = 20;
         initialSeq.y = 20;
 
-        this.sequences.push(initialSeq);
+        this._sequences.push(initialSeq);
        // this.connections = [];
     }
 
+    get sequences(): readonly FlowStepSequence[] {
+        return this._sequences;
+    }
+
     find(id: string): IFlowElement | null {
-        for (let s of this.sequences) {
+        for (let s of this._sequences) {
             if (s._id === id) return s;
             for (let step of s.steps) {
                 if (step._id === id) return step;
@@ -31,7 +34,7 @@ export class XFlowConfiguration implements IFlowElement{
     }
 
     findSequenceByStepId(stepId: string) {
-        for (let s of this.sequences) {
+        for (let s of this._sequences) {
             if (s.find(stepId)) return s;
         }
         return null;
@@ -43,16 +46,11 @@ export class XFlowConfiguration implements IFlowElement{
         if (!sequence) {
             sequence = new FlowStepSequence();
             sequence._id = sequenceId;
-            this.sequences.push(sequence);
-        }
-        if (index === undefined || index === null){
-            sequence.steps.push(step);
-        }
-        else {
-            sequence.steps.splice(index, 0, step)
+            this.addSequence(sequence);
         }
 
-        StateManager.propertyChanged(sequence, "steps");
+        sequence.addStep(step, index);
+
     }
 
     remove(step: BaseFlowStep, sequenceId?: string): void {
@@ -62,25 +60,20 @@ export class XFlowConfiguration implements IFlowElement{
                 sequence.remove(step as BaseFlowStep);
             }
         } else {
-            for (let s of this.sequences) {
+            for (let s of this._sequences) {
                 s.remove(step as BaseFlowStep);
             }
         }
     }
 
-    moveInSequence(step: BaseFlowStep, sequence : string, index?: number): void {
+    moveInSequence(step: BaseFlowStep, sequence : string, index: number): void {
         let s = this.getSequence(sequence);
-        if (!s) return;
-        let originIdx = s.steps.indexOf(step);
-        if (originIdx < 0) return;
-        s.steps.splice(originIdx, 1);
-        if (index !== undefined && index !== null) {
-            s.steps.splice(index, 0, step);
-        } else {
-            s.steps.push(step);
+
+        if (s) {
+            s.moveStep(step, index);
         }
 
-        StateManager.propertyChanged(s, "steps");
+
     }
 
     moveToSequence(step: BaseFlowStep, fromSequence : string, toSequence : string, index?: number): void {
@@ -94,7 +87,7 @@ export class XFlowConfiguration implements IFlowElement{
     }
 
     getSequence(id: string): FlowStepSequence | null {
-        for (let s of this.sequences) {
+        for (let s of this._sequences) {
             if (s._id === id)
                 return s;
         }
@@ -107,32 +100,47 @@ export class XFlowConfiguration implements IFlowElement{
         );
     }
 
+    addSequence(newSeq: FlowStepSequence) {
+        this._sequences.push(newSeq)
+
+        console.log('adding sequence' + newSeq.x + console.trace());
+        // add listener
+    }
+
+    deleteSequenceByIndex(idx: number) {
+        this._sequences.splice(idx, 1)
+    }
+
+    getConnections() : FlowConnection[] {
+        let conn : FlowConnection[] = [];
+
+
+        for (let seq of this._sequences) {
+            for (let step of seq.steps) {
+                for (let inst of step.getOutcomeInstructions()) {
+                    if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
+                        conn.push(new FlowConnection(step._id + '-' + inst.pathName, inst.connectedSequenceId, false));
+                    }
+                }
+            }
+        }
+
+        return conn;
+    }
 }
 
-// export class FlowStepSequenceConnection implements IFlowElement{
-//     name?: string;
-//     _id: string = generateUniqueId();
-//
-//     fromSequence: string;
-//     fromSequencePort: string;
-//     toSequence: string;
-//
-//
-//     constructor(fromSequence: string, fromSequencePort: string, toSequence: string) {
-//         this.fromSequence = fromSequence;
-//         this.fromSequencePort = fromSequencePort;
-//         this.toSequence = toSequence;
-//     }
-//
-//     renderEditUI(): JSX.Element | null {
-//         return (
-//             <div>edit connectio</div>
-//         );
-//     }
-//
-// }
+export class FlowConnection {
+    fromId: string;
+    toId: string;
+    isCandidate: boolean;
 
 
+    constructor(fromId: string, toId: string, isCandidate: boolean) {
+        this.fromId = fromId;
+        this.toId = toId;
+        this.isCandidate = isCandidate;
+    }
+}
 
 
 

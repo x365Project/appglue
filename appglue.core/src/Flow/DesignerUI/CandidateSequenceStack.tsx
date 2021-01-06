@@ -7,7 +7,8 @@ import {FlowConstants} from "../CommonUI/FlowConstants";
 import {FlowEditContext} from "../FlowEditContext";
 import styled from "styled-components";
 import { IPosition } from "../CommonUI/IPosition";
-import { CandidateSequence } from "../Structure/CandidateSequence";
+import { StateManager } from "../../CommonUI/StateManagement/StateManager";
+import {CandidateSequence} from "../Structure/CandidateSequence";
 
 export const FakeFlowSequenceDiv = styled("div")<{
 	show: boolean;
@@ -63,7 +64,7 @@ export const FakeFlowSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
 
 interface IFakeFlowSequenceStack {
 	editContext: FlowEditContext;
-	candiate: CandidateSequence;
+	candidate: CandidateSequence;
 }
 
 
@@ -80,7 +81,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 
 
 	getDefaultPosition = (): IPosition => {
-		return {x: this.props.candiate.x, y: this.props.candiate.y};
+		return {x: this.props.candidate.x, y: this.props.candidate.y};
 	};
 
 	onDragStart = (_e: DraggableEvent, _data: DraggableData) => {
@@ -93,7 +94,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candiate.x = data.x;
 		this.props.candiate.y = data.y;
-		this.props.editContext.updateLineByCandidate(this.props.candiate);
+		// this.props.editContext.updateLineByCandidate(this.props.candiate);
 		this.setState({
 			isDragging: false
 		});
@@ -102,20 +103,21 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candiate.x = data.x;
 		this.props.candiate.y = data.y;
-		this.props.editContext.updateLineByCandidate(this.props.candiate);
+		// this.props.editContext.updateLineByCandidate(this.props.candiate);
 	}
 
 	render() {
-		let droppableId = this.props.candiate ? this.props.candiate._id : `${FlowConstants.FakeStackId}`;
+		let droppableId = this.props.candidate._id;
 
-        return (
+		return (
 			<ReactDraggable
 				bounds="parent"
-				disabled={!this.props.candiate.forStepId}
+				disabled={!this.props.candidate.forStepId}
 				onStop={this.onDragStop}
 				onDrag={this.onDrag}
 				onStart={this.onDragStart}
 				defaultPosition={this.getDefaultPosition()}
+				position={this.getDefaultPosition()}
 			>
 				<FakeFlowSequenceDiv
 					position={this.getDefaultPosition()}
@@ -126,7 +128,7 @@ export class FakeFlowSequenceStack extends React.Component<IFakeFlowSequenceStac
 						{
 							(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
 								return <FakeFlowSequenceDropDiv
-									isNew={!!this.props.candiate.forStepId}
+									isNew={!!this.props.candidate.forStepId}
 									isDroppingOver={dropSnapshot.isDraggingOver}
 									{...dropProvided.droppableProps}
 									ref={dropProvided.innerRef}
