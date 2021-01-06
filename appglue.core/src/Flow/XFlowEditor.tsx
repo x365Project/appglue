@@ -587,6 +587,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 {
                     props.flow.getConnections().map((value: FlowConnection) => {
                         return <Xarrow
+                            key={`${value.fromId}-${value.toId}`}
                             start={value.fromId}
                             end={value.toId}
                             strokeWidth = {2}
