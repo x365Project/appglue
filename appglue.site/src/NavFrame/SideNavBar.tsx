@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     left: '72px',
   },
   Icon: {
-    color: '#fff',
+    color: 'inherit',
     minWidth: '45px',
     paddingLeft: '10px',
     [theme.breakpoints.between('xs', 'sm')]: {
@@ -42,8 +42,13 @@ const useStyles = makeStyles(theme => ({
     },
   },
   divider: {
-    background: '#fff',
     margin: '0 20px 10px',
+  },
+  lightDivider: {
+    background: '#fff',
+  },
+  darkDivider: {
+    background: '#9AA5B7',
   },
   listItem: {
     padding: '5px 16px ',
@@ -70,6 +75,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   logo: {
+    color: 'inherit',
     padding: '15px 20px 25px',
     [theme.breakpoints.between('xs', 'sm')]: {
       padding: '15px 20px 5px',
@@ -77,6 +83,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   compactLogo: {
+    color: 'inherit',
     padding: '15px 20px 5px',
     flexDirection: 'column',
   },
@@ -88,12 +95,15 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
   lightSideNavBar: {
+    color: '#9AA5B7',
     background: theme.palette.primary.light,
   },
   darkSideNavBar: {
+    color: '#fff',
     background: theme.palette.primary.dark,
   },
   coloredSideNavBar: {
+    color: '#fff',
     // background: theme.palette.primary.main,
   },
   opened_arrow: {
@@ -188,7 +198,16 @@ export default function SideBarNav(props: {
           <img src={LogoIocn} />
           <ListItemText className={classes.LogoText}>AppGlue</ListItemText>
         </ListItem>
-        <Divider className={classes.divider}></Divider>
+        <Divider
+          className={clsx(
+            classes.divider,
+            props.navBarTheme === NavBarTheme.LIGHT && classes.darkDivider,
+            props.navBarTheme === NavBarTheme.DARK ||
+              props.navBarTheme === NavBarTheme.COLORED
+              ? classes.lightDivider
+              : null
+          )}
+        ></Divider>
         {PageRoutes.getRootPages().map(page => (
           <>
             <NavItem

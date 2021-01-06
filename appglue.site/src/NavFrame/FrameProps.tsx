@@ -43,6 +43,11 @@ export enum Preloader {
   OFF = 'off',
 }
 
+export enum Color {
+  DARK = '#9AA5B7',
+  LIGHT = 'light',
+}
+
 // these will be fetched from tenant then from user settings
 export class FrameProps {
   icon: JSX.Element | undefined;
