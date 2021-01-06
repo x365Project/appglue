@@ -406,77 +406,80 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 												<FlowSequenceContent>
 													{this.props.sequence.steps.length === 0 && <>put steps here</> }
 													{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
-														let isLast = this.props.sequence.steps.length === i + 1;
-
-														let otherPaths: FlowStepOutputInstructions[] = step.getOutcomeInstructions();
-
-														if (otherPaths.length !== 0) {
-															// removes first item
-															otherPaths.shift();
-														}
-
 														return (
-															<Draggable
-																key={step._id}
-																draggableId={step._id}
-																index={i}
-															>
-																{
-																	(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
-																		return (
-																			<div
-																				onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
-																					e.preventDefault();
-																					e.stopPropagation();
-																					this.props.editContext.contextControl = {
-																						selectedId: step._id,
-																						mouseX: e.clientX,
-																						mouseY: e.clientY
-																					}
-																				}}
-																				ref={provided.innerRef}
-																				{...provided.draggableProps}
-																				{...provided.dragHandleProps}
-																			>
-																				{this.renderStep(step, this.props.editContext)}
-																				{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
-																					<StepConnectSection>
-																						<StepConnect/>
-																						{otherPaths.length !== 0 && (
-																							<StepConnectOtherPaths>
-																								{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
+															<ObserveState listenTo={step} control={() => {
+																let isLast = this.props.sequence.steps.length === i + 1;
 
-																									let childSequence:FlowStepSequence | null = null;
-																									let candidateSequence: CandidateSequence | null = null;
-																									if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
-
-																										if (stepOutput.connectedSequenceId) {
-																											childSequence = this.props.flow.find(stepOutput.connectedSequenceId) as FlowStepSequence;
-																										} else if (stepOutput.pathName) {
-																											candidateSequence = this.props.editContext.getCandidateSequenceForPath(step._id, stepOutput.pathName);
-																										}
-																									}
-
-																									return <FlowSequenceStackAltPath
-																										key={'path'+stepOutput.pathName}
-																										sequence={this.props.sequence}
-																										step={step}
-																										stepOutput={stepOutput}
-																										editContext={this.props.editContext}
-																										width={this.width}
-																										childSequence={childSequence}
-																										candidateSequence={candidateSequence}
-																									/>;
-																								})}
-																							</StepConnectOtherPaths>
-																						)}
-																					</StepConnectSection>
-																				)}
-																			</div>
-																		);
-																	}
+																let otherPaths: FlowStepOutputInstructions[] = step.getOutcomeInstructions();
+		
+																if (otherPaths.length !== 0) {
+																	// removes first item
+																	otherPaths.shift();
 																}
-															</Draggable>
+		
+																return <Draggable
+																	key={step._id}
+																	draggableId={step._id}
+																	index={i}
+																>
+																	{
+																		(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+																			return (
+																				<div
+																					onContextMenu={(e: React.MouseEvent<HTMLDivElement>) => {
+																						e.preventDefault();
+																						e.stopPropagation();
+																						this.props.editContext.contextControl = {
+																							selectedId: step._id,
+																							mouseX: e.clientX,
+																							mouseY: e.clientY
+																						}
+																					}}
+																					ref={provided.innerRef}
+																					{...provided.draggableProps}
+																					{...provided.dragHandleProps}
+																				>
+																					{this.renderStep(step, this.props.editContext)}
+																					{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
+																						<StepConnectSection>
+																							<StepConnect/>
+																							{otherPaths.length !== 0 && (
+																								<StepConnectOtherPaths>
+																									{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
+
+																										let childSequence:FlowStepSequence | null = null;
+																										let candidateSequence: CandidateSequence | null = null;
+																										if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
+
+																											if (stepOutput.connectedSequenceId) {
+																												childSequence = this.props.flow.find(stepOutput.connectedSequenceId) as FlowStepSequence;
+																											} else if (stepOutput.pathName) {
+																												candidateSequence = this.props.editContext.getCandidateSequenceForPath(step._id, stepOutput.pathName);
+																											}
+																										}
+
+																										return <FlowSequenceStackAltPath
+																											key={'path'+stepOutput.pathName}
+																											sequence={this.props.sequence}
+																											step={step}
+																											stepOutput={stepOutput}
+																											editContext={this.props.editContext}
+																											width={this.width}
+																											childSequence={childSequence}
+																											candidateSequence={candidateSequence}
+																										/>;
+																									})}
+																								</StepConnectOtherPaths>
+																							)}
+																						</StepConnectSection>
+																					)}
+																				</div>
+																				
+																			);
+																		}
+																	}
+																</Draggable>
+															}} />
 														);
 													})}
 												</FlowSequenceContent>

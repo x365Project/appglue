@@ -4,6 +4,9 @@ import {BaseFlowStep} from "./BaseFlowStep";
 import React from "react";
 import {PropertyEditorTextList} from "../../CommonUI/PropertyEditing/PropertyEditorTextList";
 import {FlowStepOutput} from "../Structure/FlowStepOutput";
+import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
+import { AutoBind } from "../../Common/AutoBind";
+import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
 @RegisterFlowStep('Utilities', 'Multi', <TextIcon name={'2x'}/>)
 export class MultiOutputTestStep extends BaseFlowStep {
@@ -17,9 +20,10 @@ export class MultiOutputTestStep extends BaseFlowStep {
 
     renderEditUI(): JSX.Element | null {
         return (
-            <>
-                <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.stepUpdate} />
-            </>
+            <ObserveState
+                listenTo={this}
+                control={() => <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.stepUpdate} />}
+            />
         );
     }
 
