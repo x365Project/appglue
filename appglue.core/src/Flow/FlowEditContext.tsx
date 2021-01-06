@@ -250,7 +250,7 @@ export class FlowEditContext {
     }
 
     @AutoBind
-    clone(s: IFlowElement): IFlowElement {
+    private cloneFlowElement(s: IFlowElement): IFlowElement {
         let val;
         if (s instanceof FlowStepSequence) {
             val = new FlowStepSequence();
@@ -282,7 +282,7 @@ export class FlowEditContext {
                 }
             }
         } else {
-            this.clipboardElement = this.clone(elem) as IFlowElement;
+            this.clipboardElement = this.cloneFlowElement(elem) as IFlowElement;
         }
 
     }
@@ -331,7 +331,7 @@ export class FlowEditContext {
         } else {
             this.flow.remove(elem as BaseFlowStep);
         }
-        this.clipboardElement = this.clone(elem) as IFlowElement;
+        this.clipboardElement = this.cloneFlowElement(elem) as IFlowElement;
 
     }
 
@@ -393,18 +393,19 @@ export class FlowEditContext {
 
         if (this.clipboardElement instanceof FlowStepSequence && this.selectionElement instanceof FlowStepSequence) {
             let idx = this.flow.sequences.indexOf(this.selectionElement as FlowStepSequence);
-            let newSeq = this.clone(this.clipboardElement) as FlowStepSequence;
+            let newSeq = new FlowStepSequence();
             newSeq._id = DataUtilities.generateUniqueId();
-            newSeq.steps = newSeq.steps.map((s: BaseFlowStep) => {
-                let newS = this.clone(s) as BaseFlowStep;
+
+            for (let s of (this.clipboardElement as FlowStepSequence).steps) {
+                let newS = this.cloneFlowElement(s) as BaseFlowStep;
                 newS._id = DataUtilities.generateUniqueId();
-                return newS;
-            });
+                newSeq.addStep(newS);
+            }
 
             newSeq.x += 20;
             newSeq.y += 20;
 
-            this.flow.sequences.splice(idx + 1, 0, newSeq);
+            this.flow.addSequence(newSeq);
 
             StateManager.propertyChanged(this.flow, 'sequences');
 
@@ -412,7 +413,7 @@ export class FlowEditContext {
             for (let s of this.flow.sequences) {
                 let idx = s.steps.indexOf(this.selectionElement as BaseFlowStep);
                 if (idx >= 0) {
-                    let elem = this.clone(this.clipboardElement) as BaseFlowStep;
+                    let elem = this.cloneFlowElement(this.clipboardElement) as BaseFlowStep;
                     elem._id = DataUtilities.generateUniqueId();
                     this.flow.add(elem, s._id, idx);
                     break;

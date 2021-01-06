@@ -16,10 +16,16 @@ export class FlowStepSequence implements IFlowStepSequence {
     y: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
     height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
-
     private _stackColor?: string;
-
     private _canDelete: boolean = true;
+    private _isCollapsed: boolean = false;
+    private _canCopy: boolean = true;
+    private _steps: BaseFlowStep[] = [];
+
+    get steps(): readonly BaseFlowStep[] {
+        return this._steps;
+    }
+
     get canDelete(): boolean {
         return this._canDelete;
     }
@@ -27,8 +33,6 @@ export class FlowStepSequence implements IFlowStepSequence {
     set canDelete(d: boolean) {
         this._canDelete = d;
     }
-
-    private _canCopy: boolean = true;
 
     get canCopy(): boolean {
         return this._canCopy;
@@ -38,13 +42,6 @@ export class FlowStepSequence implements IFlowStepSequence {
         this._canCopy = c;
     }
 
-    steps: BaseFlowStep[] = [];
-    
-    get ports(): string[] {
-        return [];
-    }
-
-    private _isCollapsed: boolean = false;
     get isCollapsed() {
         return this._isCollapsed;
     }
@@ -63,18 +60,46 @@ export class FlowStepSequence implements IFlowStepSequence {
     }
 
     remove(step: BaseFlowStep): void {
-        let index = this.steps.indexOf(step);
+        let index = this._steps.indexOf(step);
         if (index >= 0) {
-            this.steps.splice(index, 1);
+            step.sequence = undefined;
+            this._steps.splice(index, 1);
             StateManager.propertyChanged(this, 'steps');
         }
     }
 
     find(stepId: string): BaseFlowStep | null {
-        for (let s of this.steps) {
+        for (let s of this._steps) {
             if (s._id === stepId) return s;
         }
         return null;
+    }
+
+    addStep(step: BaseFlowStep, index?: number) {
+        if (index === undefined || index === null){
+            this._steps.push(step);
+        }
+        else {
+            this._steps.splice(index, 0, step)
+        }
+
+        step.sequence = this;
+
+        StateManager.propertyChanged(this, "steps");
+
+    }
+
+    moveStep(step: BaseFlowStep, index: number) {
+        let originIdx = this._steps.indexOf(step);
+        if (originIdx < 0) return;
+        this._steps.splice(originIdx, 1);
+        if (index !== undefined && index !== null) {
+            this._steps.splice(index, 0, step);
+        } else {
+            this._steps.push(step);
+        }
+
+        StateManager.propertyChanged(this, "steps");
     }
 
     renderEditUI(): JSX.Element | null {

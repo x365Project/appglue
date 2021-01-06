@@ -5,9 +5,9 @@ import {MultiOutputTestStep} from "../Steps/MultiOutputTestStep";
 
 export function getFlowWithSteps() : XFlowConfiguration {
     let flow = new XFlowConfiguration();
-    flow.sequences[0].steps.push(new FormStep());
-    flow.sequences[0].steps.push(new MultiOutputTestStep());
-    flow.sequences[0].steps.push(new LogStep());
+    flow.sequences[0].addStep(new FormStep());
+    flow.sequences[0].addStep(new MultiOutputTestStep());
+    flow.sequences[0].addStep(new LogStep());
     return flow;
 }
 

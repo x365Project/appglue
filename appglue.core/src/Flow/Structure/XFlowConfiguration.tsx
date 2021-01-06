@@ -45,14 +45,9 @@ export class XFlowConfiguration implements IFlowElement{
             sequence._id = sequenceId;
             this.sequences.push(sequence);
         }
-        if (index === undefined || index === null){
-            sequence.steps.push(step);
-        }
-        else {
-            sequence.steps.splice(index, 0, step)
-        }
 
-        StateManager.propertyChanged(sequence, "steps");
+        sequence.addStep(step, index);
+
     }
 
     remove(step: BaseFlowStep, sequenceId?: string): void {
@@ -68,19 +63,14 @@ export class XFlowConfiguration implements IFlowElement{
         }
     }
 
-    moveInSequence(step: BaseFlowStep, sequence : string, index?: number): void {
+    moveInSequence(step: BaseFlowStep, sequence : string, index: number): void {
         let s = this.getSequence(sequence);
-        if (!s) return;
-        let originIdx = s.steps.indexOf(step);
-        if (originIdx < 0) return;
-        s.steps.splice(originIdx, 1);
-        if (index !== undefined && index !== null) {
-            s.steps.splice(index, 0, step);
-        } else {
-            s.steps.push(step);
+
+        if (s) {
+            s.moveStep(step, index);
         }
 
-        StateManager.propertyChanged(s, "steps");
+
     }
 
     moveToSequence(step: BaseFlowStep, fromSequence : string, toSequence : string, index?: number): void {
@@ -107,32 +97,11 @@ export class XFlowConfiguration implements IFlowElement{
         );
     }
 
+    addSequence(newSeq: FlowStepSequence) {
+        this.sequences.push(newSeq)
+        // add listener
+    }
 }
-
-// export class FlowStepSequenceConnection implements IFlowElement{
-//     name?: string;
-//     _id: string = generateUniqueId();
-//
-//     fromSequence: string;
-//     fromSequencePort: string;
-//     toSequence: string;
-//
-//
-//     constructor(fromSequence: string, fromSequencePort: string, toSequence: string) {
-//         this.fromSequence = fromSequence;
-//         this.fromSequencePort = fromSequencePort;
-//         this.toSequence = toSequence;
-//     }
-//
-//     renderEditUI(): JSX.Element | null {
-//         return (
-//             <div>edit connectio</div>
-//         );
-//     }
-//
-// }
-
-
 
 
 
