@@ -7,20 +7,25 @@ import {FlowConstants} from "../CommonUI/FlowConstants";
 import {FlowEditContext} from "../FlowEditContext";
 import styled from "styled-components";
 import { IPosition } from "../CommonUI/IPosition";
-import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 import {CandidateSequence} from "../Structure/CandidateSequence";
+import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
-export const FakeFlowSequenceDiv = styled("div")<{
+export const CandidateSequenceDiv = styled("div")<{
 	show: boolean;
+	isDragging: boolean;
+	position: IPosition;
 }>`
 	position: absolute;
+	top: ${props => props.isDragging ? 0 : props.position.y}px;
+	left: ${props => props.isDragging ? 0 : props.position.x}px;
 	opacity: ${props => props.show ? 1: 0};
 	display: ${props => props.show ? 'block': 'none'};
 	background: transparent;
 	border-radius: 4px;
+	${props => !props.isDragging && `transform: none !important;`}
 `;
 
-export const FakeFlowSequenceDropDiv = styled("div")<{
+export const CandidateSequenceDropDiv = styled("div")<{
 	isDroppingOver: boolean;
 	isNew: boolean;
 }>`
@@ -29,7 +34,7 @@ export const FakeFlowSequenceDropDiv = styled("div")<{
 	${props => props.isDroppingOver &&
 		`border: dashed 1px ${FlowConstants.DROPPING_COLOR};`
 	}
-	
+
 	${props => !props.isNew && `
 		width: ${FlowConstants.DEFAULT_STACK_WIDTH}px;
 		min-height: ${FlowConstants.DEFAULT_STACK_HEIGHT}px;
@@ -44,7 +49,7 @@ export const FakeFlowSequenceDropDiv = styled("div")<{
 
 `;
 
-export const FakeFlowSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
+export const CandidateSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -57,33 +62,49 @@ export const FakeFlowSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
 `;
 
 
-interface IFakeFlowSequenceStack {
+interface ICandidateSequenceStack {
 	editContext: FlowEditContext;
 	candidate: CandidateSequence;
 }
 
 
-export class CandidateSequenceStack extends React.Component<IFakeFlowSequenceStack, {}> {
+export class CandidateSequenceStack extends React.Component<ICandidateSequenceStack, {isDragging: boolean;}> {
+
+
+	constructor(props: ICandidateSequenceStack) {
+		super(props);
+
+		this.state = {
+			isDragging: false
+		}
+	}
+
 
 	getDefaultPosition = (): IPosition => {
 		return {x: this.props.candidate.x, y: this.props.candidate.y};
 	};
 
+	onDragStart = (_e: DraggableEvent, _data: DraggableData) => {
+		this.props.editContext.clearSelection();
+		this.setState({
+			isDragging: true
+		})
+	}
+
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candidate.x = data.x;
 		this.props.candidate.y = data.y;
-		StateManager.changed(this.props.candidate);
-		this.props.editContext.clearSelection();
-	}
-
-	onDragStart = (_e: DraggableEvent, _data: DraggableData) => {
-		this.props.editContext.clearCanvas();
+		StateManager.changed(this.props.editContext);
+		this.setState({
+			isDragging: false
+		});
 	}
 
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candidate.x = data.x;
 		this.props.candidate.y = data.y;
-		// StateManager.changed(this.props.candiate);
+
+		StateManager.changed(this.props.editContext);
 	}
 
 	render() {
@@ -94,19 +115,20 @@ export class CandidateSequenceStack extends React.Component<IFakeFlowSequenceSta
 				bounds="parent"
 				disabled={!this.props.candidate.forStepId}
 				onStop={this.onDragStop}
-				onStart={this.onDragStart}
 				onDrag={this.onDrag}
+				onStart={this.onDragStart}
 				defaultPosition={this.getDefaultPosition()}
-				position={this.getDefaultPosition()}
 			>
-				<FakeFlowSequenceDiv
+				<CandidateSequenceDiv
 					id={this.props.candidate._id}
+					position={this.getDefaultPosition()}
+					isDragging={this.state.isDragging}
 					show={!!this.props.candidate.forStepId || this.props.editContext.isDraggingControl}
 				>
 					<Droppable droppableId={droppableId}>
 						{
 							(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
-								return <FakeFlowSequenceDropDiv
+								return <CandidateSequenceDropDiv
 									isNew={!!this.props.candidate.forStepId}
 									isDroppingOver={dropSnapshot.isDraggingOver}
 									{...dropProvided.droppableProps}
@@ -115,11 +137,11 @@ export class CandidateSequenceStack extends React.Component<IFakeFlowSequenceSta
 									{
 										dropProvided.placeholder
 									}
-								</FakeFlowSequenceDropDiv>
+								</CandidateSequenceDropDiv>
 							}
 						}
 					</Droppable>
-				</FakeFlowSequenceDiv>
+				</CandidateSequenceDiv>
 			</ReactDraggable>
 		)
 	}

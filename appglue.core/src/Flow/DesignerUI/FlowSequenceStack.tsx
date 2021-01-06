@@ -26,11 +26,10 @@ import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
 import { IPosition } from "../CommonUI/IPosition";
 
 
-import {IDraggingElementType} from "../CommonUI/IDraggingElementType";
 import {FlowEditContext} from "../FlowEditContext";
 import { CandidateSequence } from "../Structure/CandidateSequence";
 import { ObserveMultiState } from "../../CommonUI/StateManagement/ObserveMultiState";
-import {IFlowStepSequence} from "../Structure/IFlowStepSequence";
+import { IFlowStepSequence } from "../Structure/IFlowStepSequence";
 
 const FlowSequenceDiv = styled('div')<{
 	width:number;
@@ -274,8 +273,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
-		
-		StateManager.changed(this.props.sequence);
 		this.props.editContext.positionCandidateSequences();
 		this.props.editContext.refresh();
 
@@ -295,6 +292,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		this.props.sequence.x = data.x;
 		this.props.sequence.y = data.y;
 
+		// this.props.editContext.updateLineBySequence(this.props.sequence);
 	}
 
 	onUpdateStackName = (newValue: string) => {
@@ -446,43 +444,45 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																				{this.renderStep(step, this.props.editContext)}
 																				{(!isLast || otherPaths.length !== 0) && !snapshot.isDragging && (
 																					<StepConnectSection>
-																						<StepConnect/>
+																						<StepConnect />
 																						{otherPaths.length !== 0 && (
 																							<StepConnectOtherPaths>
-																								{otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
+																								{
+																									otherPaths.map((stepOutput: FlowStepOutputInstructions) => {
 
-																									let targetSequence : IFlowStepSequence | undefined = undefined;
+																										let targetSequence : IFlowStepSequence | undefined = undefined;
 
-																									if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && stepOutput.connectedSequenceId) {
-																										targetSequence = this.props.editContext.getTargetSequence(stepOutput.connectedSequenceId);
-																									}
+																										if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH && stepOutput.connectedSequenceId) {
+																											targetSequence = this.props.editContext.getTargetSequence(stepOutput.connectedSequenceId);
+																										}
 
-																									return (
-																										<ObserveMultiState
-																											listenTo={[targetSequence]}
-																											control={() => <FlowSequenceStackAltPath
-																													key={'path'+stepOutput.pathName}
-																													sequence={this.props.sequence}
-																													step={step}
-																													stepOutput={stepOutput}
-																													editContext={this.props.editContext}
-																													width={this.width}
-																													targetSequence={targetSequence}
-																												/>
-																											}
-																										/>
-																										
-																									);
-																								})}
+																										return (
+																											<ObserveMultiState
+																												listenTo={[targetSequence]}
+																												key={'path'+stepOutput.pathName}
+																												control={() => <FlowSequenceStackAltPath
+																														sequence={this.props.sequence}
+																														step={step}
+																														stepOutput={stepOutput}
+																														editContext={this.props.editContext}
+																														width={this.width}
+																														targetSequence={targetSequence}
+																													/>
+																												}
+																											/>
+																										)
+																									})
+																								}
 																							</StepConnectOtherPaths>
 																						)}
 																					</StepConnectSection>
 																				)}
 																			</div>
+																				
 																		);
 																	}
 																}
-															</Draggable>
+																</Draggable>
 														);
 													})}
 												</FlowSequenceContent>

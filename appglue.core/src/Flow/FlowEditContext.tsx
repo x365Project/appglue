@@ -12,8 +12,6 @@ import {IDialog, XFlowEditor} from "./XFlowEditor";
 import {FlowConstants} from "./CommonUI/FlowConstants";
 import {CandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
-import { IPosition } from "./CommonUI/IPosition";
-import { IRelationLine } from "./CommonUI/IRelationLine";
 import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
 
 export class FlowEditContext {
@@ -102,15 +100,6 @@ export class FlowEditContext {
 
         return;
     }
-
-    // getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
-    //     let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) =>
-    //         (c.forStepId === stepId && c.forPath === pathName)
-    //     )
-    //
-    //     if (filteredSequences.length > 0) return filteredSequences[0];
-    //     return null;
-    // }
 
     positionCandidateSequences() : void {
         this.doPurgeOfSequences();
@@ -211,6 +200,7 @@ export class FlowEditContext {
             nonPathCandidate.x = farX + 30;
             nonPathCandidate.y = nonPathCandidate.desiredY;
         }
+
 
         // set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences");
@@ -467,12 +457,12 @@ export class FlowEditContext {
     setSelection(selection: IFlowElement) {
         this._selectionElement = selection;
         this._lastSelectionElement = selection;
-        this.refresh()
+        StateManager.propertyChanged(this, "selectionElement");
     }
 
     clearSelection() {
-        this.refresh()
         this._selectionElement = undefined;
+        StateManager.propertyChanged(this, "selectionElement");
     }
 
     private _clipboardElement?: IFlowElement;
@@ -529,6 +519,6 @@ export class FlowEditContext {
     }
 
     refresh() {
-        this.flowEditor.forceUpdate();
+        StateManager.changed(this.flowEditor);
     }
 }

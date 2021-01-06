@@ -6,9 +6,9 @@ import {PropertyEditorColor} from "../../CommonUI/PropertyEditing/PropertyEditor
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 import {IFlowStepSequence} from "./IFlowStepSequence";
 import {FlowConstants} from "../CommonUI/FlowConstants";
-import { IPosition } from "../CommonUI/IPosition";
 
 export class FlowStepSequence implements IFlowStepSequence {
+    
     _id: string = DataUtilities.generateUniqueId();
     name?: string;
 
@@ -16,6 +16,7 @@ export class FlowStepSequence implements IFlowStepSequence {
     y: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
     height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
+
     private _stackColor?: string;
     private _canDelete: boolean = true;
     private _isCollapsed: boolean = false;
