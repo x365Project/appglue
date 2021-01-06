@@ -21,6 +21,7 @@ export class FlowStepSequence implements IFlowStepSequence {
     getDestination(): IPosition {
         return {x: this.x, y: this.y};
     }
+    private _stackColor?: string;
 
     private _canDelete: boolean = true;
     get canDelete(): boolean {
@@ -57,7 +58,6 @@ export class FlowStepSequence implements IFlowStepSequence {
         StateManager.propertyChanged(this, 'isCollapsed');
     }
 
-    private _stackColor?: string;
     get stackColor(): string | undefined {
         return this._stackColor;
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FrameProps } from './FrameProps';
+import Dropdown from './Dropdown';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -139,6 +140,7 @@ const useStyles = makeStyles(theme => ({
     lexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+    fontFamily: 'Mulish',
   },
   userName: {
     padding: '13px 0 0 10px',
@@ -199,6 +201,10 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
     handleMobileMenuClose();
   };
 
+  const handleRenderPage = (renderPage: any) => {
+    setCurrentPageContent(renderPage());
+  };
+
   // const handleMobileMenuOpen = (e) => {
   //   setMobileMoreAnchorEl(e.currentTarget);
   // };
@@ -229,7 +235,9 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   };
 
   const [linksWithSubpages, setLinksWithSubpages] = React.useState<any>({});
-
+  const [currentPageContent, setCurrentPageContent] = React.useState(
+    <Typography>hello AppGluer</Typography>
+  );
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -448,9 +456,11 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             return (
               <>
                 <NavItem
+                  key={page.name}
                   page={page}
                   classes={classes}
                   handleToggleSubpages={handleToggleSubpages}
+                  handleRenderPage={handleRenderPage}
                 />
               </>
             );
@@ -466,7 +476,7 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
             classes.darkContentTheme
         )}
       >
-        <Typography>hello AppGluer</Typography>
+        <Typography align="center">{currentPageContent}</Typography>
       </main>
     </div>
   );
@@ -475,29 +485,33 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
 const NavItem = ({
   page,
   classes,
-  isOpened = false,
-  handleToggleSubpages,
+  handleRenderPage,
 }: {
   page: any;
   classes: any;
   isOpened?: boolean;
   handleToggleSubpages: (name: string) => void;
+  handleRenderPage: any;
 }) => {
   const subpages = page.getSubPages();
 
   return (
     <ListItem button className={classes.ButtonMenu}>
-      <ListItemIcon className={classes.MenuIcon}>
+      <ListItemIcon
+        onClick={() => handleRenderPage(page.renderPage)}
+        className={classes.MenuIcon}
+      >
         {page.renderIcon()}
       </ListItemIcon>
-      <ListItemText>
+      <ListItemText onClick={() => handleRenderPage(page.renderPage)}>
         <span>{page.name}</span>
       </ListItemText>
       {subpages.length > 0 && (
-        <KeyboardArrowDownIcon
-          onClick={() => handleToggleSubpages(page.name)}
-          className={clsx(classes.arrow, isOpened && classes.opened_arrow)}
-        />
+        // <KeyboardArrowDownIcon
+        //   onClick={() => handleToggleSubpages(page.name)}
+        //   className={clsx(classes.arrow, isOpened && classes.opened_arrow)}
+        // />
+        <Dropdown handleRenderPage={handleRenderPage} subpages={subpages} />
       )}
     </ListItem>
   );

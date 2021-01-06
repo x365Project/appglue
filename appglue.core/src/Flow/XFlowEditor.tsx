@@ -248,7 +248,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                     StateManager.propertyChanged(this.props.flow, 'sequences');
                     if (c.forPath && c.forStepId) {
                         let step = this.flow.find(c.forStepId) as BaseFlowStep;
-                        let stepOutput = step.findOutPut(c.forPath);
+                        let stepOutput = step.findOutputInstruction(c.forPath);
                         if (!stepOutput) return;
                         stepOutput.connectedSequenceId = s._id;
                         this.editContext.convertLineFromCandidateToSequence(s);

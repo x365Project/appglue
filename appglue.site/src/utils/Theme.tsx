@@ -1,5 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { FrameProps } from '../NavFrame/FrameProps';
+// import MulishRegular from '../assets/fonts/Mulish/static/Mulish-Regular.ttf';
 
 export const createTheme = ({
   color,
@@ -9,7 +10,9 @@ export const createTheme = ({
 }: FrameProps) =>
   createMuiTheme({
     typography: {
-      fontFamily: 'Mulish',
+      //   fontFamily: 'Mulish',
+      fontFamily:
+        '"Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif !important',
     },
     palette: {
       type: contentTheme,
