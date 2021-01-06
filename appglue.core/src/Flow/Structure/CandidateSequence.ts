@@ -1,7 +1,6 @@
 import {IFlowStepSequence} from "./IFlowStepSequence";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepSequence} from "./FlowStepSequence";
-import { IPosition } from "../CommonUI/IPosition";
 import {FlowConstants} from "../CommonUI/FlowConstants";
 
 
@@ -24,13 +23,6 @@ export class CandidateSequence implements IFlowStepSequence {
         this.y = desiredY;
         this.forPath = forPath;
         this.forStepId = forStepId;
-    }
-
-    getDestination(): IPosition {
-        return {
-            x: this.x,
-            y: this.y
-        }
     }
 
     name?: string | undefined;
