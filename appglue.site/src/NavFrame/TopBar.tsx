@@ -75,7 +75,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       padding: theme.spacing(1, 2, 0),
       float: 'right',
       display: 'inline-block',
-      color: '#93A9BF',
+      // color: '#93A9BF',
     },
     inputRoot: {
       color: 'inherit',
@@ -221,7 +221,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       },
     },
     Iconbutton: {
-      color: '#93A9BF',
+      // color: '#93A9BF',
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
@@ -238,7 +238,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       flexDirection: 'column',
     },
     userName: {
-      color: '#93A9BF',
+      // color: '#93A9BF',
       padding: '14px 8px',
     },
     NotificationMenu: {},
@@ -250,27 +250,35 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       fontSize: '10px !important',
     },
     lightTopBar: {
+      color: '#9AA5B7',
       background: theme.palette.primary.light,
     },
     darkTopBar: {
       background: theme.palette.primary.dark,
+      color: '#fff',
     },
     coloredTopBar: {
+      color: '#fff',
       // background: theme.palette.primary.main,
     },
     lightDrawerPaper: {
+      color: '#9AA5B7',
       background: theme.palette.primary.light,
     },
     darkDrawerPaper: {
+      color: '#fff',
       background: theme.palette.primary.dark,
     },
     coloredDrawerPaper: {
+      color: '#fff',
       // background: theme.palette.primary.main,
     },
     lightContentTheme: {
+      color: '#9AA5B7',
       background: '#f7fbfd',
     },
     darkContentTheme: {
+      color: '#fff',
       background: '#424C5C',
     },
   }));

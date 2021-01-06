@@ -1,81 +1,82 @@
 import React from 'react';
-import NavbarDropdown from 'react-navbar-dropdown';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import DropdownItem from './DropdownItem';
 import { makeStyles } from '@material-ui/core/styles';
-
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import ListItemText from '@material-ui/core/ListItemText';
 const useStyles = makeStyles(theme => ({
-  menu__item: {
-    paddingLeft: '10px',
-    paddingRight: '7px',
-  },
-  dropdown_menu: {
+  MenuItem: {
     display: 'flex',
-    flexDirection: 'column',
-    top: '28px',
-    right: '0',
-    padding: '8px 0px',
-    backgroundColor: '#ffffff',
-    borderRadius: '3px',
-    boxShadow: '0px 0px 5px #c3c5c7',
+    justifyContent: 'center',
   },
-  'dropdown-menu': {
-    display: 'flex',
-    flexDirection: 'column',
-    top: '28px',
-    right: '0',
-    padding: '8px 0px',
-    backgroundColor: '#ffffff',
-    borderRadius: '3px',
-    boxShadow: '0px 0px 5px #c3c5c7',
-  },
-  'dropdown-menu-enter': {
-    opacity: 0,
-  },
-
-  'dropdown-menu-enter-active': {
-    opacity: 1,
-    transition: '0.2s ease-in',
-  },
-
-  'dropdown-menu-exit': {
-    opacity: 1,
-  },
-
-  'dropdown-menu-exit-active': {
-    opacity: 0,
-    transition: '0.2s ease-in',
+  NotificationIcon: {},
+  NotificationText: {
+    fontSize: '14px',
   },
 }));
 
 const Dropdown = ({ subpages = [], handleRenderPage }) => {
+  const [anchorElement, setAnchorElement] = React.useState(null);
   const classes = useStyles();
+  const handleDropdownClose = () => {
+    setAnchorElement(null);
+  };
+
+  const handleArrowClick = e => {
+    setAnchorElement(e.currentTarget);
+  };
+
+  const handleItemClick = renderPage => {
+    handleRenderPage(renderPage);
+    handleDropdownClose();
+  };
+
   return (
-    <NavbarDropdown>
-      <NavbarDropdown.Toggle className="menu__item">
-        <NavbarDropdown.Open>
-          <KeyboardArrowDownIcon />
-          {/* <FontAwesomeIcon icon={faCaretDown} fixedWidth /> */}
-        </NavbarDropdown.Open>
-        <NavbarDropdown.Close>
-          <KeyboardArrowDownIcon style={{ transform: 'rotate(180deg)' }} />
-          {/* <FontAwesomeIcon icon={faCaretUp} fixedWidth /> */}
-        </NavbarDropdown.Close>
-      </NavbarDropdown.Toggle>
-      <NavbarDropdown.CSSTransitionMenu
-        className={classes['dropdown-menu']}
-        classNames={'dropdown-menu'}
-        timeout={200}
+    <>
+      <KeyboardArrowDownIcon onClick={handleArrowClick} />
+      <Menu
+        id="notification-menu"
+        anchorEl={anchorElement}
+        keepMounted
+        open={Boolean(anchorElement)}
+        onClose={handleDropdownClose}
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        PaperProps={{
+          style: {
+            // maxHeight: 268,
+            minWidth: '150px',
+          },
+        }}
       >
         {subpages.map(page => (
-          <DropdownItem
+          <MenuItem
+            onClick={() => handleItemClick(page.renderPage)}
             key={page.name}
-            handleRenderPage={handleRenderPage}
-            page={page}
-          />
+            className={classes.MenuItem}
+          >
+            {/* <div>
+              <ListItemIcon className={classes.NotificationIcon}>
+                {page.renderIcon()}
+              </ListItemIcon>
+            </div> */}
+            <div>
+              <ListItemText className={classes.NotificationText}>
+                {page.name}
+              </ListItemText>
+            </div>
+          </MenuItem>
         ))}
-      </NavbarDropdown.CSSTransitionMenu>
-    </NavbarDropdown>
+      </Menu>
+    </>
   );
 };
 
