@@ -6,6 +6,8 @@ import {IFlowStep} from "../Structure/IFlowStep";
 import {FlowStepOutput} from "../Structure/FlowStepOutput";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepOutputInstructions} from "../Structure/FlowStepOutputInstructions";
+import {AutoBind} from "../../Common/AutoBind";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 
 export const BasicStep = styled.div`
     width: 100%;
@@ -32,6 +34,18 @@ export abstract class BaseFlowStep
 
         this.name = Reflect.get(this, '__type');
     }
+
+    @AutoBind
+    stepUpdate () : void {
+        StateManager.changed(this);
+    }
+
+    // forces refresh of entire designer (expensive)
+    @AutoBind
+    designerUpdate () : void {
+//        this.getFormContext()?.refreshDesigner();
+    }
+
 
     getOutcomeInstructions(): FlowStepOutputInstructions[] {
         let inst : FlowStepOutputInstructions[] = [];

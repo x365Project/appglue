@@ -19,7 +19,7 @@ export class MultiOutputTestStep extends BaseFlowStep {
     renderEditUI(): JSX.Element | null {
         return (
             <>
-                <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.forceUpdate} />
+                <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.stepUpdate} />
             </>
         );
     }
