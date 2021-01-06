@@ -25,8 +25,6 @@ export class CandidateSequence implements IFlowStepSequence {
         this.forStepId = forStepId;
     }
 
-    name?: string | undefined;
-
 
     renderEditUI(): JSX.Element | null {
         return null;
