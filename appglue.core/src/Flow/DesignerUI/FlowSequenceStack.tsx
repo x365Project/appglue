@@ -459,8 +459,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 																										return (
 																											<ObserveMultiState
 																												listenTo={[targetSequence]}
+																												key={'path'+stepOutput.pathName}
 																												control={() => <FlowSequenceStackAltPath
-																														key={'path'+stepOutput.pathName}
 																														sequence={this.props.sequence}
 																														step={step}
 																														stepOutput={stepOutput}

@@ -101,15 +101,6 @@ export class FlowEditContext {
         return;
     }
 
-    // getCandidateSequenceForPath(stepId: string, pathName: string): CandidateSequence | null {
-    //     let filteredSequences = this.candidateSequences.filter((c: CandidateSequence) =>
-    //         (c.forStepId === stepId && c.forPath === pathName)
-    //     )
-    //
-    //     if (filteredSequences.length > 0) return filteredSequences[0];
-    //     return null;
-    // }
-
     positionCandidateSequences() : void {
         this.doPurgeOfSequences();
 

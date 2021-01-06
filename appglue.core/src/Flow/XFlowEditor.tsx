@@ -57,9 +57,9 @@ import {CutWhiteIcon} from "../CommonUI/Icon/CutWhiteIcon";
 import {DeleteWhiteIcon} from "../CommonUI/Icon/DeleteWhiteIcon";
 import {FlowConstants} from "./CommonUI/FlowConstants";
 import {FlowEditContext} from "./FlowEditContext";
-import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
+import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -115,49 +115,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 
     get flow(): XFlowConfiguration {
         return this.props.flow;
-    }
-    private _canvas: {
-        context: CanvasRenderingContext2D | null;
-        width: number;
-        height: number;
-    } | null = null;
-
-    set canvas(c: { context: CanvasRenderingContext2D | null; width: number; height: number; } | null) {
-        this._canvas = c;
-    }
-
-    get canvas(): { context: CanvasRenderingContext2D | null; width: number; height: number; } | null {
-        return this._canvas
-    }
-
-    get canvasContext(): CanvasRenderingContext2D | null {
-        return this._canvas?.context || null;
-    }
-
-    drawLine(point: { x: number, y: number }, point1: { x: number, y: number }) {
-        if (this.canvasContext) {
-            this.canvasContext.beginPath();
-            this.canvasContext.setLineDash([5, 15]);
-            this.canvasContext.moveTo(point.x, point.y);
-            this.canvasContext.lineTo(point1.x, point1.y);
-            this.canvasContext.strokeStyle = FlowConstants.DEFAULT_RELATION_LINE_COLOR;
-            this.canvasContext.lineWidth = FlowConstants.DEFAULT_RELATION_LINE_WIDTH;
-            this.canvasContext.stroke();
-        }
-    }
-
-    drawLines() {
-        this.clearCanvas();
-
-        for (let l of this.editContext.lines) {
-            this.drawLine(l.from, l.to.getDestination());
-        }
-    }
-
-    clearCanvas() {
-        if (this._canvas) {
-            this.canvasContext?.clearRect(0, 0, this._canvas.width, this._canvas.height);
-        }
     }
 
     render() {
@@ -561,7 +518,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
         />
     }
 
-
     return (
         <DesignPanel>
 
@@ -593,7 +549,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 control={() => {
                     let selectedStep = props.editContext.selectionElement;
                     let editUIComponent = selectedStep?.renderEditUI();
-
                     return <>
                         {
                             editUIComponent && (
@@ -628,18 +583,19 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                     }
                 }
             />
-
-            
-            {
-                props.flow.getConnections().map((value: FlowConnection) => {
-                    return <Xarrow
-                        start={value.fromId}
-                        end={value.toId}
-                        strokeWidth = {2}
-                        headSize = {3}
-                    />
-                })
-            }
+            <ObserveMultiState listenTo={[props.editContext, props.flow]} control={() => <>
+                {
+                    props.flow.getConnections().map((value: FlowConnection) => {
+                        return <Xarrow
+                            start={value.fromId}
+                            end={value.toId}
+                            strokeWidth = {2}
+                            headSize = {3}
+                        />
+                    })
+                }
+            </>} />
+           
 
             <ObserveState listenTo={props.editContext} properties={["contextControl"]} control={
                 () => <>

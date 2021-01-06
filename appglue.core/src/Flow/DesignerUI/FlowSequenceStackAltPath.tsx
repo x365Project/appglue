@@ -106,7 +106,6 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 									value={stepOutput.strategy}
 									onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
 										stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;
-										this.props.editContext.purgeCandidateSequences();							
 									}}
 								>
 									<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>
