@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     background: 'rgba(235,244,250,0.2)',
-    color: '#fff',
+    color: 'inherit',
     '&:hover': {
       backgroundColor: 'rgba(235,244,250,0.2)',
     },
@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1, 1, 0),
     float: 'right',
     display: 'inline-block',
-    color: '#fff',
+    // color: 'inherit',
   },
   inputRoot: {
     color: 'inherit',
@@ -93,7 +93,7 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   Iconbutton: {
-    color: '#ffffff',
+    // color: 'inherit',
     marginLeft: '44px',
   },
   sectionDesktop: {
@@ -115,7 +115,8 @@ const useStyles = makeStyles(theme => ({
     height: '40px',
   },
   MenuIcon: {
-    color: '#00D1C1',
+    // color: '#00D1C1',
+    color: 'inherit',
     minWidth: '38px',
   },
   LogoBlock: {
@@ -133,7 +134,7 @@ const useStyles = makeStyles(theme => ({
     width: 'unset',
   },
   LogoMenuIcon: {
-    color: '#ffffff',
+    color: 'inherit',
   },
   content: {
     backgroundColor: '#f7fbfd',
@@ -156,21 +157,27 @@ const useStyles = makeStyles(theme => ({
     background: '#424C5C',
   },
   lightTopBar: {
+    color: '#9AA5B7',
     background: theme.palette.primary.light,
   },
   darkTopBar: {
+    color: '#fff',
     background: theme.palette.primary.dark,
   },
   coloredTopBar: {
+    color: '#fff',
     // background: theme.palette.primary.main,
   },
   darkNavBar: {
+    color: '#fff',
     background: theme.palette.primary.dark,
   },
   lightNavBar: {
+    color: '#9AA5B7',
     background: theme.palette.primary.light,
   },
   coloredNavBar: {
+    color: '#fff',
     // background: theme.palette.primary.main,
   },
   arrow: {

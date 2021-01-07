@@ -1,5 +1,3 @@
-import React from 'react';
-
 export enum SideBarType {
   DEFAULT = 'default',
   COMPACT = 'compact',
@@ -52,7 +50,10 @@ export class FrameProps {
   color: string = '#203156';
   colorGradientEnd: string =
     'linear-gradient(160.55deg, #49A0D5 1.59%, #00D1C1 94.21%)'; // gradients have 2 colors...
-
+  topBarFontColor: string = '';
+  topBarColor: string = '';
+  navBarFontColor: string = '';
+  navBarColor: string = '';
   layout: Layout = Layout.HORIZONTAL;
   sideBarType: SideBarType = SideBarType.DEFAULT;
   frameSize: FrameSize = FrameSize.STANDARD;

@@ -18,8 +18,10 @@ export const createTheme = ({
       type: contentTheme,
       primary: {
         main: color ? color : '#203156;',
-        light: '#dceaf5',
-        dark: '#15466b',
+        light: '#ffffff',
+        dark: '#292F39',
+        // light: '#dceaf5',
+        // dark: '#15466b',
       },
       success: {
         main: '#00b894',
@@ -42,20 +44,20 @@ export const createTheme = ({
         root: {
           fontSize: '14px',
           fontFamily: 'Mulish',
-          color: '#677C95',
+          // color: '#677C95',
         },
       },
       MuiInputLabel: {
         root: {
           fontSize: '14px',
           fontFamily: 'Mulish',
-          color: '#677C95',
+          // color: '#677C95',
           fontWeight: 600,
         },
       },
       MuiIconButton: {
         label: {
-          color: '#677C95',
+          // color: '#677C95',
         },
       },
       MuiToolbar: {
