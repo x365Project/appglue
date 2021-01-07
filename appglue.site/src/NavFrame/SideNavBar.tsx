@@ -1,11 +1,9 @@
 import React from 'react';
-import { FrameProps } from './FrameProps';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { List, Typography, Divider, SvgIcon, Link } from '@material-ui/core';
-import TopMenu from './NavBarData';
+import { List, Divider } from '@material-ui/core';
 import LogoIocn from '../assets/logo.svg';
 import { PageRoutes } from '../Pages/PageRoutes';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -149,13 +147,14 @@ export default function SideBarNav(props: {
   let previous = {};
 
   React.useEffect(() => {
-    PageRoutes.getRootPages().map(page => {
+    PageRoutes.getRootPages().forEach(page => {
       if (page.getSubPages().length > 0) {
         const result = addToObject(previous, page.name, false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         previous = result;
         setLinksWithSubpages(result);
       }
-      page.getSubPages().map(subpage => {
+      page.getSubPages().forEach(subpage => {
         if (subpage.getSubPages().length > 0) {
           const result = addToObject(previous, page.name, false);
           previous = result;
@@ -195,7 +194,7 @@ export default function SideBarNav(props: {
             props.sideBarType === SideBarType.COMPACT && classes.compactLogo
           )}
         >
-          <img src={LogoIocn} />
+          <img src={LogoIocn} alt="logo" />
           <ListItemText className={classes.LogoText}>AppGlue</ListItemText>
         </ListItem>
         <Divider

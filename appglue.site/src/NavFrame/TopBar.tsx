@@ -23,16 +23,11 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import SettingsIcon from '@material-ui/icons/Settings';
-import TopNavbar from './TopNavBar';
 import SideBarNav from './SideNavBar';
 import { Drawer } from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 
-import ScanIcon from '../assets/Scan.svg';
 import NotificationsList from './ToBarNotifications';
-import { NavBarTheme } from './FrameProps';
 import { ContentTheme } from './FrameProps';
 
 export default function TopBar(props: { layoutOptions: FrameProps }) {
@@ -294,10 +289,10 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     notificationAnchorEl,
     setNotificationAnchorEl,
   ] = React.useState<null | HTMLElement>(null);
-  const [
-    profileAnchorEl,
-    setProfileAnchorEl,
-  ] = React.useState<null | HTMLElement>(null);
+  // const [
+  //   profileAnchorEl,
+  //   setProfileAnchorEl,
+  // ] = React.useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -323,13 +318,13 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     setNotificationAnchorEl(null);
   };
 
-  const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setProfileAnchorEl(e.currentTarget);
-  };
+  // const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   setProfileAnchorEl(e.currentTarget);
+  // };
 
-  const handleProfileClose = () => {
-    setProfileAnchorEl(null);
-  };
+  // const handleProfileClose = () => {
+  //   setProfileAnchorEl(null);
+  // };
 
   const handleRenderPage = (renderPage: any) => {
     setCurrentPageContent(renderPage());

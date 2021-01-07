@@ -1,5 +1,3 @@
-import React from 'react';
-
 export enum SideBarType {
   DEFAULT = 'default',
   COMPACT = 'compact',
