@@ -41,11 +41,6 @@ export enum Preloader {
   OFF = 'off',
 }
 
-export enum Color {
-  DARK = '#9AA5B7',
-  LIGHT = 'light',
-}
-
 // these will be fetched from tenant then from user settings
 export class FrameProps {
   icon: JSX.Element | undefined;
@@ -55,7 +50,10 @@ export class FrameProps {
   color: string = '#203156';
   colorGradientEnd: string =
     'linear-gradient(160.55deg, #49A0D5 1.59%, #00D1C1 94.21%)'; // gradients have 2 colors...
-
+  topBarFontColor: string = '';
+  topBarColor: string = '';
+  navBarFontColor: string = '';
+  navBarColor: string = '';
   layout: Layout = Layout.HORIZONTAL;
   sideBarType: SideBarType = SideBarType.DEFAULT;
   frameSize: FrameSize = FrameSize.STANDARD;
