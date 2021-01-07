@@ -23,16 +23,11 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import SettingsIcon from '@material-ui/icons/Settings';
-import TopNavbar from './TopNavBar';
 import SideBarNav from './SideNavBar';
 import { Drawer } from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 
-import ScanIcon from '../assets/Scan.svg';
 import NotificationsList from './ToBarNotifications';
-import { NavBarTheme } from './FrameProps';
 import { ContentTheme } from './FrameProps';
 
 export default function TopBar(props: { layoutOptions: FrameProps }) {
@@ -46,6 +41,26 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   //   - edit profile
   //   - edit look and feel
   //   - logout
+
+  const [topBarFontColor, setTopBarFontColor] = React.useState('#fff');
+
+  React.useEffect(() => {
+    switch (props.layoutOptions.topBarTheme) {
+      case TopBarTheme.DARK:
+        setTopBarFontColor('#fff');
+        break;
+      case TopBarTheme.LIGHT:
+        setTopBarFontColor('#9AA5B7');
+        break;
+      case TopBarTheme.COLORED:
+        setTopBarFontColor(props.layoutOptions.topBarFontColor);
+        break;
+
+      default:
+        setTopBarFontColor('#fff');
+        break;
+    }
+  }, [props.layoutOptions]);
 
   const useStyles = makeStyles(theme => ({
     grow: {
@@ -118,6 +133,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       ...theme.mixins.toolbar,
     },
     appBar: {
+      color: topBarFontColor,
       zIndex: theme.zIndex.drawer + 1,
       // width: `calc(100% - 73px)`,
       background: '#fff',
@@ -250,24 +266,17 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       fontSize: '10px !important',
     },
     lightTopBar: {
-      color: '#9AA5B7',
+      // color: '#9AA5B7',
       background: theme.palette.primary.light,
     },
     darkTopBar: {
       background: theme.palette.primary.dark,
-      color: '#fff',
+      // color: '#fff',
     },
     coloredTopBar: {
-      color: '#fff',
+      background: props.layoutOptions.topBarColor,
+      // color: '#fff',
       // background: theme.palette.primary.main,
-    },
-    lightDrawerPaper: {
-      color: '#9AA5B7',
-      background: theme.palette.primary.light,
-    },
-    darkDrawerPaper: {
-      color: '#fff',
-      background: theme.palette.primary.dark,
     },
     coloredDrawerPaper: {
       color: '#fff',
@@ -294,10 +303,10 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     notificationAnchorEl,
     setNotificationAnchorEl,
   ] = React.useState<null | HTMLElement>(null);
-  const [
-    profileAnchorEl,
-    setProfileAnchorEl,
-  ] = React.useState<null | HTMLElement>(null);
+  // const [
+  //   profileAnchorEl,
+  //   setProfileAnchorEl,
+  // ] = React.useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -323,13 +332,13 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     setNotificationAnchorEl(null);
   };
 
-  const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setProfileAnchorEl(e.currentTarget);
-  };
+  // const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   setProfileAnchorEl(e.currentTarget);
+  // };
 
-  const handleProfileClose = () => {
-    setProfileAnchorEl(null);
-  };
+  // const handleProfileClose = () => {
+  //   setProfileAnchorEl(null);
+  // };
 
   const handleRenderPage = (renderPage: any) => {
     setCurrentPageContent(renderPage());
@@ -437,13 +446,6 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
     >
       <AppBar
         position="absolute"
-        style={
-          props.layoutOptions.topBarTheme === TopBarTheme.COLORED
-            ? {
-                background: props.layoutOptions.colorGradientEnd,
-              }
-            : {}
-        }
         className={clsx(
           classes.appBar,
           open && classes.appBarShift,
@@ -593,6 +595,8 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
           navBarTheme={props.layoutOptions.navBarTheme}
           variant={props.layoutOptions.sideBarType}
           sideBarType={props.layoutOptions.sideBarType}
+          navBarColor={props.layoutOptions.navBarColor}
+          navBarFontColor={props.layoutOptions.navBarFontColor}
         />
       </Drawer>
       <main
