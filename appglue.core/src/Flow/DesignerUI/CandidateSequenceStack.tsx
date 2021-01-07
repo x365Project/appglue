@@ -94,7 +94,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		this.props.candidate.x = data.x;
 		this.props.candidate.y = data.y;
-		StateManager.changed(this.props.editContext);
+		StateManager.propertyChanged(this.props.editContext, "candidateSequences");
 		this.setState({
 			isDragging: false
 		});
@@ -104,7 +104,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 		this.props.candidate.x = data.x;
 		this.props.candidate.y = data.y;
 
-		StateManager.changed(this.props.editContext);
+		StateManager.propertyChanged(this.props.editContext, "candidateSequences");
 	}
 
 	render() {
@@ -117,6 +117,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 				onStop={this.onDragStop}
 				onDrag={this.onDrag}
 				onStart={this.onDragStart}
+				position={this.getDefaultPosition()}
 				defaultPosition={this.getDefaultPosition()}
 			>
 				<CandidateSequenceDiv
@@ -143,6 +144,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 					</Droppable>
 				</CandidateSequenceDiv>
 			</ReactDraggable>
+			
 		)
 	}
 }

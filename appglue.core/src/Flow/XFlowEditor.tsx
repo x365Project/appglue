@@ -61,6 +61,7 @@ import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
+import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -255,7 +256,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
     return (
 		<ObserveState
 			listenTo={props.editContext}
-			properties={['flowTitle', 'clipboardElement']}
+			properties={['flowTitle', 'clipboardElement', 'selectionElement']}
 			control={() =>
 				<TopbarDiv>
 					{
@@ -549,7 +550,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
             {
                 props.flow.sequences.map((s: FlowStepSequence, i: number) => {
-                    return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
+                    return <ObserveState listenTo={s} control={() => <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>} />
                 })
             }
 
@@ -591,18 +592,20 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 }
             />
 
-            <ObserveMultiState listenTo={[props.editContext, props.flow]} control={() => <>
+            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]} control={() => <>
                 {
                     props.flow.getConnections().map((value: FlowConnection) => {
-                        console.log(value.fromId);
-
-                       return <Xarrow
+                        return <ObserveMultiState
+                            listenTo={[value.fromSequence, value.fromInstruction]}
                             key={`${value.fromId}-${value.toId}`}
-                            start={value.fromId}
-                            end={value.toId}
-                            strokeWidth = {2}
-                            headSize = {3}
-                        />
+                            control={
+                                () => <Xarrow
+                                    start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStepId + '-' + value.fromInstruction.pathName}
+                                    end={value.toId}
+                                    strokeWidth = {2}
+                                    headSize = {3}
+                                />
+                            }/> 
                     })
                 }
             </>} />

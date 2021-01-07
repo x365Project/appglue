@@ -29,7 +29,7 @@ export class FlowEditContext {
 
     addCandidateSequence(s: CandidateSequence) : void {
         this.candidateSequences.push(s);
-        this.positionCandidateSequences();
+        this.positionCandidateSequences(false);
     }
 
     removeCandidateSequence(s: CandidateSequence) : void {
@@ -101,8 +101,11 @@ export class FlowEditContext {
         return;
     }
 
-    positionCandidateSequences() : void {
-        this.doPurgeOfSequences();
+    positionCandidateSequences(requirePurge:boolean = true) : void {
+
+        if (requirePurge) {
+            this.doPurgeOfSequences();
+        }
 
         for (let candS of this.candidateSequences) {
             candS.reset();
@@ -278,7 +281,22 @@ export class FlowEditContext {
             val = new registeredControl!.prototype.constructor();
         }
 
-        return Object.assign(val, s);
+        if (s instanceof FlowStepSequence) {
+            DataUtilities.spreadDataWithoutFunction(val, DataUtilities.clone(s), ['_id', '_steps']);
+            for (let step of s.steps) {
+                val.addStep(this.cloneFlowElement(step));
+            }
+        } else if (s instanceof BaseFlowStep) {
+            DataUtilities.spreadDataWithoutFunction(val, DataUtilities.clone(s), ['_id', '_nonDefaultOutputInstructions']);
+            let paths = s.getOutcomes();
+            if (paths) {
+                for (let i of paths) {
+                    val.findOutputInstruction(i.name);
+                }
+            }
+        }
+
+        return val;
     }
 
     @AutoBind
@@ -475,7 +493,12 @@ export class FlowEditContext {
     }
 
     setSelection(selection: IFlowElement) {
+
         this._selectionElement = selection;
+        StateManager.changed(selection);
+        if (this._lastSelectionElement) {
+            StateManager.changed(this._lastSelectionElement);
+        }
         this._lastSelectionElement = selection;
         StateManager.propertyChanged(this, "selectionElement");
     }

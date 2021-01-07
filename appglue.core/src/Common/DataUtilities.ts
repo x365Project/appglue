@@ -76,6 +76,24 @@ export class DataUtilities {
 
     }
 
+    static spreadDataWithoutFunction(value: object, dataToSpread: object, exclude?: string[]): void {
+
+
+        for (var i in dataToSpread) {
+
+
+            if (exclude && exclude.length !== 0) {
+                if (exclude.indexOf(i) !== -1) continue;
+            }
+
+            let val = Reflect.get(dataToSpread, i);
+            if (val instanceof Function) continue;
+
+            Reflect.set(value, i, val);
+        }
+
+    }
+
     static generateUniqueId() : string {
         return Guid.create().toString();
     }

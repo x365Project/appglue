@@ -14,4 +14,6 @@ export class FlowConstants {
   static PATH_CANDIDATE_WIDTH = 150;
   static PATH_CANDIDATE_HEIGHT = 35;
 
+  static COLLAPSE_TIMEOUT = 300;
+
 }

@@ -252,7 +252,59 @@ describe("XFlowEditor", () => {
 
         sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(2);
+    });
+
+    it("Check if Arrow count and candidate corrects.", () => {
+
+        let flowEditorProps = new FlowEditorParams();
+
+        const {container} = render(<XFlowEditor {...flowEditorProps} />);
+        
+        let sequence = flowEditorProps.flow.sequences[0];
+        let sequenceElem = document.getElementById(sequence._id);
+
+        expect(sequenceElem).toBeInTheDocument();
+        // MultiOutputTestStep
+        let multiOutputTestStep = sequence.steps[1];
+
+        let otherPaths = multiOutputTestStep.getOutcomes() || [];
+
+        if (otherPaths.length !== 0) {
+            // removes first item
+            otherPaths.shift();
+        }
+
+        expect(container.querySelectorAll('svg')).toHaveLength(otherPaths.length);
+
+        for (let path of otherPaths) {
+            if (path.name) {
+                let id = `${multiOutputTestStep._id}-${path.name}`;
+                let pathElem = document.getElementById(id) as HTMLElement;
+                expect(pathElem).toBeInTheDocument();
+            }
+        }
+
+        // Sequence and Non Path Candidate
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+        expect(errorList).toHaveLength(0);
+    });
+
+    it("Check if collapsed working.", () => {
+
+        let flowEditorProps = new FlowEditorParams();
+        let sequence = flowEditorProps.flow.sequences[0];
+        sequence.isCollapsed = true;
+
+        const {container} = render(<XFlowEditor {...flowEditorProps} />);
+
+        fireEvent.dragStart(container.querySelector('[data-rbd-drag-handle-draggable-id="Form"]')!);
+        fireEvent.dragEnter(document.getElementById(sequence._id)!);
+
+        expect(sequence.isCollapsed).toEqual(true);
+
+        expect(errorList).toHaveLength(0);
 
     });
+
 
 });
