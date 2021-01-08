@@ -52,10 +52,7 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     set isCollapsed(collapsed: boolean) {
         this._isCollapsed = collapsed;
-        console.log('changing collapsed ' + collapsed);
         StateManager.propertyChanged(this, 'isCollapsed');
-        // if (this.flow)
-        //     StateManager.propertyChanged(this.flow, 'sequences');
     }
 
     get stackColor(): string | undefined {

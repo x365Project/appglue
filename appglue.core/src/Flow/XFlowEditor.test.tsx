@@ -364,19 +364,62 @@ describe("XFlowEditor", () => {
 
         fireEvent.change(option[0], {target: {value: 'branch'}});
         expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
-        
-        // fireEvent.dragStart(formElem);
-        // fireEvent.dragEnter(sequenceElem);
-        // fireEvent.drop(sequenceElem);
-        // fireEvent.dragLeave(sequenceElem);
-        // fireEvent.dragEnd(formElem);
-
-        // expect(sequence.isCollapsed).toEqual(false);
-        // expect(sequence.steps).toHaveLength(oldStepCount + 1);
 
         expect(errorList).toHaveLength(0);
 
     });
 
+
+    it("Check if adding / removing / changing the path works correctly.", () => {
+
+        let flowEditorProps = new FlowEditorParams();
+        let sequence = flowEditorProps.flow.sequences[0];
+        const {container} = render(<XFlowEditor {...flowEditorProps} />);
+        let stepHostElem = container.querySelector(`[data-rbd-draggable-id="${sequence.steps[1]._id}"] > div`) as HTMLDivElement;
+
+        expect(stepHostElem).toBeInTheDocument();
+        fireEvent.click(stepHostElem);
+
+        // check if the edit layer is appeared.
+        let editorLayerElem = container.querySelector('.config-form-content') as HTMLDivElement;
+        expect(editorLayerElem).toBeInTheDocument();
+
+        // check if the property editor text list is appeared.
+        let propertyEditorElem = container.querySelector('.TextList-TextBox') as HTMLDivElement;
+        expect(propertyEditorElem).toBeInTheDocument();
+
+        let multiOutputTestStep = sequence.steps[1];
+
+        // before adding, check,
+        let otherPaths = multiOutputTestStep.getOutcomes() || [];
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+
+
+        let inputElems = container.querySelectorAll('.TextList-TextBox input');
+        expect(inputElems).toHaveLength(otherPaths.length);
+
+        fireEvent.keyDown(inputElems[otherPaths.length - 1],  { key: "Enter", code: 13, charCode: 13, keyCode: 13 });
+        inputElems = container.querySelectorAll('.TextList-TextBox input');
+        expect(inputElems).toHaveLength(otherPaths.length + 1);
+        fireEvent.change(inputElems[inputElems.length - 1], {target: {value: 'c'}});
+
+        // check if line and candidate is added
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 3);
+
+        // check if number of line and candidates are same after updating the pathname 
+        fireEvent.change(inputElems[inputElems.length - 2], {target: {value: 'abc'}});
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 3);
+
+        // // check number of line and candidates  after removing the pathname 
+        // fireEvent.change(inputElems[inputElems.length - 1], {target: {value: ''}});
+        // fireEvent.keyDown(inputElems[inputElems.length - 1],  { keyCode: 8 });
+        // inputElems = container.querySelectorAll('.TextList-TextBox input');
+        // expect(inputElems).toHaveLength(otherPaths.length);
+        // expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+        // expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
+    });
 
 });

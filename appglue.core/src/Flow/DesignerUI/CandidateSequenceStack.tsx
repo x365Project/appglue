@@ -19,7 +19,6 @@ export const CandidateSequenceDiv = styled("div")<{
 	top: ${props => props.isDragging ? 0 : props.position.y}px;
 	left: ${props => props.isDragging ? 0 : props.position.x}px;
 	opacity: ${props => props.show ? 1: 0};
-	display: ${props => props.show ? 'block': 'none'};
 	background: transparent;
 	border-radius: 4px;
 	${props => !props.isDragging && `transform: none !important;`}

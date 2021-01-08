@@ -52,11 +52,11 @@ export class FlowEditContext {
     }
 
     purgeCandidateSequences() : void {
-        this.doPurgeOfSequences();
+        this.syncCandidates();
         this.positionCandidateSequences(false);
     }
 
-    private doPurgeOfSequences() {
+    private syncCandidates() {
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
         // DO NOT REMOVE MY COMMENTS.  I DID NOT WRITE THE COMMENTS FOR FUN - THEY ARE INSTRUCIONS AND YOU
@@ -73,15 +73,20 @@ export class FlowEditContext {
             if (sequenceIds.indexOf(c._id) < 0) {
                 if (c.forStepId && c.forPath) {
                     let step = this.flow.find(c.forStepId) as BaseFlowStep;
+                    
                     if (!step) return false;
 
-                    if (!c.forPath || c.forPath === "") return false;
+                    if (c.forPath === "") return false;
+
+                    let paths = step.getOutcomes() || [];
+
+                    if (paths.map((p) => p.name).indexOf(c.forPath) < 0) return false;
 
                     let stepOutput = step.findOutputInstruction(c.forPath);
                     if (!stepOutput) return false;
     
                     return stepOutput.strategy === FlowStepOutputInstructionType.BRANCH;
-                }
+                } else if (c.forStepId) return false;
                 return true;
             }
             return false;
@@ -107,7 +112,7 @@ export class FlowEditContext {
     positionCandidateSequences(requirePurge:boolean = true) : void {
 
         if (requirePurge) {
-            this.doPurgeOfSequences();
+            this.syncCandidates();
         }
 
         for (let candS of this.candidateSequences) {

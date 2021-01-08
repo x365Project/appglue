@@ -14,7 +14,7 @@ import {StateManager} from "./StateManager";
  />
  **/
 
-export class ObserveMultiState extends React.Component<{ listenTo: (object | null | undefined)[], control: () => JSX.Element | ReactNode }> {
+export class ObserveMultiState extends React.Component<{ listenTo: (object | null | undefined)[], control: () => JSX.Element | ReactNode, onWillUnmount?: ()=> void }> {
 
 
     constructor(props: { listenTo: (object | null | undefined)[]; control: () => JSX.Element }) {
@@ -44,6 +44,10 @@ export class ObserveMultiState extends React.Component<{ listenTo: (object | nul
                 if (l)
                     StateManager.removeObserver(l, this);
             }
+        }
+
+        if (this.props.onWillUnmount) {
+            this.props.onWillUnmount();
         }
     }
 

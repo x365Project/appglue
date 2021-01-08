@@ -16,7 +16,6 @@ import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
 import {FlowEditContext} from "../FlowEditContext";
 import { ObserveMultiState } from "../../CommonUI/StateManagement/ObserveMultiState";
 import { IFlowStepSequence } from "../Structure/IFlowStepSequence";
-import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
 
 const StepSurround = styled('div')<{selected: boolean, invalid: boolean}>`
@@ -116,6 +115,7 @@ export class FlowSequenceStackStepHost extends React.Component<IFlowSequenceStac
 																	if (stepOutput.connectedSequenceId) {
 																		targetSequence = this.props.editContext.getTargetSequence(stepOutput.connectedSequenceId);
 																	}
+
 																	return <FlowSequenceStackAltPath
 																		sequence={this.props.sequence}
 																		step={step}
@@ -124,6 +124,9 @@ export class FlowSequenceStackStepHost extends React.Component<IFlowSequenceStac
 																		width={width}
 																		targetSequence={targetSequence}
 																	/>
+																}}
+																onWillUnmount={() => {
+																	this.props.editContext.purgeCandidateSequences();
 																}}
 															/>
 														)

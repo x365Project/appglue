@@ -67,6 +67,9 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 						let candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
 						stepOutput.connectedSequenceId = candidateSequence._id;
 						editContext.addCandidateSequence(candidateSequence);
+					} else if (targetSequence instanceof CandidateSequence && targetSequence.forPath !== stepOutput.pathName) {
+						targetSequence.forPath = stepOutput.pathName;
+						StateManager.changed(targetSequence);
 					}
 					// else
 					// 	{
@@ -78,6 +81,8 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					// 	}
 					// }
 
+				} else if (targetSequence && targetSequence instanceof CandidateSequence) {
+					editContext.positionCandidateSequences();
 				}
 			} else {
 				this.forceUpdate();
@@ -90,10 +95,6 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 
 	componentDidMount() {
 		this.manageCandidateSequence();
-	}
-
-	componentWillUnmount() {
-		this.props.editContext.purgeCandidateSequences();
 	}
 
 	render() {

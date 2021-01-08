@@ -16,7 +16,7 @@ import {DataUtilities} from "../../Common/DataUtilities";
 
  **/
 
-export class ObserveState extends React.Component<{ listenTo: object | null | undefined, control: () => JSX.Element | React.ReactNode, properties?: string[] }> {
+export class ObserveState extends React.Component<{ listenTo: object | null | undefined, control: () => JSX.Element | React.ReactNode, properties?: string[], onWillUnmount?: () => void }> {
 
     render() {
         return (
@@ -32,6 +32,10 @@ export class ObserveState extends React.Component<{ listenTo: object | null | un
     componentWillUnmount() {
         if (this.props.listenTo)
             StateManager.removeObserver(this.props.listenTo, this);
+
+        if (this.props.onWillUnmount) {
+            this.props.onWillUnmount();
+        }
     }
 
     @AutoBind

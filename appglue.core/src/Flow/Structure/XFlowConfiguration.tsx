@@ -51,7 +51,6 @@ export class XFlowConfiguration implements IFlowElement{
         }
 
         sequence.addStep(step, index);
-
     }
 
     remove(step: BaseFlowStep, sequenceId?: string): void {
@@ -126,6 +125,18 @@ export class XFlowConfiguration implements IFlowElement{
             }
         }
 
+        return conn;
+    }
+
+    getConnectionsBySequence(seq: FlowStepSequence) : FlowConnection[] {
+        let conn : FlowConnection[] = [];
+        for (let step of seq.steps) {
+            for (let inst of step.getOutcomeInstructions()) {
+                if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
+                    conn.push(new FlowConnection(seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName), inst.connectedSequenceId, false, seq, inst, step));
+                }
+            }
+        }
         return conn;
     }
 }
