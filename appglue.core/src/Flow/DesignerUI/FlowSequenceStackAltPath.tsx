@@ -53,20 +53,23 @@ interface IFlowSequenceStackAltPath {
 export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStackAltPath, {}> {
 	containerRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
-	render() {
+	manageCandidateSequence = () => {
 		let {stepOutput, editContext, sequence, step, targetSequence} = this.props;
 
 		if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
 			if (this.containerRef && this.containerRef.current) {
-				let point1 = {
-					x: this.containerRef.current.offsetLeft + (this.props.width - 40) + sequence.x,
-					y: this.containerRef.current.offsetTop + sequence.y + 18
-				};
 				if (stepOutput.pathName) {
 					if (!targetSequence) {
+						let point1 = {
+							x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + sequence.x,
+							y: this.containerRef!.current!.offsetTop + sequence.y + 18
+						};
 						let candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
 						stepOutput.connectedSequenceId = candidateSequence._id;
 						editContext.addCandidateSequence(candidateSequence);
+					} else if (targetSequence instanceof CandidateSequence && targetSequence.forPath !== stepOutput.pathName) {
+						targetSequence.forPath = stepOutput.pathName;
+						StateManager.changed(targetSequence);
 					}
 					// else
 					// 	{
@@ -78,12 +81,25 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					// 	}
 					// }
 
-
+				} else if (targetSequence && targetSequence instanceof CandidateSequence) {
+					editContext.positionCandidateSequences();
 				}
 			} else {
 				this.forceUpdate();
 			}
+		} else if (targetSequence && targetSequence instanceof CandidateSequence) {
+			editContext.positionCandidateSequences();
 		}
+		
+	}
+
+	componentDidMount() {
+		this.manageCandidateSequence();
+	}
+
+	render() {
+		let {stepOutput, sequence, step} = this.props;
+		
 		return (
 			<>
 				<StepPathConnectDiv />
@@ -107,9 +123,6 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 									value={stepOutput.strategy}
 									onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
 										stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;
-										this.props.editContext.purgeCandidateSequences();
-										StateManager.changed(this.props.sequence);
-										StateManager.propertiesChanged(this.props.editContext.flow, ['sequences']);
 										StateManager.changed(stepOutput);
 									}}
 								>

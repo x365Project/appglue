@@ -3,6 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import {FlowEditorParameters, XFlowEditor} from "./XFlowEditor";
 import { getFlowWithSteps } from './Testing/TestDataSetup';
 import { FlowStepSequence } from './Structure/FlowStepSequence';
+import { FlowStepOutput } from './Structure/FlowStepOutput';
 
 class FlowEditorParams implements FlowEditorParameters {
     flow = getFlowWithSteps();
@@ -165,23 +166,60 @@ describe("XFlowEditor", () => {
         let sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(2);
 
+        expect(flowEditor.flow.sequences).toHaveLength(2);
+
+        let otherPaths: FlowStepOutput[] = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+
         fireEvent.click(sequences[1]);
         cutBtn = queryByTestId('btn-topbar-cut');
 
         fireEvent.click(cutBtn!);
+
+
         
         let btnDialogSuccess = queryByTestId('btn-dialog-success');
         expect(btnDialogSuccess).toBeInTheDocument();
 
         fireEvent.click(btnDialogSuccess!);
+        expect(flowEditor.flow.sequences).toHaveLength(1);
+
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
 
         sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(1);
 
         fireEvent.click(pasteBtn!);
 
+        expect(flowEditor.flow.sequences).toHaveLength(2);
+
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
         sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(2);
+
+        expect(flowEditor.flow.sequences).toHaveLength(2);
+
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
 
         fireEvent.click(sequences[1]);
 
@@ -191,6 +229,13 @@ describe("XFlowEditor", () => {
         fireEvent.click(btnDialogSuccess!);
 
         sequences = container.querySelectorAll('.stack');
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
         expect(sequences).toHaveLength(1);
     });
 
@@ -252,7 +297,129 @@ describe("XFlowEditor", () => {
 
         sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(2);
+    });
 
+    it("Check if Arrow count and candidate corrects.", () => {
+
+        let flowEditorProps = new FlowEditorParams();
+
+        const {container} = render(<XFlowEditor {...flowEditorProps} />);
+        
+        let sequence = flowEditorProps.flow.sequences[0];
+        let sequenceElem = document.getElementById(sequence._id);
+
+        expect(sequenceElem).toBeInTheDocument();
+        // MultiOutputTestStep
+        let multiOutputTestStep = sequence.steps[1];
+
+        let otherPaths = multiOutputTestStep.getOutcomes() || [];
+
+        if (otherPaths.length !== 0) {
+            // removes first item
+            otherPaths.shift();
+        }
+
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+
+        for (let path of otherPaths) {
+            if (path.name) {
+                let id = `${multiOutputTestStep._id}-${path.name}`;
+                let pathElem = document.getElementById(id) as HTMLElement;
+                expect(pathElem).toBeInTheDocument();
+            }
+        }
+
+        // Sequence and Non Path Candidate
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+        expect(errorList).toHaveLength(0);
+    });
+
+    it("Check if path strategy changed.", () => {
+
+        let flowEditorProps = new FlowEditorParams();
+        let sequence = flowEditorProps.flow.sequences[0];
+        sequence.isCollapsed = true;
+
+        const {container} = render(<XFlowEditor {...flowEditorProps} />);
+
+        let option = container.querySelectorAll('select.MuiSelect-select');
+
+        expect(option).toHaveLength(2);
+
+        fireEvent.change(option[0], {target: {value: 'continue'}});
+
+        // MultiOutputTestStep
+        let multiOutputTestStep = sequence.steps[1];
+
+        let otherPaths = multiOutputTestStep.getOutcomes() || [];
+
+        if (otherPaths.length !== 0) {
+            // removes first item
+            otherPaths.shift();
+        }
+
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
+
+        option = container.querySelectorAll('select.MuiSelect-select');
+
+        fireEvent.change(option[0], {target: {value: 'branch'}});
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+
+        expect(errorList).toHaveLength(0);
+
+    });
+
+
+    it("Check if adding / removing / changing the path works correctly.", () => {
+
+        let flowEditorProps = new FlowEditorParams();
+        let sequence = flowEditorProps.flow.sequences[0];
+        const {container} = render(<XFlowEditor {...flowEditorProps} />);
+        let stepHostElem = container.querySelector(`[data-rbd-draggable-id="${sequence.steps[1]._id}"] > div`) as HTMLDivElement;
+
+        expect(stepHostElem).toBeInTheDocument();
+        fireEvent.click(stepHostElem);
+
+        // check if the edit layer is appeared.
+        let editorLayerElem = container.querySelector('.config-form-content') as HTMLDivElement;
+        expect(editorLayerElem).toBeInTheDocument();
+
+        // check if the property editor text list is appeared.
+        let propertyEditorElem = container.querySelector('.TextList-TextBox') as HTMLDivElement;
+        expect(propertyEditorElem).toBeInTheDocument();
+
+        let multiOutputTestStep = sequence.steps[1];
+
+        // before adding, check,
+        let otherPaths = multiOutputTestStep.getOutcomes() || [];
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+
+
+        let inputElems = container.querySelectorAll('.TextList-TextBox input');
+        expect(inputElems).toHaveLength(otherPaths.length);
+
+        fireEvent.keyDown(inputElems[otherPaths.length - 1],  { key: "Enter", code: 13, charCode: 13, keyCode: 13 });
+        inputElems = container.querySelectorAll('.TextList-TextBox input');
+        expect(inputElems).toHaveLength(otherPaths.length + 1);
+        fireEvent.change(inputElems[inputElems.length - 1], {target: {value: 'c'}});
+
+        // check if line and candidate is added
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 3);
+
+        // check if number of line and candidates are same after updating the pathname 
+        fireEvent.change(inputElems[inputElems.length - 2], {target: {value: 'abc'}});
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 3);
+
+        // // check number of line and candidates  after removing the pathname 
+        // fireEvent.change(inputElems[inputElems.length - 1], {target: {value: ''}});
+        // fireEvent.keyDown(inputElems[inputElems.length - 1],  { keyCode: 8 });
+        // inputElems = container.querySelectorAll('.TextList-TextBox input');
+        // expect(inputElems).toHaveLength(otherPaths.length);
+        // expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+        // expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
     });
 
 });

@@ -52,11 +52,11 @@ export class FlowEditContext {
     }
 
     purgeCandidateSequences() : void {
-        this.doPurgeOfSequences();
-        this.positionCandidateSequences();
+        this.syncCandidates();
+        this.positionCandidateSequences(false);
     }
 
-    private doPurgeOfSequences() {
+    private syncCandidates() {
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
         // DO NOT REMOVE MY COMMENTS.  I DID NOT WRITE THE COMMENTS FOR FUN - THEY ARE INSTRUCIONS AND YOU
@@ -73,12 +73,20 @@ export class FlowEditContext {
             if (sequenceIds.indexOf(c._id) < 0) {
                 if (c.forStepId && c.forPath) {
                     let step = this.flow.find(c.forStepId) as BaseFlowStep;
+                    
                     if (!step) return false;
+
+                    if (c.forPath === "") return false;
+
+                    let paths = step.getOutcomes() || [];
+
+                    if (paths.map((p) => p.name).indexOf(c.forPath) < 0) return false;
+
                     let stepOutput = step.findOutputInstruction(c.forPath);
                     if (!stepOutput) return false;
     
                     return stepOutput.strategy === FlowStepOutputInstructionType.BRANCH;
-                }
+                } else if (c.forStepId) return false;
                 return true;
             }
             return false;
@@ -101,8 +109,11 @@ export class FlowEditContext {
         return;
     }
 
-    positionCandidateSequences() : void {
-        this.doPurgeOfSequences();
+    positionCandidateSequences(requirePurge:boolean = true) : void {
+
+        if (requirePurge) {
+            this.syncCandidates();
+        }
 
         for (let candS of this.candidateSequences) {
             candS.reset();
@@ -230,7 +241,6 @@ export class FlowEditContext {
             nonPathCandidate.x = farX + 30;
         }
 
-
         // set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences");
     }
@@ -278,7 +288,22 @@ export class FlowEditContext {
             val = new registeredControl!.prototype.constructor();
         }
 
-        return Object.assign(val, s);
+        if (s instanceof FlowStepSequence) {
+            DataUtilities.spreadDataWithoutFunction(val, DataUtilities.clone(s), ['_id', '_steps']);
+            for (let step of s.steps) {
+                val.addStep(this.cloneFlowElement(step));
+            }
+        } else if (s instanceof BaseFlowStep) {
+            DataUtilities.spreadDataWithoutFunction(val, DataUtilities.clone(s), ['_id', '_nonDefaultOutputInstructions']);
+            let paths = s.getOutcomes();
+            if (paths) {
+                for (let i of paths) {
+                    val.findOutputInstruction(i.name);
+                }
+            }
+        }
+
+        return val;
     }
 
     @AutoBind
@@ -354,6 +379,7 @@ export class FlowEditContext {
     deleteSequence(idx: number) {
         this.flow.deleteSequenceByIndex(idx);
         StateManager.propertyChanged(this.flow, 'sequences');
+        this.purgeCandidateSequences();
     }
 
     @AutoBind
@@ -398,6 +424,7 @@ export class FlowEditContext {
             }
         } else {
             this.flow.remove(elem as BaseFlowStep);
+            this.purgeCandidateSequences();
         }
 
     };
@@ -407,15 +434,8 @@ export class FlowEditContext {
         if (!this.clipboardElement || !this.selectionElement) return;
 
         if (this.clipboardElement instanceof FlowStepSequence && this.selectionElement instanceof FlowStepSequence) {
-            let idx = this.flow.sequences.indexOf(this.selectionElement as FlowStepSequence);
-            let newSeq = new FlowStepSequence();
+            let newSeq = this.cloneFlowElement(this.clipboardElement) as FlowStepSequence;
             newSeq._id = DataUtilities.generateUniqueId();
-
-            for (let s of (this.clipboardElement as FlowStepSequence).steps) {
-                let newS = this.cloneFlowElement(s) as BaseFlowStep;
-                newS._id = DataUtilities.generateUniqueId();
-                newSeq.addStep(newS);
-            }
 
             newSeq.x += 20;
             newSeq.y += 20;
@@ -442,7 +462,6 @@ export class FlowEditContext {
         this.flowEditor = flowEditor;
 
         this.addNonPathCandidateSequence();
-        this.positionCandidateSequences();
     }
 
     addNonPathCandidateSequence() {
@@ -452,6 +471,7 @@ export class FlowEditContext {
             let c = new CandidateSequence(0, 30);
             c._id = FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
             this.candidateSequences.push(c);
+            this.positionCandidateSequences();
         }
     }
 
@@ -475,7 +495,12 @@ export class FlowEditContext {
     }
 
     setSelection(selection: IFlowElement) {
+
         this._selectionElement = selection;
+        StateManager.changed(selection);
+        if (this._lastSelectionElement) {
+            StateManager.changed(this._lastSelectionElement);
+        }
         this._lastSelectionElement = selection;
         StateManager.propertyChanged(this, "selectionElement");
     }
@@ -526,16 +551,6 @@ export class FlowEditContext {
 
     set draggingElemType(type: IDraggingElementType | undefined) {
         this._draggingElemType = type;
-    }
-
-    private _draggingElemId?: string;
-
-    get draggingElem(): string | undefined {
-        return this._draggingElemId;
-    }
-
-    set draggingElem(elemId: string | undefined) {
-        this._draggingElemId = elemId;
     }
 
     refresh() {

@@ -8,6 +8,7 @@ import {FlowStepOutputInstructions} from "../Structure/FlowStepOutputInstruction
 import {AutoBind} from "../../Common/AutoBind";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
+import { FlowStepOutput } from "../Structure/FlowStepOutput";
 
 export const BasicStep = styled.div`
     width: 100%;

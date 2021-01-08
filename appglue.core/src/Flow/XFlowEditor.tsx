@@ -61,6 +61,7 @@ import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
+import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -123,7 +124,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
             <ObserveState
                 listenTo={this}
                 control={
-                    () => <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
+                    () => <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
                         <FlowEditorDiv>
                             <FlowTopBar editContext={this.editContext} />
                             <FlowMainSectionDiv>
@@ -149,23 +150,17 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     }
 
     @AutoBind
-    onDragUpdate(_result: DropResult) {
+    onDragStart(_initial: DragStart, _provided: ResponderProvided) {
+		this.editContext.clearSelection();
         this.editContext.isDraggingControl = true;
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
     }
 
     @AutoBind
-    onDragStart(initial: DragStart, _provided: ResponderProvided) {
-        this.editContext.draggingElem = initial.draggableId;
-		this.editContext.clearSelection();
-        this.editContext.draggingElem = initial.draggableId;
-    }
-
-    @AutoBind
     onDragEnd(result: DropResult) {
         this.editContext.isDraggingControl = false;
-        this.editContext.draggingElem = undefined;
+        StateManager.propertyChanged(this.editContext, 'isDraggingControl');
 
         // if not destination... then we should not do anything
         if (!result.destination)
@@ -207,7 +202,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                         let stepOutput = step.findOutputInstruction(c.forPath);
                         if (!stepOutput) return;
                         stepOutput.connectedSequenceId = s._id;
-                        // this.editContext.convertLineFromCandidateToSequence(s);
                     }
                 }
 
@@ -217,7 +211,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                     this.props.flow.moveToSequence(control, seqid, result.destination.droppableId, result.destination.index)
                 }
             }
-            this.editContext.positionCandidateSequences();
         }
 
 		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
@@ -255,7 +248,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
     return (
 		<ObserveState
 			listenTo={props.editContext}
-			properties={['flowTitle', 'clipboardElement']}
+			properties={['flowTitle', 'clipboardElement', 'selectionElement']}
 			control={() =>
 				<TopbarDiv>
 					{
@@ -438,25 +431,6 @@ const DesignPanel = styled.div`
 export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
 
 
-    const [expandedConfigPanel, setexpandedConfigPanel] = useState(true);
-    const [isMovingConfigPanel, setisMovingConfigPanel] = useState(false);
-
-    function onToggleExpandedConfigPanel() {
-        if (!isMovingConfigPanel) {
-            setexpandedConfigPanel(!expandedConfigPanel);
-        }
-    }
-
-    function onDragMovingConfigPanel() {
-        setisMovingConfigPanel(true);
-    }
-
-    function onEndMovingConfigPanel() {
-        setTimeout(() => {
-            setisMovingConfigPanel( false );
-        }, 500);
-    }
-
     function onClose() {
         if (props.editContext.notification!.onCancel) {
             props.editContext.notification!.onCancel();
@@ -529,6 +503,59 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
     return (
         <DesignPanel>
+            
+            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]}
+                control={() => {
+                    return <> 
+                        {
+                            // props.flow.getConnections().map((value: FlowConnection) => {
+                            //     let targetSequence = props.editContext.getTargetSequence(value.toId);
+                            //     return <ObserveMultiState
+                            //         listenTo={[value.fromSequence, value.fromInstruction, value.fromStep, targetSequence]}
+                            //         key={`${value.fromId}-${value.toId}`}
+                            //         control={
+                            //             () => {
+                            //                 return <Xarrow
+                            //                     start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
+                            //                     end={value.toId}
+                            //                     strokeWidth = {2}
+                            //                     headSize = {3}
+                            //                 />
+                            //             }
+                            //         }/> 
+                            // })
+                            props.flow.sequences.map((s: FlowStepSequence) => {
+                                return <ObserveState
+                                    key={s._id}
+                                    listenTo={s}
+                                    control={
+                                        () => <> {
+                                            props.flow.getConnectionsBySequence(s).map((value: FlowConnection) => {
+                                                let targetSequence = props.editContext.getTargetSequence(value.toId);
+                                                return <ObserveMultiState
+                                                    listenTo={[value.fromInstruction, value.fromStep, targetSequence]}
+                                                    key={`${value.fromId}-${value.toId}`}
+                                                    control={
+                                                        () => {
+                                                            return <Xarrow
+                                                                start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
+                                                                end={value.toId}
+                                                                strokeWidth = {2}
+                                                                headSize = {3}
+                                                            />
+                                                        }
+                                                    }/> 
+                                            })
+                                        }
+                                        </>
+                                    }
+                                />
+
+                            })
+                        }
+                    </>
+                }}
+            />
 
             <ObserveState
                 listenTo={props.editContext}
@@ -549,64 +576,17 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
             {
                 props.flow.sequences.map((s: FlowStepSequence, i: number) => {
-                    return <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
+                    return <ObserveState
+                        key={s._id}
+                        listenTo={s}
+                        control={() =>
+                            <FlowSequenceStack flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>
+                        }
+                    />
                 })
             }
 
-            <ObserveState listenTo={props.editContext}
-                properties={["selectionElement"]}
-                control={() => {
-                    let selectedStep = props.editContext.selectionElement;
-                    let editUIComponent = selectedStep?.renderEditUI();
-                    return <>
-                        {
-                            editUIComponent && (
-                                <ReactDraggable
-                                    onDrag={onDragMovingConfigPanel}
-                                    onStop={onEndMovingConfigPanel}
-                                    handle=".config-form-header"
-                                >
-                                    <EditLayerConfigArea>
-                                        <Accordion
-                                            expanded={expandedConfigPanel}
-                                            onChange={onToggleExpandedConfigPanel}
-                                            defaultExpanded
-                                        >
-                                            <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
-                                                <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
-                                                    {/*Edit: {selectedStep?.toString() || 'Flow Step Config'}*/}
-                                                    Edit: 'Flow Step Config'
-                                                </EditLayerStyledTypography>
-                                            </EditLayerStyledAccordionSummary>
-                                            <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                                {editUIComponent}
-                                            </EditLayerStyledAccordionDetails>
-                                        </Accordion>
-                                    </EditLayerConfigArea>
-                                </ReactDraggable>
-                            )
-                        }
-                    </>
-                    }
-                }
-            />
-
-            <ObserveMultiState listenTo={[props.editContext, props.flow]} control={() => <>
-                {
-                    props.flow.getConnections().map((value: FlowConnection) => {
-                        console.log(value.fromId);
-
-                       return <Xarrow
-                            key={`${value.fromId}-${value.toId}`}
-                            start={value.fromId}
-                            end={value.toId}
-                            strokeWidth = {2}
-                            headSize = {3}
-                        />
-                    })
-                }
-            </>} />
-           
+            <EditLayer flow={props.flow} editContext={props.editContext} />
 
             <ObserveState listenTo={props.editContext} properties={["contextControl"]} control={
                 () => <>
@@ -622,5 +602,64 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     );
 }
 
+export const EditLayer = function (props :{flow: XFlowConfiguration, editContext: FlowEditContext}) {
 
+    const [expandedConfigPanel, setexpandedConfigPanel] = useState(true);
+    const [isMovingConfigPanel, setisMovingConfigPanel] = useState(false);
 
+    function onToggleExpandedConfigPanel() {
+        if (!isMovingConfigPanel) {
+            setexpandedConfigPanel(!expandedConfigPanel);
+        }
+    }
+
+    function onDragMovingConfigPanel() {
+        setisMovingConfigPanel(true);
+    }
+
+    function onEndMovingConfigPanel() {
+        setTimeout(() => {
+            setisMovingConfigPanel( false );
+        }, 500);
+    }
+
+    return (
+        <ObserveState listenTo={props.editContext}
+            properties={["selectionElement"]}
+            control={() => {
+                let selectedStep = props.editContext.selectionElement;
+                let editUIComponent = selectedStep?.renderEditUI();
+                return <>
+                    {
+                        editUIComponent && (
+                            <ReactDraggable
+                                onDrag={onDragMovingConfigPanel}
+                                onStop={onEndMovingConfigPanel}
+                                handle=".config-form-header"
+                            >
+                                <EditLayerConfigArea>
+                                    <Accordion
+                                        expanded={expandedConfigPanel}
+                                        onChange={onToggleExpandedConfigPanel}
+                                        defaultExpanded
+                                    >
+                                        <EditLayerStyledAccordionSummary expandIcon={<ExpandIcon />}>
+                                            <EditLayerStyledTypography variant="subtitle1" classes={{root: 'config-form-header'}}>
+                                                {/*Edit: {selectedStep?.toString() || 'Flow Step Config'}*/}
+                                                Edit: 'Flow Step Config'
+                                            </EditLayerStyledTypography>
+                                        </EditLayerStyledAccordionSummary>
+                                        <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
+                                            {editUIComponent}
+                                        </EditLayerStyledAccordionDetails>
+                                    </Accordion>
+                                </EditLayerConfigArea>
+                            </ReactDraggable>
+                        )
+                    }
+                </>
+                }
+            }
+        />
+    )
+}

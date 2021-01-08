@@ -6,7 +6,6 @@ import {PropertyEditorColor} from "../../CommonUI/PropertyEditing/PropertyEditor
 import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
 import {IFlowStepSequence} from "./IFlowStepSequence";
 import {FlowConstants} from "../CommonUI/FlowConstants";
-import {FlowEditContext} from "../FlowEditContext";
 import {XFlowConfiguration} from "./XFlowConfiguration";
 
 export class FlowStepSequence implements IFlowStepSequence {
@@ -53,10 +52,7 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     set isCollapsed(collapsed: boolean) {
         this._isCollapsed = collapsed;
-        console.log('changing collapsed ' + collapsed);
         StateManager.propertyChanged(this, 'isCollapsed');
-        if (this.flow)
-            StateManager.propertyChanged(this.flow, 'sequences');
     }
 
     get stackColor(): string | undefined {
