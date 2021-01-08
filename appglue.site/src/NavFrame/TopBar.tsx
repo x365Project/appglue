@@ -30,7 +30,10 @@ import clsx from 'clsx';
 import NotificationsList from './ToBarNotifications';
 import { ContentTheme } from './FrameProps';
 
-export default function TopBar(props: { layoutOptions: FrameProps }) {
+export default function TopBar(props: {
+  layoutOptions: FrameProps;
+  rerender?: () => any | undefined;
+}) {
   // if vertical, collapse top bar hamburg
   // search
   // -- on right
@@ -283,7 +286,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
       // background: theme.palette.primary.main,
     },
     lightContentTheme: {
-      color: '#9AA5B7',
+      color: '#000',
       background: '#f7fbfd',
     },
     darkContentTheme: {
@@ -341,7 +344,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
   // };
 
   const handleRenderPage = (renderPage: any) => {
-    setCurrentPageContent(renderPage());
+    setCurrentPageContent(renderPage(props.layoutOptions, props.rerender));
   };
 
   // const handleMobileMenuOpen = (e) => {
@@ -597,6 +600,7 @@ export default function TopBar(props: { layoutOptions: FrameProps }) {
           sideBarType={props.layoutOptions.sideBarType}
           navBarColor={props.layoutOptions.navBarColor}
           navBarFontColor={props.layoutOptions.navBarFontColor}
+          layoutOptions={props.layoutOptions}
         />
       </Drawer>
       <main
