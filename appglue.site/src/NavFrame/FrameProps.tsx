@@ -15,15 +15,15 @@ export enum LayoutWidth {
 }
 
 export enum TopBarTheme {
-  LIGHT = 'light',
-  DARK = 'dark',
-  COLORED = 'colored', // from tenant
+  LIGHT = 'top-light',
+  DARK = 'top-dark',
+  COLORED = 'top-colored', // from tenant
 }
 
 export enum NavBarTheme {
-  LIGHT = 'light',
-  DARK = 'dark',
-  COLORED = 'colored', // from tenant
+  LIGHT = 'nav-light',
+  DARK = 'nav-dark',
+  COLORED = 'nav-colored', // from tenant
 }
 
 export enum ContentTheme {
@@ -54,7 +54,7 @@ export class FrameProps {
   topBarColor: string = '';
   navBarFontColor: string = '';
   navBarColor: string = '';
-  layout: Layout = Layout.HORIZONTAL;
+  layout: Layout = Layout.VERTICAL;
   sideBarType: SideBarType = SideBarType.DEFAULT;
   frameSize: FrameSize = FrameSize.STANDARD;
   layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
@@ -63,6 +63,22 @@ export class FrameProps {
   contentTheme: ContentTheme = ContentTheme.LIGHT;
   preloader: Preloader = Preloader.ON;
   minWidth: number = 1500;
+
+  setTopBarColor = (color: string) => {
+    this.topBarColor = color;
+  };
+
+  setTopBarTheme = (theme: TopBarTheme) => {
+    this.topBarTheme = theme;
+  };
+
+  setNavBarColor = (color: string) => {
+    this.navBarColor = color;
+  };
+
+  setNavBarTheme = (theme: NavBarTheme) => {
+    this.navBarTheme = theme;
+  };
 }
 
 export const CurrentFrameProps = new FrameProps();

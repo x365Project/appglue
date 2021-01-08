@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { INavigationPage } from './INavigationPage';
+import TeamPg from './TeamPage';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { FrameProps } from '../NavFrame/FrameProps';
 
 export class PageRoutes {
   static pages: INavigationPage[] = [];
@@ -41,8 +43,11 @@ class TeamPage implements INavigationPage {
   renderIcon(): JSX.Element | null | undefined {
     return <PeopleOutlineIcon />;
   }
-  renderPage(): JSX.Element | null | undefined {
-    return <div>team page</div>;
+  renderPage(
+    layoutOptions: FrameProps,
+    rerender?: any | undefined
+  ): JSX.Element | null | undefined {
+    return <TeamPg rerender={rerender} layoutOptions={layoutOptions} />;
   }
   getSubPages(): INavigationPage[] {
     return [new UsersPage(), new RolesPage()];

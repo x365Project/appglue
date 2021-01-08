@@ -265,3 +265,48 @@ frameOptions.topBarColor =
 frameOptions.topBarFontColor = '#990000';
 
 export const GradientTopBarWithRedFont = Template.bind(null, frameOptions);
+
+// Horizontal Custom colors
+frameOptions = new FrameProps();
+frameOptions.frameSize = FrameSize.STANDARD;
+frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
+frameOptions.layout = Layout.HORIZONTAL;
+frameOptions.topBarTheme = TopBarTheme.COLORED;
+frameOptions.topBarColor = '#E59400';
+frameOptions.topBarFontColor = '#4c4cff';
+
+export const HOrangeTopBarWithBlueFont = Template.bind(null, frameOptions);
+
+frameOptions = new FrameProps();
+frameOptions.frameSize = FrameSize.STANDARD;
+frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
+frameOptions.layout = Layout.HORIZONTAL;
+frameOptions.navBarTheme = NavBarTheme.COLORED;
+frameOptions.navBarColor = '#990000';
+frameOptions.navBarFontColor = '#cccc00';
+
+export const HRedNavBarWithYellowFont = Template.bind(null, frameOptions);
+
+frameOptions = new FrameProps();
+frameOptions.frameSize = FrameSize.STANDARD;
+frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
+frameOptions.layout = Layout.HORIZONTAL;
+frameOptions.navBarTheme = NavBarTheme.COLORED;
+frameOptions.navBarColor =
+  'linear-gradient(to right, #f88585, #ff8aa0, #ff93ba, #fd9ed4, #f5aaec)';
+frameOptions.navBarFontColor = '#cccc00';
+
+export const HGradientNavBarWithYellowFont = Template.bind(null, frameOptions);
+
+frameOptions = new FrameProps();
+frameOptions.frameSize = FrameSize.STANDARD;
+frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
+frameOptions.layout = Layout.HORIZONTAL;
+frameOptions.topBarTheme = TopBarTheme.COLORED;
+frameOptions.topBarColor =
+  'linear-gradient(to right, #adc939, #a5d642, #9ae44e, #8af15d, #75ff6f)';
+frameOptions.topBarFontColor = '#fff';
+
+export const HGradientTopBarWithWhiteFont = Template.bind(null, frameOptions);
+
+// background-image: linear-gradient(to right, #f88585, #ff8aa0, #ff93ba, #fd9ed4, #f5aaec);
