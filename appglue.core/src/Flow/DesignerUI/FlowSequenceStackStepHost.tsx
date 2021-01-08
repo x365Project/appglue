@@ -16,6 +16,7 @@ import {FlowSequenceStackAltPath} from "./FlowSequenceStackAltPath";
 import {FlowEditContext} from "../FlowEditContext";
 import { ObserveMultiState } from "../../CommonUI/StateManagement/ObserveMultiState";
 import { IFlowStepSequence } from "../Structure/IFlowStepSequence";
+import { StateManager } from "../../CommonUI/StateManagement/StateManager";
 
 
 const StepSurround = styled('div')<{selected: boolean, invalid: boolean}>`
@@ -51,7 +52,7 @@ const StepConnectOtherPaths = styled.div`
 
 
 
-interface IFlowSequenceStackStep {
+interface IFlowSequenceStackStepHost {
 	sequence: FlowStepSequence;
 	editContext: FlowEditContext;
 	index: number;
@@ -60,7 +61,7 @@ interface IFlowSequenceStackStep {
 }
 
 
-export class FlowSequenceStackStep extends React.Component<IFlowSequenceStackStep, {isDragging: boolean; isCollapsed: boolean; isDroppingOver: boolean;}> {
+export class FlowSequenceStackStepHost extends React.Component<IFlowSequenceStackStepHost, {isDragging: boolean; isCollapsed: boolean; isDroppingOver: boolean;}> {
 
     render() {
 		let {step, index, width} = this.props;

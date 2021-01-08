@@ -124,7 +124,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
             <ObserveState
                 listenTo={this}
                 control={
-                    () => <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate}>
+                    () => <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
                         <FlowEditorDiv>
                             <FlowTopBar editContext={this.editContext} />
                             <FlowMainSectionDiv>
@@ -150,23 +150,17 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     }
 
     @AutoBind
-    onDragUpdate(_result: DropResult) {
+    onDragStart(_initial: DragStart, _provided: ResponderProvided) {
+		this.editContext.clearSelection();
         this.editContext.isDraggingControl = true;
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
     }
 
     @AutoBind
-    onDragStart(initial: DragStart, _provided: ResponderProvided) {
-        this.editContext.draggingElem = initial.draggableId;
-		this.editContext.clearSelection();
-        this.editContext.draggingElem = initial.draggableId;
-    }
-
-    @AutoBind
     onDragEnd(result: DropResult) {
         this.editContext.isDraggingControl = false;
-        this.editContext.draggingElem = undefined;
+        StateManager.propertyChanged(this.editContext, 'isDraggingControl');
 
         // if not destination... then we should not do anything
         if (!result.destination)
@@ -550,7 +544,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
             {
                 props.flow.sequences.map((s: FlowStepSequence, i: number) => {
-                    return <ObserveState listenTo={s} control={() => <FlowSequenceStack key={s._id} flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>} />
+                    return <ObserveState listenTo={s} key={s._id} control={() => <FlowSequenceStack flow={props.flow} sequence={s}  editContext={props.editContext} index={i}/>} />
                 })
             }
 
@@ -592,23 +586,28 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 }
             />
 
-            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]} control={() => <>
-                {
-                    props.flow.getConnections().map((value: FlowConnection) => {
-                        return <ObserveMultiState
-                            listenTo={[value.fromSequence, value.fromInstruction]}
-                            key={`${value.fromId}-${value.toId}`}
-                            control={
-                                () => <Xarrow
-                                    start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStepId + '-' + value.fromInstruction.pathName}
-                                    end={value.toId}
-                                    strokeWidth = {2}
-                                    headSize = {3}
-                                />
-                            }/> 
-                    })
-                }
-            </>} />
+            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]} control={() => {
+                console.log('candidateSequences updated');
+                return <>
+                    {
+                        props.flow.getConnections().map((value: FlowConnection) => {
+                            let targetSequence = props.editContext.getTargetSequence(value.toId);
+                            return <ObserveMultiState
+                                listenTo={[value.fromSequence, value.fromInstruction, value.fromStep, targetSequence]}
+                                key={`${value.fromId}-${value.toId}`}
+                                control={
+                                    () => {
+                                        return <Xarrow
+                                            start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
+                                            end={value.toId}
+                                            strokeWidth = {2}
+                                            headSize = {3}
+                                        />
+                                    }
+                                }/> 
+                        })
+                    }
+                </>}} />
            
 
             <ObserveState listenTo={props.editContext} properties={["contextControl"]} control={

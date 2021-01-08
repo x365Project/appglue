@@ -3,6 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import {FlowEditorParameters, XFlowEditor} from "./XFlowEditor";
 import { getFlowWithSteps } from './Testing/TestDataSetup';
 import { FlowStepSequence } from './Structure/FlowStepSequence';
+import { FlowStepOutput } from './Structure/FlowStepOutput';
 
 class FlowEditorParams implements FlowEditorParameters {
     flow = getFlowWithSteps();
@@ -165,23 +166,60 @@ describe("XFlowEditor", () => {
         let sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(2);
 
+        expect(flowEditor.flow.sequences).toHaveLength(2);
+
+        let otherPaths: FlowStepOutput[] = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
+
         fireEvent.click(sequences[1]);
         cutBtn = queryByTestId('btn-topbar-cut');
 
         fireEvent.click(cutBtn!);
+
+
         
         let btnDialogSuccess = queryByTestId('btn-dialog-success');
         expect(btnDialogSuccess).toBeInTheDocument();
 
         fireEvent.click(btnDialogSuccess!);
+        expect(flowEditor.flow.sequences).toHaveLength(1);
+
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
 
         sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(1);
 
         fireEvent.click(pasteBtn!);
 
+        expect(flowEditor.flow.sequences).toHaveLength(2);
+
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
         sequences = container.querySelectorAll('.stack');
         expect(sequences).toHaveLength(2);
+
+        expect(flowEditor.flow.sequences).toHaveLength(2);
+
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
 
         fireEvent.click(sequences[1]);
 
@@ -191,6 +229,13 @@ describe("XFlowEditor", () => {
         fireEvent.click(btnDialogSuccess!);
 
         sequences = container.querySelectorAll('.stack');
+        otherPaths  = [];
+        for (let sequence of flowEditor.flow.sequences) {
+            let multiOutputTestStep = sequence.steps[1];
+            otherPaths = otherPaths.concat(multiOutputTestStep.getOutcomes() || []);
+        }
+
+        expect(container.querySelectorAll('.react-draggable')).toHaveLength(otherPaths.length + 2);
         expect(sequences).toHaveLength(1);
     });
 
@@ -274,7 +319,7 @@ describe("XFlowEditor", () => {
             otherPaths.shift();
         }
 
-        expect(container.querySelectorAll('svg')).toHaveLength(otherPaths.length);
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
 
         for (let path of otherPaths) {
             if (path.name) {
@@ -289,18 +334,45 @@ describe("XFlowEditor", () => {
         expect(errorList).toHaveLength(0);
     });
 
-    it("Check if collapsed working.", () => {
+    it("Check if path strategy changed.", () => {
 
         let flowEditorProps = new FlowEditorParams();
         let sequence = flowEditorProps.flow.sequences[0];
+        let oldStepCount = sequence.steps.length;
         sequence.isCollapsed = true;
 
         const {container} = render(<XFlowEditor {...flowEditorProps} />);
+        let sequenceElem = document.getElementById(sequence._id) as HTMLElement;
 
-        fireEvent.dragStart(container.querySelector('[data-rbd-drag-handle-draggable-id="Form"]')!);
-        fireEvent.dragEnter(document.getElementById(sequence._id)!);
+        let option = container.querySelectorAll('select.MuiSelect-select');
 
-        expect(sequence.isCollapsed).toEqual(true);
+        expect(option).toHaveLength(2);
+
+        fireEvent.change(option[0], {target: {value: 'continue'}});
+
+        // MultiOutputTestStep
+        let multiOutputTestStep = sequence.steps[1];
+
+        let otherPaths = multiOutputTestStep.getOutcomes() || [];
+
+        if (otherPaths.length !== 0) {
+            // removes first item
+            otherPaths.shift();
+        }
+
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
+
+        fireEvent.change(option[0], {target: {value: 'branch'}});
+        expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);
+        
+        // fireEvent.dragStart(formElem);
+        // fireEvent.dragEnter(sequenceElem);
+        // fireEvent.drop(sequenceElem);
+        // fireEvent.dragLeave(sequenceElem);
+        // fireEvent.dragEnd(formElem);
+
+        // expect(sequence.isCollapsed).toEqual(false);
+        // expect(sequence.steps).toHaveLength(oldStepCount + 1);
 
         expect(errorList).toHaveLength(0);
 

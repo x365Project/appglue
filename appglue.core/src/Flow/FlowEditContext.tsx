@@ -29,7 +29,7 @@ export class FlowEditContext {
 
     addCandidateSequence(s: CandidateSequence) : void {
         this.candidateSequences.push(s);
-        this.positionCandidateSequences(false);
+        this.positionCandidateSequences();
     }
 
     removeCandidateSequence(s: CandidateSequence) : void {
@@ -53,7 +53,7 @@ export class FlowEditContext {
 
     purgeCandidateSequences() : void {
         this.doPurgeOfSequences();
-        this.positionCandidateSequences();
+        this.positionCandidateSequences(false);
     }
 
     private doPurgeOfSequences() {
@@ -233,7 +233,7 @@ export class FlowEditContext {
             nonPathCandidate.x = farX + 30;
         }
 
-
+        console.log('candidateSequences updating');
         // set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences");
     }
@@ -372,6 +372,7 @@ export class FlowEditContext {
     deleteSequence(idx: number) {
         this.flow.deleteSequenceByIndex(idx);
         StateManager.propertyChanged(this.flow, 'sequences');
+        this.purgeCandidateSequences();
     }
 
     @AutoBind
@@ -416,6 +417,7 @@ export class FlowEditContext {
             }
         } else {
             this.flow.remove(elem as BaseFlowStep);
+            this.purgeCandidateSequences();
         }
 
     };
@@ -425,15 +427,8 @@ export class FlowEditContext {
         if (!this.clipboardElement || !this.selectionElement) return;
 
         if (this.clipboardElement instanceof FlowStepSequence && this.selectionElement instanceof FlowStepSequence) {
-            let idx = this.flow.sequences.indexOf(this.selectionElement as FlowStepSequence);
-            let newSeq = new FlowStepSequence();
+            let newSeq = this.cloneFlowElement(this.clipboardElement) as FlowStepSequence;
             newSeq._id = DataUtilities.generateUniqueId();
-
-            for (let s of (this.clipboardElement as FlowStepSequence).steps) {
-                let newS = this.cloneFlowElement(s) as BaseFlowStep;
-                newS._id = DataUtilities.generateUniqueId();
-                newSeq.addStep(newS);
-            }
 
             newSeq.x += 20;
             newSeq.y += 20;
@@ -549,16 +544,6 @@ export class FlowEditContext {
 
     set draggingElemType(type: IDraggingElementType | undefined) {
         this._draggingElemType = type;
-    }
-
-    private _draggingElemId?: string;
-
-    get draggingElem(): string | undefined {
-        return this._draggingElemId;
-    }
-
-    set draggingElem(elemId: string | undefined) {
-        this._draggingElemId = elemId;
     }
 
     refresh() {

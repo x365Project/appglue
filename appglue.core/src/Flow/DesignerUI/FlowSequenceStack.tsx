@@ -18,7 +18,7 @@ import {UpIcon} from "../../CommonUI/Icon/UpIcon";
 import {DownIcon} from "../../CommonUI/Icon/DownIcon";
 import {MoveIcon} from "../../CommonUI/Icon/MoveIcon";
 import { Collapse, Typography } from "@material-ui/core";
-import {FlowSequenceStackStep} from "./FlowSequenceStackStep";
+import {FlowSequenceStackStepHost} from "./FlowSequenceStackStepHost";
 import { IPosition } from "../CommonUI/IPosition";
 
 import {FlowEditContext} from "../FlowEditContext";
@@ -280,8 +280,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 			isCollapsed: isCollapsed
 		})
 
-		// this.props.sequence.isCollapsed = isCollapsed;
-
 	}
 
 	onToggleCollapsed = (_event: React.MouseEvent<HTMLDivElement>) => {
@@ -303,7 +301,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
             <ReactDraggable
 				bounds="parent"
 				disabled={this.props.index === 0}
-                defaultPosition={this.getDefaultPosition()}
+				defaultPosition={this.getDefaultPosition()}
+				position={this.getDefaultPosition()}
 				onStop={this.onDragStop}
 				onStart={this.onDragStart}
 				onDrag={this.onDrag}
@@ -383,7 +382,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 													{this.props.sequence.steps.map((step: BaseFlowStep, i: number) => {
 														return <ObserveState
 															listenTo={step}
-															control={() => <FlowSequenceStackStep
+															key={step._id}
+															control={() => <FlowSequenceStackStepHost
 																width={this.width}
 																editContext={this.props.editContext}
 																sequence={this.props.sequence}

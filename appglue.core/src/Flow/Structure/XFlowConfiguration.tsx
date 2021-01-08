@@ -120,7 +120,7 @@ export class XFlowConfiguration implements IFlowElement{
             for (let step of seq.steps) {
                 for (let inst of step.getOutcomeInstructions()) {
                     if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
-                        conn.push(new FlowConnection(seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName), inst.connectedSequenceId, false, seq, inst, step._id));
+                        conn.push(new FlowConnection(seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName), inst.connectedSequenceId, false, seq, inst, step));
                     }
                 }
             }
@@ -132,17 +132,18 @@ export class XFlowConfiguration implements IFlowElement{
 
 export class FlowConnection {
     fromSequence: FlowStepSequence;
+    toSequence?: FlowStepSequence;
     fromInstruction: FlowStepOutputInstructions;
-    fromStepId: string;
+    fromStep: BaseFlowStep;
     fromId: string;
     toId: string;
     isCandidate: boolean;
 
 
-    constructor(fromId: string, toId: string, isCandidate: boolean, fromSequence: FlowStepSequence, fromInstruction: FlowStepOutputInstructions, fromStepId: string) {
+    constructor(fromId: string, toId: string, isCandidate: boolean, fromSequence: FlowStepSequence, fromInstruction: FlowStepOutputInstructions, fromStep: BaseFlowStep) {
         this.fromSequence = fromSequence;
         this.fromInstruction = fromInstruction;
-        this.fromStepId = fromStepId;
+        this.fromStep = fromStep;
         this.fromId = fromId;
         this.toId = toId;
         this.isCandidate = isCandidate;
