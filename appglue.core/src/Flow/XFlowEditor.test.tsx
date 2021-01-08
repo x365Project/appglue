@@ -338,11 +338,9 @@ describe("XFlowEditor", () => {
 
         let flowEditorProps = new FlowEditorParams();
         let sequence = flowEditorProps.flow.sequences[0];
-        let oldStepCount = sequence.steps.length;
         sequence.isCollapsed = true;
 
         const {container} = render(<XFlowEditor {...flowEditorProps} />);
-        let sequenceElem = document.getElementById(sequence._id) as HTMLElement;
 
         let option = container.querySelectorAll('select.MuiSelect-select');
 
@@ -361,6 +359,8 @@ describe("XFlowEditor", () => {
         }
 
         expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length - 1);
+
+        option = container.querySelectorAll('select.MuiSelect-select');
 
         fireEvent.change(option[0], {target: {value: 'branch'}});
         expect(container.querySelectorAll('svg:not([class])')).toHaveLength(otherPaths.length);

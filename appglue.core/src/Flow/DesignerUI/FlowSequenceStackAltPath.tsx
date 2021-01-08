@@ -92,6 +92,10 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 		this.manageCandidateSequence();
 	}
 
+	componentWillUnmount() {
+		this.props.editContext.purgeCandidateSequences();
+	}
+
 	render() {
 		let {stepOutput, sequence, step} = this.props;
 		

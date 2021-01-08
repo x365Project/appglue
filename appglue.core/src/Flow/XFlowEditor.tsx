@@ -525,6 +525,28 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     return (
         <DesignPanel>
 
+            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]} control={() => {
+                return <>
+                    {
+                        props.flow.getConnections().map((value: FlowConnection) => {
+                            let targetSequence = props.editContext.getTargetSequence(value.toId);
+                            return <ObserveMultiState
+                                listenTo={[value.fromSequence, value.fromInstruction, value.fromStep, targetSequence]}
+                                key={`${value.fromId}-${value.toId}`}
+                                control={
+                                    () => {
+                                        return <Xarrow
+                                            start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
+                                            end={value.toId}
+                                            strokeWidth = {2}
+                                            headSize = {3}
+                                        />
+                                    }
+                                }/> 
+                        })
+                    }
+                </>}} 
+            />
             <ObserveState
                 listenTo={props.editContext}
                 properties={["candidateSequences", "isDraggingControl"]}
@@ -586,28 +608,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 }
             />
 
-            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]} control={() => {
-                console.log('candidateSequences updated');
-                return <>
-                    {
-                        props.flow.getConnections().map((value: FlowConnection) => {
-                            let targetSequence = props.editContext.getTargetSequence(value.toId);
-                            return <ObserveMultiState
-                                listenTo={[value.fromSequence, value.fromInstruction, value.fromStep, targetSequence]}
-                                key={`${value.fromId}-${value.toId}`}
-                                control={
-                                    () => {
-                                        return <Xarrow
-                                            start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
-                                            end={value.toId}
-                                            strokeWidth = {2}
-                                            headSize = {3}
-                                        />
-                                    }
-                                }/> 
-                        })
-                    }
-                </>}} />
            
 
             <ObserveState listenTo={props.editContext} properties={["contextControl"]} control={

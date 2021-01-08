@@ -74,6 +74,9 @@ export class FlowEditContext {
                 if (c.forStepId && c.forPath) {
                     let step = this.flow.find(c.forStepId) as BaseFlowStep;
                     if (!step) return false;
+
+                    if (!c.forPath || c.forPath === "") return false;
+
                     let stepOutput = step.findOutputInstruction(c.forPath);
                     if (!stepOutput) return false;
     
@@ -233,7 +236,6 @@ export class FlowEditContext {
             nonPathCandidate.x = farX + 30;
         }
 
-        console.log('candidateSequences updating');
         // set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences");
     }
@@ -455,7 +457,6 @@ export class FlowEditContext {
         this.flowEditor = flowEditor;
 
         this.addNonPathCandidateSequence();
-        this.positionCandidateSequences();
     }
 
     addNonPathCandidateSequence() {
@@ -465,6 +466,7 @@ export class FlowEditContext {
             let c = new CandidateSequence(0, 30);
             c._id = FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
             this.candidateSequences.push(c);
+            this.positionCandidateSequences();
         }
     }
 
