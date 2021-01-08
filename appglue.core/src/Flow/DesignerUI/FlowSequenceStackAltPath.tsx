@@ -59,17 +59,24 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 		if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
 			if (this.containerRef && this.containerRef.current) {
 				if (stepOutput.pathName) {
+					let point1 = {
+						x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + sequence.x + FlowConstants.PATH_CANDIDATE_SHIFT,
+						y: this.containerRef!.current!.offsetTop + sequence.y + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2)
+					};
 					if (!targetSequence) {
-						let point1 = {
-							x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + sequence.x,
-							y: this.containerRef!.current!.offsetTop + sequence.y + 18
-						};
-						let candidateSequence = new CandidateSequence(point1.x + FlowConstants.PATH_CANDIDATE_SHIFT, point1.y - (FlowConstants.PATH_CANDIDATE_HEIGHT/2), step._id, stepOutput.pathName);
+						let candidateSequence = new CandidateSequence(point1.x, point1.y, step._id, stepOutput.pathName);
 						stepOutput.connectedSequenceId = candidateSequence._id;
 						editContext.addCandidateSequence(candidateSequence);
-					} else if (targetSequence instanceof CandidateSequence && targetSequence.forPath !== stepOutput.pathName) {
-						targetSequence.forPath = stepOutput.pathName;
-						StateManager.changed(targetSequence);
+					} else if (targetSequence instanceof CandidateSequence) {
+						if (targetSequence.forPath !== stepOutput.pathName) {
+							targetSequence.forPath = stepOutput.pathName;
+							StateManager.changed(targetSequence);
+						} else if ((targetSequence.desiredX !== point1.x || targetSequence.desiredY !== point1.y) && !targetSequence.wasDragged) {
+							// sequence is moved
+							targetSequence.desiredX = point1.x;
+							targetSequence.desiredY = point1.y;
+							editContext.positionCandidateSequences();
+						}
 					}
 					// else
 					// 	{
@@ -82,7 +89,7 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					// }
 
 				} else if (targetSequence && targetSequence instanceof CandidateSequence) {
-					editContext.positionCandidateSequences();
+					editContext.purgeCandidateSequences();
 				}
 			} else {
 				this.forceUpdate();
