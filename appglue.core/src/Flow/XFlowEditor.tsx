@@ -61,7 +61,7 @@ import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
-import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
+
 
 export interface FlowEditorParameters {
     flow : XFlowConfiguration;
@@ -150,9 +150,11 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     }
 
     @AutoBind
-    onDragStart(_initial: DragStart, _provided: ResponderProvided) {
-		this.editContext.clearSelection();
-        this.editContext.isDraggingControl = true;
+    onDragStart(initial: DragStart, _provided: ResponderProvided) {
+        this.editContext.clearSelection();
+        if (!initial.draggableId.endsWith('_drag')) {
+            this.editContext.isDraggingControl = true;
+        }
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
     }

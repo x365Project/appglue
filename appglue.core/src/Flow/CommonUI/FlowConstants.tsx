@@ -3,6 +3,7 @@ export class FlowConstants {
   static ToolboxId = 'Toolbox';
   static DEFAULT_CANDIDATE_SEQ_ID = 'DefaultCandidateId';
   static DROPPING_COLOR = '#4682B4';
+  static PATH_DROPPING_COLOR = '#B44682';
   static DEFAULT_RELATION_LINE_COLOR = 'gray';
   static DEFAULT_RELATION_LINE_WIDTH = 1;
   static DEFAULT_STACK_WIDTH = 275;

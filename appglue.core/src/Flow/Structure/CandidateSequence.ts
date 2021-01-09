@@ -15,8 +15,6 @@ export class CandidateSequence implements IFlowStepSequence {
     forStepId?: string;
     forPath?: string;
 
-    wasDragged: boolean = false;
-
 
     constructor(x: number, y: number, forStepId?: string, forPath?: string) {
         this.x = x;

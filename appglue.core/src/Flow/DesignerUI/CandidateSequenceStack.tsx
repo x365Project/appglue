@@ -21,12 +21,13 @@ export const CandidateSequenceDiv = styled("div")<{
 	opacity: ${props => props.show ? 1: 0};
 	background: transparent;
 	border-radius: 4px;
+	${props => props.isDragging && `z-index: 1;`}
 	${props => !props.isDragging && `transform: none !important;`}
 `;
 
 export const CandidateSequenceDropDiv = styled("div")<{
 	isDroppingOver: boolean;
-	isNew: boolean;
+	isPathCandidate: boolean;
 }>`
 	border-radius: 5px;
 
@@ -34,32 +35,19 @@ export const CandidateSequenceDropDiv = styled("div")<{
 		`border: dashed 1px ${FlowConstants.DROPPING_COLOR};`
 	}
 
-	${props => !props.isNew && `
+	${props => !props.isPathCandidate && `
 		width: ${FlowConstants.DEFAULT_STACK_WIDTH}px;
 		min-height: ${FlowConstants.DEFAULT_STACK_HEIGHT}px;
-		${!props.isDroppingOver && `border: dashed 1px darkgray`};	
+		${!props.isDroppingOver && `background: ${FlowConstants.DROPPING_COLOR}`};	
 	`}
 
-	${props => props.isNew && `
+	${props => props.isPathCandidate && `
 		width: ${FlowConstants.PATH_CANDIDATE_WIDTH}px;
 		min-height: ${FlowConstants.PATH_CANDIDATE_HEIGHT}px;
-		${!props.isDroppingOver && `border: dashed 1px darkgray`};
+		border: dashed 1px ${FlowConstants.PATH_DROPPING_COLOR};
 	`}
 
 `;
-
-export const CandidateSequenceDragDiv = styled("div")<{showBoarder: boolean;}>`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	border-radius: 5px;
-	${props => props.showBoarder && `
-		border: dashed 1px darkgray;
-	`}
-`;
-
 
 interface ICandidateSequenceStack {
 	editContext: FlowEditContext;
@@ -91,21 +79,14 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 	}
 
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
-		this.props.candidate.x = data.x;
-		this.props.candidate.y = data.y;
-		this.props.candidate.wasDragged = true;
+		let sequence = this.props.editContext.getTarget(data.x, data.y);
+		if (sequence) {
+			this.props.editContext.combineSequences(this.props.candidate, sequence);
+		}
 
-		StateManager.changed(this.props.candidate);
 		this.setState({
 			isDragging: false
 		});
-	}
-
-	onDrag = (_e: DraggableEvent, data: DraggableData) => {
-		this.props.candidate.x = data.x;
-		this.props.candidate.y = data.y;
-
-		StateManager.changed(this.props.candidate);
 	}
 
 	render() {
@@ -116,7 +97,6 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 				bounds="parent"
 				disabled={!this.props.candidate.forStepId}
 				onStop={this.onDragStop}
-				onDrag={this.onDrag}
 				onStart={this.onDragStart}
 				position={this.getDefaultPosition()}
 				defaultPosition={this.getDefaultPosition()}
@@ -131,7 +111,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 						{
 							(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
 								return <CandidateSequenceDropDiv
-									isNew={!!this.props.candidate.forStepId}
+									isPathCandidate={!!this.props.candidate.forStepId}
 									isDroppingOver={dropSnapshot.isDraggingOver}
 									{...dropProvided.droppableProps}
 									ref={dropProvided.innerRef}
