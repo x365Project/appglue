@@ -195,28 +195,26 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 if (c) {
                     let s = c.createSequence();
                     // this is a new sequence... need to record its actual id
-                    seqid = s._id;
-                    this.flow.addSequence(s);
+                    seqid = s._id;                                                                                                  
                     if (c.forPath && c.forStepId) {
                         let step = this.flow.find(c.forStepId) as BaseFlowStep;
                         let stepOutput = step.findOutputInstruction(c.forPath);
-                        if (!stepOutput) return;
+                        if (!stepOutput) return;                                                                            
                         stepOutput.connectedSequenceId = s._id;
                     }
+                    this.flow.addSequence(s);
                 }
 
                 if (isNew) {
                     this.props.flow.add(control, seqid, result.destination.index);
                 } else {
-                    this.props.flow.moveToSequence(control, seqid, result.destination.droppableId, result.destination.index)
+                    this.props.flow.moveToSequence(control, result.source.droppableId, seqid, result.destination.index);
                 }
+                this.editContext.positionCandidateSequences();
             }
         }
 
-		StateManager.propertyChanged(this.editContext, 'isDraggingControl');
-
         if (control) {
-
             this.editContext.setSelection(control);
         }
         else
