@@ -109,6 +109,14 @@ export class FlowEditContext {
         return;
     }
 
+    getTarget(x: number, y: number): FlowStepSequence | null {
+        for (let s of this.flow.sequences) {
+            if (x > s.x && x < s.x + s.width && y > s.y && y < s.y + s.height)
+                return s;
+        }
+        return null;
+    }
+
     positionCandidateSequences(requirePurge:boolean = true) : void {
 
         if (requirePurge) {

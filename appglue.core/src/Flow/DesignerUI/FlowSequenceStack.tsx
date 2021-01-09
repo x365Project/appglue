@@ -361,7 +361,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 						<Droppable droppableId={this.props.sequence._id}>
 							{
 								(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
-									if (this.state.isCollapsed && snapshot.isDraggingOver) {
+									if (this.state.isCollapsed && snapshot.isDraggingOver && snapshot.draggingOverWith && snapshot.draggingOverWith.endsWith('_drag')) {
 										this.setCollapsed(false);
 									}
 									return (
@@ -394,7 +394,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 													})}
 												</FlowSequenceContent>
 											</Collapse>
-											{ provided.placeholder }
+											{ snapshot.isDraggingOver && snapshot.draggingOverWith && !snapshot.draggingOverWith.endsWith('_drag') && provided.placeholder }
 										</div>
 									);
 								}
