@@ -135,6 +135,8 @@ export class FlowEditContext {
             toPosition.push(realS);
         }
 
+        let wasRepositioned = false;
+
         let next : IFlowStepSequence | undefined = toPosition.length === 0 ? undefined : toPosition[0];
         while (next) {
 
@@ -166,22 +168,15 @@ export class FlowEditContext {
             // sort
             let ranges : {top: number, bottom: number, sequence: IFlowStepSequence} [] = [];
             for (let aSequence of compareTo) {
-                let realSequence = aSequence as FlowStepSequence;
+                let height = Reflect.get(aSequence, 'height') ?? FlowConstants.PATH_CANDIDATE_HEIGHT  ;
 
-                if (realSequence) {
-                    ranges.push({
-                        top : realSequence.y - 20,
-                        bottom: realSequence.y + realSequence.height + 20,
-                        sequence: realSequence
+                height = height + 5;
 
-                    })
-                } else {
-                    ranges.push({
-                        top : aSequence.y - 20,
-                        bottom: aSequence.y + FlowConstants.PATH_CANDIDATE_HEIGHT + 20, // replace 50 with real height
-                        sequence: aSequence
-                    })
-                }
+                ranges.push({
+                    top : aSequence.desiredY ,
+                    bottom: aSequence.desiredY + height,
+                    sequence: aSequence
+                })
             }
 
             ranges.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
@@ -196,6 +191,9 @@ export class FlowEditContext {
                 return 0;
             } )
 
+            console.log(ranges);
+
+
             let lastSeq : {top: number, bottom: number, sequence: IFlowStepSequence} | undefined = undefined;
             for (let positionMe of ranges) {
                 if (lastSeq) {
@@ -203,6 +201,7 @@ export class FlowEditContext {
                         positionMe.sequence.y = lastSeq.bottom;
                         let height = positionMe.bottom - positionMe.top;
                         positionMe.bottom = lastSeq.bottom + height;
+                        wasRepositioned = true;
                     }
                 }
 
@@ -214,11 +213,14 @@ export class FlowEditContext {
                 toPosition.splice(toPosition.indexOf(toRemove.sequence), 1);
             }
 
-            // if there is one left, it is the general purpose stack
             if (toPosition.length === 0)
                 break;
 
             next = toPosition[0];
+        }
+
+        if (wasRepositioned) {
+            // trigger redraw of sequendes and lines
         }
 
         // -- non path candidate

@@ -17,6 +17,8 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     x: number = -1;
     y: number = -1;
+    desiredY: number = -1;
+    desiredX: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
     height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
 
@@ -120,5 +122,6 @@ export class FlowStepSequence implements IFlowStepSequence {
             
         );
     }
+
 
 }
