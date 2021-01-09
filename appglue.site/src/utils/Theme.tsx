@@ -17,7 +17,8 @@ export const createTheme = ({
     palette: {
       type: contentTheme,
       primary: {
-        main: color ? color : '#203156;',
+        // main: color ? color : '#203156;',
+        main: '#203156;',
         light: '#ffffff',
         dark: '#292F39',
         // light: '#dceaf5',

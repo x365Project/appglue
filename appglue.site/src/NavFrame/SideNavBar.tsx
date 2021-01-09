@@ -21,6 +21,7 @@ export default function SideBarNav(props: {
   handleRenderPage: any;
   navBarColor: string;
   navBarFontColor: string;
+  layoutOptions: any;
 }) {
   const [navBarFontColor, setNavBarFontColor] = React.useState<string>('#fff');
 
@@ -58,8 +59,7 @@ export default function SideBarNav(props: {
       },
     },
     MenuText: {
-      fontSize: '14px',
-      fontWeight: 700,
+      fontSize: '1rem',
       display: 'flex',
       justifyContent: 'space-between',
       [theme.breakpoints.between('sm', 'md')]: {

@@ -6,13 +6,17 @@ import TopBarNav from './TopNavBar';
 import Grid from '@material-ui/core/Grid';
 import { ThemeProvider } from '@material-ui/core';
 import { createTheme } from '../utils/Theme';
-export function NavFrame(props: { layoutOptions: FrameProps }) {
+export function NavFrame(props: {
+  layoutOptions: FrameProps;
+  rerender?: () => any;
+}) {
   // top bar
   // either side bar nav or top bar nav
   // render content
   const { layout } = props.layoutOptions;
-  console.log('layout', props.layoutOptions.layoutWidth);
   const theme = createTheme(props.layoutOptions);
+
+  console.log('props.layoutOptions', props.layoutOptions);
   return (
     <ThemeProvider theme={theme}>
       <Grid>

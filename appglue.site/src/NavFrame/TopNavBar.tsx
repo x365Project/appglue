@@ -1,7 +1,7 @@
 import React from 'react';
 import { FrameProps } from './FrameProps';
 import Dropdown from './Dropdown';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,22 +10,18 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import SettingsIcon from '@material-ui/icons/Settings';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import clsx from 'clsx';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { List, Divider } from '@material-ui/core';
-import TopMenu from './NavBarData';
+import { List } from '@material-ui/core';
 import LogoIocn from '../assets/logo.svg';
 import { PageRoutes } from '../Pages/PageRoutes';
 import { LayoutWidth } from './FrameProps';
@@ -34,164 +30,209 @@ import { TopBarTheme } from './FrameProps';
 import { NavBarTheme } from './FrameProps';
 import { addToObject } from '../utils/helpers';
 
-const useStyles = makeStyles(theme => ({
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    background: 'rgba(235,244,250,0.2)',
-    color: 'inherit',
-    '&:hover': {
-      backgroundColor: 'rgba(235,244,250,0.2)',
-    },
-    marginRight: theme.spacing(2),
-    width: '240px',
-    marginLeft: theme.spacing(6),
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: '240px',
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(1, 1, 0),
-    float: 'right',
-    display: 'inline-block',
-    // color: 'inherit',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    fontSize: '14px',
-    padding: theme.spacing(1),
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '15ch',
-    },
-  },
-  appBar: {
-    height: '72px',
-    zIndex: theme.zIndex.drawer + 2,
-    // width: `calc(100% - 73px)`,
-    background: 'linear-gradient(90.16deg, #49A0D5 -0.48%, #00D1C1 102.05%)',
-    color: theme.palette.common.white,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  Iconbutton: {
-    // color: 'inherit',
-    marginLeft: '44px',
-  },
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
-  },
-  HorizontalMenu: {
-    display: 'flex',
-    color: '#677C95',
-    background: '#fff',
-    height: '40px',
-  },
-  MenuIcon: {
-    // color: '#00D1C1',
-    color: 'inherit',
-    minWidth: '38px',
-  },
-  LogoBlock: {
-    margin: ' 12px 33px',
-    [theme.breakpoints.up('sm')]: {
-      margin: ' 4px 33px',
-    },
-  },
-  LogoIcon: {
-    paddingRight: '10px',
-  },
-  ButtonMenu: {
-    padding: '0',
-    margin: '0 0 0 24px',
-    width: 'unset',
-  },
-  LogoMenuIcon: {
-    color: 'inherit',
-  },
-  content: {
-    backgroundColor: '#f7fbfd',
-    lexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-    fontFamily: 'Mulish',
-  },
-  userName: {
-    padding: '13px 0 0 10px',
-  },
-  borderGrow: {
-    maxWidth: '1440px',
-    margin: '0 auto',
-  },
-  lightContentTheme: {
-    background: '#f7fbfd',
-  },
-  darkContentTheme: {
-    background: '#424C5C',
-  },
-  lightTopBar: {
-    color: '#9AA5B7',
-    background: theme.palette.primary.light,
-  },
-  darkTopBar: {
-    color: '#fff',
-    background: theme.palette.primary.dark,
-  },
-  coloredTopBar: {
-    color: '#fff',
-    // background: theme.palette.primary.main,
-  },
-  darkNavBar: {
-    color: '#fff',
-    background: theme.palette.primary.dark,
-  },
-  lightNavBar: {
-    color: '#9AA5B7',
-    background: theme.palette.primary.light,
-  },
-  coloredNavBar: {
-    color: '#fff',
-    // background: theme.palette.primary.main,
-  },
-  arrow: {
-    paddingLeft: '7px',
-    transition: '.2s',
-  },
-}));
-
-export default function TopBarNav(props: { layoutOptions: FrameProps }) {
-  const classes = useStyles();
+export default function TopBarNav(props: {
+  layoutOptions: FrameProps;
+  rerender?: () => any;
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [value, setValue] = React.useState(0);
+  const [topBarFontColor, setTopBarFontColor] = React.useState('#fff');
+  const [navBarFontColor, setNavBarFontColor] = React.useState('#fff');
 
+  React.useEffect(() => {
+    switch (props.layoutOptions.topBarTheme) {
+      case TopBarTheme.DARK:
+        setTopBarFontColor('#fff');
+        break;
+      case TopBarTheme.LIGHT:
+        setTopBarFontColor('#9AA5B7');
+        break;
+      case TopBarTheme.COLORED:
+        setTopBarFontColor(props.layoutOptions.topBarFontColor);
+        break;
+
+      default:
+        setTopBarFontColor('#fff');
+        break;
+    }
+
+    switch (props.layoutOptions.navBarTheme) {
+      case NavBarTheme.DARK:
+        setNavBarFontColor('#fff');
+        break;
+      case NavBarTheme.LIGHT:
+        setNavBarFontColor('#9AA5B7');
+        break;
+      case NavBarTheme.COLORED:
+        setNavBarFontColor(props.layoutOptions.navBarFontColor);
+        break;
+
+      default:
+        setNavBarFontColor('#fff');
+        break;
+    }
+  }, [props.layoutOptions]);
+
+  const useStyles = makeStyles(theme => ({
+    grow: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      display: 'none',
+      [theme.breakpoints.up('sm')]: {
+        display: 'block',
+      },
+    },
+    search: {
+      position: 'relative',
+      borderRadius: theme.shape.borderRadius,
+      background: 'rgba(235,244,250,0.2)',
+      color: 'inherit',
+      '&:hover': {
+        backgroundColor: 'rgba(235,244,250,0.2)',
+      },
+      marginRight: theme.spacing(2),
+      width: '240px',
+      marginLeft: theme.spacing(6),
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(3),
+        width: '240px',
+      },
+    },
+    searchIcon: {
+      padding: theme.spacing(1, 1, 0),
+      float: 'right',
+      display: 'inline-block',
+      // color: 'inherit',
+    },
+    inputRoot: {
+      color: 'inherit',
+    },
+    inputInput: {
+      fontSize: '14px',
+      padding: theme.spacing(1),
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('md')]: {
+        width: '15ch',
+      },
+    },
+    appBar: {
+      height: '72px',
+      zIndex: theme.zIndex.drawer + 2,
+      // width: `calc(100% - 73px)`,
+      background: 'linear-gradient(90.16deg, #49A0D5 -0.48%, #00D1C1 102.05%)',
+      color: topBarFontColor,
+      transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+    Iconbutton: {
+      // color: 'inherit',
+      marginLeft: '44px',
+    },
+    sectionDesktop: {
+      display: 'none',
+      [theme.breakpoints.up('md')]: {
+        display: 'flex',
+      },
+    },
+    sectionMobile: {
+      display: 'flex',
+      [theme.breakpoints.up('md')]: {
+        display: 'none',
+      },
+    },
+    HorizontalMenu: {
+      display: 'flex',
+      color: navBarFontColor,
+      height: '40px',
+    },
+    MenuIcon: {
+      // color: '#00D1C1',
+      color: 'inherit',
+      minWidth: '38px',
+    },
+    LogoBlock: {
+      margin: ' 12px 33px',
+      [theme.breakpoints.up('sm')]: {
+        margin: ' 4px 33px',
+      },
+    },
+    LogoIcon: {
+      paddingRight: '10px',
+    },
+    ButtonMenu: {
+      padding: '0',
+      margin: '0 0 0 24px',
+      width: 'unset',
+    },
+    LogoMenuIcon: {
+      color: 'inherit',
+    },
+    content: {
+      backgroundColor: '#f7fbfd',
+      lexGrow: 1,
+      height: '100vh',
+      overflow: 'auto',
+      fontFamily: 'Mulish',
+    },
+    userName: {
+      padding: '13px 0 0 10px',
+    },
+    borderGrow: {
+      maxWidth: '1440px',
+      margin: '0 auto',
+    },
+    lightContentTheme: {
+      background: '#f7fbfd',
+    },
+    darkContentTheme: {
+      background: '#424C5C',
+    },
+    lightTopBar: {
+      color: '#9AA5B7',
+      background: theme.palette.primary.light,
+    },
+    darkTopBar: {
+      color: '#fff',
+      background: theme.palette.primary.dark,
+    },
+    coloredTopBar: {
+      background: props.layoutOptions.topBarColor,
+      // color: '#fff',
+      // background: theme.palette.primary.main,
+    },
+    darkNavBar: {
+      // color: '#fff',
+      background: theme.palette.primary.dark,
+    },
+    lightNavBar: {
+      // color: '#9AA5B7',
+      background: theme.palette.primary.light,
+    },
+    coloredNavBar: {
+      background: props.layoutOptions.navBarColor,
+      // color: '#fff',
+      // background: theme.palette.primary.main,
+    },
+    arrow: {
+      paddingLeft: '7px',
+      transition: '.2s',
+    },
+    navigationContainer: {
+      padding: '12px 33px',
+      [theme.breakpoints.up('sm')]: {
+        padding: ' 4px 33px',
+      },
+    },
+  }));
+
+  const classes = useStyles();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -219,13 +260,14 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
   let previous = {};
 
   React.useEffect(() => {
-    PageRoutes.getRootPages().map(page => {
+    PageRoutes.getRootPages().forEach(page => {
       if (page.getSubPages().length > 0) {
         const result = addToObject(previous, page.name, false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         previous = result;
         setLinksWithSubpages(result);
       }
-      page.getSubPages().map(subpage => {
+      page.getSubPages().forEach(subpage => {
         if (subpage.getSubPages().length > 0) {
           const result = addToObject(previous, page.name, false);
           previous = result;
@@ -339,13 +381,6 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
       >
         <AppBar
           position="static"
-          style={
-            props.layoutOptions.topBarTheme === TopBarTheme.COLORED
-              ? {
-                  background: props.layoutOptions.colorGradientEnd,
-                }
-              : {}
-          }
           className={clsx(
             classes.appBar,
             props.layoutOptions.topBarTheme === TopBarTheme.DARK &&
@@ -357,18 +392,8 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
           )}
         >
           <Toolbar className={classes.LogoBlock}>
-            <img src={LogoIocn} className={classes.LogoIcon} />
+            <img src={LogoIocn} className={classes.LogoIcon} alt="logo" />
             <Typography>AppGlue</Typography>
-            <IconButton
-              className={classes.Iconbutton}
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -442,15 +467,9 @@ export default function TopBarNav(props: { layoutOptions: FrameProps }) {
       </div>
       <div>
         <List
-          style={
-            props.layoutOptions.navBarTheme === NavBarTheme.COLORED
-              ? {
-                  background: props.layoutOptions.colorGradientEnd,
-                }
-              : {}
-          }
           className={clsx(
             classes.HorizontalMenu,
+            classes.navigationContainer,
             props.layoutOptions.navBarTheme === NavBarTheme.DARK &&
               classes.darkNavBar,
             props.layoutOptions.navBarTheme === NavBarTheme.COLORED &&
