@@ -13,8 +13,8 @@ export class XFlowConfiguration implements IFlowElement{
     constructor() {
         this._sequences = [];
         let initialSeq = new FlowStepSequence();
-        initialSeq.x = 20;
-        initialSeq.y = 20;
+        initialSeq.desiredX = 20;
+        initialSeq.desiredY = 20;
 
         this.addSequence(initialSeq);
        // this.connections = [];

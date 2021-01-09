@@ -5,4 +5,6 @@ export interface IFlowStepSequence extends IFlowElement {
     y: number;
     desiredX: number;
     desiredY: number;
+
+    reset() : void;
 }

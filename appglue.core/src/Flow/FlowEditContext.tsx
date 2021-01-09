@@ -123,9 +123,6 @@ export class FlowEditContext {
             this.syncCandidates();
         }
 
-        for (let candS of this.candidateSequences) {
-            candS.reset();
-        }
 
         let toPosition : IFlowStepSequence[] = [...this.candidateSequences];
 
@@ -134,6 +131,11 @@ export class FlowEditContext {
         for (let realS of this.flow.sequences) {
             toPosition.push(realS);
         }
+
+        for (let candS of toPosition) {
+            candS.reset();
+        }
+
 
         let wasRepositioned = false;
 
