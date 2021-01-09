@@ -193,6 +193,8 @@ export class FlowEditContext {
                 if (lastSeq) {
                     if (positionMe.top < lastSeq.bottom) {
                         positionMe.sequence.y = lastSeq.bottom;
+                        let height = positionMe.bottom - positionMe.top;
+                        positionMe.bottom = lastSeq.bottom + height;
                     }
                 }
 
