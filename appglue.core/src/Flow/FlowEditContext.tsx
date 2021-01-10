@@ -19,7 +19,8 @@ export class FlowEditContext {
 
     flowTitle?: string;
     viewAPIUrl?: string;
-    isDraggingControl: boolean = false;
+    isDraggingControl: boolean = false; 
+    
 
     private candidateSequences: CandidateSequence[] = [];
 
@@ -274,7 +275,60 @@ export class FlowEditContext {
         return nearSequences;
     }
 
+    private _dragOverSequenceId?: string;
+
+    set dragOverSequence(sequence: FlowStepSequence | null) {
+        let oldSequence : FlowStepSequence | null = null;
+        if (this._dragOverSequenceId) {
+            oldSequence = this.flow.find(this._dragOverSequenceId) as FlowStepSequence;
+        }
+
+        if (sequence) {
+            this._dragOverSequenceId = sequence._id;
+            StateManager.changed(sequence);
+        } else {
+            this._dragOverSequenceId = undefined;
+        }
+
+        if (oldSequence) StateManager.changed(oldSequence);
+    }
+
+    get dragOverSequenceId(): string | undefined {
+        return this._dragOverSequenceId;
+    }
+
     combineSequences(combine: IFlowStepSequence, withSequence: IFlowStepSequence) {
+        
+        if (combine instanceof CandidateSequence) {
+            let step = this.flow.find(combine.forStepId!) as BaseFlowStep;
+            
+            let inst = step!.findOutputInstruction(combine.forPath!);
+            inst.connectedSequenceId = withSequence._id
+
+            StateManager.changed(inst);
+
+            this.candidateSequences = this.candidateSequences.filter((c) => c._id !== combine._id);
+            StateManager.propertyChanged(this, "candidateSequences");
+        } else if (combine instanceof FlowStepSequence) {
+            for (let s of combine.steps) {
+                this.flow.moveToSequence(s, combine._id, withSequence._id);
+            }
+
+            for (let seq of this.flow.sequences) {
+                if (seq._id === combine._id) continue;
+                for (let s of seq.steps) {
+                    for (let ins of s.getOutcomeInstructions()) {
+                        if (ins.connectedSequenceId === combine._id && ins.strategy === FlowStepOutputInstructionType.BRANCH) {
+                            ins.connectedSequenceId = withSequence._id;
+                        }
+                    }
+                }
+            }
+
+            let idx = this.flow.sequences.indexOf(combine);
+            this.deleteSequence(idx);
+        }
+        
         // check, second sequence MUST be a FlowStepSequence, not a CanidateSequence
 
         // if combine is FlowStepSequence AND has steps, copy those steps to withSquence
@@ -282,6 +336,7 @@ export class FlowEditContext {
         // look through all steps to see if the combine ID is used, if so, change it to the withSequence.id
 
         // delete combine
+        this.dragOverSequence = null;
     }
 
     @AutoBind

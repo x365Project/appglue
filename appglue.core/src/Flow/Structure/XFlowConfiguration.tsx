@@ -114,7 +114,6 @@ export class XFlowConfiguration implements IFlowElement{
     getConnections() : FlowConnection[] {
         let conn : FlowConnection[] = [];
 
-
         for (let seq of this._sequences) {
             for (let step of seq.steps) {
                 for (let inst of step.getOutcomeInstructions()) {

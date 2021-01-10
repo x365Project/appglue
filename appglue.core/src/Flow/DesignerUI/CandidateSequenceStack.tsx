@@ -38,7 +38,10 @@ export const CandidateSequenceDropDiv = styled("div")<{
 	${props => !props.isPathCandidate && `
 		width: ${FlowConstants.DEFAULT_STACK_WIDTH}px;
 		min-height: ${FlowConstants.DEFAULT_STACK_HEIGHT}px;
-		${!props.isDroppingOver && `background: ${FlowConstants.DROPPING_COLOR}`};	
+		${props.isDroppingOver
+			? `background: ${FlowConstants.DROPPING_COLOR};`
+			: `border: dashed 1px gray;`
+		};
 	`}
 
 	${props => props.isPathCandidate && `
@@ -78,10 +81,21 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 		})
 	}
 
+	onDrag = (_e: DraggableEvent, data: DraggableData) => {
+		let sequence = this.props.editContext.getTarget(data.x, data.y);
+		if (sequence) {
+			this.props.editContext.dragOverSequence = sequence;
+		} else {
+			this.props.editContext.dragOverSequence = null;
+		}
+	}
+
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
 		let sequence = this.props.editContext.getTarget(data.x, data.y);
 		if (sequence) {
 			this.props.editContext.combineSequences(this.props.candidate, sequence);
+		} else {
+			this.props.editContext.dragOverSequence = null;
 		}
 
 		this.setState({
@@ -97,6 +111,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 				bounds="parent"
 				disabled={!this.props.candidate.forStepId}
 				onStop={this.onDragStop}
+				onDrag={this.onDrag}
 				onStart={this.onDragStart}
 				position={this.getDefaultPosition()}
 				defaultPosition={this.getDefaultPosition()}

@@ -152,9 +152,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     @AutoBind
     onDragStart(initial: DragStart, _provided: ResponderProvided) {
         this.editContext.clearSelection();
-        if (!initial.draggableId.endsWith('_drag')) {
-            this.editContext.isDraggingControl = true;
-        }
+        this.editContext.isDraggingControl = true;
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
     }
@@ -537,6 +535,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                                     key={`${value.fromId}-${value.toId}`}
                                                     control={
                                                         () => {
+                                                            console.log(value.fromInstruction);
                                                             return <Xarrow
                                                                 start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
                                                                 end={value.toId}
