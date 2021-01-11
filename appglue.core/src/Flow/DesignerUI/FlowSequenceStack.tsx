@@ -271,8 +271,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 			this.props.editContext.dragOverSequence = null;
 		}
 
-		this.props.sequence.x = data.x;
-		this.props.sequence.y = data.y;
+		this.props.sequence.desiredX = data.x;
+		this.props.sequence.desiredX = data.y;
 		this.props.editContext.positionCandidateSequences();
 
 		this.setState({
@@ -288,8 +288,8 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 	
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
-		this.props.sequence.x = data.x;
-		this.props.sequence.y = data.y;
+		this.props.sequence.desiredX = data.x;
+		this.props.sequence.desiredX = data.y;
 
 		let sequence = this.props.editContext.getTarget(data.x, data.y);
 		if (sequence) {

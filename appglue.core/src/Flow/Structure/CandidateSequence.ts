@@ -37,8 +37,8 @@ export class CandidateSequence implements IFlowStepSequence {
 
     createSequence() : FlowStepSequence {
         let s = new FlowStepSequence();
-        s.x = this.x;
-        s.y = this.y;
+        s.desiredX = this.x;
+        s.desiredY = this.y;
         s._id = this._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID ? DataUtilities.generateUniqueId() : this._id;
         return s;
     }

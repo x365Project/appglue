@@ -10,6 +10,7 @@ import {XFlowConfiguration} from "./XFlowConfiguration";
 
 export class FlowStepSequence implements IFlowStepSequence {
 
+
     flow? : XFlowConfiguration;
 
     _id: string = DataUtilities.generateUniqueId();
@@ -17,6 +18,8 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     x: number = -1;
     y: number = -1;
+    private _desiredY: number = -1;
+    private _desiredX: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
     height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
 
@@ -25,6 +28,29 @@ export class FlowStepSequence implements IFlowStepSequence {
     private _isCollapsed: boolean = false;
     private _canCopy: boolean = true;
     private _steps: BaseFlowStep[] = [];
+
+    get desiredY(): number {
+        return this._desiredY;
+    }
+
+    set desiredY(value: number) {
+        this._desiredY = value;
+        this.y = value;
+    }
+
+    get desiredX(): number {
+        return this._desiredX;
+    }
+
+    set desiredX(value: number) {
+        this._desiredX = value;
+        this.x = value;
+    }
+
+    reset() : void {
+        this.x = this.desiredX;
+        this.y = this.desiredY;
+    }
 
     get steps(): readonly BaseFlowStep[] {
         return this._steps;
@@ -120,5 +146,6 @@ export class FlowStepSequence implements IFlowStepSequence {
             
         );
     }
+
 
 }
