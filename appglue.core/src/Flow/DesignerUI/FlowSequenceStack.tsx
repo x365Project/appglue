@@ -225,6 +225,18 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		}
 	}
 
+	componentDidMount() {
+		this.getSize();
+	}
+
+	getSize() {
+		if (this.props.sequence.width !== this.containerRef!.current!.scrollWidth || this.props.sequence.height !== this.containerRef!.current!.scrollHeight) {
+			this.props.sequence.width = this.containerRef!.current!.scrollWidth;
+			this.props.sequence.height = this.containerRef!.current!.scrollHeight;
+			this.props.editContext.positionCandidateSequences();
+		}
+	}
+
 	componentDidUpdate(_prevProps: IFlowSequenceStack, prevState: {isDragging: boolean; isCollapsed: boolean; isDroppingOver: boolean;}) {
 		if (this.state.isCollapsed !== prevState.isCollapsed) {
 
@@ -239,6 +251,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 				this.props.sequence.isCollapsed = this.state.isCollapsed;
 			}
 		}
+		this.getSize();
 	}
 
 	getDefaultPosition = () : IPosition => {
@@ -311,11 +324,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
     render() {
-		if (this.containerRef && this.containerRef.current) {
-			this.props.sequence.width = this.containerRef.current.scrollWidth;
-			this.props.sequence.height = this.containerRef.current.scrollHeight
-		}
-
         return (
             <ReactDraggable
 				bounds="parent"
