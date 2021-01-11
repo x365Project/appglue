@@ -32,11 +32,12 @@ const FlowSequenceDiv = styled('div')<{
 	selected: boolean;
 	isDroppingOver: boolean;
 	color?: string;
+	isOver: boolean;
 }>`
 	top: ${props => props.isDragging ? 0 : props.position.y}px;
 	left: ${props => props.isDragging ? 0 : props.position.x}px;
 	position: absolute;
-    background: #fff;
+    background: ${props => props.isOver ? FlowConstants.OVER_SEQUENCE_COLOR : '#fff'};
 	border-radius: 5px;
 	margin-bottom: 10px;
 	min-width: ${props => props.width}px;
@@ -45,6 +46,8 @@ const FlowSequenceDiv = styled('div')<{
 		?`border: 1px dashed ${FlowConstants.DROPPING_COLOR};`
 		:`border: 1px solid ${props.selected ? 'blue': (props.color || 'darkgray')};`
 	}
+
+	${props => props.isDragging && `z-index: 1;`}
 
 	${props => !props.isDragging && `
 		transform: none !important;
@@ -222,6 +225,18 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		}
 	}
 
+	componentDidMount() {
+		this.getSize();
+	}
+
+	getSize() {
+		if (this.props.sequence.width !== this.containerRef!.current!.scrollWidth || this.props.sequence.height !== this.containerRef!.current!.scrollHeight) {
+			this.props.sequence.width = this.containerRef!.current!.scrollWidth;
+			this.props.sequence.height = this.containerRef!.current!.scrollHeight;
+			this.props.editContext.positionCandidateSequences();
+		}
+	}
+
 	componentDidUpdate(_prevProps: IFlowSequenceStack, prevState: {isDragging: boolean; isCollapsed: boolean; isDroppingOver: boolean;}) {
 		if (this.state.isCollapsed !== prevState.isCollapsed) {
 
@@ -236,6 +251,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 				this.props.sequence.isCollapsed = this.state.isCollapsed;
 			}
 		}
+		this.getSize();
 	}
 
 	getDefaultPosition = () : IPosition => {
@@ -246,8 +262,17 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	} 
 
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
+
+		let sequence = this.props.editContext.getTarget(data.x, data.y);
+		if (sequence) {
+			this.props.editContext.dragOverSequence = sequence;
+			this.props.editContext.combineSequences(this.props.sequence, sequence);
+		} else {
+			this.props.editContext.dragOverSequence = null;
+		}
+
 		this.props.sequence.desiredX = data.x;
-		this.props.sequence.desiredY = data.y;
+		this.props.sequence.desiredX = data.y;
 		this.props.editContext.positionCandidateSequences();
 
 		this.setState({
@@ -263,8 +288,15 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 	
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
-		this.props.sequence.desiredX= data.x;
-		this.props.sequence.desiredY = data.y;
+		this.props.sequence.desiredX = data.x;
+		this.props.sequence.desiredX = data.y;
+
+		let sequence = this.props.editContext.getTarget(data.x, data.y);
+		if (sequence) {
+			this.props.editContext.dragOverSequence = sequence;
+		} else {
+			this.props.editContext.dragOverSequence = null;
+		}
 		StateManager.changed(this.props.sequence);
 	}
 
@@ -292,11 +324,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
     render() {
-		if (this.containerRef && this.containerRef.current) {
-			this.props.sequence.width = this.containerRef.current.scrollWidth;
-			this.props.sequence.height = this.containerRef.current.scrollHeight
-		}
-
         return (
             <ReactDraggable
 				bounds="parent"
@@ -314,6 +341,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
 					height={this.state.isCollapsed? this.collapsedHeight: undefined}
 					position={this.getDefaultPosition()}
+					isOver={this.props.editContext.dragOverSequenceId === this.props.sequence._id}
 					isDragging={this.state.isDragging}
 					index={this.props.index}
 					onClick={(_e: React.MouseEvent<HTMLDivElement>) => {
@@ -361,7 +389,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 						<Droppable droppableId={this.props.sequence._id}>
 							{
 								(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
-									if (this.state.isCollapsed && snapshot.isDraggingOver && snapshot.draggingOverWith && snapshot.draggingOverWith.endsWith('_drag')) {
+									if (this.state.isCollapsed && snapshot.isDraggingOver) {
 										this.setCollapsed(false);
 									}
 									return (
@@ -394,7 +422,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 													})}
 												</FlowSequenceContent>
 											</Collapse>
-											{ snapshot.isDraggingOver && snapshot.draggingOverWith && !snapshot.draggingOverWith.endsWith('_drag') && provided.placeholder }
+											{  provided.placeholder }
 										</div>
 									);
 								}

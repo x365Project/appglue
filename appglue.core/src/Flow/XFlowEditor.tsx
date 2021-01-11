@@ -61,6 +61,7 @@ import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
+import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
 
 
 export interface FlowEditorParameters {
@@ -152,9 +153,7 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
     @AutoBind
     onDragStart(initial: DragStart, _provided: ResponderProvided) {
         this.editContext.clearSelection();
-        if (!initial.draggableId.endsWith('_drag')) {
-            this.editContext.isDraggingControl = true;
-        }
+        this.editContext.isDraggingControl = true;
 
         StateManager.propertyChanged(this.editContext, 'isDraggingControl');
     }
@@ -537,12 +536,16 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                                     key={`${value.fromId}-${value.toId}`}
                                                     control={
                                                         () => {
-                                                            return <Xarrow
-                                                                start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
-                                                                end={value.toId}
-                                                                strokeWidth = {2}
-                                                                headSize = {3}
-                                                            />
+                                                            if (value.fromInstruction.strategy === FlowStepOutputInstructionType.BRANCH) {
+
+                                                                return <Xarrow
+                                                                    start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
+                                                                    end={value.toId}
+                                                                    strokeWidth = {2}
+                                                                    headSize = {3}
+                                                                />
+                                                            }
+                                                            return <></>;
                                                         }
                                                     }/> 
                                             })
