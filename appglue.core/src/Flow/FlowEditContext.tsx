@@ -301,11 +301,28 @@ export class FlowEditContext {
         return this._dragOverSequenceId;
     }
 
-    combineSequences(combine: IFlowStepSequence, withSequence: IFlowStepSequence) {
-        
+    canCombine(combine: IFlowStepSequence, withSequence: IFlowStepSequence): boolean {
         if (combine instanceof CandidateSequence) {
             let step = this.flow.find(combine.forStepId!) as BaseFlowStep;
-            
+
+            // ui should not allow this
+            if (step.sequence?._id === withSequence._id)
+                return false;
+        }
+
+        return true;
+    }
+
+
+    combineSequences(combine: IFlowStepSequence, withSequence: IFlowStepSequence) : void {
+        // ui should not allow this
+        if (!this.canCombine(combine, withSequence))
+            return;
+
+        if (combine instanceof CandidateSequence) {
+            let step = this.flow.find(combine.forStepId!) as BaseFlowStep;
+
+
             let inst = step!.findOutputInstruction(combine.forPath!);
             inst.connectedSequenceId = withSequence._id
 

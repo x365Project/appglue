@@ -71,7 +71,7 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 						if (targetSequence.forPath !== stepOutput.pathName) {
 							targetSequence.forPath = stepOutput.pathName;
 							StateManager.changed(targetSequence);
-						} else if ((targetSequence.desiredX !== point1.x || targetSequence.desiredY !== point1.y) && !targetSequence.wasDragged) {
+						} else if ((targetSequence.desiredX !== point1.x || targetSequence.desiredY !== point1.y)) {
 							// sequence is moved
 							targetSequence.desiredX = point1.x;
 							targetSequence.desiredY = point1.y;

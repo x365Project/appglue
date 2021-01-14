@@ -17,6 +17,6 @@ export class FlowConstants {
 
   static COLLAPSE_TIMEOUT = 300;
 
-  static OVER_SEQUENCE_COLOR = 'green';
+  static OVER_SEQUENCE_COLOR = 'lightblue';
 
 }
