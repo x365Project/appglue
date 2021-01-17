@@ -42,3 +42,33 @@ Example of adding `webpack` module to `appglue.site` project in `devDependencies
 cd appglue/
 npx lerna add webpack --dev --scope=@appglue/site
 ```
+
+#### If there are cross dependencies...
+
+For brevity, we'll refer to the target project as "leaf" and local module as "parent".
+
+1. Use `lerna` to add the leaf module.
+```
+lerna add @appglue/parent --scope=@appglue/leaf
+```
+    - This will create a symlink between @appglue/leaf/node_modules/@appglue/parent and appglue/parent directory.
+    - package.json is updated.
+
+2. Update tsconfig.json of "parent" module. See appglue.common/ts.build.config.
+    - Set "composite" to true.
+
+3. Update tsconfig.json of "leaf" project. See appglue.server/ts.build.config.
+    - Add relative path of leaf node's ts configuration file like this:
+    ```json
+    {
+        //...
+        "references": [
+            {
+                "path": "../app.glue/parent/tsconfig.build.json"
+            }
+        ]
+
+    }
+    ```
+4. Update package.json of "leaf" project.
+    - Build the project with "tsc --build".
