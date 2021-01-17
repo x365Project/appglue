@@ -1,0 +1,8 @@
+{
+  "diff": true,
+  "extension": ["ts"],
+  "package": "./package.json",
+  "require": ["ts-node/register"],
+  "spec": ["src/**/*.ts"],
+  "recursive": true
+}

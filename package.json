@@ -5,7 +5,8 @@
         "start": "lerna run start --stream",
         "bootstrap": "lerna bootstrap",
         "build": "lerna run build",
-        "packages": "lerna list --json"
+        "packages": "lerna list --json",
+        "test": "lerna exec --stream npm run test"
     },
     "devDependencies": {
         "lerna": "^3.22.1"

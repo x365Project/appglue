@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "main": "src/index.ts",
     "scripts": {
-        "start": "nodemon"
+        "start": "nodemon",
+        "test": "echo \"No tests specified yet.\""
     },
     "dependencies": {
         "@appglue/common": "^1.0.0",
