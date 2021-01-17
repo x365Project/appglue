@@ -11,6 +11,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - run: npm i
+      - run: npm i -g lerna
       - run: npm run bootstrap
       - run: npm run test
