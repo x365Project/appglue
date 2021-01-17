@@ -3,7 +3,7 @@
     "private": true,
     "scripts": {
         "start": "lerna run start --stream",
-        "bootstrap": "lerna bootstrap",
+        "bootstrap": "lerna bootstrap --no-ci",
         "build": "lerna run build",
         "packages": "lerna list --json",
         "test": "lerna exec --stream npm run test"
