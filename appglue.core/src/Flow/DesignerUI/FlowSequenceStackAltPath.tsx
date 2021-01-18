@@ -75,7 +75,7 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 		let {instruction, sequence, step} = this.props;
 
 		// marks position of candidates
-		this.markPathPosition();
+		// this.markPathPosition();
 		
 		return (
 			<>
