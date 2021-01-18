@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { IPosition } from "../CommonUI/IPosition";
 import {CandidateSequence} from "../Structure/CandidateSequence";
 import { StateManager } from "../../CommonUI/StateManagement/StateManager";
+import {IFlowStepSequence} from "../Structure/IFlowStepSequence";
 
 export const CandidateSequenceDiv = styled("div")<{
 	show: boolean;
@@ -54,7 +55,7 @@ export const CandidateSequenceDropDiv = styled("div")<{
 
 interface ICandidateSequenceStack {
 	editContext: FlowEditContext;
-	candidate: CandidateSequence;
+	candidate: IFlowStepSequence;
 }
 
 
@@ -82,7 +83,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 	}
 
 	onDrag = (_e: DraggableEvent, data: DraggableData) => {
-		let sequence = this.props.editContext.getTarget(data.x, data.y);
+		let sequence = this.props.editContext.getSequenceByXY(data.x, data.y);
 		if (sequence) {
 			this.props.editContext.dragOverSequence = sequence;
 		} else {
@@ -91,7 +92,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 	}
 
     onDragStop = (_e: DraggableEvent, data: DraggableData) => {
-		let sequence = this.props.editContext.getTarget(data.x, data.y);
+		let sequence = this.props.editContext.getSequenceByXY(data.x, data.y);
 		if (sequence) {
 			this.props.editContext.combineSequences(this.props.candidate, sequence);
 		} else {
@@ -106,10 +107,14 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 	render() {
 		let droppableId = this.props.candidate._id;
 
+		let isStepCandidate = Reflect.get(this.props.candidate, 'instruction') !== undefined;
+
+		console.log(this.props.candidate._id);
+
 		return (
 			<ReactDraggable
 				bounds="parent"
-				disabled={!this.props.candidate.forStepId}
+				disabled={!isStepCandidate}
 				onStop={this.onDragStop}
 				onDrag={this.onDrag}
 				onStart={this.onDragStart}
@@ -120,13 +125,13 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 					id={this.props.candidate._id}
 					position={this.getDefaultPosition()}
 					isDragging={this.state.isDragging}
-					show={!!this.props.candidate.forStepId || this.props.editContext.isDraggingControl}
+					show={isStepCandidate || this.props.editContext.isDraggingControl}
 				>
 					<Droppable droppableId={droppableId}>
 						{
 							(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => {
 								return <CandidateSequenceDropDiv
-									isPathCandidate={!!this.props.candidate.forStepId}
+									isPathCandidate={isStepCandidate}
 									isDroppingOver={dropSnapshot.isDraggingOver}
 									{...dropProvided.droppableProps}
 									ref={dropProvided.innerRef}

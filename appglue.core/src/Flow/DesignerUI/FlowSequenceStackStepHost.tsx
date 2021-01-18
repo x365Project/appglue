@@ -110,16 +110,16 @@ export class FlowSequenceStackStepHost extends React.Component<IFlowSequenceStac
 																listenTo={[stepOutput]}
 																key={'path'+stepOutput.pathName}
 																control={() => {
-																	let targetSequence : IFlowStepSequence | undefined = undefined;
+																	let targetSequence : IFlowStepSequence | undefined | null = undefined;
 
 																	if (stepOutput.connectedSequenceId) {
-																		targetSequence = this.props.editContext.getTargetSequence(stepOutput.connectedSequenceId);
+																		targetSequence = this.props.editContext.getCandidateOrRealSequence(stepOutput.connectedSequenceId);
 																	}
 
 																	return <FlowSequenceStackAltPath
 																		sequence={this.props.sequence}
 																		step={step}
-																		stepOutput={stepOutput}
+																		instruction={stepOutput}
 																		editContext={this.props.editContext}
 																		width={width}
 																		targetSequence={targetSequence}

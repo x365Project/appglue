@@ -44,7 +44,7 @@ const StepPathConnectDiv = styled.div`
 interface IFlowSequenceStackAltPath {
 	sequence: FlowStepSequence;
 	step: BaseFlowStep;
-	stepOutput: FlowStepOutputInstructions;
+	instruction: FlowStepOutputInstructions;
 	editContext: FlowEditContext;
 	width: number;
 	targetSequence: IFlowStepSequence | undefined;
@@ -53,84 +53,54 @@ interface IFlowSequenceStackAltPath {
 export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStackAltPath, {}> {
 	containerRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
-	manageCandidateSequence = () => {
-		let {stepOutput, editContext, sequence, step, targetSequence} = this.props;
-
-		if (stepOutput.strategy === FlowStepOutputInstructionType.BRANCH) {
+	markPathPosition = () => {
+		if (this.props.instruction.strategy === FlowStepOutputInstructionType.BRANCH) {
 			if (this.containerRef && this.containerRef.current) {
-				if (stepOutput.pathName) {
-					let point1 = {
-						x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + sequence.x + FlowConstants.PATH_CANDIDATE_SHIFT,
-						y: this.containerRef!.current!.offsetTop + sequence.y + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2)
-					};
-					if (!targetSequence) {
-						let candidateSequence = new CandidateSequence(point1.x, point1.y, step._id, stepOutput.pathName);
-						stepOutput.connectedSequenceId = candidateSequence._id;
-						editContext.addCandidateSequence(candidateSequence);
-					} else if (targetSequence instanceof CandidateSequence) {
-						if (targetSequence.forPath !== stepOutput.pathName) {
-							targetSequence.forPath = stepOutput.pathName;
-							StateManager.changed(targetSequence);
-						} else if ((targetSequence.desiredX !== point1.x || targetSequence.desiredY !== point1.y)) {
-							// sequence is moved
-							targetSequence.desiredX = point1.x;
-							targetSequence.desiredY = point1.y;
-							editContext.positionCandidateSequences();
-						}
-					}
-					// else
-					// 	{
-					// 	// todo: this seems wrong.  why are we positioning inside render.
-					// 	if (candidateSequence.desiredX !== point1.x + FlowConstants.PATH_CANDIDATE_SHIFT || point1.y !== candidateSequence.desiredY) {
-					// 		candidateSequence.desiredX = point1.x + FlowConstants.PATH_CANDIDATE_SHIFT;
-					// 		candidateSequence.desiredY = point1.y;
-					// 		editContext.positionCandidateSequences();
-					// 	}
-					// }
+				let point1 = {
+					x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + this.props.sequence.x + FlowConstants.PATH_CANDIDATE_SHIFT,
+					y: this.containerRef!.current!.offsetTop + this.props.sequence.y + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2)
+				};
 
-				} else if (targetSequence && targetSequence instanceof CandidateSequence) {
-					editContext.purgeCandidateSequences();
-				}
-			} else {
-				this.forceUpdate();
+				this.props.instruction.x = point1.x;
+				this.props.instruction.y = point1.y;
 			}
-		} else if (targetSequence && targetSequence instanceof CandidateSequence) {
-			editContext.positionCandidateSequences();
 		}
-		
 	}
 
 	componentDidMount() {
-		this.manageCandidateSequence();
+		this.markPathPosition();
 	}
 
 	render() {
-		let {stepOutput, sequence, step} = this.props;
+		let {instruction, sequence, step} = this.props;
+
+		// marks position of candidates
+		this.markPathPosition();
 		
 		return (
 			<>
 				<StepPathConnectDiv />
 				<StepPathWrapper ref={this.containerRef}>
-					<ObserveMultiState listenTo={[sequence, stepOutput]}
+					<ObserveMultiState listenTo={[sequence, instruction]}
 						control={
 							() => <StepPathDiv
-								id={step._id + '-' + stepOutput.pathName}
-								key={stepOutput.pathName}
+								id={step._id + '-' + instruction.pathName}
+								key={instruction.pathName}
 								width={
-									stepOutput.strategy === FlowStepOutputInstructionType.BRANCH 
+									instruction.strategy === FlowStepOutputInstructionType.BRANCH
 									? this.props.width - 40
 									: this.props.width - 73
 								}
 							>
-								{stepOutput.pathName}
+								{instruction.pathName}
 
 								<Select
 									disableUnderline
 									native
-									value={stepOutput.strategy}
+									value={instruction.strategy}
 									onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
-										stepOutput.strategy = event.target.value as FlowStepOutputInstructionType;
-										StateManager.changed(stepOutput);
+										instruction.strategy = event.target.value as FlowStepOutputInstructionType;
+										StateManager.changed(instruction);
 									}}
 								>
 									<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>

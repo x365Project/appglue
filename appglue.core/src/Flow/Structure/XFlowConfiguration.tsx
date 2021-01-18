@@ -119,13 +119,15 @@ export class XFlowConfiguration implements IFlowElement{
 
         for (let seq of this._sequences) {
             for (let step of seq.steps) {
-                for (let inst of step.getOutcomeInstructions()) {
+                for (let inst of step.getAlternateOutcomeInstructions()) {
                     if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
                         conn.push(new FlowConnection(seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName), inst.connectedSequenceId, false, seq, inst, step));
                     }
                 }
             }
         }
+
+        console.log(conn);
 
         return conn;
     }
@@ -135,7 +137,13 @@ export class XFlowConfiguration implements IFlowElement{
         for (let step of seq.steps) {
             for (let inst of step.getOutcomeInstructions()) {
                 if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
-                    conn.push(new FlowConnection(seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName), inst.connectedSequenceId, false, seq, inst, step));
+                    conn.push(new FlowConnection(
+                        seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName),
+                        inst.connectedSequenceId,
+                        false,
+                        seq,
+                        inst,
+                        step));
                 }
             }
         }

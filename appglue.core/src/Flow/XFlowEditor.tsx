@@ -62,6 +62,7 @@ import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
 import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
+import {CandidateSequence} from "./Structure/CandidateSequence";
 
 
 export interface FlowEditorParameters {
@@ -193,16 +194,14 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
             } else {
                 let seqid = result.destination.droppableId;
-                let c = this.editContext.findCandidateSequence(result.destination.droppableId);
+                let c = this.editContext.findCandidateSequence(result.destination.droppableId) as CandidateSequence;
                 if (c) {
                     let s = c.createSequence();
                     // this is a new sequence... need to record its actual id
                     seqid = s._id;                                                                                                  
-                    if (c.forPath && c.forStepId) {
-                        let step = this.flow.find(c.forStepId) as BaseFlowStep;
-                        let stepOutput = step.findOutputInstruction(c.forPath);
-                        if (!stepOutput) return;                                                                            
-                        stepOutput.connectedSequenceId = s._id;
+                    if (c.instruction.pathName && c.instruction.stepId) {
+                        let step = this.flow.find(c.instruction.stepId) as BaseFlowStep;
+                        c.instruction.connectedSequenceId = s._id;
                     }
                     this.flow.addSequence(s);
                 }
@@ -503,59 +502,60 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
 
     return (
         <DesignPanel>
-            
-            <ObserveState listenTo={props.editContext} properties={["candidateSequences"]}
+
+            <ObserveState listenTo={props.editContext} properties={["connections"]}
                 control={() => {
                     return <> 
                         {
-                            // props.flow.getConnections().map((value: FlowConnection) => {
-                            //     let targetSequence = props.editContext.getTargetSequence(value.toId);
-                            //     return <ObserveMultiState
-                            //         listenTo={[value.fromSequence, value.fromInstruction, value.fromStep, targetSequence]}
-                            //         key={`${value.fromId}-${value.toId}`}
-                            //         control={
-                            //             () => {
-                            //                 return <Xarrow
-                            //                     start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
-                            //                     end={value.toId}
-                            //                     strokeWidth = {2}
-                            //                     headSize = {3}
-                            //                 />
-                            //             }
-                            //         }/> 
-                            // })
-                            props.flow.sequences.map((s: FlowStepSequence) => {
-                                return <ObserveState
-                                    key={s._id}
-                                    listenTo={s}
+                            props.flow.getConnections().map((value: FlowConnection) => {
+                                let targetSequence = props.editContext.getCandidateOrRealSequence(value.toId);
+                                return <ObserveMultiState
+                                    listenTo={[value.fromSequence, value.fromInstruction, value.fromStep, targetSequence]}
+                                    key={`${value.fromId}-${value.toId}`}
                                     control={
-                                        () => <> {
-                                            props.flow.getConnectionsBySequence(s).map((value: FlowConnection) => {
-                                                let targetSequence = props.editContext.getTargetSequence(value.toId);
-                                                return <ObserveMultiState
-                                                    listenTo={[value.fromInstruction, value.fromStep, targetSequence]}
-                                                    key={`${value.fromId}-${value.toId}`}
-                                                    control={
-                                                        () => {
-                                                            if (value.fromInstruction.strategy === FlowStepOutputInstructionType.BRANCH) {
-
-                                                                return <Xarrow
-                                                                    start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
-                                                                    end={value.toId}
-                                                                    strokeWidth = {2}
-                                                                    headSize = {3}
-                                                                />
-                                                            }
-                                                            return <></>;
-                                                        }
-                                                    }/> 
-                                            })
+                                        () => {
+                                            return <Xarrow
+                                                start={value.fromId}
+                                                end={value.toId}
+                                                strokeWidth = {2}
+                                                headSize = {3}
+                                            />
                                         }
-                                        </>
-                                    }
-                                />
-
-                            })
+                                    }/>
+                            }
+                            // props.flow.sequences.map((s: FlowStepSequence) => {
+                            //     return <ObserveState
+                            //         key={s._id}
+                            //         listenTo={s}
+                            //         control={
+                            //             () => <> {
+                            //                 props.flow.getConnectionsBySequence(s).map((value: FlowConnection) => {
+                            //                     let targetSequence = props.editContext.getCandidateOrRealSequence(value.toId);
+                            //                     return <ObserveMultiState
+                            //                         listenTo={[value.fromInstruction, value.fromStep, targetSequence]}
+                            //                         key={`${value.fromId}-${value.toId}`}
+                            //                         control={
+                            //                             () => {
+                            //                                 if (value.fromInstruction.strategy === FlowStepOutputInstructionType.BRANCH) {
+                            //
+                            //                                     return <Xarrow
+                            //                                         start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
+                            //                                         end={value.toId}
+                            //                                         strokeWidth = {2}
+                            //                                         headSize = {3}
+                            //                                     />
+                            //                                 }
+                            //                                 return <></>;
+                            //                             }
+                            //                         }/>
+                            //                 })
+                            //             }
+                            //             </>
+                            //         }
+                            //     />
+                            //
+                            // }
+                            )
                         }
                     </>
                 }}

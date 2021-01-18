@@ -64,6 +64,15 @@ export abstract class BaseFlowStep
         return inst;
     }
 
+    getAlternateOutcomeInstructions(): FlowStepOutputInstructions[] {
+        let inst = this.getOutcomeInstructions();
+
+        if (inst.length !== 0)
+            inst.shift();
+
+        return inst;
+    }
+
     render() {
 
         return (
@@ -77,7 +86,7 @@ export abstract class BaseFlowStep
         let inst : FlowStepOutputInstructions | null  = this._nonDefaultOutputInstructions[name] ?? null;
 
         if (!inst) {
-            inst = new FlowStepOutputInstructions(name);
+            inst = new FlowStepOutputInstructions(name, this._id);
             this._nonDefaultOutputInstructions[name] = inst;
         }
 

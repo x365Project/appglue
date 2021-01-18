@@ -10,9 +10,9 @@ import {IContextForControl} from "../Common/IContextForControl";
 import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
 import {IDialog, XFlowEditor} from "./XFlowEditor";
 import {FlowConstants} from "./CommonUI/FlowConstants";
-import {CandidateSequence} from "./Structure/CandidateSequence";
+import {CandidateSequence, NonPathCandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
-import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
+import {FlowStepOutputInstructions, FlowStepOutputInstructionType} from "./Structure/FlowStepOutputInstructions";
 import {IFlowStep} from "./Structure/IFlowStep";
 
 export class FlowEditContext {
@@ -23,7 +23,7 @@ export class FlowEditContext {
     isDraggingControl: boolean = false; 
     
 
-    private candidateSequences: CandidateSequence[] = [];
+    private candidateSequences: IFlowStepSequence[] = [];
 
     public onFlowSave?: () => void;
     public onFlowCancel?: () => void;
@@ -32,56 +32,94 @@ export class FlowEditContext {
     // handling flow structure changes
     // ------------------------
     onSequenceBeingDragged(sequence: IFlowStepSequence, x: number, y: number) : void {
+        if (this.positionCandidateSequences(false)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onSequenceDragEnding(sequence: IFlowStepSequence, x: number, y: number) : void {
+        if (this.positionCandidateSequences(false)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onStepAdded(sequence: IFlowStepSequence, step: IFlowStep) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
+        this.refreshSequence(sequence);
 
     }
 
     onStepRemoved(sequence: IFlowStepSequence, step: IFlowStep) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
+        this.refreshSequence(sequence);
 
     }
 
     onStepMoved(fromSequence: IFlowStepSequence, toSequence: IFlowStepSequence, step: IFlowStep, index?: number) : void {
+        if (this.positionCandidateSequences(false)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onStepMovedInSequence(fromSequence: IFlowStepSequence, step: IFlowStep, newIndex: number) : void {
+        if (this.positionCandidateSequences(false)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onStepEdit(sequence: IFlowStepSequence, step: IFlowStep) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onStepPathEdit(sequence: IFlowStepSequence, step: IFlowStep, path: string) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onSequencesCombined(sequence: IFlowStepSequence, combineTo: IFlowStepSequence) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onSequenceAdded(sequence: IFlowStepSequence) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onSequenceRemoved(sequence: IFlowStepSequence) : void {
+        if (this.positionCandidateSequences(true)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onSequenceExpanded(sequence: FlowStepSequence) : void {
+        if (this.positionCandidateSequences(false)) {
+            this.refreshCandidates();
+        }
 
     }
 
     onSequenceCollapsed(sequence: FlowStepSequence) : void {
-        if (this.positionCandidateSequences(false))  {
-
+        if (this.positionCandidateSequences(false)) {
+            this.refreshCandidates();
         }
 
 
@@ -91,6 +129,27 @@ export class FlowEditContext {
     // end - handling flow structure changes
     // ------------------------
 
+    // ------------------------
+    // force refresh
+    // ------------------------
+
+    refreshCandidates() : void {
+        StateManager.propertyChanged(this, "candidateSequences");
+        // it calls refresh lines
+        this.refreshLines();
+    }
+
+    refreshLines() : void {
+        StateManager.propertyChanged(this, "connections");
+
+    }
+
+    refreshSequence(sequence: IFlowStepSequence) : void {
+        StateManager.propertyChanged(sequence, 'steps');
+    }
+    // ------------------------
+    // end - force refresh
+    // ------------------------
 
     addCandidateSequence(s: CandidateSequence) : void {
         this.candidateSequences.push(s);
@@ -105,11 +164,11 @@ export class FlowEditContext {
         this.purgeCandidateSequences();
     }
 
-    getCandidateSequences() : CandidateSequence[] {
+    getCandidateSequences() : IFlowStepSequence[] {
         return this.candidateSequences;
     }
 
-    findCandidateSequence(id: string): CandidateSequence | null {
+    findCandidateSequence(id: string): IFlowStepSequence | null {
         for (let c of this.candidateSequences) {
             if (c._id === id) return c;
         }
@@ -124,53 +183,55 @@ export class FlowEditContext {
     private syncCandidates() : boolean{
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
-        let beforeFilterCount = this.candidateSequences.length;
+        let wasChanged = false;
 
         // remove the candidate that has same id with sequence.
-        this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => {
+        this.candidateSequences = this.candidateSequences.filter((c: IFlowStepSequence) => {
             if (sequenceIds.indexOf(c._id) < 0) {
-                if (c.forStepId && c.forPath) {
-                    let step = this.flow.find(c.forStepId) as BaseFlowStep;
+                let instruction = Reflect.get(c, 'instruction') as FlowStepOutputInstructions;
+                if (instruction) {
+                    if (instruction.connectedSequenceId !== c._id)
+                    {
+                        wasChanged = true;
+                        return false;
+                    }
+                    if (!instruction.stepId)
+                    {
+                        wasChanged = true;
+                        // path declares no step
+                        return false;
+                    }
 
-                    // there is no step
+                    let step = this.flow.find(instruction.stepId) as BaseFlowStep;
+
+                    // step still exists
                     if (!step)
                     {
+                        wasChanged = true;
                         return false;
                     }
 
                     // candidate declares no path name
-                    if (c.forPath === "")
+                    if (!instruction.pathName || instruction.pathName === "")
                     {
+                        wasChanged = true;
                         return false;
                     }
 
-                    let paths = step.getOutcomes() || [];
-
-                    // path is not in list of declared paths
-                    if (paths.map((p) => p.name).indexOf(c.forPath) < 0)
-                    {
-                        return false;
-                    }
-
-                    // there is no instruction
-                    let stepOutput = step.findOutputInstruction(c.forPath);
-                    if (!stepOutput)
-                    {
+                    // step still contains instruction
+                    if (!step.findOutputInstruction(instruction.pathName)) {
+                        wasChanged = true;
                         return false;
                     }
 
                     // its not set to branch
-                    if (stepOutput.strategy !== FlowStepOutputInstructionType.BRANCH)
+                    if (instruction.strategy !== FlowStepOutputInstructionType.BRANCH)
                     {
+                        wasChanged = true;
                         return false;
                     }
 
                     return true;
-                }
-                else if (c.forStepId)
-                {
-                    // path declares no step
-                    return false;
                 }
                 else
                 {
@@ -178,34 +239,60 @@ export class FlowEditContext {
                     return true;
                 }
             }
-            return false;
+            else
+            {
+                wasChanged = true;
+                return false;
+            }
         });
+
+        // add missing sequences
+        for (let seq of this.flow.sequences) {
+            for (let step of seq.steps) {
+                let paths = step.getOutcomes();
+                if (paths) {
+                    if (paths.length !== 0)
+                        paths.shift();
+                    if (paths.length > 0) {
+                        for (let p of paths) {
+                            let inst = step.findOutputInstruction(p.name);
+
+                            if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
+                                if (!this.getCandidateOrRealSequence(inst.connectedSequenceId)) {
+                                    // its missing, we need to add
+                                    let cs = new CandidateSequence(inst);
+                                    cs._id = inst.connectedSequenceId;
+                                    this.candidateSequences.push(cs);
+                                    // mark as changed
+                                    wasChanged = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         this.addNonPathCandidateSequence();
 
-        // this is if it was changed
-        if (beforeFilterCount !== this.candidateSequences.length) {
-            return true;
-        } else {
-            return false;
-        }
+        return wasChanged;
     }
 
-    getTargetSequence(id: string) : IFlowStepSequence | undefined {
-        for (let s of this.flow.sequences) {
-            if (s._id === id)
-                return s;
+    getCandidateOrRealSequence(id: string) : IFlowStepSequence | undefined {
+        for (let cs of this.candidateSequences) {
+            if (cs._id === id)
+                return cs;
         }
 
-        for (let s of this.candidateSequences) {
-            if (s._id === id)
-                return s;
+        for (let rs of this.flow.sequences) {
+            if (rs._id === id)
+                return rs;
         }
 
-        return;
+        return undefined;
     }
 
-    getTarget(x: number, y: number): FlowStepSequence | null {
+    getSequenceByXY(x: number, y: number): FlowStepSequence | null {
         for (let s of this.flow.sequences) {
             if (x > s.x && x < s.x + s.width && y > s.y && y < s.y + s.height)
                 return s;
@@ -231,8 +318,6 @@ export class FlowEditContext {
         for (let candS of toPosition) {
             candS.reset();
         }
-
-
 
         let next : IFlowStepSequence | undefined = toPosition.length === 0 ? undefined : toPosition[0];
         while (next) {
@@ -293,9 +378,6 @@ export class FlowEditContext {
                 return 0;
             } )
 
-            console.log(ranges);
-
-
             let lastSeq : {top: number, bottom: number, sequence: IFlowStepSequence} | undefined = undefined;
             for (let positionMe of ranges) {
                 if (lastSeq) {
@@ -326,7 +408,7 @@ export class FlowEditContext {
         }
 
         // -- non path candidate
-        let nonPathCandidate : CandidateSequence | null = null;
+        let nonPathCandidate : IFlowStepSequence | null = null;
 
         let farX = 0;
 
@@ -338,7 +420,7 @@ export class FlowEditContext {
         }
 
         for (let cands of this.candidateSequences) {
-            if (!cands.forStepId){
+            if (!Reflect.get(cands, 'instruction')){
                 nonPathCandidate = cands;
                 continue;
             }
@@ -403,13 +485,15 @@ export class FlowEditContext {
     }
 
     canCombine(combine: IFlowStepSequence, withSequence: IFlowStepSequence): boolean {
-        if (combine instanceof CandidateSequence) {
-            let step = this.flow.find(combine.forStepId!) as BaseFlowStep;
+// todo: fix this
 
-            // ui should not allow this
-            if (step.sequence?._id === withSequence._id)
-                return false;
-        }
+        // if (combine instanceof CandidateSequence) {
+        //     let step = this.flow.find(combine.forStepId!) as BaseFlowStep;
+        //
+        //     // ui should not allow this
+        //     if (step.sequence?._id === withSequence._id)
+        //         return false;
+        // }
 
         return true;
     }
@@ -420,11 +504,11 @@ export class FlowEditContext {
         if (!this.canCombine(combine, withSequence))
             return;
 
-        if (combine instanceof CandidateSequence) {
-            let step = this.flow.find(combine.forStepId!) as BaseFlowStep;
+        if (combine instanceof CandidateSequence && combine.instruction) {
+            let step = this.flow.find(combine.instruction.stepId) as BaseFlowStep;
 
 
-            let inst = step!.findOutputInstruction(combine.forPath!);
+            let inst = step!.findOutputInstruction(combine.instruction.pathName);
             inst.connectedSequenceId = withSequence._id
 
             StateManager.changed(inst);
@@ -655,7 +739,7 @@ export class FlowEditContext {
         if (this.candidateSequences.filter((c) => {
             return c._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
         }).length === 0) {
-            let c = new CandidateSequence(0, 30);
+            let c = new NonPathCandidateSequence(0, 30);
             c._id = FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
             this.candidateSequences.push(c);
             this.positionCandidateSequences();

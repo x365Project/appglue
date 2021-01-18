@@ -94,8 +94,9 @@ export class FlowStepSequence implements IFlowStepSequence {
         if (index >= 0) {
             step.sequence = undefined;
             this._steps.splice(index, 1);
-            StateManager.propertyChanged(this, 'steps');
         }
+
+        this.flow?.context?.onStepRemoved(this, step);
     }
 
     find(stepId: string): BaseFlowStep | null {
@@ -115,7 +116,7 @@ export class FlowStepSequence implements IFlowStepSequence {
 
         step.sequence = this;
 
-        StateManager.propertyChanged(this, "steps");
+        this.flow?.context?.onStepAdded(this, step);
 
     }
 

@@ -3,10 +3,17 @@ import {DataUtilities} from "../../Common/DataUtilities";
 export class FlowStepOutputInstructions {
     private _strategy: FlowStepOutputInstructionType = FlowStepOutputInstructionType.BRANCH;
     connectedSequenceId?: string;
-    pathName?: string;
+    pathName: string;
+    stepId: string;
 
-    constructor(name?: string) {
-        this.pathName = name;
+    x?: number;
+    y?: number;
+
+
+    constructor(pathName: string, stepId: string) {
+        this.pathName = pathName;
+        this.stepId = stepId;
+        this.connectedSequenceId = DataUtilities.generateUniqueId();
     }
 
     get strategy(): FlowStepOutputInstructionType {
