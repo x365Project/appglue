@@ -5,10 +5,13 @@ import {IFlowElement} from "./IFlowElement";
 import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepOutputInstructionType, FlowStepOutputInstructions} from "./FlowStepOutputInstructions";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {FlowEditContext} from "../FlowEditContext";
 
 export class XFlowConfiguration implements IFlowElement{
+
     _id: string = DataUtilities.generateUniqueId();
    private _sequences : FlowStepSequence[];
+   context?: FlowEditContext;
 
     constructor() {
         this._sequences = [];
@@ -57,11 +60,11 @@ export class XFlowConfiguration implements IFlowElement{
         if (sequenceId) {
             let sequence = this.getSequence(sequenceId);
             if (sequence) {
-                sequence.remove(step as BaseFlowStep);
+                sequence.removeStep(step as BaseFlowStep);
             }
         } else {
             for (let s of this._sequences) {
-                s.remove(step as BaseFlowStep);
+                s.removeStep(step as BaseFlowStep);
             }
         }
     }
@@ -81,7 +84,7 @@ export class XFlowConfiguration implements IFlowElement{
         let toS = this.getSequence(toSequence);
 
         if (!fromS || !toS) return;
-        fromS.remove(step);
+        fromS.removeStep(step);
 
         this.add(step, toSequence, index);
     }

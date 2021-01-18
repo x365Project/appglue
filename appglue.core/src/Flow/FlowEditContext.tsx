@@ -13,6 +13,7 @@ import {FlowConstants} from "./CommonUI/FlowConstants";
 import {CandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
 import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
+import {IFlowStep} from "./Structure/IFlowStep";
 
 export class FlowEditContext {
     flowEditor: XFlowEditor;
@@ -26,6 +27,69 @@ export class FlowEditContext {
 
     public onFlowSave?: () => void;
     public onFlowCancel?: () => void;
+
+    // ------------------------
+    // handling flow structure changes
+    // ------------------------
+    onSequenceBeingDragged(sequence: IFlowStepSequence, x: number, y: number) : void {
+
+    }
+
+    onSequenceDragEnding(sequence: IFlowStepSequence, x: number, y: number) : void {
+
+    }
+
+    onStepAdded(sequence: IFlowStepSequence, step: IFlowStep) : void {
+
+    }
+
+    onStepRemoved(sequence: IFlowStepSequence, step: IFlowStep) : void {
+
+    }
+
+    onStepMoved(fromSequence: IFlowStepSequence, toSequence: IFlowStepSequence, step: IFlowStep, index?: number) : void {
+
+    }
+
+    onStepMovedInSequence(fromSequence: IFlowStepSequence, step: IFlowStep, newIndex: number) : void {
+
+    }
+
+    onStepEdit(sequence: IFlowStepSequence, step: IFlowStep) : void {
+
+    }
+
+    onStepPathEdit(sequence: IFlowStepSequence, step: IFlowStep, path: string) : void {
+
+    }
+
+    onSequencesCombined(sequence: IFlowStepSequence, combineTo: IFlowStepSequence) : void {
+
+    }
+
+    onSequenceAdded(sequence: IFlowStepSequence) : void {
+
+    }
+
+    onSequenceRemoved(sequence: IFlowStepSequence) : void {
+
+    }
+
+    onSequenceExpanded(sequence: FlowStepSequence) : void {
+
+    }
+
+    onSequenceCollapsed(sequence: FlowStepSequence) : void {
+        if (this.positionCandidateSequences(false))  {
+
+        }
+
+
+    }
+
+    // ------------------------
+    // end - handling flow structure changes
+    // ------------------------
 
 
     addCandidateSequence(s: CandidateSequence) : void {
@@ -57,43 +121,74 @@ export class FlowEditContext {
         this.positionCandidateSequences(false);
     }
 
-    private syncCandidates() {
+    private syncCandidates() : boolean{
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
-        // DO NOT REMOVE MY COMMENTS.  I DID NOT WRITE THE COMMENTS FOR FUN - THEY ARE INSTRUCIONS AND YOU
-        // DID NOT FOLLOW THEM.
-
-        // Here is what you lost by deleting my instructions.
-        // -- what if a step adds or removes a path.  Are you removing these?
-        // -- what if a step is deleted, do you deal with this
-        // -- are you checking to make sure that if a step has a path, there is a candidate for it?
-
+        let beforeFilterCount = this.candidateSequences.length;
 
         // remove the candidate that has same id with sequence.
         this.candidateSequences = this.candidateSequences.filter((c: CandidateSequence) => {
             if (sequenceIds.indexOf(c._id) < 0) {
                 if (c.forStepId && c.forPath) {
                     let step = this.flow.find(c.forStepId) as BaseFlowStep;
-                    
-                    if (!step) return false;
 
-                    if (c.forPath === "") return false;
+                    // there is no step
+                    if (!step)
+                    {
+                        return false;
+                    }
+
+                    // candidate declares no path name
+                    if (c.forPath === "")
+                    {
+                        return false;
+                    }
 
                     let paths = step.getOutcomes() || [];
 
-                    if (paths.map((p) => p.name).indexOf(c.forPath) < 0) return false;
+                    // path is not in list of declared paths
+                    if (paths.map((p) => p.name).indexOf(c.forPath) < 0)
+                    {
+                        return false;
+                    }
 
+                    // there is no instruction
                     let stepOutput = step.findOutputInstruction(c.forPath);
-                    if (!stepOutput) return false;
-    
-                    return stepOutput.strategy === FlowStepOutputInstructionType.BRANCH;
-                } else if (c.forStepId) return false;
-                return true;
+                    if (!stepOutput)
+                    {
+                        return false;
+                    }
+
+                    // its not set to branch
+                    if (stepOutput.strategy !== FlowStepOutputInstructionType.BRANCH)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+                else if (c.forStepId)
+                {
+                    // path declares no step
+                    return false;
+                }
+                else
+                {
+                    // this is a valid one
+                    return true;
+                }
             }
             return false;
         });
 
         this.addNonPathCandidateSequence();
+
+        // this is if it was changed
+        if (beforeFilterCount !== this.candidateSequences.length) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     getTargetSequence(id: string) : IFlowStepSequence | undefined {
@@ -118,15 +213,15 @@ export class FlowEditContext {
         return null;
     }
 
-    positionCandidateSequences(requirePurge:boolean = true) : void {
+    positionCandidateSequences(requirePurge:boolean = true) : boolean {
+
+        let wasRepositioned = false;
 
         if (requirePurge) {
-            this.syncCandidates();
+            wasRepositioned = this.syncCandidates();
         }
 
-
         let toPosition : IFlowStepSequence[] = [...this.candidateSequences];
-
 
         // add real sequences to this
         for (let realS of this.flow.sequences) {
@@ -138,7 +233,6 @@ export class FlowEditContext {
         }
 
 
-        let wasRepositioned = false;
 
         let next : IFlowStepSequence | undefined = toPosition.length === 0 ? undefined : toPosition[0];
         while (next) {
@@ -174,6 +268,11 @@ export class FlowEditContext {
                 let height = Reflect.get(aSequence, 'height') ?? FlowConstants.PATH_CANDIDATE_HEIGHT  ;
 
                 height = height + 5;
+
+                let collapsed = Reflect.get(aSequence, "isCollapsed") as boolean;
+
+                if (collapsed)
+                    height = FlowConstants.DEFAULT_COLLAPSED_STACK_HEIGHT;
 
                 ranges.push({
                     top : aSequence.desiredY ,
@@ -256,8 +355,10 @@ export class FlowEditContext {
             nonPathCandidate.x = farX + 30;
         }
 
-        // set actual X/Y for any sequences
+        // TODO: remove set actual X/Y for any sequences
         StateManager.propertyChanged(this, "candidateSequences");
+
+        return wasRepositioned;
     }
 
     private getSequencesNearPosition(toPosition : IFlowStepSequence, unpositionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {

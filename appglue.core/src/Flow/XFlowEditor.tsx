@@ -93,9 +93,12 @@ export interface IDialog {
 
 
 export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
+    editContext : FlowEditContext = new FlowEditContext(this);
 
-	constructor(props: FlowEditorParameters) {
+    constructor(props: FlowEditorParameters) {
 		super(props);
+
+		props.flow.context = this.editContext;
 
 		if (props.flowTitle) {
 			this.editContext.flowTitle = props.flowTitle;
@@ -113,8 +116,6 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
 			this.editContext.onFlowCancel = props.onFlowCancel;
 		}
 	}
-
-    editContext : FlowEditContext = new FlowEditContext(this);
 
     get flow(): XFlowConfiguration {
         return this.props.flow;

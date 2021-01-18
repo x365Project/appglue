@@ -89,7 +89,7 @@ export class FlowStepSequence implements IFlowStepSequence {
         this._stackColor = color;
     }
 
-    remove(step: BaseFlowStep): void {
+    removeStep(step: BaseFlowStep): void {
         let index = this._steps.indexOf(step);
         if (index >= 0) {
             step.sequence = undefined;
