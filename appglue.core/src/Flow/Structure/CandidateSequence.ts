@@ -4,8 +4,11 @@ import {FlowStepSequence} from "./FlowStepSequence";
 import {FlowConstants} from "../CommonUI/FlowConstants";
 import {FlowStepOutputInstructions} from "./FlowStepOutputInstructions";
 
+export interface ICandidateSequence extends IFlowStepSequence {
+    createSequence() : FlowStepSequence
+}
 
-export class CandidateSequence implements IFlowStepSequence {
+export class CandidateSequence implements ICandidateSequence {
     _id: string = DataUtilities.generateUniqueId();
     x: number;
     y: number;
@@ -16,8 +19,8 @@ export class CandidateSequence implements IFlowStepSequence {
 
     constructor(instruction: FlowStepOutputInstructions) {
         this.instruction = instruction;
-        this.x = instruction.x ?? 0;
-        this.y = instruction.y ?? 0;
+        this.x = instruction.candidateStackX ;
+        this.y = instruction.candidateStackY ;
     }
 
 
@@ -34,27 +37,29 @@ export class CandidateSequence implements IFlowStepSequence {
     }
 
     get desiredX(): number {
-        return this.instruction.x!;
+        return this.instruction.candidateStackX!;
     }
 
     set desiredX(value: number) {
-        this.instruction.x = value;
+        this.instruction.candidateStackX = value;
     }
 
     get desiredY(): number {
-        return this.instruction.y!;
+        return this.instruction.candidateStackY!;
     }
 
     set desiredY(value: number) {
-        this.instruction.y = value;
+        this.instruction.candidateStackY = value;
     }
 
     reset(): void {
+        this.x = this.desiredX;
+        this.y = this.desiredY;
     }
 
 }
 
-export class NonPathCandidateSequence implements IFlowStepSequence {
+export class NonPathCandidateSequence implements ICandidateSequence {
     _id: string = DataUtilities.generateUniqueId();
     desiredX: number;
     desiredY: number;
@@ -75,5 +80,14 @@ export class NonPathCandidateSequence implements IFlowStepSequence {
 
     reset(): void {
     }
+
+    createSequence() : FlowStepSequence {
+        let s = new FlowStepSequence();
+        s.desiredX = this.x;
+        s.desiredY = this.y;
+        s._id = this._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID ? DataUtilities.generateUniqueId() : this._id;
+        return s;
+    }
+
 
 }

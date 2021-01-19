@@ -61,8 +61,16 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 					y: this.containerRef!.current!.offsetTop + this.props.sequence.y + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2)
 				};
 
-				this.props.instruction.x = point1.x;
-				this.props.instruction.y = point1.y;
+				let priorX = this.props.instruction.candidateStackX;
+				let priorY = this.props.instruction.candidateStackY;
+
+				this.props.instruction.candidateStackX = point1.x;
+				this.props.instruction.candidateStackY = point1.y;
+
+				// if its initial, call set
+				if (priorX === 0 || priorY === 0) {
+					this.props.editContext.onPathPositionInitialChange(this.props.instruction);
+				}
 			}
 		}
 	}
@@ -100,7 +108,6 @@ export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStack
 									value={instruction.strategy}
 									onChange={(event: React.ChangeEvent<{name?: string | null, value: unknown}>) => {
 										instruction.strategy = event.target.value as FlowStepOutputInstructionType;
-										StateManager.changed(instruction);
 									}}
 								>
 									<option value={FlowStepOutputInstructionType.CONTINUE}>Continue</option>

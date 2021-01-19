@@ -107,11 +107,14 @@ export class XFlowConfiguration implements IFlowElement{
         this._sequences.push(newSeq)
         newSeq.flow = this;
 
-        StateManager.propertiesChanged(this, ['sequences']);
+        this.context?.onSequenceAdded(newSeq);
+
     }
 
     deleteSequenceByIndex(idx: number) {
-        this._sequences.splice(idx, 1)
+        let s = this._sequences.splice(idx, 1)
+
+        this.context?.onSequenceRemoved(s[0]);
     }
 
     getConnections() : FlowConnection[] {
@@ -126,8 +129,6 @@ export class XFlowConfiguration implements IFlowElement{
                 }
             }
         }
-
-        console.log(conn);
 
         return conn;
     }

@@ -233,7 +233,6 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 		if (this.props.sequence.width !== this.containerRef!.current!.scrollWidth || this.props.sequence.height !== this.containerRef!.current!.scrollHeight) {
 			this.props.sequence.width = this.containerRef!.current!.scrollWidth;
 			this.props.sequence.height = this.containerRef!.current!.scrollHeight;
-			this.props.editContext.positionCandidateSequences();
 		}
 	}
 
@@ -244,11 +243,12 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 				// I think we need to update this logic. For now, waiting for collapse completed
 				setTimeout(() => {
 					this.props.sequence.isCollapsed = this.state.isCollapsed;
-					this.props.editContext.positionCandidateSequences();
+					this.props.editContext.onSequenceCollapsed(this.props.sequence);
 				}, FlowConstants.COLLAPSE_TIMEOUT);
 
 			} else {
 				this.props.sequence.isCollapsed = this.state.isCollapsed;
+				this.props.editContext.onSequenceExpanded(this.props.sequence);
 			}
 		}
 		this.getSize();
@@ -273,7 +273,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 
 		this.props.sequence.desiredX = data.x;
 		this.props.sequence.desiredY = data.y;
-		this.props.editContext.positionCandidateSequences();
+		this.props.editContext.onSequenceDragEnding(this.props.sequence, data.x, data.y);
 
 		this.setState({
 			isDragging: false

@@ -109,8 +109,6 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 
 		let isStepCandidate = Reflect.get(this.props.candidate, 'instruction') !== undefined;
 
-		console.log(this.props.candidate._id);
-
 		return (
 			<ReactDraggable
 				bounds="parent"

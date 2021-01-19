@@ -21,7 +21,7 @@ export class FlowStepSequence implements IFlowStepSequence {
     private _desiredY: number = -1;
     private _desiredX: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
-    height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
+    private _height: number = FlowConstants.DEFAULT_STACK_HEIGHT;
 
     private _stackColor?: string;
     private _canDelete: boolean = true;
@@ -45,6 +45,19 @@ export class FlowStepSequence implements IFlowStepSequence {
     set desiredX(value: number) {
         this._desiredX = value;
         this.x = value;
+    }
+
+    get height(): number {
+        return this._height;
+    }
+
+    set height(value: number) {
+        let oldVal = this._height;
+        this._height = value;
+
+        if (oldVal !== value) {
+            this.flow?.context?.onSequenceHeightChanged(this);
+        }
     }
 
     reset() : void {

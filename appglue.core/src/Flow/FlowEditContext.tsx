@@ -33,21 +33,31 @@ export class FlowEditContext {
     // ------------------------
     onSequenceBeingDragged(sequence: IFlowStepSequence, x: number, y: number) : void {
         if (this.positionCandidateSequences(false)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
     }
 
     onSequenceDragEnding(sequence: IFlowStepSequence, x: number, y: number) : void {
         if (this.positionCandidateSequences(false)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
+        this.refreshLines();
+
+    }
+
+    onPathPositionInitialChange(instructions: FlowStepOutputInstructions) : void {
+        if (!this.isDraggingControl) {
+            if (this.positionCandidateSequences(true)) {
+                this.refreshSequences();
+            }
+        }
     }
 
     onStepAdded(sequence: IFlowStepSequence, step: IFlowStep) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
         this.refreshSequence(sequence);
 
@@ -55,71 +65,80 @@ export class FlowEditContext {
 
     onStepRemoved(sequence: IFlowStepSequence, step: IFlowStep) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
         this.refreshSequence(sequence);
 
     }
 
+    onSequenceHeightChanged(fromSequence: IFlowStepSequence) : void {
+        if (this.positionCandidateSequences(false)) {
+            this.refreshSequences();
+        }
+    }
+
     onStepMoved(fromSequence: IFlowStepSequence, toSequence: IFlowStepSequence, step: IFlowStep, index?: number) : void {
         if (this.positionCandidateSequences(false)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
     }
 
     onStepMovedInSequence(fromSequence: IFlowStepSequence, step: IFlowStep, newIndex: number) : void {
         if (this.positionCandidateSequences(false)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
     }
 
     onStepEdit(sequence: IFlowStepSequence, step: IFlowStep) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
     }
 
     onStepPathEdit(sequence: IFlowStepSequence, step: IFlowStep, path: string) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
     }
 
     onSequencesCombined(sequence: IFlowStepSequence, combineTo: IFlowStepSequence) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
+        this.refreshSequence(sequence);
     }
 
     onSequenceAdded(sequence: IFlowStepSequence) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
+        this.refreshSequence(sequence);
     }
 
     onSequenceRemoved(sequence: IFlowStepSequence) : void {
         if (this.positionCandidateSequences(true)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
+        this.refreshSequence(sequence);
     }
 
     onSequenceExpanded(sequence: FlowStepSequence) : void {
         if (this.positionCandidateSequences(false)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
     }
 
     onSequenceCollapsed(sequence: FlowStepSequence) : void {
         if (this.positionCandidateSequences(false)) {
-            this.refreshCandidates();
+            this.refreshSequences();
         }
 
 
@@ -133,8 +152,10 @@ export class FlowEditContext {
     // force refresh
     // ------------------------
 
-    refreshCandidates() : void {
+    refreshSequences() : void {
+        console.trace();
         StateManager.propertyChanged(this, "candidateSequences");
+        StateManager.propertyChanged(this.flow, "sequences");
         // it calls refresh lines
         this.refreshLines();
     }
@@ -151,19 +172,6 @@ export class FlowEditContext {
     // end - force refresh
     // ------------------------
 
-    addCandidateSequence(s: CandidateSequence) : void {
-        this.candidateSequences.push(s);
-        this.positionCandidateSequences();
-    }
-
-    removeCandidateSequence(s: CandidateSequence) : void {
-        const index = this.candidateSequences.indexOf(s);
-        if (index > -1) {
-            this.candidateSequences.splice(index, 1);
-        }
-        this.purgeCandidateSequences();
-    }
-
     getCandidateSequences() : IFlowStepSequence[] {
         return this.candidateSequences;
     }
@@ -175,12 +183,35 @@ export class FlowEditContext {
         return null;
     }
 
+    getCandidateOrRealSequence(id: string) : IFlowStepSequence | undefined {
+        for (let cs of this.candidateSequences) {
+            if (cs._id === id)
+                return cs;
+        }
+
+        for (let rs of this.flow.sequences) {
+            if (rs._id === id)
+                return rs;
+        }
+
+        return undefined;
+    }
+
+    getSequenceByXY(x: number, y: number): FlowStepSequence | null {
+        for (let s of this.flow.sequences) {
+            if (x > s.x && x < s.x + s.width && y > s.y && y < s.y + s.height)
+                return s;
+        }
+        return null;
+    }
+
     purgeCandidateSequences() : void {
         this.syncCandidates();
         this.positionCandidateSequences(false);
     }
 
     private syncCandidates() : boolean{
+
         let sequenceIds = this.flow.sequences.map((s: FlowStepSequence) => s._id);
 
         let wasChanged = false;
@@ -278,30 +309,8 @@ export class FlowEditContext {
         return wasChanged;
     }
 
-    getCandidateOrRealSequence(id: string) : IFlowStepSequence | undefined {
-        for (let cs of this.candidateSequences) {
-            if (cs._id === id)
-                return cs;
-        }
-
-        for (let rs of this.flow.sequences) {
-            if (rs._id === id)
-                return rs;
-        }
-
-        return undefined;
-    }
-
-    getSequenceByXY(x: number, y: number): FlowStepSequence | null {
-        for (let s of this.flow.sequences) {
-            if (x > s.x && x < s.x + s.width && y > s.y && y < s.y + s.height)
-                return s;
-        }
-        return null;
-    }
 
     positionCandidateSequences(requirePurge:boolean = true) : boolean {
-
         let wasRepositioned = false;
 
         if (requirePurge) {
@@ -359,11 +368,14 @@ export class FlowEditContext {
                 if (collapsed)
                     height = FlowConstants.DEFAULT_COLLAPSED_STACK_HEIGHT;
 
-                ranges.push({
+                let newRange = {
                     top : aSequence.desiredY ,
                     bottom: aSequence.desiredY + height,
                     sequence: aSequence
-                })
+                };
+
+
+                ranges.push(newRange);
             }
 
             ranges.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
@@ -378,13 +390,20 @@ export class FlowEditContext {
                 return 0;
             } )
 
+
+
             let lastSeq : {top: number, bottom: number, sequence: IFlowStepSequence} | undefined = undefined;
             for (let positionMe of ranges) {
+                // set x position
+                positionMe.sequence.x = positionMe.sequence.desiredX;
+
+                // set y position
                 if (lastSeq) {
                     if (positionMe.top < lastSeq.bottom) {
                         positionMe.sequence.y = lastSeq.bottom;
                         let height = positionMe.bottom - positionMe.top;
-                        positionMe.bottom = lastSeq.bottom + height;
+                        positionMe.top = positionMe.sequence.y;
+                        positionMe.bottom = positionMe.sequence.y + height;
                         wasRepositioned = true;
                     }
                 }
@@ -401,10 +420,6 @@ export class FlowEditContext {
                 break;
 
             next = toPosition[0];
-        }
-
-        if (wasRepositioned) {
-            // trigger redraw of sequendes and lines
         }
 
         // -- non path candidate
@@ -742,7 +757,7 @@ export class FlowEditContext {
             let c = new NonPathCandidateSequence(0, 30);
             c._id = FlowConstants.DEFAULT_CANDIDATE_SEQ_ID;
             this.candidateSequences.push(c);
-            this.positionCandidateSequences();
+            this.positionCandidateSequences(false);
         }
     }
 

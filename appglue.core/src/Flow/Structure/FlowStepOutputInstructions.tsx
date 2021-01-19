@@ -1,4 +1,5 @@
 import {DataUtilities} from "../../Common/DataUtilities";
+import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 
 export class FlowStepOutputInstructions {
     private _strategy: FlowStepOutputInstructionType = FlowStepOutputInstructionType.BRANCH;
@@ -6,8 +7,8 @@ export class FlowStepOutputInstructions {
     pathName: string;
     stepId: string;
 
-    x?: number;
-    y?: number;
+    candidateStackX: number = 0;
+    candidateStackY: number = 0;
 
 
     constructor(pathName: string, stepId: string) {
@@ -25,6 +26,10 @@ export class FlowStepOutputInstructions {
 
         if (value !== FlowStepOutputInstructionType.BRANCH)
             this.connectedSequenceId = DataUtilities.generateUniqueId();
+
+        // todo: trigger refresh
+        StateManager.changed(this);
+
     }
 
 }

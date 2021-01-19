@@ -61,8 +61,8 @@ import {CandidateSequenceStack} from "./DesignerUI/CandidateSequenceStack";
 import Xarrow from "react-xarrows";
 import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState";
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
-import { FlowStepOutputInstructionType } from "./Structure/FlowStepOutputInstructions";
-import {CandidateSequence} from "./Structure/CandidateSequence";
+import {CandidateSequence, ICandidateSequence} from "./Structure/CandidateSequence";
+import {FlowStepOutputInstructions} from "./Structure/FlowStepOutputInstructions";
 
 
 export interface FlowEditorParameters {
@@ -194,14 +194,18 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 this.props.flow.moveInSequence(control, result.destination.droppableId, result.destination.index)
             } else {
                 let seqid = result.destination.droppableId;
-                let c = this.editContext.findCandidateSequence(result.destination.droppableId) as CandidateSequence;
+                let c = this.editContext.findCandidateSequence(result.destination.droppableId) as ICandidateSequence;
                 if (c) {
                     let s = c.createSequence();
-                    // this is a new sequence... need to record its actual id
-                    seqid = s._id;                                                                                                  
-                    if (c.instruction.pathName && c.instruction.stepId) {
-                        let step = this.flow.find(c.instruction.stepId) as BaseFlowStep;
-                        c.instruction.connectedSequenceId = s._id;
+
+                    let instruction = Reflect.get(c, 'instruction') as FlowStepOutputInstructions;
+                    if (instruction) {
+                        // hook the paths together
+                        seqid = s._id;
+
+                        if (instruction.pathName && instruction.stepId) {
+                            instruction.connectedSequenceId = s._id;
+                        }
                     }
                     this.flow.addSequence(s);
                 }
@@ -211,16 +215,16 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 } else {
                     this.props.flow.moveToSequence(control, result.source.droppableId, seqid, result.destination.index);
                 }
-                this.editContext.positionCandidateSequences();
+
             }
         }
 
-        if (control) {
-            this.editContext.setSelection(control);
-        }
-        else
-            this.editContext.clearSelection();
-
+        // if (control) {
+        //     this.editContext.setSelection(control);
+        // }
+        // else {
+        //     this.editContext.clearSelection();
+        // }
     }
 }
 
@@ -516,7 +520,9 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                         () => {
                                             return <Xarrow
                                                 start={value.fromId}
+                                                startAnchor={"right"}
                                                 end={value.toId}
+                                                endAnchor={["left","top"]}
                                                 strokeWidth = {2}
                                                 headSize = {3}
                                             />
