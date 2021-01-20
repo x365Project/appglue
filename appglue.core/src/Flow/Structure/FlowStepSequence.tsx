@@ -16,8 +16,8 @@ export class FlowStepSequence implements IFlowStepSequence {
     _id: string = DataUtilities.generateUniqueId();
     name?: string;
 
-    x: number = -1;
-    y: number = -1;
+    private _x: number = -1;
+    private _y: number = -1;
     private _desiredY: number = -1;
     private _desiredX: number = -1;
     width: number = FlowConstants.DEFAULT_STACK_WIDTH;
@@ -29,13 +29,37 @@ export class FlowStepSequence implements IFlowStepSequence {
     private _canCopy: boolean = true;
     private _steps: BaseFlowStep[] = [];
 
+    getElementId(): string {
+        return this._id;
+    }
+
+
+    get x(): number {
+        return this._x;
+    }
+
+    set x(value: number) {
+        this._x = value;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        if (this._id === FlowConstants.PRIMARY_SEQUENCE && value !== FlowConstants.PRIMARY_SEQUENCE_POSITION.y)
+            throw 'you cannot move the primary sequence'
+
+        this._y = value;
+    }
+
     get desiredY(): number {
         return this._desiredY;
     }
 
     set desiredY(value: number) {
         this._desiredY = value;
-        this.y = value;
+        this._y = value;
     }
 
     get desiredX(): number {
@@ -44,7 +68,8 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     set desiredX(value: number) {
         this._desiredX = value;
-        this.x = value;
+        this._x = value;
+
     }
 
     get height(): number {
@@ -52,17 +77,13 @@ export class FlowStepSequence implements IFlowStepSequence {
     }
 
     set height(value: number) {
-        let oldVal = this._height;
+        //let oldVal = this._height;
         this._height = value;
-
-        if (oldVal !== value) {
-            this.flow?.context?.onSequenceHeightChanged(this);
-        }
     }
 
     reset() : void {
-        this.x = this.desiredX;
-        this.y = this.desiredY;
+        this._x = this.desiredX;
+        this._y = this.desiredY;
     }
 
     get steps(): readonly BaseFlowStep[] {

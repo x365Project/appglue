@@ -4,13 +4,12 @@ import { Select } from "@material-ui/core";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
-import { ObserveState } from "../../CommonUI/StateManagement/ObserveState";
 import {FlowEditContext} from "../FlowEditContext";
-import { CandidateSequence } from "../Structure/CandidateSequence";
 import {FlowConstants} from "../CommonUI/FlowConstants";
 import {IFlowStepSequence} from "../Structure/IFlowStepSequence";
-import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ObserveMultiState} from "../../CommonUI/StateManagement/ObserveMultiState";
+import ResizeObserver from 'resize-observer-polyfill';
+import {Scheduler} from "../../Common/Scheduler";
 
 
 const StepPathWrapper = styled.div`
@@ -48,51 +47,57 @@ interface IFlowSequenceStackAltPath {
 	editContext: FlowEditContext;
 	width: number;
 	targetSequence: IFlowStepSequence | undefined;
+
 }
 
 export class FlowSequenceStackAltPath extends React.Component<IFlowSequenceStackAltPath, {}> {
 	containerRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
 	markPathPosition = () => {
+		// if (!this.props.instruction.hasBeenRendered)
+		// {
+		// 	this.props.instruction.hasBeenRendered = true;
+		// 	this.props.editContext.onPathPositionInitialChange(this.props.instruction);
+		// }
 		if (this.props.instruction.strategy === FlowStepOutputInstructionType.BRANCH) {
-			if (this.containerRef && this.containerRef.current) {
-				let point1 = {
-					x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + this.props.sequence.x + FlowConstants.PATH_CANDIDATE_SHIFT,
-					y: this.containerRef!.current!.offsetTop + this.props.sequence.y + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2)
-				};
 
-				let priorX = this.props.instruction.candidateStackX;
-				let priorY = this.props.instruction.candidateStackY;
 
-				this.props.instruction.candidateStackX = point1.x;
-				this.props.instruction.candidateStackY = point1.y;
-
-				// if its initial, call set
-				if (priorX === 0 || priorY === 0) {
-					this.props.editContext.onPathPositionInitialChange(this.props.instruction);
-				}
-			}
+			// if (this.containerRef && this.containerRef.current) {
+			// 	let point1 = {
+			// 		x: this.containerRef!.current!.offsetLeft + (this.props.width - 40) + this.props.sequence.x + FlowConstants.PATH_CANDIDATE_SHIFT,
+			// 		y: this.containerRef!.current!.offsetTop + this.props.sequence.y + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2)
+			// 	};
+			//
+			// 	// this.props.instruction.candidateStackX = point1.x;
+			// 	// this.props.instruction.candidateStackY = point1.y;
+			//
+			// 	this.props.instruction.postionHistory.push({x: point1.x, y: point1.y, from: 'mount'});
+			//
+			// 	// if its initial, call set
+			// //	this.props.editContext.onPathPositionInitialChange(this.props.instruction);
+			//
+			// }
 		}
 	}
 
 	componentDidMount() {
 		this.markPathPosition();
+
+
 	}
 
 	render() {
 		let {instruction, sequence, step} = this.props;
 
-		// marks position of candidates
-		// this.markPathPosition();
 		
 		return (
 			<>
 				<StepPathConnectDiv />
-				<StepPathWrapper ref={this.containerRef}>
+				<StepPathWrapper ref={this.containerRef} >
 					<ObserveMultiState listenTo={[sequence, instruction]}
 						control={
 							() => <StepPathDiv
-								id={step._id + '-' + instruction.pathName}
+								id={this.props.instruction.getElementId()}
 								key={instruction.pathName}
 								width={
 									instruction.strategy === FlowStepOutputInstructionType.BRANCH

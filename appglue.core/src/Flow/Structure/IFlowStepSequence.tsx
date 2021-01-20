@@ -7,4 +7,7 @@ export interface IFlowStepSequence extends IFlowElement {
     desiredY: number;
 
     reset() : void;
+
+    getElementId() : string;
+
 }

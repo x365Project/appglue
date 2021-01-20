@@ -6,6 +6,7 @@ import {FlowStepOutputInstructions} from "./FlowStepOutputInstructions";
 
 export interface ICandidateSequence extends IFlowStepSequence {
     createSequence() : FlowStepSequence
+    shouldRender() : boolean;
 }
 
 export class CandidateSequence implements ICandidateSequence {
@@ -21,6 +22,13 @@ export class CandidateSequence implements ICandidateSequence {
         this.instruction = instruction;
         this.x = instruction.candidateStackX ;
         this.y = instruction.candidateStackY ;
+
+    }
+
+    name?: string | undefined;
+
+    getElementId(): string {
+        return this._id;
     }
 
 
@@ -57,6 +65,10 @@ export class CandidateSequence implements ICandidateSequence {
         this.y = this.desiredY;
     }
 
+    shouldRender(): boolean {
+        return this.desiredY > 0;
+    }
+
 }
 
 export class NonPathCandidateSequence implements ICandidateSequence {
@@ -65,6 +77,7 @@ export class NonPathCandidateSequence implements ICandidateSequence {
     desiredY: number;
     x: number;
     y: number;
+    name?: string | undefined;
 
 
     constructor(x: number, y: number) {
@@ -72,6 +85,14 @@ export class NonPathCandidateSequence implements ICandidateSequence {
         this.y = y;
         this.desiredX = x;
         this.desiredY = y;
+    }
+
+    shouldRender(): boolean {
+        return true;
+    }
+
+    getElementId(): string {
+        return this._id;
     }
 
     renderEditUI(): JSX.Element | null {

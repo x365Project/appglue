@@ -120,7 +120,7 @@ export class CandidateSequenceStack extends React.Component<ICandidateSequenceSt
 				defaultPosition={this.getDefaultPosition()}
 			>
 				<CandidateSequenceDiv
-					id={this.props.candidate._id}
+					id={this.props.candidate.getElementId()}
 					position={this.getDefaultPosition()}
 					isDragging={this.state.isDragging}
 					show={isStepCandidate || this.props.editContext.isDraggingControl}

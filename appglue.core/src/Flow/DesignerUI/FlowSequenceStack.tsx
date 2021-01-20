@@ -230,10 +230,10 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 	}
 
 	getSize() {
-		if (this.props.sequence.width !== this.containerRef!.current!.scrollWidth || this.props.sequence.height !== this.containerRef!.current!.scrollHeight) {
-			this.props.sequence.width = this.containerRef!.current!.scrollWidth;
-			this.props.sequence.height = this.containerRef!.current!.scrollHeight;
-		}
+		// if (this.props.sequence.width !== this.containerRef!.current!.scrollWidth || this.props.sequence.height !== this.containerRef!.current!.scrollHeight) {
+		// 	this.props.sequence.width = this.containerRef!.current!.scrollWidth;
+		// 	this.props.sequence.height = this.containerRef!.current!.scrollHeight;
+		// }
 	}
 
 	componentDidUpdate(_prevProps: IFlowSequenceStack, prevState: {isDragging: boolean; isCollapsed: boolean; isDroppingOver: boolean;}) {
@@ -337,7 +337,7 @@ export class FlowSequenceStack extends React.Component<IFlowSequenceStack, {isDr
 				cancel=".inline-editor"
             >
                 <FlowSequenceDiv
-					id={this.props.sequence._id}
+					id={this.props.sequence.getElementId()}
 					width={this.state.isCollapsed ? this.collapsedWidth : this.width}
 					height={this.state.isCollapsed? this.collapsedHeight: undefined}
 					position={this.getDefaultPosition()}

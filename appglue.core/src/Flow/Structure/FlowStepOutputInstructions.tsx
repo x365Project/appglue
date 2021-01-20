@@ -1,5 +1,6 @@
 import {DataUtilities} from "../../Common/DataUtilities";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
+import {FlowStepSequence} from "./FlowStepSequence";
 
 export class FlowStepOutputInstructions {
     private _strategy: FlowStepOutputInstructionType = FlowStepOutputInstructionType.BRANCH;
@@ -7,8 +8,13 @@ export class FlowStepOutputInstructions {
     pathName: string;
     stepId: string;
 
-    candidateStackX: number = 0;
-    candidateStackY: number = 0;
+    candidateStackX: number = -1;
+    candidateStackY: number = -1;
+
+    // postionHistory: {x:number, y:number, from: string}[] = [];
+    //
+    // // not serialized
+    // hasBeenRendered : boolean = false;
 
 
     constructor(pathName: string, stepId: string) {
@@ -30,6 +36,10 @@ export class FlowStepOutputInstructions {
         // todo: trigger refresh
         StateManager.changed(this);
 
+    }
+
+    getElementId(): string {
+        return this.stepId + '-' + this.pathName;
     }
 
 }

@@ -10,10 +10,12 @@ import {IContextForControl} from "../Common/IContextForControl";
 import {IDraggingElementType} from "./CommonUI/IDraggingElementType";
 import {IDialog, XFlowEditor} from "./XFlowEditor";
 import {FlowConstants} from "./CommonUI/FlowConstants";
-import {CandidateSequence, NonPathCandidateSequence} from "./Structure/CandidateSequence";
+import {CandidateSequence, ICandidateSequence, NonPathCandidateSequence} from "./Structure/CandidateSequence";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
 import {FlowStepOutputInstructions, FlowStepOutputInstructionType} from "./Structure/FlowStepOutputInstructions";
 import {IFlowStep} from "./Structure/IFlowStep";
+import {Scheduler} from "../Common/Scheduler";
+import {HTMLUtilities} from "../CommonUI/HTMLUtilities";
 
 export class FlowEditContext {
     flowEditor: XFlowEditor;
@@ -23,7 +25,7 @@ export class FlowEditContext {
     isDraggingControl: boolean = false; 
     
 
-    private candidateSequences: IFlowStepSequence[] = [];
+    private candidateSequences: ICandidateSequence[] = [];
 
     public onFlowSave?: () => void;
     public onFlowCancel?: () => void;
@@ -153,20 +155,27 @@ export class FlowEditContext {
     // ------------------------
 
     refreshSequences() : void {
-        console.trace();
-        StateManager.propertyChanged(this, "candidateSequences");
-        StateManager.propertyChanged(this.flow, "sequences");
-        // it calls refresh lines
-        this.refreshLines();
+     //   Scheduler.getScheduler('ui', 100).addToSchedule('refreshSeqs', () => {
+          //  if (!this.isDraggingControl) {
+                StateManager.propertyChanged(this, "candidateSequences");
+                StateManager.propertyChanged(this.flow, "sequences");
+                // it calls refresh lines
+                this.refreshLines();
+         //   }
+       // });
     }
 
     refreshLines() : void {
-        StateManager.propertyChanged(this, "connections");
+  //      Scheduler.getScheduler('ui', 100).addToSchedule('refreshLines', () => {
+            StateManager.propertyChanged(this, "connections");
+   //     });
 
     }
 
     refreshSequence(sequence: IFlowStepSequence) : void {
-        StateManager.propertyChanged(sequence, 'steps');
+//        Scheduler.getScheduler('ui', 100).addToSchedule('refreshSeq', () => {
+            StateManager.propertyChanged(sequence, 'steps');
+//        });
     }
     // ------------------------
     // end - force refresh
@@ -311,17 +320,54 @@ export class FlowEditContext {
 
 
     positionCandidateSequences(requirePurge:boolean = true) : boolean {
+
         let wasRepositioned = false;
 
         if (requirePurge) {
             wasRepositioned = this.syncCandidates();
         }
 
+        // lookup position and set for all instructions
+        for (let inst of this.flow.getAlternateOutputPaths()) {
+            let pos = HTMLUtilities.getGeometry(inst.getElementId());
+
+            if (pos) {
+
+                let seq = this.flow.findSequenceByStepId(inst.stepId);
+
+                let insty = pos.top + (seq?.y ?? 0) + 18 - (FlowConstants.PATH_CANDIDATE_HEIGHT/2);
+                let instx= pos.left + (FlowConstants.DEFAULT_STACK_WIDTH - 40) + (seq?.x ?? 0) + FlowConstants.PATH_CANDIDATE_SHIFT;
+              //  inst.postionHistory.push({x: instx, y: insty, from: 'poll'});
+
+                inst.candidateStackY = insty;
+                inst.candidateStackX = instx;
+            }
+
+        }
+
+        let origional : {x: number, y: number, sequence: IFlowStepSequence}[] = [];
         let toPosition : IFlowStepSequence[] = [...this.candidateSequences];
+
+        for (let realS of this.candidateSequences) {
+            // do not position ones that are unpositioned
+            if (realS.shouldRender())
+                continue;
+
+            toPosition.push(realS);
+            origional.push({x : realS.x, y: realS.y, sequence: realS});
+        }
 
         // add real sequences to this
         for (let realS of this.flow.sequences) {
             toPosition.push(realS);
+            origional.push({x : realS.x, y: realS.y, sequence: realS});
+
+            let geo = HTMLUtilities.getGeometry(realS.getElementId());
+
+
+            if (geo)
+                realS.height = geo.height;
+
         }
 
         for (let candS of toPosition) {
@@ -400,12 +446,17 @@ export class FlowEditContext {
                 // set y position
                 if (lastSeq) {
                     if (positionMe.top < lastSeq.bottom) {
-                        positionMe.sequence.y = lastSeq.bottom;
+
+                        // calc height
                         let height = positionMe.bottom - positionMe.top;
-                        positionMe.top = positionMe.sequence.y;
-                        positionMe.bottom = positionMe.sequence.y + height;
-                        wasRepositioned = true;
+
+                        positionMe.sequence.y = lastSeq.bottom;
+                        positionMe.top = lastSeq.bottom;
+                        positionMe.bottom = lastSeq.bottom + height;
                     }
+                } else {
+                    // its the first, it gets its desired position
+                    positionMe.sequence.y = positionMe.sequence.desiredY;
                 }
 
                 lastSeq = positionMe;
@@ -452,10 +503,20 @@ export class FlowEditContext {
             nonPathCandidate.x = farX + 30;
         }
 
-        // TODO: remove set actual X/Y for any sequences
-        StateManager.propertyChanged(this, "candidateSequences");
+        if (wasRepositioned)
+            return wasRepositioned ;
 
-        return wasRepositioned;
+        // for (let o of origional) {
+        //     if (o.y !== o.sequence.desiredY )
+        //         console.log('moved - desired', o.sequence.desiredY, 'actual', o.y);
+        // }
+
+        for (let o of origional) {
+            if (o.x !== o.sequence.x || o.y !== o.sequence.y)
+                return true;
+        }
+
+        return false;
     }
 
     private getSequencesNearPosition(toPosition : IFlowStepSequence, unpositionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {

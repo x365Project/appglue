@@ -125,9 +125,9 @@ export class FlowSequenceStackStepHost extends React.Component<IFlowSequenceStac
 																		targetSequence={targetSequence}
 																	/>
 																}}
-																onWillUnmount={() => {
-																	this.props.editContext.purgeCandidateSequences();
-																}}
+																// onWillUnmount={() => {
+																// 	this.props.editContext.purgeCandidateSequences();
+																// }}
 															/>
 														)
 													})

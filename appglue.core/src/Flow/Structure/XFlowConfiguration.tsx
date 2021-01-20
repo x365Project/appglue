@@ -6,6 +6,7 @@ import {DataUtilities} from "../../Common/DataUtilities";
 import {FlowStepOutputInstructionType, FlowStepOutputInstructions} from "./FlowStepOutputInstructions";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {FlowEditContext} from "../FlowEditContext";
+import {FlowConstants} from "../CommonUI/FlowConstants";
 
 export class XFlowConfiguration implements IFlowElement{
 
@@ -18,6 +19,7 @@ export class XFlowConfiguration implements IFlowElement{
         let initialSeq = new FlowStepSequence();
         initialSeq.desiredX = 20;
         initialSeq.desiredY = 20;
+        initialSeq._id = FlowConstants.PRIMARY_SEQUENCE;
 
         this.addSequence(initialSeq);
        // this.connections = [];
@@ -37,7 +39,7 @@ export class XFlowConfiguration implements IFlowElement{
         return null;
     }
 
-    findSequenceByStepId(stepId: string) {
+    findSequenceByStepId(stepId: string) : FlowStepSequence | null{
         for (let s of this._sequences) {
             if (s.find(stepId)) return s;
         }
@@ -117,6 +119,20 @@ export class XFlowConfiguration implements IFlowElement{
         this.context?.onSequenceRemoved(s[0]);
     }
 
+    getAlternateOutputPaths() : FlowStepOutputInstructions[] {
+        let output : FlowStepOutputInstructions[] = [];
+
+        for (let seq of this._sequences) {
+            for (let step of seq.steps) {
+                for (let inst of step.getAlternateOutcomeInstructions()) {
+                    output.push(inst);
+                }
+            }
+        }
+
+        return output;
+    }
+
     getConnections() : FlowConnection[] {
         let conn : FlowConnection[] = [];
 
@@ -139,8 +155,8 @@ export class XFlowConfiguration implements IFlowElement{
             for (let inst of step.getOutcomeInstructions()) {
                 if (inst.strategy === FlowStepOutputInstructionType.BRANCH && inst.connectedSequenceId) {
                     conn.push(new FlowConnection(
-                        seq.isCollapsed ? seq._id : (step._id + '-' + inst.pathName),
-                        inst.connectedSequenceId,
+                        seq.isCollapsed ? seq.getElementId() : (inst.getElementId()),
+                        this.context?.getCandidateOrRealSequence(inst.connectedSequenceId)?.getElementId() ??  inst.connectedSequenceId,
                         false,
                         seq,
                         inst,

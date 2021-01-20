@@ -63,6 +63,7 @@ import { ObserveMultiState } from "../CommonUI/StateManagement/ObserveMultiState
 import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMultiStateProperties";
 import {CandidateSequence, ICandidateSequence} from "./Structure/CandidateSequence";
 import {FlowStepOutputInstructions} from "./Structure/FlowStepOutputInstructions";
+import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
 
 
 export interface FlowEditorParameters {
@@ -268,6 +269,18 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 							onChange={onChangeFlowTitle}
 						/>
 					}
+
+					<Button
+                        onClick={() => {
+                            props.editContext.positionCandidateSequences(true);
+                            props.editContext.refreshSequences();
+                        }}
+                    >position and refresh</Button>
+                    <Button
+                        onClick={() => {
+                            props.editContext.refreshSequences();
+                        }}
+                    >refresh</Button>
 
                     <StyledButtonGroup
 						variant="outlined"
@@ -505,7 +518,9 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
     }
 
     return (
-        <DesignPanel>
+        <DesignPanel
+            id = {FlowConstants.DESIGN_SURFACE_ID}
+        >
 
             <ObserveState listenTo={props.editContext} properties={["connections"]}
                 control={() => {
@@ -522,7 +537,7 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                                 start={value.fromId}
                                                 startAnchor={"right"}
                                                 end={value.toId}
-                                                endAnchor={["left","top"]}
+                                                endAnchor={"left"}
                                                 strokeWidth = {2}
                                                 headSize = {3}
                                             />
@@ -571,16 +586,18 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                 listenTo={props.editContext}
                 properties={["candidateSequences", "isDraggingControl"]}
                 control={() => <>
-                    {
-                        props.editContext.getCandidateSequences().map((c) =>
+                    {(
+                        props.editContext.getCandidateSequences().filter((s: IFlowStepSequence) => {
+                            // do not render on positioned
+                            return (s.x !== -1 && s.y !== -1);
+                        }).map((c : IFlowStepSequence) =>
                             <CandidateSequenceStack
                                 key={c._id}
                                 candidate={c}
                                 editContext={props.editContext}
                             />
                         )
-                    }
-
+                    )}
                 </>}
             />
 
