@@ -34,116 +34,84 @@ export class FlowEditContext {
     // handling flow structure changes
     // ------------------------
     onSequenceBeingDragged(sequence: IFlowStepSequence, x: number, y: number) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
     }
 
     onSequenceDragEnding(sequence: IFlowStepSequence, x: number, y: number) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
+        this.delayPosition(true);
 
-        this.refreshLines();
-
-    }
-
-    onPathPositionInitialChange(instructions: FlowStepOutputInstructions) : void {
-        if (!this.isDraggingControl) {
-            if (this.positionCandidateSequences(true)) {
-                this.refreshSequences();
-            }
-        }
     }
 
     onStepAdded(sequence: IFlowStepSequence, step: IFlowStep) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
         this.refreshSequence(sequence);
-
     }
 
     onStepRemoved(sequence: IFlowStepSequence, step: IFlowStep) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
         this.refreshSequence(sequence);
 
     }
 
-    onSequenceHeightChanged(fromSequence: IFlowStepSequence) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
-    }
-
     onStepMoved(fromSequence: IFlowStepSequence, toSequence: IFlowStepSequence, step: IFlowStep, index?: number) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
     }
 
     onStepMovedInSequence(fromSequence: IFlowStepSequence, step: IFlowStep, newIndex: number) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
     }
 
     onStepEdit(sequence: IFlowStepSequence, step: IFlowStep) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
     }
 
     onStepPathEdit(sequence: IFlowStepSequence, step: IFlowStep, path: string) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
     }
 
     onSequencesCombined(sequence: IFlowStepSequence, combineTo: IFlowStepSequence) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
         this.refreshSequence(sequence);
     }
 
     onSequenceAdded(sequence: IFlowStepSequence) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        console.log('sequence added')
+        this.delayPosition(true);
 
         this.refreshSequence(sequence);
     }
 
     onSequenceRemoved(sequence: IFlowStepSequence) : void {
-        if (this.positionCandidateSequences(true)) {
-            this.refreshSequences();
-        }
+        this.delayPosition(true);
 
         this.refreshSequence(sequence);
     }
 
     onSequenceExpanded(sequence: FlowStepSequence) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
 
     }
 
     onSequenceCollapsed(sequence: FlowStepSequence) : void {
-        if (this.positionCandidateSequences(false)) {
-            this.refreshSequences();
-        }
+        this.delayPosition();
+    }
 
+    private delayPosition( alwaysRefresh: boolean = false) {
+        Scheduler.getScheduler('position', 90).addToSchedule('position', () => {
+            console.log('calling reposition');
+            if (this.positionCandidateSequences(true)) {
+                this.refreshSequences();
+            }
 
+            if (alwaysRefresh)
+                this.refreshSequences();
+        })
     }
 
     // ------------------------
@@ -155,21 +123,14 @@ export class FlowEditContext {
     // ------------------------
 
     refreshSequences() : void {
-     //   Scheduler.getScheduler('ui', 100).addToSchedule('refreshSeqs', () => {
-          //  if (!this.isDraggingControl) {
-                StateManager.propertyChanged(this, "candidateSequences");
-                StateManager.propertyChanged(this.flow, "sequences");
-                // it calls refresh lines
-                this.refreshLines();
-         //   }
-       // });
+        StateManager.propertyChanged(this, "candidateSequences");
+        StateManager.propertyChanged(this.flow, "sequences");
+        // it calls refresh lines
+        this.refreshLines();
     }
 
     refreshLines() : void {
-  //      Scheduler.getScheduler('ui', 100).addToSchedule('refreshLines', () => {
-            StateManager.propertyChanged(this, "connections");
-   //     });
-
+        StateManager.propertyChanged(this, "connections");
     }
 
     refreshSequence(sequence: IFlowStepSequence) : void {
