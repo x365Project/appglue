@@ -70,7 +70,6 @@
     "@types/material-ui": "^0.21.8",
     "@types/styled-components": "^5.1.7",
     "babel-loader": "8.1.0",
-    "react-is": "^17.0.1",
-    "resize-observer-polyfill": "^1.5.1"
+    "react-is": "^17.0.1"
   }
 }
