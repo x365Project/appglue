@@ -10,6 +10,8 @@ export interface ICandidateSequence extends IFlowStepSequence {
 }
 
 export class CandidateSequence implements ICandidateSequence {
+    readonly sequenceType = "pathcandidate" ;
+
     _id: string = DataUtilities.generateUniqueId();
     x: number;
     y: number;
@@ -72,6 +74,7 @@ export class CandidateSequence implements ICandidateSequence {
 }
 
 export class NonPathCandidateSequence implements ICandidateSequence {
+    readonly sequenceType = "candidate" ;
     _id: string = DataUtilities.generateUniqueId();
     desiredX: number;
     desiredY: number;

@@ -10,6 +10,7 @@ import {XFlowConfiguration} from "./XFlowConfiguration";
 
 export class FlowStepSequence implements IFlowStepSequence {
 
+    readonly sequenceType = "standard" ;
 
     flow? : XFlowConfiguration;
 
@@ -181,6 +182,7 @@ export class FlowStepSequence implements IFlowStepSequence {
             
         );
     }
+
 
 
 }

@@ -105,6 +105,7 @@ export class SchedulerWorker {
         try {
             if (i.waitFunction) {
                 if (i.waitFunction()) {
+                    console.log('waiting')
                     return true;
                 }
             }

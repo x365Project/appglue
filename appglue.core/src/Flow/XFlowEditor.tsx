@@ -64,6 +64,7 @@ import {ObserveMultiStateProperties} from "../CommonUI/StateManagement/ObserveMu
 import {CandidateSequence, ICandidateSequence} from "./Structure/CandidateSequence";
 import {FlowStepOutputInstructions} from "./Structure/FlowStepOutputInstructions";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
+import {ReactRenderHook} from "../CommonUI/ReactRenderHook";
 
 
 export interface FlowEditorParameters {
@@ -339,6 +340,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 							</TopbarIconButton>
 						}
 					</TopbarContent>
+                    <ReactRenderHook/>
 				</TopbarDiv>
 			}
 		/>

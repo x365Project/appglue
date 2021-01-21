@@ -16,6 +16,7 @@ import {FlowStepOutputInstructions, FlowStepOutputInstructionType} from "./Struc
 import {IFlowStep} from "./Structure/IFlowStep";
 import {Scheduler} from "../Common/Scheduler";
 import {HTMLUtilities} from "../CommonUI/HTMLUtilities";
+import {ReactRenderHook} from "../CommonUI/ReactRenderHook";
 
 export class FlowEditContext {
     flowEditor: XFlowEditor;
@@ -81,7 +82,6 @@ export class FlowEditContext {
     }
 
     onSequenceAdded(sequence: IFlowStepSequence) : void {
-        console.log('sequence added')
         this.delayPosition(true);
 
         this.refreshSequence(sequence);
@@ -103,8 +103,7 @@ export class FlowEditContext {
     }
 
     private delayPosition( alwaysRefresh: boolean = false) {
-        Scheduler.getScheduler('position', 90).addToSchedule('position', () => {
-            console.log('calling reposition');
+        ReactRenderHook.registerCallback('position', () => {
             if (this.positionCandidateSequences(true)) {
                 this.refreshSequences();
             }
@@ -381,47 +380,83 @@ export class FlowEditContext {
                     sequence: aSequence
                 };
 
+                console.log(newRange);
 
                 ranges.push(newRange);
             }
 
-            ranges.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
+            ranges = ranges.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
                 if (a.top > b.top) {
                     return 1;
-                }
-
-                if (a.top < b.top) {
+                } else {
                     return -1;
                 }
-
-                return 0;
             } )
 
+            let justPositioned : {top: number, bottom: number, sequence: IFlowStepSequence}[] = [];
 
-
-            let lastSeq : {top: number, bottom: number, sequence: IFlowStepSequence} | undefined = undefined;
+            // position real sequences
             for (let positionMe of ranges) {
-                // set x position
-                positionMe.sequence.x = positionMe.sequence.desiredX;
-
-                // set y position
-                if (lastSeq) {
-                    if (positionMe.top < lastSeq.bottom) {
-
-                        // calc height
-                        let height = positionMe.bottom - positionMe.top;
-
-                        positionMe.sequence.y = lastSeq.bottom;
-                        positionMe.top = lastSeq.bottom;
-                        positionMe.bottom = lastSeq.bottom + height;
+                justPositioned =justPositioned.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
+                    if (a.top > b.top) {
+                        return 1;
+                    } else {
+                        return -1;
                     }
-                } else {
-                    // its the first, it gets its desired position
-                    positionMe.sequence.y = positionMe.sequence.desiredY;
-                }
+                } )
 
-                lastSeq = positionMe;
+                if (positionMe.sequence.sequenceType === "standard") {
+                    let height = positionMe.bottom - positionMe.top;
+                    positionMe.sequence.y = this.findGapBetweenSequences(positionMe, justPositioned);
+                    positionMe.top = positionMe.sequence.y;
+                    positionMe.bottom = positionMe.top + height;
+                    justPositioned.push(positionMe);
+                }
             }
+
+            // position other sequences
+            for (let positionMe of ranges) {
+                justPositioned = justPositioned.sort((a: {top: number, bottom: number, sequence: IFlowStepSequence}, b: {top: number, bottom: number, sequence: IFlowStepSequence}) => {
+                    if (a.top > b.top) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } )
+
+                if (positionMe.sequence.sequenceType !== "standard") {
+                    let height = positionMe.bottom - positionMe.top;
+                    positionMe.sequence.y = this.findGapBetweenSequences(positionMe, justPositioned);
+                    positionMe.top = positionMe.sequence.y;
+                    positionMe.bottom = positionMe.top + height;
+                    justPositioned.push(positionMe);
+                }
+            }
+
+
+            // let lastSeq : {top: number, bottom: number, sequence: IFlowStepSequence} | undefined = undefined;
+            // for (let positionMe of ranges) {
+            //     // set x position
+            //     positionMe.sequence.x = positionMe.sequence.desiredX;
+            //
+            //     // set y position
+            //     if (lastSeq) {
+            //         if (positionMe.top < lastSeq.bottom) {
+            //
+            //             // calc height
+            //             let height = positionMe.bottom - positionMe.top;
+            //
+            //             positionMe.sequence.y = lastSeq.bottom;
+            //             positionMe.top = lastSeq.bottom;
+            //             positionMe.bottom = lastSeq.bottom + height;
+            //         }
+            //     } else {
+            //         // its the first, it gets its desired position
+            //         positionMe.sequence.y = positionMe.sequence.desiredY;
+            //     }
+            //
+            //     lastSeq = positionMe;
+            // }
 
             // remove ones we just positioned
             for(let toRemove of ranges) {
@@ -478,6 +513,77 @@ export class FlowEditContext {
         }
 
         return false;
+    }
+
+    private findGapBetweenSequences(forSeq: {top: number, bottom: number, sequence: IFlowStepSequence}, positioned: {top: number, bottom: number, sequence: IFlowStepSequence}[]) : number {
+
+        console.log('------ Computing One ----------')
+
+        if (positioned.length === 0) {
+            console.log('single, put below...')
+
+            return forSeq.top;
+        } else if (positioned.length === 1) {
+            console.log('single, put below...')
+            // can it go where it wants to go
+            if (forSeq.bottom < positioned[0].top)
+                return forSeq.top;
+
+            if (positioned[0].bottom < forSeq.top )
+                return forSeq.top;
+
+            return positioned[0].bottom;
+        } else {
+            console.log('list positioning', forSeq, positioned)
+            // is it above
+
+            if (forSeq.bottom < positioned[0].top) {
+                console.log('over the top of item', forSeq, positioned)
+                return forSeq.top;
+            }
+
+            let height = forSeq.bottom - forSeq.top;
+            console.log('height', height)
+
+            // iterate leavign off the last item in array
+            for (var _i = 0; _i < positioned.length -1; _i++) {
+                let fixed = positioned[_i];
+                let fixedNext = positioned[_i + 1];
+
+
+                let gapBetween = fixedNext.top - fixed.bottom;
+                console.log('pair', gapBetween, height, fixed, fixedNext);
+
+
+                if (gapBetween > height) {
+                    console.log('can position between')
+                    // it can go here...
+                    if (fixed.bottom < forSeq.top && forSeq.bottom < fixedNext.top) {
+                        console.log('placing where we want')
+                        // it can go where it wants
+                        return forSeq.top;
+                    } else {
+                        console.log('placing below ', fixed)
+                        return fixed.bottom;
+                    }
+                } else {
+                    console.log('next...')
+
+                }
+            }
+
+        }
+
+        console.log(forSeq.top > positioned[positioned.length -1].bottom, forSeq.top , positioned[positioned.length -1].bottom)
+        if (forSeq.top > positioned[positioned.length -1].bottom){
+            console.log('where defined')
+
+            return forSeq.top;
+        }
+
+        console.log('at bottom')
+        // put below last
+        return positioned[positioned.length -1].bottom;
     }
 
     private getSequencesNearPosition(toPosition : IFlowStepSequence, unpositionedSequences: IFlowStepSequence[]) : IFlowStepSequence[] {
@@ -863,5 +969,20 @@ export class FlowEditContext {
 
     refresh() {
         StateManager.changed(this.flowEditor);
+    }
+}
+
+class PositionWorkingData
+{
+    top: number;
+    bottom: number;
+    sequence: IFlowStepSequence;
+    positioned: boolean= false;
+
+
+    constructor(top: number, bottom: number, sequence: IFlowStepSequence) {
+        this.top = top;
+        this.bottom = bottom;
+        this.sequence = sequence;
     }
 }
