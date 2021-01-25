@@ -572,15 +572,7 @@ export class XFormConfiguration
 		}
 	}
 
-	getEditor() : ElementFactory<any>
-	{
-		return new ElementFactory(
-			this.renderEditUI.bind(this), {});
-	}
-
 	renderEditUI(): JSX.Element | null {
-	//	console.log('rendering edit');
-
 		return (
 		<>
 

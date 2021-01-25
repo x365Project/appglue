@@ -18,6 +18,7 @@ import {CONFIG_FORM_KEY} from "./XFormAndLayoutDesignPanel";
 import {ControlRenderContext} from "./ControlRenderContext";
 import {action, StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {ElementFactory} from "../../CommonUI/ElementFactory";
+import {EditableUtilities} from "../../CommonUI/IEditable";
  
 export class FormContext {
     form: XFormConfiguration;
@@ -284,15 +285,13 @@ export class FormContext {
             return;
 
         if (this.selectedId === CONFIG_FORM_KEY) {
-            return this.form.getEditor();
+            return EditableUtilities.getEditor(this.form);
         }
 
         let control = this.form.find(this.selectedId);
 
         if (control)
-            return control.getEditor();
-
-
+            return EditableUtilities.getEditor(control);
     }
 
     getSelectedId() : string | null {

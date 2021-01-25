@@ -18,6 +18,7 @@ export class StateManager {
             observable: object,
             observer: React.Component | Function,
             properties: string[] = []): void {
+//        console.log('adding observer ', observable)
         let observers = Reflect.get(observable, this.OBSERVERS_VALUE_NAME) as ListenerRegistration;
 
         if (!observers) {
@@ -94,21 +95,32 @@ export class StateManager {
             for (let l of observers.components) {
                 // checking property listeners.
                 if (forProperties && l.properties && l.properties.length !== 0 &&  this.isListening(l.properties, forProperties))
+                {
+                    console.log('calling state change', l.component)
                     l.component.forceUpdate();
+                }
 
                 // call general observers, always.
                 if (!l.properties || l.properties.length === 0)
+                {
+                    console.log('calling general state change - based on property change', l.component)
                     l.component.forceUpdate();
+                }
             }
 
             for (let l of observers.functions) {
                 // checking property listeners.
                 if (forProperties && l.properties && l.properties.length !== 0 &&  this.isListening(l.properties, forProperties))
+                {
+  //                  console.log('calling state change - based on property change : function')
                     l.function();
+                }
 
                 // call general observers, always.
-                if (!l.properties || l.properties.length === 0)
+                if (!l.properties || l.properties.length === 0) {
+//                    console.log('calling general state change - based on property change : function')
                     l.function();
+                }
             }
         }
 

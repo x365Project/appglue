@@ -17,11 +17,15 @@ export class MultiOutputTestStep extends BaseFlowStep {
     }
 
     renderEditUI(): JSX.Element | null {
+        // todo: should not have to observe here
         return (
-            <ObserveState
-                listenTo={this}
-                control={() => <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.stepUpdate} />}
-            />
+            <ObserveState listenTo={this} control={() => {
+                return (
+                    <div>
+                        <PropertyEditorTextList editObject={this} propertyName={'paths'} updateCallback={this.stepUpdate} />
+                    </div>
+                );
+            }}/>
         );
     }
 

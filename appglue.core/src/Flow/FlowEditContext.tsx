@@ -225,8 +225,8 @@ export class FlowEditContext {
                         return false;
                     }
 
-                    // step still contains instruction
-                    if (!step.findOutputInstruction(instruction.pathName)) {
+                    // is outcome the same
+                    if (!step.isCurrentOutcome(instruction.pathName)) {
                         wasChanged = true;
                         return false;
                     }

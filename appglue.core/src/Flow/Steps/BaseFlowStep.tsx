@@ -9,6 +9,8 @@ import {AutoBind} from "../../Common/AutoBind";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
 import {FlowStepSequence} from "../Structure/FlowStepSequence";
 import { FlowStepOutput } from "../Structure/FlowStepOutput";
+import {ObserveState} from "../../CommonUI/StateManagement/ObserveState";
+import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export const BasicStep = styled.div`
     width: 100%;
@@ -91,6 +93,20 @@ export abstract class BaseFlowStep
         }
 
         return inst;
+    }
+
+    isCurrentOutcome(name: string) : boolean {
+        let outcomes = this.getOutcomes();
+
+        if (!outcomes)
+            return false;
+
+        for (let o of outcomes) {
+            if (o.name === name)
+                return true;
+        }
+
+        return false;
     }
 
 

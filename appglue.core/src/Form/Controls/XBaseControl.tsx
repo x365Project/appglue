@@ -145,18 +145,5 @@ export abstract class XBaseControl
         return null;
     }
 
-    getEditor() : ElementFactory<any>
-    {
-        return new ElementFactory(
-            this.renderEditUI.bind(this), {});
-    }
-
-
-}
-
-function MyEditor() {
-    return (
-        <div>editor</div>
-    )
 }
 

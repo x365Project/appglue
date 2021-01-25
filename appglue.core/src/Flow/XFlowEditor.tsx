@@ -65,6 +65,7 @@ import {CandidateSequence, ICandidateSequence} from "./Structure/CandidateSequen
 import {FlowStepOutputInstructions} from "./Structure/FlowStepOutputInstructions";
 import {IFlowStepSequence} from "./Structure/IFlowStepSequence";
 import {ReactRenderHook} from "../CommonUI/ReactRenderHook";
+import {EditableUtilities} from "../CommonUI/IEditable";
 
 
 export interface FlowEditorParameters {
@@ -548,38 +549,6 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                         }
                                     }/>
                             }
-                            // props.flow.sequences.map((s: FlowStepSequence) => {
-                            //     return <ObserveState
-                            //         key={s._id}
-                            //         listenTo={s}
-                            //         control={
-                            //             () => <> {
-                            //                 props.flow.getConnectionsBySequence(s).map((value: FlowConnection) => {
-                            //                     let targetSequence = props.editContext.getCandidateOrRealSequence(value.toId);
-                            //                     return <ObserveMultiState
-                            //                         listenTo={[value.fromInstruction, value.fromStep, targetSequence]}
-                            //                         key={`${value.fromId}-${value.toId}`}
-                            //                         control={
-                            //                             () => {
-                            //                                 if (value.fromInstruction.strategy === FlowStepOutputInstructionType.BRANCH) {
-                            //
-                            //                                     return <Xarrow
-                            //                                         start={value.fromSequence.isCollapsed ? value.fromSequence._id : value.fromStep._id + '-' + value.fromInstruction.pathName}
-                            //                                         end={value.toId}
-                            //                                         strokeWidth = {2}
-                            //                                         headSize = {3}
-                            //                                     />
-                            //                                 }
-                            //                                 return <></>;
-                            //                             }
-                            //                         }/>
-                            //                 })
-                            //             }
-                            //             </>
-                            //         }
-                            //     />
-                            //
-                            // }
                             )
                         }
                     </>
@@ -659,7 +628,7 @@ export const EditLayer = function (props :{flow: XFlowConfiguration, editContext
             properties={["selectionElement"]}
             control={() => {
                 let selectedStep = props.editContext.selectionElement;
-                let editUIComponent = selectedStep?.renderEditUI();
+                let editUIComponent = selectedStep?.renderEditUI() ;
                 return <>
                     {
                         editUIComponent && (
@@ -681,7 +650,10 @@ export const EditLayer = function (props :{flow: XFlowConfiguration, editContext
                                             </EditLayerStyledTypography>
                                         </EditLayerStyledAccordionSummary>
                                         <EditLayerStyledAccordionDetails classes={{root: 'config-form-content'}}>
-                                            {editUIComponent}
+                                            <ObserveState listenTo={selectedStep} control={() => {
+                                                console.log('created for ', selectedStep)
+                                                return editUIComponent;
+                                            }}/>
                                         </EditLayerStyledAccordionDetails>
                                     </Accordion>
                                 </EditLayerConfigArea>
