@@ -306,6 +306,7 @@ export class FlowEditContext {
                 let instx= pos.left + (FlowConstants.DEFAULT_STACK_WIDTH - 40) + (seq?.x ?? 0) + FlowConstants.PATH_CANDIDATE_SHIFT;
               //  inst.postionHistory.push({x: instx, y: insty, from: 'poll'});
 
+
                 inst.candidateStackY = insty;
                 inst.candidateStackX = instx;
             }
@@ -375,7 +376,15 @@ export class FlowEditContext {
             // sort
             let ranges : PositionWorkingData[] = [];
             for (let aSequence of compareTo) {
-                let height = Reflect.get(aSequence, 'height') ?? FlowConstants.PATH_CANDIDATE_HEIGHT  ;
+                let height = Reflect.get(aSequence, 'height')   ;
+
+
+                if (height) {
+                    // add to account for top part
+                    height = height + FlowConstants.TITLE_AREA_HEIGHT;
+                } else {
+                    height = FlowConstants.PATH_CANDIDATE_HEIGHT
+                }
 
                 height = height + 5;
 
@@ -496,22 +505,33 @@ export class FlowEditContext {
         } else {
             // is it above
 
+            // its below the last one
+            if (forSeq.top > stacksNear[stacksNear.length -1].bottom){
+                return forSeq.top;
+            }
+
+            // its above the first one
             if (forSeq.bottom < stacksNear[0].top) {
                 return forSeq.top;
             }
 
             let height = forSeq.bottom - forSeq.top;
 
-            // iterate leavign off the last item in array
+            // iterate leaving off the last item in array
             for (var _i = 0; _i < stacksNear.length -1; _i++) {
                 let fixed = stacksNear[_i];
                 let fixedNext = stacksNear[_i + 1];
+
+                // it is below the bottom of the range
+                if (forSeq.top > fixedNext.bottom) {
+                    continue;
+                }
 
                 let gapBetween = fixedNext.top - fixed.bottom;
 
                 if (gapBetween > height) {
                     // it can go here...
-                    if (fixed.bottom < forSeq.top && forSeq.bottom < fixedNext.top) {
+                    if (forSeq.bottom < fixedNext.top) {
                         // it can go where it wants
                         return forSeq.top;
                     } else {
@@ -522,9 +542,6 @@ export class FlowEditContext {
 
         }
 
-        if (forSeq.top > stacksNear[stacksNear.length -1].bottom){
-            return forSeq.top;
-        }
 
         // put below last
         return stacksNear[stacksNear.length -1].bottom;

@@ -42,6 +42,7 @@ export class CandidateSequence implements ICandidateSequence {
         let s = new FlowStepSequence();
         s.desiredX = this.x;
         s.desiredY = this.y;
+        s.desiredY = this.y + FlowConstants.TITLE_AREA_HEIGHT;
         s._id = this._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID ? DataUtilities.generateUniqueId() : this._id;
         return s;
     }
@@ -108,7 +109,6 @@ export class NonPathCandidateSequence implements ICandidateSequence {
     createSequence() : FlowStepSequence {
         let s = new FlowStepSequence();
         s.desiredX = this.x;
-        s.desiredY = this.y;
         s._id = this._id === FlowConstants.DEFAULT_CANDIDATE_SEQ_ID ? DataUtilities.generateUniqueId() : this._id;
         return s;
     }

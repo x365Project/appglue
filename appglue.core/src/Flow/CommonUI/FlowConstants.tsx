@@ -22,6 +22,7 @@ export class FlowConstants {
   static DESIGN_SURFACE_ID = 'designsurface';
   static PRIMARY_SEQUENCE: string = 'primary__sequence';
   static PRIMARY_SEQUENCE_POSITION: { x: number, y: number } = {x:20, y:20};
+  static TITLE_AREA_HEIGHT: number = 18;
 
 
 }
