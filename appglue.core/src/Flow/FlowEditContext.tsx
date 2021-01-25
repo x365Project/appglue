@@ -503,17 +503,12 @@ export class FlowEditContext {
 
             return stacksNear[0].bottom;
         } else {
-            // is it above
-
-            // its below the last one
-            if (forSeq.top > stacksNear[stacksNear.length -1].bottom){
-                return forSeq.top;
-            }
-
             // its above the first one
             if (forSeq.bottom < stacksNear[0].top) {
                 return forSeq.top;
             }
+
+
 
             let height = forSeq.bottom - forSeq.top;
 
@@ -523,7 +518,7 @@ export class FlowEditContext {
                 let fixedNext = stacksNear[_i + 1];
 
                 // it is below the bottom of the range
-                if (forSeq.top > fixedNext.bottom) {
+                if (forSeq.top > fixedNext.top) {
                     continue;
                 }
 
@@ -531,7 +526,8 @@ export class FlowEditContext {
 
                 if (gapBetween > height) {
                     // it can go here...
-                    if (forSeq.bottom < fixedNext.top) {
+                    if (fixed.bottom > forSeq.top &&
+                        forSeq.bottom < fixedNext.top) {
                         // it can go where it wants
                         return forSeq.top;
                     } else {
@@ -542,6 +538,10 @@ export class FlowEditContext {
 
         }
 
+        // its below the last one
+        if (forSeq.top > stacksNear[stacksNear.length -1].bottom){
+            return forSeq.top;
+        }
 
         // put below last
         return stacksNear[stacksNear.length -1].bottom;
