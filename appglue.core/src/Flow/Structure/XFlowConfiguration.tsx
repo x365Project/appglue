@@ -53,6 +53,7 @@ export class XFlowConfiguration implements IFlowElement{
             sequence = new FlowStepSequence();
             sequence._id = sequenceId;
             this.addSequence(sequence);
+            this.context?.positionSequenceToFarRight(sequence);
         }
 
         sequence.addStep(step, index);

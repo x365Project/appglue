@@ -5,19 +5,22 @@ import {WeakList} from "../Common/WeakList";
 // this is a small class that is inserted into the rendering cycle so that we can see when mounting and updating happen.
 // a reference to
 // after callback is made, it unregistrs.
-export class ReactRenderHook extends React.Component {
+export class ReactRenderHook extends React.Component<{name?: string}> {
     static callbacks : {[callbackName: string] : Function}[] = [];
-    static instance : WeakList<ReactRenderHook> = new WeakList<ReactRenderHook>() ;
+    static hooks : WeakList<ReactRenderHook> = new WeakList<ReactRenderHook>() ;
     private static waitingForRender = false;
+
+    hookIsMounted : boolean = false;
 
     static registerCallback(name: string, callback: Function) {
         this.waitingForRender = true;
 
-        for (let i of this.instance.entries()) {
+        for (let i of this.hooks.entries()) {
             try {
-                i.forceUpdate();
-            } catch {
-                console.log('error in force update')
+                if ( i.hookIsMounted)
+                    i.forceUpdate();
+            } catch (e) {
+                console.log('error in force update', e);
             }
         }
 
@@ -31,21 +34,27 @@ export class ReactRenderHook extends React.Component {
     }
 
 
-    constructor() {
-        super({});
-        ReactRenderHook.instance.push(this);
+    constructor(props : {name?: string}) {
+        super(props);
+        ReactRenderHook.hooks.push(this);
         // release anyone waiting on prior render
         ReactRenderHook.waitingForRender = false;
     }
 
     componentDidMount() {
         ReactRenderHook.waitingForRender = false;
+        this.hookIsMounted = true;
     }
 
-    componentWillUpdate(nextProps: Readonly<{}>, nextState: Readonly<{}>, nextContext: any) {
+    componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any) {
         ReactRenderHook.waitingForRender = false;
+        this.hookIsMounted = true;
     }
 
+
+    componentWillUnmount() {
+        this.hookIsMounted = false;
+    }
 
     render() {
         return <></>;

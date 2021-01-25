@@ -30,6 +30,11 @@ export class FlowStepSequence implements IFlowStepSequence {
     private _canCopy: boolean = true;
     private _steps: BaseFlowStep[] = [];
 
+
+    // constructor() {
+    //     console.trace()
+    // }
+
     getElementId(): string {
         return this._id;
     }

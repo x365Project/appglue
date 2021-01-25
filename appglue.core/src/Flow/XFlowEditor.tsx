@@ -200,10 +200,11 @@ export class XFlowEditor extends React.Component<FlowEditorParameters, {}> {
                 if (c) {
                     let s = c.createSequence();
 
+                    seqid = s._id;
+
                     let instruction = Reflect.get(c, 'instruction') as FlowStepOutputInstructions;
                     if (instruction) {
                         // hook the paths together
-                        seqid = s._id;
 
                         if (instruction.pathName && instruction.stepId) {
                             instruction.connectedSequenceId = s._id;
@@ -539,9 +540,10 @@ export const FlowDesignPage = function (props :{flow: XFlowConfiguration, editCo
                                                 start={value.fromId}
                                                 startAnchor={"right"}
                                                 end={value.toId}
-                                                endAnchor={"left"}
+                                                endAnchor={["left", "top"]}
                                                 strokeWidth = {2}
                                                 headSize = {3}
+
                                             />
                                         }
                                     }/>
