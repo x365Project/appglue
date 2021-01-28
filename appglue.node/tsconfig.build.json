@@ -3,10 +3,9 @@
     "compilerOptions": {
         "noEmit": false,
         "declaration": true,
-        "incremental": false,
         "rootDir": "src/",
         "outDir": "dist/",
-        "emitDeclarationOnly": true
+        "composite": true,
     },
     "exclude": [
         "src/**/*.test.ts"
