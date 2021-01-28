@@ -1,13 +1,13 @@
 {
     "name": "@appglue/node",
     "version": "1.0.0",
-    "main": "src/index.ts",
+    "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "start:dev": "nodemon",
+        "prebuild": "rm -rf dist *.tsbuildinfo",
         "build": "tsc -p tsconfig.build.json",
-        "test": "npm run ts-test -- src/**/*.test.ts test/**/*.test.ts",
-        "ts-test": "mocha -r ts-node/register"
+        "test": "mocha"
     },
     "dependencies": {
         "body-parser": "^1.19.0",
