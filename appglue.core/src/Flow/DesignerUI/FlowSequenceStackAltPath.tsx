@@ -5,11 +5,8 @@ import {FlowStepSequence} from "../Structure/FlowStepSequence";
 import {BaseFlowStep} from "../Steps/BaseFlowStep";
 import { FlowStepOutputInstructions, FlowStepOutputInstructionType } from "../Structure/FlowStepOutputInstructions";
 import {FlowEditContext} from "../FlowEditContext";
-import {FlowConstants} from "../CommonUI/FlowConstants";
 import {IFlowStepSequence} from "../Structure/IFlowStepSequence";
 import {ObserveMultiState} from "../../CommonUI/StateManagement/ObserveMultiState";
-import ResizeObserver from 'resize-observer-polyfill';
-import {Scheduler} from "../../Common/Scheduler";
 
 
 const StepPathWrapper = styled.div`
