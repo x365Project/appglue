@@ -16,14 +16,17 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react",
     "sourceMap": true,
-    "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
-    "emitDecoratorMetadata": true         /* Enables experimental support for emitting type metadata for decorators. */
-
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noEmit": true,
+    "composite": true,
+    "outDir": "dist/",
+    "rootDir": "src/"
   },
   "include": [
-    "src", "src/Expressions/ExpressionElements/String/.tsx"
+    "src",
+    "src/Expressions/ExpressionElements/String/.tsx"
   ]
 }

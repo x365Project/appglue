@@ -26,7 +26,6 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import SideBarNav from './SideNavBar';
 import { Drawer } from '@material-ui/core';
 import clsx from 'clsx';
-
 import NotificationsList from './ToBarNotifications';
 import { ContentTheme } from './FrameProps';
 

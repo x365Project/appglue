@@ -25,5 +25,14 @@
   },
   "include": [
     "src"
+  ],
+  "references": [
+    {
+      "path": "../appglue.core/tsconfig.json"
+    },
+    {
+      "path": "../appglue.common/tsconfig.build.json"
+    }
   ]
+
 }
