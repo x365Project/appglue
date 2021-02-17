@@ -6,7 +6,8 @@
     "scripts": {
         "start:dev": "nodemon",
         "build": "tsc -p tsconfig.build.json",
-        "test": "mocha"
+        "test": "mocha",
+        "test:ci": "mocha" 
     },
     "dependencies": {
         "body-parser": "^1.19.0",

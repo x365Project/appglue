@@ -7,7 +7,7 @@
         "build": "lerna run build",
         "packages": "lerna list --json",
         "test": "lerna exec --stream npm run test",
-        "watch": "lerna exec --stream npm run watch"
+        "test:ci": "lerna exec --stream npm run test:ci"
     },
     "devDependencies": {
         "lerna": "^3.22.1"
