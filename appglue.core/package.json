@@ -36,7 +36,7 @@
     "test": "react-scripts test --watchAll=false",
     "tests": "react-scripts test",
     "eject": "react-scripts eject",
-    "watch": "react-scripts test --watch",
+    "watch": "react-scripts test",
     "coverage": "react-scripts test -- --coverage",
     "storybook": "start-storybook -p 6006 -s public --no-dll",
     "build-storybook": "build-storybook -s public --no-dll"
