@@ -45,6 +45,9 @@ export class FlowStepSequence implements IFlowStepSequence {
     }
 
     set x(value: number) {
+        if (this._id === FlowConstants.PRIMARY_SEQUENCE && value !== FlowConstants.PRIMARY_SEQUENCE_POSITION.x)
+            throw 'you cannot move the primary sequence (x)'
+
         this._x = value;
     }
 
@@ -54,7 +57,7 @@ export class FlowStepSequence implements IFlowStepSequence {
 
     set y(value: number) {
         if (this._id === FlowConstants.PRIMARY_SEQUENCE && value !== FlowConstants.PRIMARY_SEQUENCE_POSITION.y)
-            throw 'you cannot move the primary sequence'
+            throw 'you cannot move the primary sequence (y)'
 
         this._y = value;
     }

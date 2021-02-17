@@ -105,13 +105,13 @@ export class SchedulerWorker {
         try {
             if (i.waitFunction) {
                 if (i.waitFunction()) {
-                    console.log('waiting')
+//                    console.log('waiting')
                     return true;
                 }
             }
             i.callFunction();
         } catch (e) {
-            console.log('error processing item', e);
+//            console.log('error processing item', e);
             if (!i.requeue) {
                 delete this.items[item];
                 return false;
