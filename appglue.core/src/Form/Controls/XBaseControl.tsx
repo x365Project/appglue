@@ -4,16 +4,11 @@ import {DataUtilities} from "../../Common/DataUtilities";
 import {IEditable} from "../../CommonUI/IEditable";
 import {UserFormData} from "../UserFormData";
 import {IFormDataAccessor} from "../Utilities/IFormDataAccessor";
+import {IDesignValidationProvider, IRuntimeValidationProvider, ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {AutoBind} from "../../Common/AutoBind";
-import {
-    IDesignValidationProvider,
-    IRuntimeValidationProvider,
-    ValidationIssue
-} from "../../Common/IDesignValidationProvider";
 import {FormContext} from "../Utilities/FormContext";
 import {ControlRenderContext} from "../Utilities/ControlRenderContext";
 import {StateManager} from "../../CommonUI/StateManagement/StateManager";
-import {ElementFactory} from "../../CommonUI/ElementFactory";
 
 export abstract class XBaseControl
     extends React.Component
@@ -42,15 +37,6 @@ export abstract class XBaseControl
         this.id = DataUtilities.generateUniqueId();
 
     }
-
-
-    // componentDidMount() {
-    //     StateManager.addObserver(this, this);
-    // }
-    //
-    // componentWillUnmount() {
-    //     StateManager.removeObserver(this, this);
-    // }
 
     get controlRenderContext() : ControlRenderContext | null | undefined {
         return this.getFormContext()?.getControlContext(this);
