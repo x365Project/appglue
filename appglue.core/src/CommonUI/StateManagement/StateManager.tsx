@@ -96,14 +96,14 @@ export class StateManager {
                 // checking property listeners.
                 if (forProperties && l.properties && l.properties.length !== 0 &&  this.isListening(l.properties, forProperties))
                 {
-                    console.log('calling state change', l.component)
+//                    console.log('calling state change', l.component)
                     l.component.forceUpdate();
                 }
 
                 // call general observers, always.
                 if (!l.properties || l.properties.length === 0)
                 {
-                    console.log('calling general state change - based on property change', l.component)
+//                    console.log('calling general state change - based on property change', l.component)
                     l.component.forceUpdate();
                 }
             }
