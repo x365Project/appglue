@@ -5,7 +5,8 @@
     "scripts": {
         "start": "nodemon",
         "build": "tsc --build",
-        "test": "echo \"No tests specified yet.\""
+        "test": "echo \"No tests specified yet.\"",
+        "test:ci": "echo \"No tests specified yet.\""
     },
     "dependencies": {
         "@appglue/common": "^1.0.0",
