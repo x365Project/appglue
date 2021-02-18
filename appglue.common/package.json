@@ -6,7 +6,8 @@
     "description": "",
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "test": "mocha"
+        "test": "mocha",
+        "test:ci": "mocha"
     },
     "dependencies": {},
     "devDependencies": {
