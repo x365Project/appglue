@@ -252,7 +252,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
         return !props.editContext.lastSelectionElement
     }
 
-    return (
+    return ( 
 		<ObserveState
 			listenTo={props.editContext}
 			properties={['flowTitle', 'clipboardElement', 'selectionElement']}
