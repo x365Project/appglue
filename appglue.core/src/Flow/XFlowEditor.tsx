@@ -252,7 +252,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
         return !props.editContext.lastSelectionElement
     }
 
-    return ( 
+    return (
 		<ObserveState
 			listenTo={props.editContext}
 			properties={['flowTitle', 'clipboardElement', 'selectionElement']}
@@ -267,7 +267,7 @@ export const FlowTopBar = function (props :{ editContext: FlowEditContext }) {
 							}}
 							data-testid="topbar-flow-name"
 							inputProps={{ 'aria-label': 'Flow Name' }}
-							value={props.editContext.flowTitle}
+							value={props.editContext.flowTitle} 
 							disableUnderline
 							onChange={onChangeFlowTitle}
 						/>
