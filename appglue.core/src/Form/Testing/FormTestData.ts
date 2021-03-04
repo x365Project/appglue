@@ -6,6 +6,7 @@ import {XSelectbox} from "../Controls/XSelectbox";
 import {XHeading} from "../Controls/XHeading";
 import {XLabel} from "../Controls/XLabel";
 import {XButton} from "../Controls/XButton";
+import {XLink} from "../Controls/XLink";
 import {XSwitch} from "../Controls/XSwitch";
 import {XCheckboxList} from "../Controls/XCheckboxList";
 
@@ -27,7 +28,7 @@ import {XTimePicker} from '../Controls/XTimePicker';
 import {XNumberBox} from "../Controls/XNumberBox";
 import {XSlider} from "../Controls/XSlider";
 import {XButtonGroup} from "../Controls/XButtonGroup";
-import {WidthUnitInterface} from "../FormDesignConstants";
+import {WidthUnitInterface, ButtonControlSize} from "../FormDesignConstants";
 import { DefaultOnOff } from "../Utilities/DefaultOnOff";
 
 
@@ -98,6 +99,10 @@ export function getFormConfig(): XFormConfiguration {
   button.label = 'Submit';
   let button2 = new XButton();
   button.label = 'Cancel';
+
+  let link = new XLink();
+  link.label = 'Test Link';
+  link.size = ButtonControlSize.STANDARD;
 
   let switchMe = new XSwitch();
   switchMe.label = 'isAlive';
@@ -193,13 +198,14 @@ export function getFormConfig(): XFormConfiguration {
   headingContainer.add(heading);
 
 
-  let hstack = new XHStackContainer();
-  hstack.add(button);
-  hstack.add(button2);
+  let hstack1 = new XHStackContainer();
+  hstack1.add(button);
+  hstack1.add(button2);
 
+  let hstack2 = new XHStackContainer();
+  hstack2.add(link);
 
-
-  let ui = new XFormConfiguration([headingContainer, container, colContainer, hstack]);
+  let ui = new XFormConfiguration([headingContainer, container, colContainer, hstack1, hstack2]);
   // todo: come back here
   //ui.setFormData(formData);
 
