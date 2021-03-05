@@ -81,6 +81,7 @@ export const PropertyEditorLinkTypeSelection: React.FC<LinkPropertyEditorInterfa
   props: LinkPropertyEditorInterface
 ) => {
   const handleChangeType = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const type = event.target.value;
     if (
       props.parentDefaultValue &&
       props.parentDefaultValue === event.target.value
@@ -89,6 +90,7 @@ export const PropertyEditorLinkTypeSelection: React.FC<LinkPropertyEditorInterfa
     } else {
       Reflect.set(props.editObject, props.propertyName, event.target.value);
     }
+
     props.updateCallback();
   };
 

@@ -1,12 +1,8 @@
 import React from "react";
-import { ButtonControlSize, LinkControlType, LinkControlUnderline } from "../FormDesignConstants";
-import { XBaseControl } from "./XBaseControl";
+import { ButtonControlSize } from "../FormDesignConstants";
+import { BaseDataControl } from "./BaseDataControl";
 
-export abstract class BaseButtonControl extends XBaseControl {
+export abstract class BaseButtonControl extends BaseDataControl {
   label: string = "Button Label";
   size?: ButtonControlSize;
-  linkType: LinkControlType = LinkControlType.ACTION;
-  linkUnderline: LinkControlUnderline = LinkControlUnderline.HOVER;
-  overrideStyle : boolean = false;
-  changeLinkType : boolean = false;
 }
