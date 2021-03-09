@@ -1,11 +1,12 @@
-/* put page routes and registration here. */
-
-import React from 'react';
-import { INavigationPage } from './INavigationPage';
-import TeamPg from './TeamPage';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import SettingsIcon from '@material-ui/icons/Settings';
+import React, { Dispatch } from 'react';
+
 import { FrameProps } from '../NavFrame/FrameProps';
+import { INavigationPage } from './INavigationPage';
+import TeamPg from './TeamPage';
+
+/* put page routes and registration here. */
 
 export class PageRoutes {
   static pages: INavigationPage[] = [];
@@ -45,9 +46,10 @@ class TeamPage implements INavigationPage {
   }
   renderPage(
     layoutOptions: FrameProps,
+    setLayoutOption: Dispatch<any>,
     rerender?: any | undefined
   ): JSX.Element | null | undefined {
-    return <TeamPg rerender={rerender} layoutOptions={layoutOptions} />;
+    return <TeamPg rerender={rerender} layoutOptions={layoutOptions} setLayoutOption={setLayoutOption} />;
   }
   getSubPages(): INavigationPage[] {
     return [new UsersPage(), new RolesPage()];

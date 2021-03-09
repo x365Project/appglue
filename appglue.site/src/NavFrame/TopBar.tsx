@@ -1,36 +1,38 @@
-import React from 'react';
-import {
-  FrameProps,
-  LayoutWidth,
-  SideBarType,
-  TopBarTheme,
-} from './FrameProps';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { Avatar, Button, Divider, Drawer, ThemeProvider } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import InputBase from '@material-ui/core/InputBase';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { createMuiTheme, makeStyles, Theme } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { ExpandMoreSharp } from '@material-ui/icons';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import SideBarNav from './SideNavBar';
-import { Drawer } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import SearchIcon from '@material-ui/icons/Search';
+import Settings from '@material-ui/icons/Settings';
 import clsx from 'clsx';
-import NotificationsList from './ToBarNotifications';
-import { ContentTheme } from './FrameProps';
+import React, { Dispatch } from 'react';
+
+import { contentPalette } from '../utils/themes';
+import { FrameProps, LayoutWidth, SideBarType } from './FrameProps';
+import SettingsPannel from './SettingsPannel';
+import SideNavBar from './SideNavBar';
+import ChatsList from './TopBarChats';
+import NotificationsList from './TopBarNotifications';
+import ProfileList from './TopBarProfile';
 
 export default function TopBar(props: {
   layoutOptions: FrameProps;
+  setLayoutOption: Dispatch<any>;
   rerender?: () => any | undefined;
 }) {
   // if vertical, collapse top bar hamburg
@@ -44,27 +46,8 @@ export default function TopBar(props: {
   //   - edit look and feel
   //   - logout
 
-  const [topBarFontColor, setTopBarFontColor] = React.useState('#fff');
 
-  React.useEffect(() => {
-    switch (props.layoutOptions.topBarTheme) {
-      case TopBarTheme.DARK:
-        setTopBarFontColor('#fff');
-        break;
-      case TopBarTheme.LIGHT:
-        setTopBarFontColor('#9AA5B7');
-        break;
-      case TopBarTheme.COLORED:
-        setTopBarFontColor(props.layoutOptions.topBarFontColor);
-        break;
-
-      default:
-        setTopBarFontColor('#fff');
-        break;
-    }
-  }, [props.layoutOptions]);
-
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     grow: {
       flexGrow: 1,
     },
@@ -75,11 +58,12 @@ export default function TopBar(props: {
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: 'rgb(235,244,250)',
-      color: fade(theme.palette.action.selected, 0.8),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.info.light, 0.25),
-      },
+      whiteSpace: 'nowrap',
+      backgroundColor: "rgba(0, 0, 0, 0.1)",
+      // color: fade(theme.palette.action.selected, 0.8),
+      // '&:hover': {
+      //   backgroundColor: fade(theme.palette.info.light, 0.25),
+      // },
       marginRight: theme.spacing(2),
       marginLeft: '0 !important',
       width: '100%',
@@ -92,6 +76,7 @@ export default function TopBar(props: {
       padding: theme.spacing(1, 2, 0),
       float: 'right',
       display: 'inline-block',
+      color: "rgba(0, 0, 0, 0.2)",
       // color: '#93A9BF',
     },
     inputRoot: {
@@ -107,14 +92,12 @@ export default function TopBar(props: {
       },
     },
     sectionDesktop: {
-      display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
       },
     },
     sectionMobile: {
-      display: 'flex',
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('sm')]: {
         display: 'none',
       },
     },
@@ -135,31 +118,20 @@ export default function TopBar(props: {
       ...theme.mixins.toolbar,
     },
     appBar: {
-      color: topBarFontColor,
+      backgroundColor: theme.palette.background.default,
       zIndex: theme.zIndex.drawer + 1,
-      // width: `calc(100% - 73px)`,
-      background: '#fff',
-      position: 'relative',
-      left: `${drawerShiftWidth}px`,
+      position: 'fixed',
       transition: theme.transitions.create(['width', 'margin', 'left'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      [theme.breakpoints.down('xs')]: {
-        left: `${drawerShiftWidth - 46}px`,
-        width: `calc(100% - ${drawerWidth}px + 238px)`,
-      },
-      [theme.breakpoints.between('xs', 'sm')]: {
-        left: `${drawerShiftWidth - 31}px`,
-        width: `calc(100% - ${drawerWidth}px + 224px)`,
-      },
-      [theme.breakpoints.up('sm')]: {
-        left: `${drawerShiftWidth - 31}px`,
-        width: `calc(100% - ${drawerShiftWidth}px + 32px)`,
-      },
+      marginLeft: '1px',
+      left: theme.spacing(10),
+      width: `calc(100% - ${theme.spacing(10)}px)`,
     },
     appBarShift: {
-      marginLeft: drawerWidth,
+      backgroundColor: theme.palette.background.default,
+      marginLeft: '1px',
       width: `calc(100% - ${drawerWidth}px)`,
       left: '1px',
       transition: theme.transitions.create(['width', 'margin', 'left'], {
@@ -167,19 +139,20 @@ export default function TopBar(props: {
         duration: theme.transitions.duration.enteringScreen,
       }),
       [theme.breakpoints.down('xs')]: {
-        width: `calc(100% - ${drawerWidth}px)`,
+        left: theme.spacing(0),
+        width: `calc(100% - ${theme.spacing(0)}px)`,
       },
       [theme.breakpoints.between('xs', 'sm')]: {
-        left: `${181 - drawerWidth}px`,
-        width: `calc(100% - ${drawerWidth}px + 116px)`,
+        left: theme.spacing(0),
+        width: `calc(100% - ${theme.spacing(0)}px)`,
       },
       [theme.breakpoints.between('sm', 'md')]: {
-        left: `${105 - drawerWidth}px`,
-        width: `calc(100% - ${drawerWidth}px + 193px)`,
+        left: theme.spacing(20),
+        width: `calc(100% - ${theme.spacing(20)}px)`,
       },
       [theme.breakpoints.up('md')]: {
-        left: '1px',
-        width: `calc(100% - ${drawerWidth}px)`,
+        left: theme.spacing(30),
+        width: `calc(100% - ${theme.spacing(30)}px)`,
       },
     },
     menuButton: {
@@ -192,6 +165,9 @@ export default function TopBar(props: {
     title: {
       flexGrow: 1,
     },
+    backgroundGradient: {
+      backgroundImage: `linear-gradient(135deg, ${theme?.palette?.primary?.light} 30%, ${theme?.palette?.primary?.dark} 90%)`,
+    },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
@@ -199,54 +175,73 @@ export default function TopBar(props: {
     },
     drawerPaper: {
       float: 'left',
-      position: 'relative',
-      top: '-73px',
+      position: 'fixed',
       whiteSpace: 'nowrap',
-      width:
-        props.layoutOptions.sideBarType === SideBarType.COMPACT
-          ? `${drawerWidth}px !important`
-          : drawerWidth,
-      height: '100vh',
-      color: theme.palette.common.white,
+      height: window.innerHeight,
       // background: theme.palette.primary.main,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
       [theme.breakpoints.down('xs')]: {
-        width: theme.spacing(37),
+        width: theme.spacing(0),
       },
       [theme.breakpoints.between('xs', 'sm')]: {
-        width: theme.spacing(22) + 4,
+        width: theme.spacing(0),
       },
       [theme.breakpoints.between('sm', 'md')]: {
-        width: theme.spacing(13),
+        width: theme.spacing(20),
       },
       [theme.breakpoints.up('md')]: {
-        width: theme.spacing(37),
+        width: theme.spacing(30),
       },
     },
     drawerPaperClose: {
       overflowX: 'hidden',
       height: '100vh',
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('xs')]: {
-        width: theme.spacing(9),
-      },
+      width: theme.spacing(10),
     },
     Iconbutton: {
       // color: '#93A9BF',
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
-      backgroundColor: '#f7fbfd',
       flexGrow: 1,
-      height: '100vh',
+      minHeight: window.innerHeight - 73,
       overflow: 'auto',
+      transition: theme.transitions.create(['width', 'margin', 'left'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      paddingTop: '73px',
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(0),
+        width: `calc(100% - ${theme.spacing(0)}px)`,
+      },
+      [theme.breakpoints.between('xs', 'sm')]: {
+        marginLeft: theme.spacing(0),
+        width: `calc(100% - ${theme.spacing(0)}px)`,
+      },
+      [theme.breakpoints.between('sm', 'md')]: {
+        marginLeft: theme.spacing(20),
+        width: `calc(100% - ${theme.spacing(20)}px)`,
+      },
+      [theme.breakpoints.up('md')]: {
+        marginLeft: theme.spacing(30),
+        width: `calc(100% - ${theme.spacing(30)}px)`,
+      },
+    },
+    contentCompact: {
+      flexGrow: 1,
+      minHeight: window.innerHeight - 73,
+      overflow: 'auto',
+      transition: theme.transitions.create(['width', 'margin', 'left'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      paddingTop: '73px',
+      marginLeft: theme.spacing(10),
+      width: `calc(100% - ${theme.spacing(10)}px)`,
     },
 
     paper: {
@@ -257,9 +252,18 @@ export default function TopBar(props: {
     },
     userName: {
       // color: '#93A9BF',
-      padding: '14px 8px',
+      padding: '18px 8px',
+      textTransform: 'none'
     },
-    NotificationMenu: {},
+    dropDownArrow: {
+      verticalAlign: 'middle'
+    },
+    NotificationMenu: {
+      paddingRight: '20px',
+    },
+    NotificationArea: {
+      overflow: 'hidden',
+    },
     NotificationIcon: {},
     NotificationText: {
       fontSize: '14px',
@@ -267,36 +271,46 @@ export default function TopBar(props: {
     NotificationReceiveDate: {
       fontSize: '10px !important',
     },
+    ProfileMenu: {
+      paddingRight: '20px',
+      width: theme.spacing(25),
+    },
+    ProfileIcon: {},
+    ProfileText: {
+      fontSize: '14px',
+    },
+    ChatMenu: {
+      paddingRight: '20px',
+    },
+    ChatIcon: {},
+    ChatArea: {
+      overflow: 'hidden',
+    },
+    ChatText: {
+      fontSize: '14px',
+    },
+    ChatReceiveDate: {
+      fontSize: '10px !important',
+    },
     lightTopBar: {
-      // color: '#9AA5B7',
       background: theme.palette.primary.light,
     },
     darkTopBar: {
       background: theme.palette.primary.dark,
-      // color: '#fff',
     },
     coloredTopBar: {
-      background: props.layoutOptions.topBarColor,
-      // color: '#fff',
-      // background: theme.palette.primary.main,
+      // background: props.layoutOptions.topBarColor,
     },
-    coloredDrawerPaper: {
-      color: '#fff',
-      // background: theme.palette.primary.main,
+    arrow: {
+      transition: '.2s',
     },
-    lightContentTheme: {
-      color: '#000',
-      background: '#f7fbfd',
-    },
-    darkContentTheme: {
-      color: '#fff',
-      background: '#424C5C',
+    opened_arrow: {
+      transform: 'rotate(180deg)',
     },
   }));
 
   const drawerWidth =
     props.layoutOptions.sideBarType === SideBarType.COMPACT ? 146 : 296;
-  const drawerShiftWidth = 104;
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -305,6 +319,16 @@ export default function TopBar(props: {
     notificationAnchorEl,
     setNotificationAnchorEl,
   ] = React.useState<null | HTMLElement>(null);
+  const [
+    profileAnchorEl,
+    setProfileAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const [
+    chatAnchorEl,
+    setChatAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+
+  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   // const [
   //   profileAnchorEl,
   //   setProfileAnchorEl,
@@ -312,10 +336,6 @@ export default function TopBar(props: {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  // const handleProfileMenuOpen = (e) => {
-  //   setAnchorEl(e.currentTarget);
-  // };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -334,16 +354,25 @@ export default function TopBar(props: {
     setNotificationAnchorEl(null);
   };
 
-  // const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   setProfileAnchorEl(e.currentTarget);
-  // };
+  const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileAnchorEl(e.currentTarget);
+  };
 
-  // const handleProfileClose = () => {
-  //   setProfileAnchorEl(null);
-  // };
+  const handleProfileClose = () => {
+    setProfileAnchorEl(null);
+  };
+
+  const handleChatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setChatAnchorEl(e.currentTarget);
+  };
+
+  const handleChatClose = () => {
+    setChatAnchorEl(null);
+  };
+
 
   const handleRenderPage = (renderPage: any) => {
-    setCurrentPageContent(renderPage(props.layoutOptions, props.rerender));
+    setCurrentPageContent(renderPage(props.layoutOptions, props.setLayoutOption, props.rerender));
   };
 
   // const handleMobileMenuOpen = (e) => {
@@ -381,7 +410,6 @@ export default function TopBar(props: {
         <IconButton
           className={classes.Iconbutton}
           aria-label="show 4 new mails"
-          color="inherit"
         >
           <FullscreenIcon />
         </IconButton>
@@ -392,7 +420,6 @@ export default function TopBar(props: {
         <IconButton
           className={classes.Iconbutton}
           aria-label="show 4 new mails"
-          color="inherit"
         >
           <Badge badgeContent={10} color="secondary">
             <ChatBubbleOutlineIcon />
@@ -404,7 +431,6 @@ export default function TopBar(props: {
         <IconButton
           className={classes.Iconbutton}
           aria-label="show 11 new notifications"
-          color="inherit"
         >
           <Badge badgeContent={1} color="secondary">
             <NotificationsIcon />
@@ -418,7 +444,6 @@ export default function TopBar(props: {
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
-          color="inherit"
         >
           <AccountCircle />
         </IconButton>
@@ -443,177 +468,267 @@ export default function TopBar(props: {
       className={clsx(
         classes.grow,
         props.layoutOptions.layoutWidth === LayoutWidth.BOXED &&
-          classes.borderGrow
+        classes.borderGrow
       )}
     >
-      <AppBar
-        position="absolute"
-        className={clsx(
-          classes.appBar,
-          open && classes.appBarShift,
-          props.layoutOptions.topBarTheme === TopBarTheme.DARK &&
-            classes.darkTopBar,
-          props.layoutOptions.topBarTheme === TopBarTheme.COLORED &&
-            classes.coloredTopBar,
-          props.layoutOptions.topBarTheme === TopBarTheme.LIGHT &&
-            classes.lightTopBar
-        )}
-        elevation={0}
-      >
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, classes.Iconbutton)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              className={classes.Iconbutton}
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <FullscreenIcon style={{ fontSize: '30px' }} />
-            </IconButton>
-            <IconButton
-              className={classes.Iconbutton}
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={10} color="secondary">
-                <ChatBubbleOutlineIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              className={classes.Iconbutton}
-              aria-label="show 17 new notifications"
-              aria-haspopup="true"
-              aria-controls="notification-menu"
-              color="inherit"
-              onClick={handleNotificationClick}
-            >
-              <Badge badgeContent={1} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <Menu
-              id="notification-menu"
-              anchorEl={notificationAnchorEl}
-              keepMounted
-              open={Boolean(notificationAnchorEl)}
-              onClose={handleNotificationClose}
-              elevation={0}
-              getContentAnchorEl={null}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-              PaperProps={{
-                style: {
-                  maxHeight: 268,
-                  width: '286px',
-                },
-              }}
-            >
-              {NotificationsList.map(item => (
-                <MenuItem
-                  onClick={handleNotificationClose}
-                  key={item.id}
-                  className={classes.NotificationMenu}
-                >
-                  <div>
-                    <ListItemIcon className={classes.NotificationIcon}>
-                      {<item.icon />}
-                    </ListItemIcon>
-                  </div>
-                  <div>
-                    <ListItemText className={classes.NotificationText}>
-                      {item.text}
-                    </ListItemText>
-                    <ListItemText className={classes.NotificationReceiveDate}>
-                      {item.dateOfReceiving}
-                    </ListItemText>
-                  </div>
-                </MenuItem>
-              ))}
-            </Menu>
-            <IconButton
-              className={classes.Iconbutton}
-              edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Typography className={classes.userName}>John Doe</Typography>
-          </div>
-
-          <div className={classes.sectionMobile}>
-            <IconButton
-              className={classes.Iconbutton}
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
       <Drawer
         variant="permanent"
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.backgroundGradient, classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
         open={open}
       >
-        <SideBarNav
+        <SideNavBar
           handleRenderPage={handleRenderPage}
-          color={props.layoutOptions.color}
-          colorGradientEnd={props.layoutOptions.colorGradientEnd}
           navBarTheme={props.layoutOptions.navBarTheme}
           variant={props.layoutOptions.sideBarType}
           sideBarType={props.layoutOptions.sideBarType}
-          navBarColor={props.layoutOptions.navBarColor}
-          navBarFontColor={props.layoutOptions.navBarFontColor}
           layoutOptions={props.layoutOptions}
+          sideBarOpen={open}
         />
       </Drawer>
-      <main
-        className={clsx(
-          classes.content,
-          props.layoutOptions.contentTheme === ContentTheme.LIGHT &&
-            classes.lightContentTheme,
-          props.layoutOptions.contentTheme === ContentTheme.DARK &&
-            classes.darkContentTheme
-        )}
+
+      <Drawer
+        classes={{ paper: clsx(classes.backgroundGradient), }} anchor="right" open={openSettings} onClose={() => setOpenSettings(false)}>
+        <SettingsPannel layoutOptions={props.layoutOptions} setLayoutOption={props.setLayoutOption} />
+      </Drawer>
+
+      <ThemeProvider
+        theme={(theme: Theme) =>
+          createMuiTheme({
+            ...theme,
+            palette: {
+              ...theme.palette,
+              ...contentPalette,
+            },
+          })
+        }
       >
-        <div className={classes.appBarSpacer} />
-        {currentPageContent}
-      </main>
+        <AppBar
+          className={clsx(
+            classes.appBar,
+            open && classes.appBarShift,
+          )}
+          elevation={1}
+        >
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(classes.menuButton, classes.Iconbutton)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+              />
+            </div>
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show 4 new mails"
+              >
+                <FullscreenIcon style={{ fontSize: '30px' }} />
+              </IconButton>
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show 4 new mails"
+                onClick={handleChatClick}
+              >
+                <Badge badgeContent={10} color="secondary">
+                  <ChatBubbleOutlineIcon />
+                </Badge>
+              </IconButton>
+              <Menu
+                id="chat-menu"
+                anchorEl={chatAnchorEl}
+                keepMounted
+                open={Boolean(chatAnchorEl)}
+                onClose={handleChatClose}
+                elevation={1}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                PaperProps={{
+                  style: {
+                    maxHeight: 268,
+                    width: '286px',
+                  },
+                }}
+              >
+                {ChatsList.map(item => (
+                  <div
+                    key={item.id}>
+                    <MenuItem
+                      onClick={handleChatClose}
+                      className={classes.ChatMenu}
+                    >
+                      <div>
+                        <ListItemIcon className={classes.ChatIcon}>
+                          {<item.icon />}
+                        </ListItemIcon>
+                      </div>
+                      <div className={classes.ChatArea}>
+                        <ListItemText className={classes.ChatText}>
+                          {item.text}
+                        </ListItemText>
+                        <ListItemText className={classes.ChatReceiveDate}>
+                          {item.dateOfReceiving}
+                        </ListItemText>
+                      </div>
+                    </MenuItem>
+                    <Divider />
+                  </div>
+                ))}
+              </Menu>
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show 17 new notifications"
+                aria-haspopup="true"
+                aria-controls="notification-menu"
+                onClick={handleNotificationClick}
+              >
+                <Badge badgeContent={1} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <Menu
+                id="notification-menu"
+                anchorEl={notificationAnchorEl}
+                keepMounted
+                open={Boolean(notificationAnchorEl)}
+                onClose={handleNotificationClose}
+                elevation={1}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                PaperProps={{
+                  style: {
+                    maxHeight: 268,
+                    width: '286px',
+                  },
+                }}
+              >
+                {NotificationsList.map(item => (
+                  <div key={item.id}>
+                    <MenuItem
+                      onClick={handleNotificationClose}
+                      className={classes.NotificationMenu}
+                    >
+                      <div>
+                        <ListItemIcon className={classes.NotificationIcon}>
+                          {<item.icon />}
+                        </ListItemIcon>
+                      </div>
+                      <div className={classes.NotificationArea}>
+                        <ListItemText className={classes.NotificationText}>
+                          {item.text}
+                        </ListItemText>
+                        <ListItemText className={classes.NotificationReceiveDate}>
+                          {item.dateOfReceiving}
+                        </ListItemText>
+                      </div>
+                    </MenuItem>
+                    <Divider />
+                  </div>
+                ))}
+              </Menu>
+              <Button
+                onClick={handleProfileClick}
+              >
+                <Avatar />
+                <Typography className={classes.userName}>John Doe
+                <ExpandMoreSharp
+                    className={clsx(classes.arrow, classes.dropDownArrow, Boolean(profileAnchorEl) && classes.opened_arrow)}
+                  />
+                </Typography>
+              </Button>
+              <Menu
+                id="profile-menu"
+                anchorEl={profileAnchorEl}
+                keepMounted
+                open={Boolean(profileAnchorEl)}
+                onClose={handleProfileClose}
+                elevation={1}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+              >
+                {ProfileList.map(item => (
+                  <div key={item.id}>
+                    <MenuItem
+                      onClick={handleProfileClose}
+                      className={classes.ProfileMenu}
+                    >
+                      <div>
+                        <ListItemIcon className={classes.ProfileIcon}>
+                          {<item.icon />}
+                        </ListItemIcon>
+                      </div>
+                      <div>
+                        <ListItemText className={classes.ProfileText}>
+                          {item.text}
+                        </ListItemText>
+                      </div>
+                    </MenuItem>
+                    <Divider />
+                  </div>
+                ))}
+              </Menu>
+              <IconButton onClick={() => setOpenSettings(c => !Boolean(c))} >
+                <Settings />
+              </IconButton>
+            </div>
+
+            <div className={classes.sectionMobile}>
+              <IconButton
+                className={classes.Iconbutton}
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+              >
+                <MoreIcon />
+              </IconButton>
+            </div>
+          </Toolbar>
+        </AppBar>
+        <main
+          className={clsx(
+            open ? classes.content : classes.contentCompact
+          )}
+        >
+          {currentPageContent}
+        </main>
+      </ThemeProvider>
       {renderMobileMenu}
       {renderMenu}
     </div>

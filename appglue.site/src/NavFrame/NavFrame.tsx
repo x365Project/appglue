@@ -1,13 +1,15 @@
-import React from 'react';
+import { ThemeProvider } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import React, { Dispatch } from 'react';
+
+import { createTheme } from '../utils/Theme';
 import { FrameProps, Layout } from './FrameProps';
 import TopBar from './TopBar';
 import TopBarNav from './TopNavBar';
 
-import Grid from '@material-ui/core/Grid';
-import { ThemeProvider } from '@material-ui/core';
-import { createTheme } from '../utils/Theme';
 export function NavFrame(props: {
   layoutOptions: FrameProps;
+  setLayoutOption: Dispatch<any>;
   rerender?: () => any;
 }) {
   // top bar
