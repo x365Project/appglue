@@ -1,19 +1,10 @@
-import React from 'react';
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Meta, Story } from '@storybook/react/types-6-0';
+import React from 'react';
 
+import { FrameProps, FrameSize, Layout, LayoutWidth, SideBarType } from './FrameProps';
 import { NavFrame } from './NavFrame';
-import {
-  ContentTheme,
-  FrameProps,
-  FrameSize,
-  Layout,
-  LayoutWidth,
-  NavBarTheme,
-  SideBarType,
-  TopBarTheme,
-} from './FrameProps';
 
+// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 export default {
   title: 'NavFrame',
   component: NavFrame,
@@ -55,7 +46,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.topBarTheme = TopBarTheme.DARK;
+frameOptions.topBarFontColor = '#fafafa';
+frameOptions.topBarColor = '#282F38';
+frameOptions.topBarColorEnd = '#282F38';
 
 export const DarkTopBar = Template.bind(null, frameOptions);
 
@@ -63,7 +56,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.topBarTheme = TopBarTheme.LIGHT;
+frameOptions.topBarFontColor = '#212121';
+frameOptions.topBarColor = '#fafafa';
+frameOptions.topBarColorEnd = '#fafafa';
 
 export const LightTopBar = Template.bind(null, frameOptions);
 
@@ -71,9 +66,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.topBarColor = '#c97f7f';
-frameOptions.topBarFontColor = '#cccc00';
+frameOptions.topBarFontColor = '#fafafa';
+frameOptions.topBarColor = '#48A0D5';
+frameOptions.topBarColorEnd = '#02D0C1';
 
 export const ColoredTopBar = Template.bind(null, frameOptions);
 
@@ -81,7 +76,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.DARK;
+frameOptions.navBarFontColor = '#fafafa';
+frameOptions.navBarColor = '#282F38';
+frameOptions.navBarColorEnd = '#282F38';
 
 export const DarkNavBar = Template.bind(null, frameOptions);
 
@@ -89,7 +86,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.LIGHT;
+frameOptions.navBarFontColor = '#212121';
+frameOptions.navBarColor = '#fafafa';
+frameOptions.navBarColorEnd = '#fafafa';
 
 export const LightNavBar = Template.bind(null, frameOptions);
 
@@ -97,9 +96,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.navBarColor = '#002600';
-frameOptions.navBarFontColor = '#fff';
+frameOptions.navBarFontColor = '#fafafa';
+frameOptions.navBarColor = '#48A0D5';
+frameOptions.navBarColorEnd = '#02D0C1';
 
 export const ColoredNavBar = Template.bind(null, frameOptions);
 
@@ -107,9 +106,12 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.DARK;
-frameOptions.topBarTheme = TopBarTheme.DARK;
-frameOptions.contentTheme = ContentTheme.DARK;
+frameOptions.navBarFontColor = '#fafafa';
+frameOptions.navBarColor = '#282F38';
+frameOptions.navBarColorEnd = '#282F38';
+frameOptions.topBarFontColor = '#fafafa';
+frameOptions.topBarColor = '#282F38';
+frameOptions.topBarColorEnd = '#282F38';
 
 export const DarkTheme = Template.bind(null, frameOptions);
 
@@ -119,7 +121,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.topBarTheme = TopBarTheme.DARK;
+frameOptions.topBarFontColor = '#212121';
+frameOptions.topBarColor = '#fafafa';
+frameOptions.topBarColorEnd = '#fafafa';
 
 export const HDarkTopBar = Template.bind(null, frameOptions);
 
@@ -127,7 +131,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.topBarTheme = TopBarTheme.LIGHT;
+frameOptions.topBarFontColor = '#212121';
+frameOptions.topBarColor = '#fafafa';
+frameOptions.topBarColorEnd = '#fafafa';
 
 export const HLightTopBar = Template.bind(null, frameOptions);
 
@@ -135,8 +141,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.color = '#ff0000';
+frameOptions.topBarFontColor = '#fafafa';
+frameOptions.topBarColor = '#48A0D5';
+frameOptions.topBarColorEnd = '#02D0C1';
 
 export const HColoredTopBar = Template.bind(null, frameOptions);
 
@@ -144,7 +151,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.navBarTheme = NavBarTheme.DARK;
+frameOptions.navBarFontColor = '#212121';
+frameOptions.navBarColor = '#fafafa';
+frameOptions.navBarColorEnd = '#fafafa';
 
 export const HDarkNavBar = Template.bind(null, frameOptions);
 
@@ -152,7 +161,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.navBarTheme = NavBarTheme.LIGHT;
+frameOptions.navBarFontColor = '#212121';
+frameOptions.navBarColor = '#fafafa';
+frameOptions.navBarColorEnd = '#fafafa';
 
 export const HLightNavBar = Template.bind(null, frameOptions);
 
@@ -160,8 +171,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.color = '#ff0000';
+frameOptions.navBarFontColor = '#fafafa';
+frameOptions.navBarColor = '#48A0D5';
+frameOptions.navBarColorEnd = '#02D0C1';
 
 export const HColoredNavBar = Template.bind(null, frameOptions);
 
@@ -169,9 +181,12 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.navBarTheme = NavBarTheme.DARK;
-frameOptions.topBarTheme = TopBarTheme.DARK;
-frameOptions.contentTheme = ContentTheme.DARK;
+frameOptions.navBarFontColor = '#fafafa';
+frameOptions.navBarColor = '#282F38';
+frameOptions.navBarColorEnd = '#282F38';
+frameOptions.topBarFontColor = '#fafafa';
+frameOptions.topBarColor = '#282F38';
+frameOptions.topBarColorEnd = '#282F38';
 
 export const HDarkTheme = Template.bind(null, frameOptions);
 
@@ -180,9 +195,6 @@ frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.sideBarType = SideBarType.DEFAULT;
-frameOptions.navBarTheme = NavBarTheme.DARK;
-frameOptions.topBarTheme = TopBarTheme.DARK;
-frameOptions.contentTheme = ContentTheme.DARK;
 
 export const FullNavBar = Template.bind(null, frameOptions);
 
@@ -191,30 +203,27 @@ frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
 frameOptions.sideBarType = SideBarType.COMPACT;
-frameOptions.navBarTheme = NavBarTheme.DARK;
-frameOptions.topBarTheme = TopBarTheme.DARK;
-frameOptions.contentTheme = ContentTheme.DARK;
 
 export const CompactNavBar = Template.bind(null, frameOptions);
 
+// frameOptions = new FrameProps();
+// frameOptions.frameSize = FrameSize.STANDARD;
+// frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
+// frameOptions.layout = Layout.VERTICAL;
+// frameOptions.sideBarType = SideBarType.ICON;
+// frameOptions.navBarTheme = NavBarTheme.DARK;
+// frameOptions.topBarTheme = TopBarTheme.DARK;
+// frameOptions.contentTheme = ContentTheme.DARK;
+
+// export const IconNavBar = Template.bind(null, frameOptions);
+
 frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.sideBarType = SideBarType.ICON;
-frameOptions.navBarTheme = NavBarTheme.DARK;
-frameOptions.topBarTheme = TopBarTheme.DARK;
-frameOptions.contentTheme = ContentTheme.DARK;
-
-export const IconNavBar = Template.bind(null, frameOptions);
-
-frameOptions = new FrameProps();
-frameOptions.frameSize = FrameSize.STANDARD;
-frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
-frameOptions.layout = Layout.VERTICAL;
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.topBarColor = '#E59400';
-frameOptions.topBarFontColor = '#4c4cff';
+frameOptions.topBarFontColor = '#0288D1';
+frameOptions.topBarColor = '#FFB74D';
+frameOptions.topBarColorEnd = '#F57C00';
 
 export const OrangeTopBarWithBlueFont = Template.bind(null, frameOptions);
 
@@ -222,9 +231,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.navBarColor = '#99cc99';
-frameOptions.navBarFontColor = '#ffffff';
+frameOptions.navBarColor = '#64DD17';
+frameOptions.navBarColorEnd = '#64DD17';
+frameOptions.navBarFontColor = '#fafafa';
 
 export const GreenNavBarWithWhiteFont = Template.bind(null, frameOptions);
 
@@ -232,12 +241,12 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.navBarColor = '#999900';
-frameOptions.navBarFontColor = '#ffffff';
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.topBarColor = '#999900';
-frameOptions.topBarFontColor = '#310c0c';
+frameOptions.navBarColor = '#D4E157';
+frameOptions.navBarColorEnd = '#CDDC39';
+frameOptions.navBarFontColor = '#fafafa';
+frameOptions.topBarColor = '#D4E157';
+frameOptions.topBarColorEnd = '#CDDC39';
+frameOptions.topBarFontColor = '#3E2723';
 
 export const YellowNavBarWithWhiteFontAndYellowTopBarWithBrownFont = Template.bind(
   null,
@@ -248,10 +257,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.navBarColor =
-  'linear-gradient(to top, #051937, #3a2555, #752a63, #ad2e5d, #d84747)';
-frameOptions.navBarFontColor = '#ffffff';
+frameOptions.navBarColor = '#18FFFF';
+frameOptions.navBarColorEnd = '#00E676';
+frameOptions.navBarFontColor = '#fafafa';
 
 export const GradientNavBarWithWhiteFont = Template.bind(null, frameOptions);
 
@@ -259,10 +267,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.VERTICAL;
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.topBarColor =
-  'linear-gradient(to right, #adc939, #a5d642, #9ae44e, #8af15d, #75ff6f)';
-frameOptions.topBarFontColor = '#990000';
+frameOptions.topBarColor = '#18FFFF';
+frameOptions.topBarColorEnd = '#00E676';
+frameOptions.topBarFontColor = '#FF0000';
 
 export const GradientTopBarWithRedFont = Template.bind(null, frameOptions);
 
@@ -271,9 +278,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.topBarColor = '#E59400';
-frameOptions.topBarFontColor = '#4c4cff';
+frameOptions.topBarFontColor = '#0288D1';
+frameOptions.topBarColor = '#FFB74D';
+frameOptions.topBarColorEnd = '#F57C00';
 
 export const HOrangeTopBarWithBlueFont = Template.bind(null, frameOptions);
 
@@ -281,9 +288,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.navBarColor = '#990000';
-frameOptions.navBarFontColor = '#cccc00';
+frameOptions.navBarColor = '#EF5350';
+frameOptions.navBarColorEnd = '#FF1744';
+frameOptions.navBarFontColor = '#FFFF00';
 
 export const HRedNavBarWithYellowFont = Template.bind(null, frameOptions);
 
@@ -291,10 +298,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.navBarTheme = NavBarTheme.COLORED;
-frameOptions.navBarColor =
-  'linear-gradient(to right, #f88585, #ff8aa0, #ff93ba, #fd9ed4, #f5aaec)';
-frameOptions.navBarFontColor = '#cccc00';
+frameOptions.navBarColor = '#EF5350';
+frameOptions.navBarColorEnd = '#FF1744';
+frameOptions.navBarFontColor = '#FFFF00';
 
 export const HGradientNavBarWithYellowFont = Template.bind(null, frameOptions);
 
@@ -302,10 +308,9 @@ frameOptions = new FrameProps();
 frameOptions.frameSize = FrameSize.STANDARD;
 frameOptions.layoutWidth = LayoutWidth.FULL_WIDTH;
 frameOptions.layout = Layout.HORIZONTAL;
-frameOptions.topBarTheme = TopBarTheme.COLORED;
-frameOptions.topBarColor =
-  'linear-gradient(to right, #adc939, #a5d642, #9ae44e, #8af15d, #75ff6f)';
-frameOptions.topBarFontColor = '#fff';
+frameOptions.topBarColor = '#EF5350';
+frameOptions.topBarColorEnd = '#FF1744';
+frameOptions.topBarFontColor = '#FFFF00';
 
 export const HGradientTopBarWithWhiteFont = Template.bind(null, frameOptions);
 

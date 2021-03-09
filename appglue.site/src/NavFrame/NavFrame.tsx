@@ -5,7 +5,7 @@ import React, { Dispatch } from 'react';
 import { createTheme } from '../utils/Theme';
 import { FrameProps, Layout } from './FrameProps';
 import TopBar from './TopBar';
-import TopBarNav from './TopNavBar';
+import TopBarNav from './TopBarNav';
 
 export function NavFrame(props: {
   layoutOptions: FrameProps;

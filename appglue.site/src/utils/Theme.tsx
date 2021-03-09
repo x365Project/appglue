@@ -1,7 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 import { FrameProps } from '../NavFrame/FrameProps';
-import { cyanTheme, darkTheme } from './themes';
 
 // import MulishRegular from '../assets/fonts/Mulish/static/Mulish-Regular.ttf';
 
@@ -17,8 +16,25 @@ export const createTheme = ({
         '"Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif !important',
     },
     palette: {
-      ...((contentTheme === 'dark') && darkTheme),
-      ...((contentTheme === 'cyan') && cyanTheme),
+      // type: contentTheme,
+      primary: {
+        main: '#0A284D',
+      },
+
+      secondary: {
+        main: '#00D1C1;',
+      },
+
+      error: {
+        main: '#F98784;',
+      },
+      warning: {
+        main: '#FB8A5A;',
+      },
+      success: {
+        main: '#4CAF50;',
+      }
+
     },
     overrides: {
       MuiOutlinedInput: {
@@ -43,6 +59,13 @@ export const createTheme = ({
           minHeight: '73px',
         },
       },
+
+      MuiList: {
+        padding: {
+          paddingTop: 0,
+          paddingBottom: 0
+        }
+      }
     },
     // breakpoints: {
     //   values: {

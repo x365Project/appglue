@@ -28,6 +28,7 @@ export default function SideNavBar(props: {
       left: '72px',
     },
     Icon: {
+      color: props?.layoutOptions?.navBarFontColor,
       minWidth: '45px',
       paddingLeft: '10px',
       [theme.breakpoints.between('xs', 'sm')]: {
@@ -57,6 +58,7 @@ export default function SideNavBar(props: {
       display: 'none'
     },
     divider: {
+      background: props?.layoutOptions?.navBarFontColor + "5",
       margin: '0 20px 10px',
     },
     listItem: {

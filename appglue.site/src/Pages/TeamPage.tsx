@@ -11,13 +11,11 @@ enum Sections {
 }
 const useStyles = makeStyles(theme => ({
   container: {
-    padding: '20px 50px',
     textAlign: 'start',
   },
   paper: {
     padding: '30px',
-    // maxWidth: '1000px',
-    height: '500px', // temporary
+    minHeight: window.innerHeight - theme.spacing(10)
   },
   header: {},
   subheader: {

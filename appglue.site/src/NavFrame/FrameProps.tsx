@@ -42,26 +42,32 @@ export enum Preloader {
   OFF = 'off',
 }
 
+export enum ThemeType {
+  LIGHT = 'light',
+  DARK = 'dark'
+}
+
 // these will be fetched from tenant then from user settings
 export class FrameProps {
   icon: JSX.Element | undefined;
   teamName: string = 'AppGlue';
   allTeams: string[] = ['AppGlue', 'OtherTeam', 'YetAnotherTeam'];
 
-  color: string = '#203156';
-  colorGradientEnd: string =
-    'linear-gradient(160.55deg, #49A0D5 1.59%, #00D1C1 94.21%)'; // gradients have 2 colors...
-  topBarFontColor: string = '';
-  topBarColor: string = '';
-  navBarFontColor: string = '';
-  navBarColor: string = '';
+  color: string = '#49A0D5';
+  colorGradientEnd: string = '#0ACAC4';
+  topBarFontColor: string = '#424242';
+  topBarColor: string = '#fff';
+  topBarColorEnd: string = '#fff';
+  navBarFontColor: string = '#424242';
+  navBarColor: string = '#fff';
+  navBarColorEnd: string = '#fff';
   layout: Layout = Layout.VERTICAL;
   sideBarType: SideBarType = SideBarType.DEFAULT;
   frameSize: FrameSize = FrameSize.STANDARD;
   layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
   topBarTheme: TopBarTheme = TopBarTheme.DARK;
   navBarTheme: NavBarTheme = NavBarTheme.DARK;
-  contentTheme: string = 'cyan';
+  contentTheme: string = ThemeType?.LIGHT;
   preloader: Preloader = Preloader.ON;
   minWidth: number = 1500;
 }

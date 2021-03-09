@@ -1,4 +1,4 @@
-import { List } from '@material-ui/core';
+import { Avatar, Button, Divider, Drawer, List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,98 +11,75 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { ExpandMoreSharp } from '@material-ui/icons';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import SearchIcon from '@material-ui/icons/Search';
+import Settings from '@material-ui/icons/Settings';
 import clsx from 'clsx';
-import React from 'react';
+import React, { Dispatch } from 'react';
 
 import LogoIocn from '../assets/logo.svg';
 import { PageRoutes } from '../Pages/PageRoutes';
 import { addToObject } from '../utils/helpers';
 import Dropdown from './Dropdown';
-import { ContentTheme, FrameProps, LayoutWidth, NavBarTheme, TopBarTheme } from './FrameProps';
+import { ContentTheme, FrameProps, LayoutWidth } from './FrameProps';
+import SettingsPannel from './SettingsPannel';
+import ChatsList from './TopBarChats';
+import NotificationsList from './TopBarNotifications';
+import ProfileList from './TopBarProfile';
 
 export default function TopBarNav(props: {
   layoutOptions: FrameProps;
-  rerender?: () => any;
+  setLayoutOption: Dispatch<any>;
+  rerender?: () => any | undefined;
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [topBarFontColor, setTopBarFontColor] = React.useState('#fff');
-  const [navBarFontColor, setNavBarFontColor] = React.useState('#fff');
-
-  React.useEffect(() => {
-    switch (props.layoutOptions.topBarTheme) {
-      case TopBarTheme.DARK:
-        setTopBarFontColor('#fff');
-        break;
-      case TopBarTheme.LIGHT:
-        setTopBarFontColor('#9AA5B7');
-        break;
-      case TopBarTheme.COLORED:
-        setTopBarFontColor(props.layoutOptions.topBarFontColor);
-        break;
-
-      default:
-        setTopBarFontColor('#fff');
-        break;
-    }
-
-    switch (props.layoutOptions.navBarTheme) {
-      case NavBarTheme.DARK:
-        setNavBarFontColor('#fff');
-        break;
-      case NavBarTheme.LIGHT:
-        setNavBarFontColor('#9AA5B7');
-        break;
-      case NavBarTheme.COLORED:
-        setNavBarFontColor(props.layoutOptions.navBarFontColor);
-        break;
-
-      default:
-        setNavBarFontColor('#fff');
-        break;
-    }
-  }, [props.layoutOptions]);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
+  const [
+    notificationAnchorEl,
+    setNotificationAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const [
+    profileAnchorEl,
+    setProfileAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const [
+    chatAnchorEl,
+    setChatAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
 
   const useStyles = makeStyles(theme => ({
     grow: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
-    },
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      // background: 'rgba(235,244,250,0.2)',
-      // color: 'inherit',
+      whiteSpace: 'nowrap',
+      backgroundColor: "rgba(0, 0, 0, 0.1)",
+      // color: fade(theme.palette.action.selected, 0.8),
       // '&:hover': {
-      //   backgroundColor: 'rgba(235,244,250,0.2)',
+      //   backgroundColor: fade(theme.palette.info.light, 0.25),
       // },
       marginRight: theme.spacing(2),
-      width: '240px',
-      marginLeft: theme.spacing(6),
+      marginLeft: '0 !important',
+      width: '100%',
       [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),
-        width: '240px',
+        width: 'auto',
       },
     },
     searchIcon: {
-      padding: theme.spacing(1, 1, 0),
+      padding: theme.spacing(1, 2, 0),
       float: 'right',
       display: 'inline-block',
-      // color: 'inherit',
+      color: "rgba(0, 0, 0, 0.2)",
+      // color: '#93A9BF',
     },
     inputRoot: {
       color: 'inherit',
@@ -116,36 +93,29 @@ export default function TopBarNav(props: {
         width: '15ch',
       },
     },
-    appBar: {
-      height: '72px',
-      zIndex: theme.zIndex.drawer + 2,
-      // width: `calc(100% - 73px)`,
-      background: 'linear-gradient(90.16deg, #49A0D5 -0.48%, #00D1C1 102.05%)',
-      color: topBarFontColor,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    Iconbutton: {
-      // color: 'inherit',
-      marginLeft: '44px',
-    },
     sectionDesktop: {
-      display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex',
-      },
-    },
-    sectionMobile: {
-      display: 'flex',
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.down('sm')]: {
         display: 'none',
       },
     },
+    sectionMobile: {
+      [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
+    },
+    appBar: {
+      borderBottom: 'inset 1px',
+      backgroundImage: `linear-gradient(135deg, ${props?.layoutOptions?.topBarColor} 30%, ${props?.layoutOptions?.topBarColorEnd} 90%)`,
+      color: props?.layoutOptions?.topBarFontColor,
+      zIndex: theme.zIndex.drawer + 1,
+    },
+    Iconbutton: {
+      color: props?.layoutOptions?.topBarFontColor,
+    },
     HorizontalMenu: {
+      borderBottom: 'inset 1px',
       display: 'flex',
-      color: navBarFontColor,
+      color: props?.layoutOptions?.navBarFontColor,
       height: '40px',
     },
     MenuIcon: {
@@ -160,7 +130,10 @@ export default function TopBarNav(props: {
       },
     },
     LogoIcon: {
-      paddingRight: '10px',
+      paddingRight: theme.spacing(1),
+    },
+    LogoText: {
+      paddingRight: theme.spacing(5),
     },
     ButtonMenu: {
       padding: '0',
@@ -173,16 +146,25 @@ export default function TopBarNav(props: {
     content: {
       // backgroundColor: '#f7fbfd',
       lexGrow: 1,
-      height: '100vh',
+      minHeight: 'calc(100vh - 120px)',
       overflow: 'auto',
       fontFamily: 'Mulish',
     },
+    container: {
+      margin: 'auto',
+      maxWidth: (props?.layoutOptions?.layoutWidth === LayoutWidth.FULL_WIDTH ? '100%' : '800px') + ' !important',
+      padding: '20px',
+    },
     userName: {
-      padding: '13px 0 0 10px',
+      color: props?.layoutOptions?.topBarFontColor,
+      padding: '0px 0 0 10px',
     },
     borderGrow: {
       maxWidth: '1440px',
       margin: '0 auto',
+    },
+    backgroundGradient: {
+      backgroundImage: `linear-gradient(135deg, ${props?.layoutOptions?.navBarColor} 30%, ${props?.layoutOptions?.navBarColorEnd} 90%)`,
     },
     lightContentTheme: {
       background: '#f7fbfd',
@@ -198,8 +180,49 @@ export default function TopBarNav(props: {
       color: '#fff',
       background: theme.palette.primary.dark,
     },
+    topBarColor: {
+      color: props?.layoutOptions?.topBarFontColor,
+      backgroundImage: `linear-gradient(135deg, ${props?.layoutOptions?.topBarColor} 30%, ${props?.layoutOptions?.topBarColorEnd} 90%)`,
+    },
+    navBarColor: {
+      color: props?.layoutOptions?.navBarFontColor,
+      backgroundImage: `linear-gradient(135deg, ${props?.layoutOptions?.navBarColor} 30%, ${props?.layoutOptions?.navBarColorEnd} 90%)`,
+    },
+    notificationMenu: {
+      paddingRight: '20px',
+    },
+    notificationArea: {
+      overflow: 'hidden',
+    },
+    notificationIcon: {},
+    notificationText: {
+      fontSize: '14px',
+    },
+    notificationReceiveDate: {
+      fontSize: '10px !important',
+    },
+    profileMenu: {
+      paddingRight: '20px',
+      width: theme.spacing(25),
+    },
+    profileIcon: {},
+    profileText: {
+      fontSize: '14px',
+    },
+    chatMenu: {
+      paddingRight: '20px',
+    },
+    chatIcon: {},
+    chatArea: {
+      overflow: 'hidden',
+    },
+    chatText: {
+      fontSize: '14px',
+    },
+    chatReceiveDate: {
+      fontSize: '10px !important',
+    },
     coloredTopBar: {
-      background: props.layoutOptions.topBarColor,
       // color: '#fff',
       // background: theme.palette.primary.main,
     },
@@ -216,9 +239,16 @@ export default function TopBarNav(props: {
       // color: '#fff',
       // background: theme.palette.primary.main,
     },
+
     arrow: {
-      paddingLeft: '7px',
       transition: '.2s',
+    },
+    dropDownArrow: {
+      verticalAlign: 'middle'
+    },
+
+    opened_arrow: {
+      transform: 'rotate(180deg)',
     },
     navigationContainer: {
       padding: '12px 33px',
@@ -245,13 +275,34 @@ export default function TopBarNav(props: {
     handleMobileMenuClose();
   };
 
+
+  const handleNotificationClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationAnchorEl(e.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
+  };
+
+  const handleProfileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileAnchorEl(e.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setProfileAnchorEl(null);
+  };
+
+  const handleChatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setChatAnchorEl(e.currentTarget);
+  };
+
   const handleRenderPage = (renderPage: any) => {
     setCurrentPageContent(renderPage());
   };
 
-  // const handleMobileMenuOpen = (e) => {
-  //   setMobileMoreAnchorEl(e.currentTarget);
-  // };
+  const handleChatClose = () => {
+    setChatAnchorEl(null);
+  };
 
   let previous = {};
 
@@ -327,7 +378,7 @@ export default function TopBarNav(props: {
           aria-label="show 4 new mails"
           color="inherit"
         >
-          <Badge badgeContent={10} color="secondary">
+          <Badge badgeContent={10} color="error">
             <ChatBubbleOutlineIcon />
           </Badge>
         </IconButton>
@@ -339,7 +390,7 @@ export default function TopBarNav(props: {
           aria-label="show 11 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={1} color="secondary">
+          <Badge badgeContent={1} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -375,21 +426,21 @@ export default function TopBarNav(props: {
           classes.borderGrow
         )}
       >
+        <Drawer
+          classes={{ paper: clsx(classes.backgroundGradient), }} anchor="right" open={openSettings} onClose={() => setOpenSettings(false)}>
+          <SettingsPannel layoutOptions={props.layoutOptions} setLayoutOption={props.setLayoutOption} />
+        </Drawer>
+
         <AppBar
           position="static"
           className={clsx(
             classes.appBar,
-            props.layoutOptions.topBarTheme === TopBarTheme.DARK &&
-            classes.darkTopBar,
-            props.layoutOptions.topBarTheme === TopBarTheme.COLORED &&
-            classes.coloredTopBar,
-            props.layoutOptions.topBarTheme === TopBarTheme.LIGHT &&
-            classes.lightTopBar
+            classes.topBarColor,
           )}
         >
           <Toolbar className={classes.LogoBlock}>
             <img src={LogoIocn} className={classes.LogoIcon} alt="logo" />
-            <Typography>AppGlue</Typography>
+            <Typography className={classes.LogoText}>AppGlue</Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -407,43 +458,175 @@ export default function TopBarNav(props: {
             <div className={classes.sectionDesktop}>
               <IconButton
                 className={classes.Iconbutton}
-                aria-label="show 4 new mails"
-                color="inherit"
               >
-                <FullscreenIcon
-                  style={{ fontSize: '30px' }}
-                  className={classes.LogoMenuIcon}
-                />
+                <FullscreenIcon />
               </IconButton>
               <IconButton
                 className={classes.Iconbutton}
-                aria-label="show 4 new mails"
-                color="inherit"
+                onClick={handleChatClick}
               >
                 <Badge badgeContent={10} color="secondary">
-                  <ChatBubbleOutlineIcon className={classes.LogoMenuIcon} />
+                  <ChatBubbleOutlineIcon />
                 </Badge>
               </IconButton>
+              <Menu
+                id="chat-menu"
+                anchorEl={chatAnchorEl}
+                keepMounted
+                open={Boolean(chatAnchorEl)}
+                onClose={handleChatClose}
+                elevation={1}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                PaperProps={{
+                  style: {
+                    maxHeight: 268,
+                    width: '286px',
+                  },
+                }}
+              >
+                {ChatsList.map(item => (
+                  <div
+                    key={item.id}>
+                    <MenuItem
+                      onClick={handleChatClose}
+                      className={classes.chatMenu}
+                    >
+                      <div>
+                        <ListItemIcon className={classes.chatIcon}>
+                          {<item.icon />}
+                        </ListItemIcon>
+                      </div>
+                      <div className={classes.chatArea}>
+                        <ListItemText className={classes.chatText}>
+                          {item.text}
+                        </ListItemText>
+                        <ListItemText className={classes.chatReceiveDate}>
+                          {item.dateOfReceiving}
+                        </ListItemText>
+                      </div>
+                    </MenuItem>
+                    <Divider />
+                  </div>
+                ))}
+              </Menu>
               <IconButton
                 className={classes.Iconbutton}
                 aria-label="show 17 new notifications"
-                color="inherit"
+                aria-haspopup="true"
+                aria-controls="notification-menu"
+                onClick={handleNotificationClick}
               >
                 <Badge badgeContent={1} color="secondary">
-                  <NotificationsIcon className={classes.LogoMenuIcon} />
+                  <NotificationsIcon />
                 </Badge>
               </IconButton>
-              <IconButton
-                className={classes.Iconbutton}
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                color="inherit"
+              <Menu
+                id="notification-menu"
+                anchorEl={notificationAnchorEl}
+                keepMounted
+                open={Boolean(notificationAnchorEl)}
+                onClose={handleNotificationClose}
+                elevation={1}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                PaperProps={{
+                  style: {
+                    maxHeight: 268,
+                    width: '286px',
+                  },
+                }}
               >
-                <AccountCircle className={classes.LogoMenuIcon} />
+                {NotificationsList.map(item => (
+                  <div key={item.id}>
+                    <MenuItem
+                      onClick={handleNotificationClose}
+                      className={classes.notificationMenu}
+                    >
+                      <div>
+                        <ListItemIcon className={classes.notificationIcon}>
+                          {<item.icon />}
+                        </ListItemIcon>
+                      </div>
+                      <div className={classes.notificationArea}>
+                        <ListItemText className={classes.notificationText}>
+                          {item.text}
+                        </ListItemText>
+                        <ListItemText className={classes.notificationReceiveDate}>
+                          {item.dateOfReceiving}
+                        </ListItemText>
+                      </div>
+                    </MenuItem>
+                    <Divider />
+                  </div>
+                ))}
+              </Menu>
+              <Button
+                onClick={handleProfileClick}
+              >
+                <Avatar />
+                <Typography className={classes.userName}>John Doe
+                <ExpandMoreSharp
+                    className={clsx(classes.arrow, classes.dropDownArrow, Boolean(profileAnchorEl) && classes.opened_arrow)}
+                  />
+                </Typography>
+              </Button>
+              <Menu
+                id="profile-menu"
+                anchorEl={profileAnchorEl}
+                keepMounted
+                open={Boolean(profileAnchorEl)}
+                onClose={handleProfileClose}
+                elevation={1}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+              >
+                {ProfileList.map(item => (
+                  <div key={item.id}>
+                    <MenuItem
+                      onClick={handleProfileClose}
+                      className={classes.profileMenu}
+                    >
+                      <div>
+                        <ListItemIcon className={classes.profileIcon}>
+                          {<item.icon />}
+                        </ListItemIcon>
+                      </div>
+                      <div>
+                        <ListItemText className={classes.profileText}>
+                          {item.text}
+                        </ListItemText>
+                      </div>
+                    </MenuItem>
+                    <Divider />
+                  </div>
+                ))}
+              </Menu>
+              <IconButton
+                className={classes.Iconbutton} onClick={() => setOpenSettings(c => !Boolean(c))} >
+                <Settings />
               </IconButton>
-              <Typography className={classes.userName}>John Doe</Typography>
             </div>
             <div className={classes.sectionMobile}>
               <IconButton
@@ -466,25 +649,18 @@ export default function TopBarNav(props: {
           className={clsx(
             classes.HorizontalMenu,
             classes.navigationContainer,
-            props.layoutOptions.navBarTheme === NavBarTheme.DARK &&
-            classes.darkNavBar,
-            props.layoutOptions.navBarTheme === NavBarTheme.COLORED &&
-            classes.coloredNavBar,
-            props.layoutOptions.navBarTheme === NavBarTheme.LIGHT &&
-            classes.lightNavBar
+            classes.navBarColor,
           )}
         >
           {PageRoutes.getRootPages().map(page => {
             return (
-              <>
-                <NavItem
-                  key={page.name}
-                  page={page}
-                  classes={classes}
-                  handleToggleSubpages={handleToggleSubpages}
-                  handleRenderPage={handleRenderPage}
-                />
-              </>
+              <NavItem
+                key={page.name}
+                page={page}
+                classes={classes}
+                handleToggleSubpages={handleToggleSubpages}
+                handleRenderPage={handleRenderPage}
+              />
             );
           })}
         </List>
@@ -498,7 +674,7 @@ export default function TopBarNav(props: {
           classes.darkContentTheme
         )}
       >
-        <Typography align="center">{currentPageContent}</Typography>
+        <div className={classes.container}>{currentPageContent}</div>
       </main>
     </div>
   );
