@@ -54,12 +54,12 @@ describe("XTextArea", () => {
 
     textarea.setSelectionRange(0, 0);
     userEvent.type(textarea, "blah blah blah");
-    await waitFor(() =>
+    waitFor(() =>
       expect(form.getFormContext()?.getFormDataValue("test")).toEqual(
         "blah blah blah"
       )
     );
-    await waitFor(() => expect(textarea).toHaveValue("blah blah blah"));
+    waitFor(() => expect(textarea).toHaveValue("blah blah blah"));
   });
 
   it("Control can change form data", async () => {
@@ -137,7 +137,7 @@ describe("XTextArea", () => {
     expect(textarea).toBeEmptyDOMElement();
 
     fireEvent.change(textarea, { target: { value: 10 } });
-    await waitFor(() =>
+    waitFor(() =>
       expect(form.getFormContext()?.getFormDataValue("test")).not.toEqual(
         10
       )

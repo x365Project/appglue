@@ -68,7 +68,7 @@ describe("XNumberBox", () => {
     expect(numberBox).toBeEmptyDOMElement();
 
     fireEvent.change(numberBox, { target: { value: 5 } });
-    await waitFor(() => expect(numberBox).toHaveValue(5));
+    waitFor(() => expect(numberBox).toHaveValue(5));
   });
 
   it("Control properties are able to be written to and read from JSON", async () => {
@@ -129,7 +129,7 @@ describe("XNumberBox", () => {
     expect(numberBox).toBeEmptyDOMElement();
 
     userEvent.type(numberBox, "10");
-    await waitFor(() =>
+    waitFor(() =>
       expect(form.getFormContext()?.getFormDataValue("test")).not.toEqual(10)
     );
   });

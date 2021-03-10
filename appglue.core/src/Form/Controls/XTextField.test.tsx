@@ -129,7 +129,7 @@ describe("XTextField", () => {
     expect(textbox).toBeInTheDocument();
     expect(textbox).toBeEmptyDOMElement();
     fireEvent.change(textbox, { target: { value: 10 } });
-    await waitFor(() =>
+    waitFor(() =>
       expect(form.getFormContext()?.getFormDataValue("test")).not.toEqual(
         10
       )
