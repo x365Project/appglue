@@ -1,13 +1,8 @@
-import {
-  Button,
-  Divider,
-  makeStyles,
-  Paper,
-  Typography,
-} from '@material-ui/core';
-import React, { useState } from 'react';
+import { Button, Collapse, Divider, makeStyles, Paper, Typography } from '@material-ui/core';
 import clsx from 'clsx';
-import { FrameProps, NavBarTheme, TopBarTheme } from '../NavFrame/FrameProps';
+import React, { Dispatch, useState } from 'react';
+
+import { ContentTheme, FrameProps, NavBarTheme, TopBarTheme } from '../NavFrame/FrameProps';
 
 const colorsList = ['#F97760', '#39ACD1', '#7063C3', '#eee', '#000'];
 enum Sections {
@@ -21,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: '30px',
-    maxWidth: '1000px',
+    // maxWidth: '1000px',
     height: '500px', // temporary
   },
   header: {},
@@ -31,7 +26,6 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     backgroundColor: '#E6E9ED',
-    color: theme.palette.primary.main,
     padding: '15px',
     marginRight: '20px',
     // textTransform: 'uppercase'
@@ -59,43 +53,48 @@ const useStyles = makeStyles(theme => ({
 
 const TeamPage = ({
   layoutOptions,
+  setLayoutOption,
   rerender,
 }: {
   layoutOptions: FrameProps;
+  setLayoutOption: Dispatch<any>;
   rerender: any | undefined;
 }) => {
   const classes = useStyles();
   const [isTopBarColored, setIsTopBarColored] = useState(false);
-  // const [isNavBarColored, setIsNavBarColored] = useState(false);
+  const [isNavBarColored, setIsNavBarColored] = useState(false);
 
   const handleButtonClick = (type: string): void => {
-    if (type === TopBarTheme.COLORED) {
-      setIsTopBarColored(true);
-      rerender && rerender();
-    } else {
-      setIsTopBarColored(false);
-      rerender && rerender();
-    }
 
+    // if (type === ContentTheme.DARK) {
+    //   setLayoutOption({ ...layoutOptions, contentTheme: ContentTheme.DARK });
+    // }
+    // if (type === ContentTheme.LIGHT) {
+    //   setLayoutOption({ ...layoutOptions, contentTheme: ContentTheme.LIGHT });
+    // }
+    // if (type === ContentTheme.MAIN) {
+    //   setLayoutOption({ ...layoutOptions, contentTheme: ContentTheme.MAIN });
+    // }
+    // if (type === TopBarTheme.COLORED) {
+    //   setIsTopBarColored(true);
+    //   // rerender && rerender();
+    // } else {
+    //   setIsTopBarColored(false);
+    //   // rerender && rerender();
+    // }
     // if (type === NavBarTheme.COLORED) {
     //   setIsNavBarColored(true);
-    //   rerender && rerender();
+    //   // rerender && rerender();
     // } else {
     //   setIsNavBarColored(false);
-    //   rerender && rerender();
+    //   // rerender && rerender();
     // }
+
+
   };
 
   const getColor = (color: string, section: Sections) => {
-    if (section === Sections.NAVBAR) {
-      layoutOptions.setNavBarTheme(NavBarTheme.COLORED);
-      layoutOptions.setNavBarColor(color);
-      rerender && rerender();
-    } else if (section === Sections.TOPBAR) {
-      layoutOptions.setTopBarTheme(TopBarTheme.COLORED);
-      layoutOptions.setTopBarColor(color);
-      rerender && rerender();
-    }
+
   };
   return (
     <div className={classes.container}>
@@ -113,13 +112,13 @@ const TeamPage = ({
           Top Bar Theme
         </Typography>
         <Button
-          onClick={() => handleButtonClick(TopBarTheme.LIGHT)}
+          onClick={() => handleButtonClick(ContentTheme.LIGHT)}
           className={clsx(classes.button)}
         >
           Light
         </Button>
         <Button
-          onClick={() => handleButtonClick(TopBarTheme.DARK)}
+          onClick={() => handleButtonClick(ContentTheme.DARK)}
           className={clsx(classes.button)}
         >
           Dark
@@ -130,13 +129,13 @@ const TeamPage = ({
         >
           Colored
         </Button>
-        {isTopBarColored && (
+        <Collapse in={Boolean(isTopBarColored)} >
           <ColorSelector
             colorsList={colorsList}
             getColor={getColor}
             section={Sections.TOPBAR}
           />
-        )}
+        </Collapse>
         <Divider className={classes.mt} />
         <Typography className={classes.subheader} align="left" variant="h5">
           Nav Bar Theme
@@ -159,13 +158,13 @@ const TeamPage = ({
         >
           Colored
         </Button>
-        {/* {isNavBarColored && (
+        <Collapse in={Boolean(isNavBarColored)} >
           <ColorSelector
             colorsList={colorsList}
             getColor={getColor}
-            section={Sections.TOPBAR}
+            section={Sections.NAVBAR}
           />
-        )} */}
+        </Collapse>
       </Paper>
     </div>
   );

@@ -1,34 +1,30 @@
-import React from 'react';
-import { FrameProps } from './FrameProps';
-import Dropdown from './Dropdown';
-import { makeStyles } from '@material-ui/core/styles';
+import { List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import clsx from 'clsx';
-
+import IconButton from '@material-ui/core/IconButton';
+import InputBase from '@material-ui/core/InputBase';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { List } from '@material-ui/core';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import SearchIcon from '@material-ui/icons/Search';
+import clsx from 'clsx';
+import React from 'react';
+
 import LogoIocn from '../assets/logo.svg';
 import { PageRoutes } from '../Pages/PageRoutes';
-import { LayoutWidth } from './FrameProps';
-import { ContentTheme } from './FrameProps';
-import { TopBarTheme } from './FrameProps';
-import { NavBarTheme } from './FrameProps';
 import { addToObject } from '../utils/helpers';
+import Dropdown from './Dropdown';
+import { ContentTheme, FrameProps, LayoutWidth, NavBarTheme, TopBarTheme } from './FrameProps';
 
 export default function TopBarNav(props: {
   layoutOptions: FrameProps;
@@ -89,11 +85,11 @@ export default function TopBarNav(props: {
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      background: 'rgba(235,244,250,0.2)',
-      color: 'inherit',
-      '&:hover': {
-        backgroundColor: 'rgba(235,244,250,0.2)',
-      },
+      // background: 'rgba(235,244,250,0.2)',
+      // color: 'inherit',
+      // '&:hover': {
+      //   backgroundColor: 'rgba(235,244,250,0.2)',
+      // },
       marginRight: theme.spacing(2),
       width: '240px',
       marginLeft: theme.spacing(6),
@@ -175,7 +171,7 @@ export default function TopBarNav(props: {
       color: 'inherit',
     },
     content: {
-      backgroundColor: '#f7fbfd',
+      // backgroundColor: '#f7fbfd',
       lexGrow: 1,
       height: '100vh',
       overflow: 'auto',
@@ -369,14 +365,14 @@ export default function TopBarNav(props: {
       className={clsx(
         classes.grow,
         props.layoutOptions.layoutWidth === LayoutWidth.BOXED &&
-          classes.borderGrow
+        classes.borderGrow
       )}
     >
       <div
         className={clsx(
           classes.grow,
           props.layoutOptions.layoutWidth === LayoutWidth.BOXED &&
-            classes.borderGrow
+          classes.borderGrow
         )}
       >
         <AppBar
@@ -384,11 +380,11 @@ export default function TopBarNav(props: {
           className={clsx(
             classes.appBar,
             props.layoutOptions.topBarTheme === TopBarTheme.DARK &&
-              classes.darkTopBar,
+            classes.darkTopBar,
             props.layoutOptions.topBarTheme === TopBarTheme.COLORED &&
-              classes.coloredTopBar,
+            classes.coloredTopBar,
             props.layoutOptions.topBarTheme === TopBarTheme.LIGHT &&
-              classes.lightTopBar
+            classes.lightTopBar
           )}
         >
           <Toolbar className={classes.LogoBlock}>
@@ -471,11 +467,11 @@ export default function TopBarNav(props: {
             classes.HorizontalMenu,
             classes.navigationContainer,
             props.layoutOptions.navBarTheme === NavBarTheme.DARK &&
-              classes.darkNavBar,
+            classes.darkNavBar,
             props.layoutOptions.navBarTheme === NavBarTheme.COLORED &&
-              classes.coloredNavBar,
+            classes.coloredNavBar,
             props.layoutOptions.navBarTheme === NavBarTheme.LIGHT &&
-              classes.lightNavBar
+            classes.lightNavBar
           )}
         >
           {PageRoutes.getRootPages().map(page => {
@@ -497,9 +493,9 @@ export default function TopBarNav(props: {
         className={clsx(
           classes.content,
           props.layoutOptions.contentTheme === ContentTheme.LIGHT &&
-            classes.lightContentTheme,
+          classes.lightContentTheme,
           props.layoutOptions.contentTheme === ContentTheme.DARK &&
-            classes.darkContentTheme
+          classes.darkContentTheme
         )}
       >
         <Typography align="center">{currentPageContent}</Typography>

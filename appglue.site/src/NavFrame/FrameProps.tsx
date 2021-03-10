@@ -29,6 +29,7 @@ export enum NavBarTheme {
 export enum ContentTheme {
   LIGHT = 'light',
   DARK = 'dark',
+  MAIN = 'main',
 }
 
 export enum Layout {
@@ -60,25 +61,9 @@ export class FrameProps {
   layoutWidth: LayoutWidth = LayoutWidth.FULL_WIDTH;
   topBarTheme: TopBarTheme = TopBarTheme.DARK;
   navBarTheme: NavBarTheme = NavBarTheme.DARK;
-  contentTheme: ContentTheme = ContentTheme.LIGHT;
+  contentTheme: string = 'cyan';
   preloader: Preloader = Preloader.ON;
   minWidth: number = 1500;
-
-  setTopBarColor = (color: string) => {
-    this.topBarColor = color;
-  };
-
-  setTopBarTheme = (theme: TopBarTheme) => {
-    this.topBarTheme = theme;
-  };
-
-  setNavBarColor = (color: string) => {
-    this.navBarColor = color;
-  };
-
-  setNavBarTheme = (theme: NavBarTheme) => {
-    this.navBarTheme = theme;
-  };
 }
 
 export const CurrentFrameProps = new FrameProps();
