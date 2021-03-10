@@ -7,7 +7,7 @@ import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {LabelIcon} from "../../CommonUI/Icon/LabelIcon";
 
 
-@RegisterUIControl('Text', 'Label', ControlType.Control, <LabelIcon />)
+@RegisterUIControl('Text', 'Text Label', ControlType.Control, <LabelIcon />)
 export class XLabel extends XBaseControl {    
     text : string = "Label Text...";
     htmlFor : string = "html-for"

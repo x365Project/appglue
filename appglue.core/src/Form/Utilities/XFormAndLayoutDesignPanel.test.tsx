@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import { XFormAndLayoutDesignPanel } from "./XFormAndLayoutDesignPanel"
 import { XFormConfiguration } from '../XFormConfiguration';
 import { getFormConfig } from "../Testing/FormTestData";
@@ -73,9 +73,8 @@ describe("InternalUserFormDesignPanel", () => {
         expect(getByText(/Radio Button Group/i)).toBeInTheDocument();
         expect(getByText(/^Button Group$/g)).toBeInTheDocument();
         expect(getByText(/Heading/i)).toBeInTheDocument();
-        expect(getByText(/Label/i)).toBeInTheDocument();
+        expect(getByText(/Text Label/i)).toBeInTheDocument();
         expect(getByText(/^Button$/g)).toBeInTheDocument();
-        
     });
 
 
