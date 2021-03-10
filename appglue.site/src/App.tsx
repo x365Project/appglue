@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
 import './App.css';
-import { NavFrame } from './NavFrame/NavFrame';
+
+import React, { useState } from 'react';
+
 import { getFrameOptions } from './NavFrame/FrameProps';
+import { NavFrame } from './NavFrame/NavFrame';
 
 function App() {
   const [frameOptions, setFrameOptions] = useState<any>({
@@ -13,14 +15,15 @@ function App() {
   }, []);
 
   const rerender = () => {
-    const result = Object.assign({}, getFrameOptions());
-    console.log('result', result);
-    setFrameOptions(result);
+    // const result = Object.assign({}, getFrameOptions());
+    // console.log('result', result);
+    // setFrameOptions(result);
   };
+  console.log(frameOptions);
   return (
     <div className="App">
       {frameOptions.frameSize && (
-        <NavFrame rerender={rerender} layoutOptions={frameOptions} />
+        <NavFrame rerender={rerender} layoutOptions={frameOptions} setLayoutOption={setFrameOptions} />
       )}
     </div>
   );
