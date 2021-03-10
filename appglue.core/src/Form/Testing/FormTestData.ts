@@ -5,6 +5,7 @@ import {XCheckboxField} from "../Controls/XCheckboxField";
 import {XSelectbox} from "../Controls/XSelectbox";
 import {XHeading} from "../Controls/XHeading";
 import {XLabel} from "../Controls/XLabel";
+import {XEditableLabel} from "../Controls/XEditableLabel";
 import {XButton} from "../Controls/XButton";
 import {XLink} from "../Controls/XLink";
 import {XSwitch} from "../Controls/XSwitch";
@@ -55,6 +56,9 @@ export function getFormConfig(): XFormConfiguration {
 
   let label = new XLabel();
   label.text = " Enter Information Below";
+
+  let editableLabel = new XEditableLabel();
+  editableLabel.text = "Click the label to change the text";
 
   let composite2 = new XTextField();
   composite2.label = 'first name';
@@ -180,6 +184,7 @@ export function getFormConfig(): XFormConfiguration {
 
   let container = new XStackContainer();
   container.add(label);
+  container.add(editableLabel);
   container.add(composite2);
   container.add(composite3);
   container.add(switchMe);

@@ -127,7 +127,7 @@ function XLinkEditUI(props: { editMe: XLink }) {
 
   const changeLinkType = () => {
     props.editMe.controlUpdate();
-    props.editMe.label = props.editMe.linkType === LinkControlType.ACTION ? "Test Link" : "http://www.example.com/";
+    props.editMe.label = props.editMe.linkType === LinkControlType.URL ? "http://www.example.com/" : "Test Link";
   }
 
   return (
