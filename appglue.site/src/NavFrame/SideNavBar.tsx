@@ -1,47 +1,25 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { Divider, List } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { List, Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import clsx from 'clsx';
+import React from 'react';
+
 import LogoIocn from '../assets/logo.svg';
 import { PageRoutes } from '../Pages/PageRoutes';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { NavBarTheme } from './FrameProps';
-import clsx from 'clsx';
-import { SideBarType } from './FrameProps';
 import { addToObject } from '../utils/helpers';
+import { NavBarTheme, SideBarType } from './FrameProps';
 
-export default function SideBarNav(props: {
+export default function SideNavBar(props: {
   variant: string;
-  color: string;
   navBarTheme: NavBarTheme;
-  colorGradientEnd: string;
   sideBarType: SideBarType;
   handleRenderPage: any;
-  navBarColor: string;
-  navBarFontColor: string;
   layoutOptions: any;
+  sideBarOpen: Boolean;
 }) {
-  const [navBarFontColor, setNavBarFontColor] = React.useState<string>('#fff');
-
-  React.useEffect(() => {
-    switch (props.navBarTheme) {
-      case NavBarTheme.DARK:
-        setNavBarFontColor('#fff');
-        break;
-      case NavBarTheme.LIGHT:
-        setNavBarFontColor('#9AA5B7');
-        break;
-      case NavBarTheme.COLORED:
-        setNavBarFontColor(props.navBarFontColor);
-        break;
-
-      default:
-        setNavBarFontColor('#fff');
-        break;
-    }
-  }, [props.navBarFontColor, props.navBarTheme]);
 
   const useStyles = makeStyles(theme => ({
     VersionText: {
@@ -50,35 +28,45 @@ export default function SideBarNav(props: {
       left: '72px',
     },
     Icon: {
-      color: 'inherit',
       minWidth: '45px',
       paddingLeft: '10px',
       [theme.breakpoints.between('xs', 'sm')]: {
-        marginBottom: '5px',
-        marginLeft: '10px',
+        justifyContent: 'center',
+        padding: '0px',
       },
     },
     MenuText: {
       fontSize: '1rem',
-      display: 'flex',
       justifyContent: 'space-between',
-      [theme.breakpoints.between('sm', 'md')]: {
-        display: 'none',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
       },
-      [theme.breakpoints.between('md', 'lg')]: {
+      [theme.breakpoints.between('xs', 'sm')]: {
+        display: 'none'
+      },
+      [theme.breakpoints.between('sm', 'md')]: {
         display: 'flex',
       },
+      [theme.breakpoints.up('md')]: {
+        display: 'flex'
+      },
+    },
+    MenuTextOpen: {
+      fontSize: '1rem',
+      justifyContent: 'space-between',
+      display: 'none'
     },
     divider: {
       margin: '0 20px 10px',
-      background: navBarFontColor,
     },
     listItem: {
       padding: '5px 16px ',
       marginBottom: '10px',
-      [theme.breakpoints.between('xs', 'sm')]: {
-        flexDirection: 'column',
-        marginBottom: '12px',
+      [theme.breakpoints.between('sm', 'md')]: {
+        flexFlow: 'column'
+      },
+      [theme.breakpoints.up('md')]: {
+        flexFlow: 'row'
       },
     },
     compactListItem: {
@@ -87,55 +75,51 @@ export default function SideBarNav(props: {
     },
     LogoText: {
       paddingLeft: '10px',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none'
+      },
       [theme.breakpoints.between('xs', 'sm')]: {
-        paddingLeft: '0',
+        display: 'none'
       },
       [theme.breakpoints.between('sm', 'md')]: {
-        visibility: 'hidden ',
+        display: 'flex',
       },
       [theme.breakpoints.up('md')]: {
-        visibility: 'visible',
+        display: 'flex'
       },
     },
+    LogoTextClose: {
+      paddingLeft: '10px',
+      display: 'none'
+    },
     logo: {
-      color: 'inherit',
       padding: '15px 20px 25px',
       [theme.breakpoints.between('xs', 'sm')]: {
-        padding: '15px 20px 5px',
-        flexDirection: 'column',
+        flexFlow: 'column',
+        paddingBottom: '10px',
       },
     },
     compactLogo: {
-      color: 'inherit',
       padding: '15px 20px 5px',
-      flexDirection: 'column',
     },
     arrow: {
       paddingRight: '10px',
       transition: '.2s',
-    },
-    sideNavBarContainer: {
-      color: navBarFontColor,
-      height: '100%',
-      fontFamily:
-        '"Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif',
-    },
-    lightSideNavBar: {
-      // color: '#9AA5B7',
-      background: theme.palette.primary.light,
-    },
-    darkSideNavBar: {
-      // color: '#fff',
-      background: theme.palette.primary.dark,
-    },
-    coloredSideNavBar: {
-      background: props.navBarColor,
-      // color: '#fff',
-      // background: theme.palette.primary.main,
+      [theme.breakpoints.between('xs', 'sm')]: {
+        padding: '0px'
+      },
     },
     opened_arrow: {
       transform: 'rotate(180deg)',
       paddingLeft: '10px',
+      [theme.breakpoints.between('xs', 'sm')]: {
+        padding: '0px'
+      },
+    },
+    sideNavBarContainer: {
+      height: '100%',
+      fontFamily:
+        '"Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif',
     },
     subpagesInner: {
       transition: '.5s',
@@ -194,12 +178,7 @@ export default function SideBarNav(props: {
   const [linksWithSubpages, setLinksWithSubpages] = React.useState<any>({});
   return (
     <div
-      className={clsx(
-        classes.sideNavBarContainer,
-        props.navBarTheme === NavBarTheme.LIGHT && classes.lightSideNavBar,
-        props.navBarTheme === NavBarTheme.DARK && classes.darkSideNavBar,
-        props.navBarTheme === NavBarTheme.COLORED && classes.coloredSideNavBar
-      )}
+      className={clsx(classes.sideNavBarContainer)}
     >
       <List>
         <ListItem
@@ -209,7 +188,7 @@ export default function SideBarNav(props: {
           )}
         >
           <img src={LogoIocn} alt="logo" />
-          <ListItemText className={classes.LogoText}>AppGlue</ListItemText>
+          <ListItemText className={props?.sideBarOpen ? classes.LogoText : classes.LogoTextClose}>AppGlue</ListItemText>
         </ListItem>
         <Divider className={clsx(classes.divider)}></Divider>
         {PageRoutes.getRootPages().map(page => (
@@ -308,20 +287,22 @@ const NavItem = ({
       >
         {page.renderIcon()}
       </ListItemIcon>
-      <ListItemText disableTypography className={classes.MenuText}>
+      <ListItemText disableTypography className={
+        (props?.sideBarOpen) ? classes.MenuText : classes.MenuTextOpen}>
         <span onClick={() => props.handleRenderPage(page.renderPage)}>
           {page.name}
         </span>
         {subpages.length > 0 && (
           <KeyboardArrowDownIcon
             onClick={() => handleToggleSubpages(page.name)}
-            style={
-              props.sideBarType === SideBarType.COMPACT
-                ? { display: 'none' }
-                : {}
-            }
             className={clsx(classes.arrow, isOpened && classes.opened_arrow)}
+          // style={
+          //   props.sideBarType === SideBarType.COMPACT
+          //     ? { display: 'none' }
+          //     : {}
+          // }
           />
+
         )}
       </ListItemText>
     </ListItem>

@@ -40,6 +40,23 @@ export enum TextControlSize {
     SMALL = 'small'
 }
 
+export enum ButtonControlSize {
+    STANDARD = 'medium',
+    SMALL = 'small',
+    LARGE = 'large'
+}
+
+export enum LinkControlUnderline {
+    NONE = 'none',
+    HOVER = 'hover',
+    ALWAYS = 'always'
+}
+
+export enum LinkControlType {
+    ACTION = 'action',
+    URL = 'url'
+}
+
 export enum NotificationType {
     ERROR = 'error',
     WARNING = 'warning',
@@ -120,6 +137,10 @@ export class FormDesignConstants {
 
     public static DEFAULT_TEXT_STYLE : TextControlStyle = TextControlStyle.LABELED;
     public static DEFAULT_TEXT_SIZE : TextControlSize = TextControlSize.STANDARD;
+    public static DEFAULT_BUTTON_SIZE : ButtonControlSize = ButtonControlSize.STANDARD;
+
+    public static DEFAULT_LINK_UNDERLINE : LinkControlUnderline = LinkControlUnderline.HOVER;
+    public static DEFAULT_LINK_TYPE : LinkControlType = LinkControlType.ACTION;
 
     public static FORM_MODE: string[] = [
         FormDesignConstants.FORM_MODE_TABLET_HORIZONTAL,

@@ -6,7 +6,16 @@ import {IConfigStorage} from "../Common/IConfigStorage";
 import {DataUtilities} from "../Common/DataUtilities";
 import {XBaseControl} from "./Controls/XBaseControl";
 import {XBaseContainer} from "./Containers/XBaseContainer";
-import {BorderStyle, FormDesignConstants, FormMode, TextControlSize, TextControlStyle} from "./FormDesignConstants";
+import {
+	BorderStyle,
+	FormDesignConstants,
+	FormMode,
+	TextControlSize,
+	TextControlStyle,
+	ButtonControlSize,
+	LinkControlUnderline,
+	LinkControlType
+} from "./FormDesignConstants";
 import {UIControlRegistration} from "./Utilities/RegisterUIControl";
 import {IEditable} from "../CommonUI/IEditable";
 import {PropertyEditorInteger} from "../CommonUI/PropertyEditing/PropertyEditorInteger";
@@ -86,6 +95,11 @@ export class XFormConfiguration
 
 	defaultTextStyle : TextControlStyle = FormDesignConstants.DEFAULT_TEXT_STYLE;
 	defaultTextSize : TextControlSize = FormDesignConstants.DEFAULT_TEXT_SIZE;
+
+	defaultButtonSize : ButtonControlSize = FormDesignConstants.DEFAULT_BUTTON_SIZE;
+
+	defaultLinkUnderline : LinkControlUnderline = FormDesignConstants.DEFAULT_LINK_UNDERLINE;
+	defaultLinkType : LinkControlType = FormDesignConstants.DEFAULT_LINK_TYPE;
 
 	// this is either designer or runtime form
 	private _formContext: FormContext | null = null;

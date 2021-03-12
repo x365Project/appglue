@@ -6,10 +6,9 @@ import {TextField} from "@material-ui/core";
 import {ValidationIssue} from "../../Common/IDesignValidationProvider";
 import {LabelIcon} from "../../CommonUI/Icon/LabelIcon";
 
-
-@RegisterUIControl('Text', 'Text Label', ControlType.Control, <LabelIcon />)
-export class XLabel extends XBaseControl {    
-    text : string = "Label Text...";
+@RegisterUIControl('Text', 'Editable Label', ControlType.Control, <LabelIcon />)
+export class XEditableLabel extends XBaseControl {    
+    text : string = "Editable Text Label";
     htmlFor : string = "html-for"
 
     render() {
@@ -24,7 +23,7 @@ export class XLabel extends XBaseControl {
     }
 
     renderEditUI(): JSX.Element | null {
-        return <XLabelEditUI editMe={this} />
+        return <XEditableLabelEditUI editMe={this} />
     }
 
     getDesignValidationIssues(): ValidationIssue[] {
@@ -34,11 +33,9 @@ export class XLabel extends XBaseControl {
     getRuntimeValidationIssues(): ValidationIssue[] {
         return [];
     }
-
-
 }
 
-class XLabelEditUI extends React.Component<{editMe: XLabel}> {
+class XEditableLabelEditUI extends React.Component<{editMe: XEditableLabel}> {
 
     render() {
         return (
